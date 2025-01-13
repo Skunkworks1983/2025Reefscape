@@ -11,5 +11,5 @@ public class SwerveModule extends SubsystemBase {
   public SwerveModule() {}
 
   @Override
-  public void periodic() { }
+  public void periodic() {}
 }

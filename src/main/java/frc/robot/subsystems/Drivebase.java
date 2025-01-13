@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Drivebase extends SubsystemBase {
@@ -23,8 +24,7 @@ public class Drivebase extends SubsystemBase {
   public Drivebase() {}
 
   @Override
-  public void periodic() {
-  }
+  public void periodic() {}
 
   public Command getSwerveTeleopCommand(
     DoubleSupplier xMetersPerSecond,
@@ -34,8 +34,6 @@ public class Drivebase extends SubsystemBase {
     return Commands.runEnd(
       () -> {},
       () -> {}
-
-
     );
   }
 }

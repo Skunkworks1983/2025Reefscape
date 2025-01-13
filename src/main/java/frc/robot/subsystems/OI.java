@@ -38,7 +38,7 @@ public class OI extends SubsystemBase {
   public OI() { }
 
   @Override
-  public void periodic() { }
+  public void periodic() {}
 
   public double getInstructedXMetersPerSecond() {
     return joystickToMetersPerSecond.apply(
