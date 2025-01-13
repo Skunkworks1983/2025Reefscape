@@ -22,4 +22,16 @@ public class SwerveModule extends SubsystemBase {
 
   @Override
   public void periodic() {}
+
+  public void setModuleSetpoints() {
+    setModuleDriveSetpoint();
+    setModuleTurnSetpoint();
+  }
+
+  // TODO: add code
+  public void setModuleTurnSetpoint() {}
+
+
+  // TODO: add code
+  public void setModuleDriveSetpoint() {}
 }

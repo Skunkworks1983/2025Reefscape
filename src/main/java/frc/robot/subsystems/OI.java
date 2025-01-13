@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants.OI.LIMITS;
+import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.OI.IDS;
 
 public class OI extends SubsystemBase {
@@ -22,11 +23,10 @@ public class OI extends SubsystemBase {
   Joystick translationJoystick = leftJoystick;
   Joystick rotationJoystick = rightJoystick;
 
-  // Input to the function could be x or y.
+  // Input to the function could be x or y axis.
   DoubleFunction<Double> joystickToMetersPerSecond = 
-    (axisInput) -> Math.pow(axisInput, 3) 
+    (axisInput) -> Math.pow(axisInput, Constants.OI.AXIS_INPUT_EXPONENT) 
     * LIMITS.MAX_INSTRUCTED_METERS_PER_SECOND;
-
 
   Function<Double,Rotation2d> joystickToRotationPerSecond = 
     (xInput) -> Rotation2d.fromDegrees(
@@ -34,10 +34,13 @@ public class OI extends SubsystemBase {
     );
 
 
-  // Input to the function could be x or y. 
+  // Input to the function could be x or y axis. 
   // Deadband is applied on each axis individually. This might not be desirable.
+  // This function uses the turnary opperator (?) to select between two options 
+  // in a single expression.
   public DoubleFunction<Double> applyDeadband =
-    (axisInput) -> Math.abs(axisInput) < .1 ? 0.0 : axisInput;
+    (axisInput) -> Math.abs(axisInput) < Constants.OI.AXIS_DEADBAND 
+      ? 0.0 : axisInput;
 
   public OI() {}
 

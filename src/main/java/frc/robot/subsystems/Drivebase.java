@@ -28,7 +28,8 @@ public class Drivebase extends SubsystemBase {
   public void periodic() {}
 
   // TODO: add docstring
-  private void setDrive(double xMetersPerSecond,
+  // TODO: add code
+  private void drive(double xMetersPerSecond,
   double ymetersPerSecond, Rotation2d rotationPerSecond) {
 
   }
@@ -40,17 +41,17 @@ public class Drivebase extends SubsystemBase {
   ) {
     return Commands.runEnd(
       () -> {
-        setDrive(
+        drive(
           xMetersPerSecond.getAsDouble(),
           yMetersPerSecond.getAsDouble(),
           rotationPerSecond.get()
         );
       },
       () -> {
-        setDrive(
+        drive(
           0,
           0,
-          Rotation2d.kZero // check required rotation
+          Rotation2d.kZero
         );
       }
     );
