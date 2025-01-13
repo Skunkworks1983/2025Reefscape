@@ -5,17 +5,14 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import frc.robot.subsystems.Drivebase;
+import frc.robot.subsystems.OI;
 
-/**
- * The methods in this class are called automatically corresponding to each mode, as described in
- * the TimedRobot documentation. If you change the name of this class or the package after creating
- * this project, you must also update the Main.java file in the project.
- */
 public class Robot extends TimedRobot {
-  /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
-   */
+
+  Drivebase drivebase = new Drivebase();
+  OI oi = new OI();
+
   public Robot() {}
 
   @Override
@@ -28,7 +25,13 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {}
 
   @Override
-  public void teleopInit() {}
+  public void teleopInit() { 
+    drivebase.getSwerveTeleopCommand(
+      oi::getInstructedXMetersPerSecond,
+      oi::getInstructedYMetersPerSecond,
+      oi::getInstructedRotationPerSecond
+    ).schedule();
+  }
 
   @Override
   public void teleopPeriodic() {}
