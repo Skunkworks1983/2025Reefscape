@@ -11,20 +11,27 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.Constants;
 
 public class Drivebase extends SubsystemBase {
 
-  SwerveModule swerveModules[] = new SwerveModule[]{
-    new SwerveModule(),
-    new SwerveModule(),
-    new SwerveModule(),
-    new SwerveModule()
-  };
+  SwerveModule swerveModules[] = new SwerveModule[4];
 
-  public Drivebase() {}
+  public Drivebase() {
+    for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
+      swerveModules[i] = new SwerveModule(Constants.Drivebase.MODULES[i]);
+    }
+
+  }
 
   @Override
   public void periodic() {}
+
+  // TODO: add docstring
+  private void setDrive(double xMetersPerSecond,
+  double ymetersPerSecond, Rotation2d rotationPerSecond) {
+
+  }
 
   public Command getSwerveTeleopCommand(
     DoubleSupplier xMetersPerSecond,
@@ -32,8 +39,20 @@ public class Drivebase extends SubsystemBase {
     Supplier<Rotation2d> rotationPerSecond
   ) {
     return Commands.runEnd(
-      () -> {},
-      () -> {}
+      () -> {
+        setDrive(
+          xMetersPerSecond.getAsDouble(),
+          yMetersPerSecond.getAsDouble(),
+          rotationPerSecond.get()
+        );
+      },
+      () -> {
+        setDrive(
+          0,
+          0,
+          Rotation2d.kZero // check required rotation
+        );
+      }
     );
   }
 }

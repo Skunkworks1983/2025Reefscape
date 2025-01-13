@@ -7,16 +7,44 @@ package frc.robot.constants;
 /** Add your docs here. */
 public class Constants {
 
-    public class MOTORS {
+    public class Drivebase {
+    
+        public class PIDs {
+            public static float TURN_kP; 
+            public static float TURN_kI; 
+            public static float TURN_kD; 
+            public static float TURN_kF; 
 
-        public class PID {
-
+            public static float DRIVE_kP; 
+            public static float DRIVE_kI; 
+            public static float DRIVE_kD; 
+            public static float DRIVE_kF; 
         }
 
-        public class IDS {
-
+        public static class SwerveModuleConstants {
+            public int turnMotorId;
+            public int driveMotorId;
+            public SwerveModuleConstants(int turnMotorId, int driveMotorId) {
+                this.turnMotorId = turnMotorId;
+                this.driveMotorId = driveMotorId;
+            }
         }
 
+        public static SwerveModuleConstants MODULES[] = {
+            new SwerveModuleConstants(
+                0, 0
+            ),
+            new SwerveModuleConstants(
+                0, 0
+
+            ),
+            new SwerveModuleConstants(
+                0, 0
+            ),
+            new SwerveModuleConstants(
+                0, 0
+            )
+        };
     }
 
     public class OI {
@@ -26,10 +54,9 @@ public class Constants {
         }
 
         public class IDS {
-            public static int LEFT_JOYSTICK_ID;
-            public static int RIGHT_JOYSTICK_ID;
-            public static int BUTTON_STICK_ID;
-
+            public static int LEFT_JOYSTICK_ID = 1;
+            public static int RIGHT_JOYSTICK_ID = 2;
+            public static int BUTTON_STICK_ID = 3;
         }
     }
 

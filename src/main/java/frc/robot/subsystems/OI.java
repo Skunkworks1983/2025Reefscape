@@ -22,6 +22,7 @@ public class OI extends SubsystemBase {
   Joystick translationJoystick = leftJoystick;
   Joystick rotationJoystick = rightJoystick;
 
+  // Input to the function could be x or y.
   DoubleFunction<Double> joystickToMetersPerSecond = 
     (axisInput) -> Math.pow(axisInput, 3) 
     * LIMITS.MAX_INSTRUCTED_METERS_PER_SECOND;
@@ -30,12 +31,15 @@ public class OI extends SubsystemBase {
   Function<Double,Rotation2d> joystickToRotationPerSecond = 
     (xInput) -> Rotation2d.fromDegrees(
       Math.pow(xInput, 3) * LIMITS.MAX_INSTRUCTED_DEGREES_PER_SECOND
-      );
+    );
 
+
+  // Input to the function could be x or y. 
+  // Deadband is applied on each axis individually. This might not be desirable.
   public DoubleFunction<Double> applyDeadband =
     (axisInput) -> Math.abs(axisInput) < .1 ? 0.0 : axisInput;
 
-  public OI() { }
+  public OI() {}
 
   @Override
   public void periodic() {}

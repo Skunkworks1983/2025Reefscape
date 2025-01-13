@@ -5,10 +5,20 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.Constants;
 
 public class SwerveModule extends SubsystemBase {
 
-  public SwerveModule() {}
+  int driveModuleId;
+  int turnModuleId;
+  public SwerveModule(Constants.Drivebase.SwerveModuleConstants swerveConstants) {
+    this(swerveConstants.driveMotorId, swerveConstants.turnMotorId);
+  }
+  
+  public SwerveModule(int driveModuleId, int turnModuleId) {
+    this.driveModuleId = driveModuleId;
+    this.turnModuleId = turnModuleId;
+  }
 
   @Override
   public void periodic() {}
