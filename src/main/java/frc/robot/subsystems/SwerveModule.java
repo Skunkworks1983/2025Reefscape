@@ -4,20 +4,22 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 
 public class SwerveModule extends SubsystemBase {
 
-  int driveModuleId;
-  int turnModuleId;
+  TalonFX driveModule;
+  TalonFX turnModule;
   public SwerveModule(Constants.Drivebase.SwerveModuleConstants swerveConstants) {
     this(swerveConstants.driveMotorId, swerveConstants.turnMotorId);
   }
   
   public SwerveModule(int driveModuleId, int turnModuleId) {
-    this.driveModuleId = driveModuleId;
-    this.turnModuleId = turnModuleId;
+    this.driveModule = new TalonFX(driveModuleId);
+    this.turnModule = new TalonFX(turnModuleId);
   }
 
   @Override
@@ -29,7 +31,8 @@ public class SwerveModule extends SubsystemBase {
   }
 
   // TODO: add code
-  public void setModuleTurnSetpoint() {}
+  public void setModuleTurnSetpoint() {
+  }
 
 
   // TODO: add code

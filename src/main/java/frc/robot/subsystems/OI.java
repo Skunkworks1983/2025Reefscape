@@ -30,7 +30,7 @@ public class OI extends SubsystemBase {
 
   Function<Double,Rotation2d> joystickToRotationPerSecond = 
     (xInput) -> Rotation2d.fromDegrees(
-      Math.pow(xInput, 3) * LIMITS.MAX_INSTRUCTED_DEGREES_PER_SECOND
+      Math.pow(xInput, Constants.OI.AXIS_INPUT_EXPONENT) * LIMITS.MAX_INSTRUCTED_DEGREES_PER_SECOND
     );
 
 

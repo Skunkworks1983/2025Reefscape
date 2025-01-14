@@ -52,10 +52,12 @@ public class Constants {
             public static double MAX_INSTRUCTED_DEGREES_PER_SECOND = 90.0;
         }
 
-        public static double AXIS_DEADBAND = .1;
+        public static double AXIS_DEADBAND = .08;
 
         // (x or y joystick axis input after deadband ^ AXIS_INPUT_EXPONENT) 
         //  * MAX_INSTRUCTED_METERS_PER_SECOND = instructed meters per second
+        // Ensure that this AXIS_INPUT_EXPONENT does not result in a result
+        // that is always positive.
         public static double AXIS_INPUT_EXPONENT = 3;
 
         public class IDS {
