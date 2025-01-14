@@ -4,7 +4,7 @@
 
 package frc.robot.constants;
 
-// TODO: add all constant values when they have been decided
+// TODO: add all robot constant values when they have been decided
 public class Constants {
 
     public class Drivebase {
@@ -18,15 +18,6 @@ public class Constants {
             public static double SWERVE_MODULE_DRIVE_kI = 1.0;
             public static double SWERVE_MODULE_DRIVE_kD = 1.0;
             public static double SWERVE_MODULE_DRIVE_kF = 1.0;
-        }
-
-        public static class SwerveModuleConstants {
-            public int turnMotorId;
-            public int driveMotorId;
-            public SwerveModuleConstants(int turnMotorId, int driveMotorId) {
-                this.turnMotorId = turnMotorId;
-                this.driveMotorId = driveMotorId;
-            }
         }
 
         public static SwerveModuleConstants MODULES[] = {
