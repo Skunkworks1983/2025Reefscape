@@ -5,13 +5,13 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import frc.robot.subsystems.Drivebase;
-import frc.robot.subsystems.OI;
+import frc.robot.subsystems.*;
 
 public class Robot extends TimedRobot {
 
   Drivebase drivebase = new Drivebase();
   OI oi = new OI();
+  Elevator elevator = new Elevator();
 
   public Robot() {}
 

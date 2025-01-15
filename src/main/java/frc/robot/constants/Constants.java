@@ -36,6 +36,20 @@ public class Constants {
             )
         };
     }
+    public class Elevator {
+        public static int MOTOR_ID = 0;
+        public static double ROTATIONS_TO_METERS = 1.0;
+        public class Setpoints {
+            public static double FLOOR_POSITION;
+            public static double L1_POSITION;
+            public static double L2_POSITION;
+            public static double L3_POSITION;
+            public static double L4_POSITION;
+
+            
+        }
+
+    }
 
     public class OI {
         public class LIMITS {
