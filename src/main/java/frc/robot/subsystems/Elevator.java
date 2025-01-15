@@ -20,7 +20,11 @@ public class Elevator extends SubsystemBase {
     Constants.Elevator.MOTOR_ID, 
     MotorType.kBrushed
   );
-  PIDController positionController;
+  PIDController positionController = new PIDController(
+    Constants.Elevator.PIDs.ELEVATOR_kP,
+    Constants.Elevator.PIDs.ELEVATOR_kI,
+    Constants.Elevator.PIDs.ELEVATOR_kD
+  );
   
   public Elevator() {}
 
@@ -30,10 +34,11 @@ public class Elevator extends SubsystemBase {
   }
 
   private void updateMotor() {
-    double motorSpeed = positionController.calculate(
-      motor.getEncoder().getPosition() * Constants.Elevator.ROTATIONS_TO_METERS
+    motor.set(
+      positionController.calculate(
+        motor.getEncoder().getPosition() * Constants.Elevator.ROTATIONS_TO_METERS
+      )
     );
-    motor.set(motorSpeed);
   }
 
   Command moveToPosition(double heightMeters) {

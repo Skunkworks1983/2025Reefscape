@@ -38,6 +38,12 @@ public class Constants {
     }
     public class Elevator {
         public static int MOTOR_ID = 0;
+        public class PIDs {
+            public static double ELEVATOR_kP = 1.0;
+            public static double ELEVATOR_kI = 1.0;
+            public static double ELEVATOR_kD = 1.0;
+            public static double ELEVATOR_kF = 1.0;
+        }
         public static double ROTATIONS_TO_METERS = 1.0;
         public class Setpoints {
             public static double FLOOR_POSITION;
