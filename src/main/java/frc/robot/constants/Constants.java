@@ -52,8 +52,8 @@ public class Constants {
         public static double AXIS_INPUT_EXPONENT = 3;
 
         public class IDS {
-            public static int LEFT_JOYSTICK_ID = 1;
-            public static int RIGHT_JOYSTICK_ID = 2;
+            public static int ROTATION_JOYSTICK_ID = 1;
+            public static int TRANSLATION_JOYSTICK_ID = 2;
             public static int BUTTON_STICK_ID = 3;
         }
     }

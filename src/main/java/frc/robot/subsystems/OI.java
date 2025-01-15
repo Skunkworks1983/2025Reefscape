@@ -16,12 +16,9 @@ import frc.robot.constants.Constants.OI.IDS;
 
 public class OI extends SubsystemBase {
 
-  Joystick leftJoystick = new Joystick(IDS.LEFT_JOYSTICK_ID);
-  Joystick rightJoystick = new Joystick(IDS.RIGHT_JOYSTICK_ID);
-  Joystick buttonStick = new Joystick(IDS.BUTTON_STICK_ID);
-
-  Joystick translationJoystick = leftJoystick;
-  Joystick rotationJoystick = rightJoystick;
+  Joystick rotationJoystick = new Joystick(IDS.ROTATION_JOYSTICK_ID);
+  Joystick translationJoystick = new Joystick(IDS.TRANSLATION_JOYSTICK_ID);
+  Joystick buttonJoystick = new Joystick(IDS.BUTTON_STICK_ID);
 
   // Input to the function could be x or y axis.
   DoubleFunction<Double> joystickToMetersPerSecond = 
@@ -38,7 +35,7 @@ public class OI extends SubsystemBase {
   // Deadband is applied on each axis individually. This might not be desirable.
   // This function uses the turnary opperator (?) to select between two options 
   // in a single expression.
-  public DoubleFunction<Double> applyDeadband =
+  public DoubleFunction <Double> applyDeadband =
     (axisInput) -> Math.abs(axisInput) < Constants.OI.AXIS_DEADBAND 
       ? 0.0 : axisInput;
 
