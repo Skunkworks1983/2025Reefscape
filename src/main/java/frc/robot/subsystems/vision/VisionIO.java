@@ -1,5 +1,8 @@
 package frc.robot.subsystems.vision;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.numbers.N1;
@@ -14,7 +17,7 @@ public interface VisionIO {
     }
 
     public class VisionIOData {
-        public PoseObservation[] poseObservations = new PoseObservation[0];
+        public List<PoseObservation> poseObservations = new LinkedList<PoseObservation>();
     }
 
     public VisionIOData getLatestData();

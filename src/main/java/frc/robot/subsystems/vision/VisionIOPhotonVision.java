@@ -69,12 +69,8 @@ public class VisionIOPhotonVision implements VisionIO {
             }
         }
 
-        latest.poseObservations = new PoseObservation[poseObservations.size()];
-
-        for (int i = 0; i < poseObservations.size(); i++) {
-            latest.poseObservations[i] = poseObservations.get(i);
-        }
-
+        latest.poseObservations = poseObservations;
+        
         return latest;
     }
 }
