@@ -46,11 +46,11 @@ public class Constants {
         }
         public static double ROTATIONS_TO_METERS = 1.0;
         public class Setpoints {
-            public static double FLOOR_POSITION;
-            public static double L1_POSITION;
-            public static double L2_POSITION;
-            public static double L3_POSITION;
-            public static double L4_POSITION;
+            public static double FLOOR_POSITION_METERS;
+            public static double L1_POSITION_METERS;
+            public static double L2_POSITION_METERS;
+            public static double L3_POSITION_METERS;
+            public static double L4_POSITION_METERS;
 
             
         }

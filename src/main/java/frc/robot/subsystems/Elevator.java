@@ -34,11 +34,11 @@ public class Elevator extends SubsystemBase {
   }
 
   private void updateMotor() {
-    motor.set(
-      positionController.calculate(
-        motor.getEncoder().getPosition() * Constants.Elevator.ROTATIONS_TO_METERS
-      )
-    );
+    motor.set(positionController.calculate(getElevatorPositionMeters()));
+  }
+
+  public double getElevatorPositionMeters() {
+    return motor.getEncoder().getPosition() * Constants.Elevator.ROTATIONS_TO_METERS;
   }
 
   Command moveToPosition(double heightMeters) {
