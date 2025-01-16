@@ -20,10 +20,12 @@ public class Elevator extends SubsystemBase {
     Constants.Elevator.MOTOR_ID, 
     MotorType.kBrushed
   );
+
   PIDController positionController = new PIDController(
     Constants.Elevator.PIDs.ELEVATOR_kP,
     Constants.Elevator.PIDs.ELEVATOR_kI,
-    Constants.Elevator.PIDs.ELEVATOR_kD
+    Constants.Elevator.PIDs.ELEVATOR_kD,
+    Constants.Elevator.PIDs.ELEVATOR_kF
   );
   
   public Elevator() {}
