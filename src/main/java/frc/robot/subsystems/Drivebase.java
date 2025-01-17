@@ -71,7 +71,7 @@ public class Drivebase extends SubsystemBase {
 
   public void setAllDriveMotorBreakMode(boolean breakMode) {
     for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
-      swerveModules[i].setBreakMode(breakMode);;
+      swerveModules[i].setBrakeMode(breakMode);;
     }
   }
 

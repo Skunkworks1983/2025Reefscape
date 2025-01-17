@@ -109,11 +109,13 @@ public class SwerveModule extends SubsystemBase {
     //System.out.println("setting turn speed to: " + speed);
   }
 
-  public void setBreakMode(boolean breakMode){
-    if(breakMode)
-    driveMotor.setNeutralMode(NeutralModeValue.Brake);
-    else 
-    driveMotor.setNeutralMode(NeutralModeValue.Coast);
+  public void setBrakeMode(boolean brakeMode){
+    if(brakeMode) {
+      driveMotor.setNeutralMode(NeutralModeValue.Brake);
+    }
+    else {
+      driveMotor.setNeutralMode(NeutralModeValue.Coast);
+    }
   }
 
   // Called in periodic if not at setpoint to recalculate speed
@@ -140,7 +142,7 @@ public class SwerveModule extends SubsystemBase {
   public void setSwerveModulState(SwerveModuleState newState) {
     // Makes sure we are turning the lowest ammount to get to the desired angle
     SwerveModuleState newStateOptimized = newState;
-    newState.optimize(getTurnMotorAngle());
+    newStateOptimized.optimize(getTurnMotorAngle());
 
     // Modifies our desired drive motor velocity by how far off the angle is
     newStateOptimized.speedMetersPerSecond *= newStateOptimized.angle.minus(getTurnMotorAngle()).getCos();
