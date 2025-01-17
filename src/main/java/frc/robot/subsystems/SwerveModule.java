@@ -4,38 +4,161 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.Constants;
 import frc.robot.constants.SwerveModuleConstants;
+import frc.robot.utils.SmartPIDController;
+import frc.robot.utils.SmartPIDControllerTalonFX;
 
 public class SwerveModule extends SubsystemBase {
 
-  TalonFX driveModule;
-  TalonFX turnModule;
+  SparkMax turnMotor;
+  TalonFX driveMotor;
+  CANcoder turnEncoder;
+  String moduleName;
+  SmartPIDController turnController;
+  SmartPIDControllerTalonFX driveController;
+  Translation2d moduleLocation;
+
+  final VelocityVoltage m_Velocity = new VelocityVoltage(0);
 
   public SwerveModule(SwerveModuleConstants swerveConstants) {
-    this(swerveConstants.driveMotorId, swerveConstants.turnMotorId);
+    this(swerveConstants.driveMotorId, swerveConstants.turnMotorId, swerveConstants.turnEncoderId, swerveConstants.turnEncoderOffset, swerveConstants.moduleLocation, swerveConstants.moduleName);
   }
   
-  public SwerveModule(int driveModuleId, int turnModuleId) {
-    this.driveModule = new TalonFX(driveModuleId);
-    this.turnModule = new TalonFX(turnModuleId);
+  public SwerveModule(int driveModuleId, int turnModuleId, int turnEncoderId,
+    double turnEncoderOffset, Translation2d moduleLocation, String moduleName) {
+    this.driveMotor = new TalonFX(driveModuleId, Constants.Drivebase.CANIVORE_NAME);
+    this.turnMotor = new SparkMax(turnModuleId, MotorType.kBrushless);
+    this.turnEncoder = new CANcoder(turnEncoderId, Constants.Drivebase.CANIVORE_NAME);
+    this.moduleLocation = moduleLocation;
+    this.moduleName = moduleName;
+
+    turnController = new SmartPIDController(Constants.Drivebase.PIDs.SWERVE_MODULE_TURN_kP,
+        Constants.Drivebase.PIDs.SWERVE_MODULE_TURN_kI, 
+        Constants.Drivebase.PIDs.SWERVE_MODULE_TURN_kD, moduleName + " Turn", 
+        Constants.Drivebase.PIDs.SMART_PID_TURN_ENABLED);
+    turnController.enableContinuousInput(-180, 180);
+    turnController.setTolerance(0.005);
+    TalonFXConfiguration driveConfig = new TalonFXConfiguration();
+    driveConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    driveMotor.getConfigurator().apply(driveConfig);
+    driveController = new SmartPIDControllerTalonFX(Constants.Drivebase.PIDs.SWERVE_MODULE_DRIVE_kP,
+        Constants.Drivebase.PIDs.SWERVE_MODULE_DRIVE_kI, Constants.Drivebase.PIDs.SWERVE_MODULE_DRIVE_kD,
+        Constants.Drivebase.PIDs.SWERVE_MODULE_DRIVE_kF, moduleName + " Drive",
+        Constants.Drivebase.PIDs.SMART_PID_DRIVE_ENABLED, driveMotor);
+
+    SparkMaxConfig config = new SparkMaxConfig();
+    config.inverted(true);
+    turnMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    CANcoderConfiguration encoder = new CANcoderConfiguration();
+    encoder.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
+    encoder.MagnetSensor.MagnetOffset = -turnEncoderOffset;
+    turnEncoder.getConfigurator().apply(encoder);
+
+    m_Velocity.Slot = 0;
   }
 
   @Override
-  public void periodic() {}
-
-  // TODO: add arguments to these functions
-  public void setModuleSetpoints() {
-    setModuleDriveSetpoint();
-    setModuleTurnSetpoint();
+  public void periodic() {
+    driveController.updatePID();
+    if (!turnController.atSetpoint()) {
+        updateSpeedToSetpointTurn();
+    }
   }
 
-  // TODO: add code
-  public void setModuleTurnSetpoint() {}
+  public void setModuleTurnSetpoint(Rotation2d angle) {
+    turnController.setSetpoint(angle.getDegrees());
+  }
 
+  public void setModuleDriveVelocity(double metersPerSecond) {
+    driveMotor.setControl(m_Velocity.withVelocity(metersPerSecond * Constants.Drivebase.Info.REVS_PER_METER).withEnableFOC(true));
+  }
 
-  // TODO: add code
-  public void setModuleDriveSetpoint() {}
+  // returns meters traveled
+  public double getDriveMotorEncoderPosition() {
+    return driveMotor.getPosition().getValueAsDouble() / Constants.Drivebase.Info.REVS_PER_METER;
+  }
+
+  // returns velocity in meters
+  public double getDriveMotorVelocity() {
+    return driveMotor.getVelocity().getValueAsDouble() / Constants.Drivebase.Info.REVS_PER_METER;
+  }
+
+  public void setTurnMotorSpeed(double speed) {
+    turnMotor.set(speed);
+    //System.out.println("setting turn speed to: " + speed);
+  }
+
+  public void setBreakMode(boolean breakMode){
+    if(breakMode)
+    driveMotor.setNeutralMode(NeutralModeValue.Brake);
+    else 
+    driveMotor.setNeutralMode(NeutralModeValue.Coast);
+  }
+
+  // Called in periodic if not at setpoint to recalculate speed
+  public void updateSpeedToSetpointTurn() {
+    setTurnMotorSpeed(MathUtil.clamp(turnController.calculate(getTurnMotorAngle().getDegrees()),
+        Constants.Drivebase.PIDs.PID_LOW_LIMIT,
+        Constants.Drivebase.PIDs.PID_HIGH_LIMIT));
+  }
+
+  // Returns turn encoders absolute position between 180 to -180 degrees
+  public Rotation2d getTurnMotorAngle() {
+      Rotation2d turnMotorRotation = Rotation2d.fromRotations(turnEncoder.getAbsolutePosition().getValueAsDouble());
+      return turnMotorRotation;
+  }
+
+  public boolean isEncoderConnected() {
+      return turnEncoder.isConnected();
+  }
+
+  public double getTurnError() {
+      return turnController.getPositionError();
+  }
+
+  public void setSwerveModulState(SwerveModuleState newState) {
+    // Makes sure we are turning the lowest ammount to get to the desired angle
+    SwerveModuleState newStateOptimized = newState;
+    newState.optimize(getTurnMotorAngle());
+
+    // Modifies our desired drive motor velocity by how far off the angle is
+    newStateOptimized.speedMetersPerSecond *= newStateOptimized.angle.minus(getTurnMotorAngle()).getCos();
+    setModuleDriveVelocity(newStateOptimized.speedMetersPerSecond);
+
+    // sets the desired turn motor angle to the new angle
+    Rotation2d turnMotorAngleOptimized = new Rotation2d(newStateOptimized.angle.getRadians());
+    setModuleTurnSetpoint(turnMotorAngleOptimized);
+  }
+
+  public SwerveModuleState getSwerveModuleState() {
+    SwerveModuleState swerveModuleState = new SwerveModuleState(getDriveMotorVelocity(), getTurnMotorAngle());
+    return swerveModuleState;
+  }
+
+  public SwerveModulePosition getSwerveModulePosition() {
+    SwerveModulePosition swerveModulePosition = new SwerveModulePosition(getDriveMotorEncoderPosition(),
+        getTurnMotorAngle());
+    return swerveModulePosition;
+  }
 }
