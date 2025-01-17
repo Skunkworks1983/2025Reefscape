@@ -43,7 +43,7 @@ public class Elevator extends SubsystemBase {
     return motor.getEncoder().getPosition() * Constants.Elevator.ROTATIONS_TO_METERS;
   }
 
-  Command moveToPosition(double heightMeters) {
+  public Command moveToPosition(double heightMeters) {
     return Commands.runOnce(
       () -> positionController.setSetpoint(heightMeters)
     );
