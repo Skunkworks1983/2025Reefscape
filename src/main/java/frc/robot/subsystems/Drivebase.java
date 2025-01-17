@@ -25,7 +25,6 @@ public class Drivebase extends SubsystemBase {
   SwerveModule swerveModules[] = new SwerveModule[4];
   private AHRS gyro = new AHRS(NavXComType.kUSB1);
 
-  private boolean isFieldRelative;
   SwerveDriveKinematics swerveDriveKinematics;
 
   public Drivebase() {
@@ -41,7 +40,7 @@ public class Drivebase extends SubsystemBase {
 
   // TODO: add docstring
   private void drive(double xMetersPerSecond,
-  double yMetersPerSecond, Rotation2d rotationsPerSecond) {
+  double yMetersPerSecond, Rotation2d rotationsPerSecond, boolean isFieldRelative) {
     ChassisSpeeds chassisSpeeds;
     if (isFieldRelative) {
       chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xMetersPerSecond, yMetersPerSecond,
@@ -61,10 +60,6 @@ public class Drivebase extends SubsystemBase {
     }
   }
 
-  public void setFieldRelative(boolean fieldRelative) {
-    isFieldRelative = fieldRelative;
-  }
-
   public void setGyroHeading(Rotation2d newHeading) {
     gyro.setAngleAdjustment(newHeading.getDegrees());
   }
@@ -77,11 +72,6 @@ public class Drivebase extends SubsystemBase {
 
   public Rotation2d getGyroAngle() {
     return Rotation2d.fromDegrees(-gyro.getAngle());
-  }
-
-
-  public boolean getFieldRelative() {
-    return isFieldRelative;
   }
 
   public ChassisSpeeds getRobotRelativeSpeeds() {
@@ -98,7 +88,8 @@ public class Drivebase extends SubsystemBase {
   public Command getSwerveTeleopCommand(
     DoubleSupplier xMetersPerSecond,
     DoubleSupplier yMetersPerSecond, 
-    Supplier<Rotation2d> rotationPerSecond
+    Supplier<Rotation2d> rotationPerSecond,
+    boolean isFieldRelative
   ) {
     int fieldOrientationMultiplier;
     var alliance = DriverStation.getAlliance();
@@ -107,20 +98,21 @@ public class Drivebase extends SubsystemBase {
     else
       fieldOrientationMultiplier = -1;
 
-    setFieldRelative(true);
     return Commands.runEnd(
       () -> {
         drive(
           xMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
           yMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
-          rotationPerSecond.get()
+          rotationPerSecond.get(),
+          isFieldRelative
         );
       },
       () -> {
         drive(
           0,
           0,
-          Rotation2d.kZero
+          Rotation2d.kZero,
+          isFieldRelative
         );
       }
     );
