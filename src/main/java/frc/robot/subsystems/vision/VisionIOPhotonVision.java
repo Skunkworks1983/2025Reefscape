@@ -1,7 +1,6 @@
 package frc.robot.subsystems.vision;
 
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.Optional;
 
 import org.ejml.simple.SimpleMatrix;
@@ -42,7 +41,6 @@ public class VisionIOPhotonVision implements VisionIO {
     @Override
     public VisionIOData getLatestData() {
         VisionIOData latest = new VisionIOData();
-        latest.poseObservations = new LinkedList<PoseObservation>();
 
         for (PhotonPipelineResult result : camera.getAllUnreadResults()) {
             
