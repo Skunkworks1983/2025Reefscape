@@ -29,7 +29,8 @@ public class Robot extends TimedRobot {
     drivebase.getSwerveTeleopCommand(
       oi::getInstructedXMetersPerSecond,
       oi::getInstructedYMetersPerSecond,
-      oi::getInstructedRotationPerSecond
+      oi::getInstructedRotationPerSecond,
+      true
     ).schedule();
   }
 
