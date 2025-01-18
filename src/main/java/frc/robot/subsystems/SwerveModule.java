@@ -44,27 +44,43 @@ public class SwerveModule extends SubsystemBase {
     this(swerveConstants.driveMotorId, swerveConstants.turnMotorId, swerveConstants.turnEncoderId, swerveConstants.turnEncoderOffset, swerveConstants.moduleLocation, swerveConstants.moduleName);
   }
   
-  public SwerveModule(int driveModuleId, int turnModuleId, int turnEncoderId,
-    double turnEncoderOffset, Translation2d moduleLocation, String moduleName) {
+  public SwerveModule(
+    int driveModuleId, 
+    int turnModuleId, 
+    int turnEncoderId,
+    double turnEncoderOffset, 
+    Translation2d moduleLocation, 
+    String moduleName
+  ) {
     this.driveMotor = new TalonFX(driveModuleId, Constants.Drivebase.CANIVORE_NAME);
     this.turnMotor = new SparkMax(turnModuleId, MotorType.kBrushless);
     this.turnEncoder = new CANcoder(turnEncoderId, Constants.Drivebase.CANIVORE_NAME);
     this.moduleLocation = moduleLocation;
     this.moduleName = moduleName;
 
-    turnController = new SmartPIDController(Constants.Drivebase.PIDs.SWERVE_MODULE_TURN_kP,
-        Constants.Drivebase.PIDs.SWERVE_MODULE_TURN_kI, 
-        Constants.Drivebase.PIDs.SWERVE_MODULE_TURN_kD, moduleName + " Turn", 
-        Constants.Drivebase.PIDs.SMART_PID_TURN_ENABLED);
+    turnController = new SmartPIDController(
+      Constants.Drivebase.PIDs.SWERVE_MODULE_TURN_kP,
+      Constants.Drivebase.PIDs.SWERVE_MODULE_TURN_kI, 
+      Constants.Drivebase.PIDs.SWERVE_MODULE_TURN_kD, 
+      moduleName + " Turn", 
+      Constants.Drivebase.PIDs.SMART_PID_TURN_ENABLED
+    );
     turnController.enableContinuousInput(-180, 180);
     turnController.setTolerance(0.005);
+
     TalonFXConfiguration driveConfig = new TalonFXConfiguration();
     driveConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     driveMotor.getConfigurator().apply(driveConfig);
-    driveController = new SmartPIDControllerTalonFX(Constants.Drivebase.PIDs.SWERVE_MODULE_DRIVE_kP,
-        Constants.Drivebase.PIDs.SWERVE_MODULE_DRIVE_kI, Constants.Drivebase.PIDs.SWERVE_MODULE_DRIVE_kD,
-        Constants.Drivebase.PIDs.SWERVE_MODULE_DRIVE_kF, moduleName + " Drive",
-        Constants.Drivebase.PIDs.SMART_PID_DRIVE_ENABLED, driveMotor);
+
+    driveController = new SmartPIDControllerTalonFX(
+      Constants.Drivebase.PIDs.SWERVE_MODULE_DRIVE_kP,
+      Constants.Drivebase.PIDs.SWERVE_MODULE_DRIVE_kI, 
+      Constants.Drivebase.PIDs.SWERVE_MODULE_DRIVE_kD,
+      Constants.Drivebase.PIDs.SWERVE_MODULE_DRIVE_kF, 
+      moduleName + " Drive",
+      Constants.Drivebase.PIDs.SMART_PID_DRIVE_ENABLED, 
+      driveMotor
+    );
 
     SparkMaxConfig config = new SparkMaxConfig();
     config.inverted(true);
@@ -154,13 +170,11 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public SwerveModuleState getSwerveModuleState() {
-    SwerveModuleState swerveModuleState = new SwerveModuleState(getDriveMotorVelocity(), getTurnMotorAngle());
-    return swerveModuleState;
+    return new SwerveModuleState(getDriveMotorVelocity(), getTurnMotorAngle());
   }
 
   public SwerveModulePosition getSwerveModulePosition() {
-    SwerveModulePosition swerveModulePosition = new SwerveModulePosition(getDriveMotorEncoderPosition(),
-        getTurnMotorAngle());
-    return swerveModulePosition;
+    return new SwerveModulePosition(getDriveMotorEncoderPosition(),
+    getTurnMotorAngle());
   }
 }

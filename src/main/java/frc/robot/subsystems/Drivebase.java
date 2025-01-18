@@ -32,7 +32,7 @@ public class Drivebase extends SubsystemBase {
       swerveModules[i] = new SwerveModule(Constants.Drivebase.MODULES[i]);
     }
     swerveDriveKinematics = new SwerveDriveKinematics(swerveModules[0].moduleLocation,
-    swerveModules[1].moduleLocation, swerveModules[2].moduleLocation, swerveModules[3].moduleLocation);
+      swerveModules[1].moduleLocation, swerveModules[2].moduleLocation, swerveModules[3].moduleLocation);
   }
 
   @Override
@@ -66,12 +66,13 @@ public class Drivebase extends SubsystemBase {
 
   public void setAllDriveMotorBreakMode(boolean breakMode) {
     for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
-      swerveModules[i].setBrakeMode(breakMode);;
+      swerveModules[i].setBrakeMode(breakMode);
     }
   }
 
   public Rotation2d getGyroAngle() {
     return Rotation2d.fromDegrees(-gyro.getAngle());
+    // rotation from gyro is counterclockwise positive while we need clockwise positive
   }
 
   public ChassisSpeeds getRobotRelativeSpeeds() {
@@ -93,11 +94,12 @@ public class Drivebase extends SubsystemBase {
   ) {
     int fieldOrientationMultiplier;
     var alliance = DriverStation.getAlliance();
-    if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Blue)
+    if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Blue) {
       fieldOrientationMultiplier = 1;
-    else
+    }
+    else {
       fieldOrientationMultiplier = -1;
-
+    }
     return Commands.runEnd(
       () -> {
         drive(
