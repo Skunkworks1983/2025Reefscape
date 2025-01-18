@@ -22,17 +22,21 @@ import frc.robot.constants.Constants;
 
 public class Drivebase extends SubsystemBase {
 
-  SwerveModule swerveModules[] = new SwerveModule[4];
+  private SwerveModule swerveModules[] = new SwerveModule[Constants.Drivebase.MODULES.length];
   private AHRS gyro = new AHRS(NavXComType.kUSB1);
 
-  SwerveDriveKinematics swerveDriveKinematics;
+  private SwerveDriveKinematics swerveDriveKinematics;
 
   public Drivebase() {
     for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
       swerveModules[i] = new SwerveModule(Constants.Drivebase.MODULES[i]);
     }
-    swerveDriveKinematics = new SwerveDriveKinematics(swerveModules[0].moduleLocation,
-      swerveModules[1].moduleLocation, swerveModules[2].moduleLocation, swerveModules[3].moduleLocation);
+    swerveDriveKinematics = new SwerveDriveKinematics(
+      swerveModules[0].moduleLocation,
+      swerveModules[1].moduleLocation, 
+      swerveModules[2].moduleLocation, 
+      swerveModules[3].moduleLocation
+    );
   }
 
   @Override
@@ -44,13 +48,17 @@ public class Drivebase extends SubsystemBase {
     ChassisSpeeds chassisSpeeds;
     if (isFieldRelative) {
       chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xMetersPerSecond, yMetersPerSecond,
-          rotationsPerSecond.getRadians(), getGyroAngle());
-    } else {
+        rotationsPerSecond.getRadians(), getGyroAngle());
+    } 
+    else {
       chassisSpeeds = new ChassisSpeeds(xMetersPerSecond, yMetersPerSecond, rotationsPerSecond.getRadians());
     }
 
     SwerveModuleState[] swerveModuleStates = swerveDriveKinematics.toSwerveModuleStates(chassisSpeeds);
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Drivebase.Info.MAX_MODULE_SPEED);
+    SwerveDriveKinematics.desaturateWheelSpeeds(
+      swerveModuleStates, 
+      Constants.Drivebase.Info.MAX_MODULE_SPEED
+    );
     setModuleStates(swerveModuleStates);
   }
 
@@ -70,20 +78,23 @@ public class Drivebase extends SubsystemBase {
     }
   }
 
+  // rotation from gyro is counterclockwise positive while we need clockwise positive
   public Rotation2d getGyroAngle() {
     return Rotation2d.fromDegrees(-gyro.getAngle());
-    // rotation from gyro is counterclockwise positive while we need clockwise positive
   }
 
   public ChassisSpeeds getRobotRelativeSpeeds() {
-    return swerveDriveKinematics.toChassisSpeeds(swerveModules[0].getSwerveModuleState(),
-        swerveModules[1].getSwerveModuleState(), swerveModules[2].getSwerveModuleState(), 
-        swerveModules[3].getSwerveModuleState());
+    return swerveDriveKinematics.toChassisSpeeds(
+      swerveModules[0].getSwerveModuleState(),
+      swerveModules[1].getSwerveModuleState(), 
+      swerveModules[2].getSwerveModuleState(), 
+      swerveModules[3].getSwerveModuleState()
+    );
   }
 
   public ChassisSpeeds getFieldRelativeSpeeds() {
     return ChassisSpeeds.fromRobotRelativeSpeeds(getRobotRelativeSpeeds(),
-        getGyroAngle());
+      getGyroAngle());
   }
 
   public Command getSwerveTeleopCommand(

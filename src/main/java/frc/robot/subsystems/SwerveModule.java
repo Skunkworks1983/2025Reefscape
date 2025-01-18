@@ -41,7 +41,14 @@ public class SwerveModule extends SubsystemBase {
   final VelocityVoltage m_Velocity = new VelocityVoltage(0);
 
   public SwerveModule(SwerveModuleConstants swerveConstants) {
-    this(swerveConstants.driveMotorId, swerveConstants.turnMotorId, swerveConstants.turnEncoderId, swerveConstants.turnEncoderOffset, swerveConstants.moduleLocation, swerveConstants.moduleName);
+    this(
+      swerveConstants.driveMotorId, 
+      swerveConstants.turnMotorId, 
+      swerveConstants.turnEncoderId, 
+      swerveConstants.turnEncoderOffset, 
+      swerveConstants.moduleLocation, 
+      swerveConstants.moduleName
+    );
   }
   
   public SwerveModule(
@@ -98,7 +105,7 @@ public class SwerveModule extends SubsystemBase {
   public void periodic() {
     driveController.updatePID();
     if (!turnController.atSetpoint()) {
-        updateSpeedToSetpointTurn();
+      updateSpeedToSetpointTurn();
     }
   }
 
@@ -107,7 +114,8 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public void setModuleDriveVelocity(double metersPerSecond) {
-    driveMotor.setControl(m_Velocity.withVelocity(metersPerSecond * Constants.Drivebase.Info.REVS_PER_METER).withEnableFOC(true));
+    driveMotor.setControl(m_Velocity.withVelocity(metersPerSecond * Constants.Drivebase.Info.REVS_PER_METER)
+      .withEnableFOC(true));
   }
 
   // returns meters traveled
@@ -122,7 +130,6 @@ public class SwerveModule extends SubsystemBase {
 
   public void setTurnMotorSpeed(double speed) {
     turnMotor.set(speed);
-    //System.out.println("setting turn speed to: " + speed);
   }
 
   public void setBrakeMode(boolean brakeMode){
@@ -137,22 +144,22 @@ public class SwerveModule extends SubsystemBase {
   // Called in periodic if not at setpoint to recalculate speed
   public void updateSpeedToSetpointTurn() {
     setTurnMotorSpeed(MathUtil.clamp(turnController.calculate(getTurnMotorAngle().getDegrees()),
-        Constants.Drivebase.PIDs.PID_LOW_LIMIT,
-        Constants.Drivebase.PIDs.PID_HIGH_LIMIT));
+      Constants.Drivebase.PIDs.PID_LOW_LIMIT,
+      Constants.Drivebase.PIDs.PID_HIGH_LIMIT));
   }
 
   // Returns turn encoders absolute position between 180 to -180 degrees
   public Rotation2d getTurnMotorAngle() {
-      Rotation2d turnMotorRotation = Rotation2d.fromRotations(turnEncoder.getAbsolutePosition().getValueAsDouble());
-      return turnMotorRotation;
+    Rotation2d turnMotorRotation = Rotation2d.fromRotations(turnEncoder.getAbsolutePosition().getValueAsDouble());
+    return turnMotorRotation;
   }
 
   public boolean isEncoderConnected() {
-      return turnEncoder.isConnected();
+    return turnEncoder.isConnected();
   }
 
   public double getTurnError() {
-      return turnController.getPositionError();
+    return turnController.getPositionError();
   }
 
   public void setSwerveModulState(SwerveModuleState newState) {
@@ -175,6 +182,6 @@ public class SwerveModule extends SubsystemBase {
 
   public SwerveModulePosition getSwerveModulePosition() {
     return new SwerveModulePosition(getDriveMotorEncoderPosition(),
-    getTurnMotorAngle());
+      getTurnMotorAngle());
   }
 }
