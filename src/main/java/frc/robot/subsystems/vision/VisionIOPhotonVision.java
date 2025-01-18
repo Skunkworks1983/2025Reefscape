@@ -28,6 +28,7 @@ public class VisionIOPhotonVision implements VisionIO {
         camera = new PhotonCamera(cameraName);
 
         try {
+            // TODO: Replace 2024 for 2025 field layout definitions
             aprilTagFieldLayout = AprilTagFieldLayout
                     .loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
         } catch (IOException e) {
@@ -57,6 +58,8 @@ public class VisionIOPhotonVision implements VisionIO {
 
                         double timestamp = pose.timestampSeconds;
                         Pose2d pose2d = pose.estimatedPose.toPose2d();
+
+                        // TODO: Figure out how to handle uncertainty
                         double[] stdDevs = { 0 };
                         PoseObservation poseObservation = new PoseObservation(timestamp, pose2d,
                                 new Matrix<N3, N1>(new SimpleMatrix(stdDevs)));
