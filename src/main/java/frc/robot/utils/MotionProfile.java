@@ -4,7 +4,7 @@
 
 package frc.robot.utils;
 
-// Visulisation of the motion profile based on maxVelocity and acceleration
+// Visualization of the motion profile based on maxVelocity and acceleration
 //        ┄┄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄┄┄ max velocity
 // vel ↑️   ▟████████████████████▙ 
 // time → ▟██████████████████████▙ slope = max acceleration
@@ -78,6 +78,7 @@ public class MotionProfile {
       if (timeElapsed < .5 * totalTime) {
         return Math.pow(timeElapsed, 2.0) * .5 * acceleration; 
       } else {
+        // Not sure about this equasion.
         return Math.pow(totalTime * .5, 2.0) * .5 * acceleration 
           + maxVelocity * (timeElapsed - totalTime * .5) 
           - Math.pow((timeElapsed - totalTime * .5) * .5, 2.0)
