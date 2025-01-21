@@ -54,6 +54,10 @@ public class Constants {
 
             
         }
+        public class Profile {
+            public static double MAX_VELOCITY = 1.0;
+            public static double ACCELERATION = 1.0;
+        }
 
     }
 
