@@ -4,8 +4,6 @@
 
 package frc.robot.utils;
 
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-
 // Visulisation of the motion profile based on maxVelocity and acceleration
 //        ┄┄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄┄┄ max velocity
 // vel ↑️   ▟████████████████████▙ 
@@ -69,7 +67,9 @@ public class MotionProfile {
         return distanceToAccelerate + maxVelocity * 
           (timeElapsed - timeAtReachMaxVelocity);
       } else {
-        return distanceToAccelerate + distanceAtMaxVelocity + maxVelocity - 
+        // Not sure about this equasion.
+        return distanceToAccelerate + distanceAtMaxVelocity + 
+          maxVelocity * (timeElapsed - timeAtLeaveMaxVelocity) - 
           Math.pow(timeElapsed - timeAtLeaveMaxVelocity, 2.0) 
           * .5 * acceleration;
       }
@@ -79,7 +79,8 @@ public class MotionProfile {
         return Math.pow(timeElapsed, 2.0) * .5 * acceleration; 
       } else {
         return Math.pow(totalTime * .5, 2.0) * .5 * acceleration 
-          + maxVelocity - Math.pow((timeElapsed - totalTime * .5) * .5, 2.0)
+          + maxVelocity * (timeElapsed - totalTime * .5) 
+          - Math.pow((timeElapsed - totalTime * .5) * .5, 2.0)
           * .5 * acceleration;  
       }
     }
