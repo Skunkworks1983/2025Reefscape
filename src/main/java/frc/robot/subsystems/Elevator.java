@@ -5,13 +5,15 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.Elevator.Profile;
-import frc.robot.utils.MotionProfile;
 
 import com.revrobotics.spark.SparkMax;
 
@@ -24,8 +26,11 @@ public class Elevator extends SubsystemBase {
     MotorType.kBrushed
   );
 
-  final MotionProfile motionProfile = new MotionProfile(
-    Profile.MAX_VELOCITY, Profile.ACCELERATION
+  final TrapezoidProfile motionProfile = new TrapezoidProfile(
+    new Constraints(
+    Profile.MAX_VELOCITY,
+    Profile.MAX_ACCELERATION
+    )
   );
 
   PIDController velocityController = new PIDController(
@@ -37,7 +42,6 @@ public class Elevator extends SubsystemBase {
   
   Timer timeElapsed;
   double targetPosition = Constants.Elevator.Setpoints.FLOOR_POSITION_METERS;
-  boolean atSetpoint = false;
 
   public Elevator() {}
 
@@ -47,15 +51,27 @@ public class Elevator extends SubsystemBase {
   }
 
   private void updateMotor() {
+    boolean atSetpoint = (Constants.Elevator.TOLORENCE_METERS >
+      Math.abs(
+        targetPosition - getElevatorPositionMeters()
+      )
+    );
     double currentTargetPosition;
-    if(atSetpoint){
+    if(atSetpoint) {
       currentTargetPosition = targetPosition;
-    }
-    else{
-       currentTargetPosition = motionProfile.calculatePosition(
+    } else {
+       State motionProfileResult = motionProfile.calculate(
         timeElapsed.get(), 
-        targetPosition
+        new State(
+          getElevatorPositionMeters(),
+          getElevatorVelocityMeters()
+        ),
+        new State(
+          targetPosition,
+          0.0 // We want the elevator to stop moving
+        )
       );
+      currentTargetPosition = motionProfileResult.position;
     }
 
     double velocity = velocityController.calculate(

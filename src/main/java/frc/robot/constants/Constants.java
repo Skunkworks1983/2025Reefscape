@@ -38,6 +38,10 @@ public class Constants {
     }
     public class Elevator {
         public static int MOTOR_ID = 0;
+
+        // In order to stop moving based on profile and start
+        // pathing to the overall position target.
+        public static double TOLORENCE_METERS = 1.0;
         public class PIDs {
             public static double ELEVATOR_kP = 1.0;
             public static double ELEVATOR_kI = 1.0;
@@ -56,7 +60,7 @@ public class Constants {
         }
         public class Profile {
             public static double MAX_VELOCITY = 1.0;
-            public static double ACCELERATION = 1.0;
+            public static double MAX_ACCELERATION = 1.0;
         }
 
     }
