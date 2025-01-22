@@ -28,12 +28,12 @@ public class Elevator extends SubsystemBase {
 
   final TrapezoidProfile motionProfile = new TrapezoidProfile(
     new Constraints(
-    Profile.MAX_VELOCITY,
-    Profile.MAX_ACCELERATION
+      Profile.MAX_VELOCITY,
+      Profile.MAX_ACCELERATION
     )
   );
 
-  PIDController velocityController = new PIDController(
+  PIDController positionController = new PIDController(
     Constants.Elevator.PIDs.ELEVATOR_kP,
     Constants.Elevator.PIDs.ELEVATOR_kI,
     Constants.Elevator.PIDs.ELEVATOR_kD,
@@ -74,7 +74,7 @@ public class Elevator extends SubsystemBase {
       currentTargetPosition = motionProfileResult.position;
     }
 
-    double velocity = velocityController.calculate(
+    double velocity = positionController.calculate(
         getElevatorVelocityMeters(),
         currentTargetPosition 
     );
@@ -89,7 +89,7 @@ public class Elevator extends SubsystemBase {
     return motor.getEncoder().getVelocity() * Constants.Elevator.ROTATIONS_TO_METERS;
   }
 
-  public Command moveToPosition(double heightMeters) {
+  public Command getMoveTopositionCommand(double heightMeters) {
     return Commands.runOnce(
       () -> {
         timeElapsed = new Timer();
