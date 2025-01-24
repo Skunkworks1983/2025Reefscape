@@ -56,9 +56,9 @@ public class Elevator extends SubsystemBase {
   }
 
   public Command getMoveToPositionCommand(double targetHeightMeters) {
-    double[] startPosition = new double[0];
-    double[] startVelocity = new double[0];
-    Timer[] timeElapsed = new Timer[0];
+    double[] startPosition = new double[1];
+    double[] startVelocity = new double[1];
+    Timer[] timeElapsed = new Timer[1];
     return Commands.startRun(
       () -> {
         timeElapsed[0] = new Timer();
@@ -92,7 +92,7 @@ public class Elevator extends SubsystemBase {
 
   // TODO: Check if this is the wanted behavior
   public Command getRetainCurrentPositionCommand(){
-    double[] currentTargetPosition = new double[0];
+    double[] currentTargetPosition = new double[1];
     return Commands.startRun(
       () -> {
         currentTargetPosition[0] = getElevatorPositionMeters();
