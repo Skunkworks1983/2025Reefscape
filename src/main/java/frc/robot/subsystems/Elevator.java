@@ -39,50 +39,12 @@ public class Elevator extends SubsystemBase {
     Constants.Elevator.PIDs.ELEVATOR_kD,
     Constants.Elevator.PIDs.ELEVATOR_kF
   );
-  
-  Timer timeElapsed;
-  double targetPosition = Constants.Elevator.Setpoints.FLOOR_POSITION_METERS;
-
-  // Start means the start of the path to a new position
-  public double startPosition = getElevatorPositionMeters();
-  public double startVelocity = getElevatorVelocityMeters();
 
   public Elevator() {}
 
   @Override
   public void periodic() {
-    updateMotor();
-  }
-
-  private void updateMotor() {
-    boolean atSetpoint = (Constants.Elevator.TOLORENCE_METERS >
-      Math.abs(
-        targetPosition - getElevatorPositionMeters()
-      )
-    );
-    double currentTargetPosition;
-    if(atSetpoint) {
-      currentTargetPosition = targetPosition;
-    } else {
-       State motionProfileResult = motionProfile.calculate(
-        timeElapsed.get(), 
-        new State(
-          startPosition,
-          startVelocity
-        ),
-        new State(
-          targetPosition,
-          0.0 // We want the elevator to stop moving
-        )
-      );
-      currentTargetPosition = motionProfileResult.position;
-    }
-
-    double velocity = positionController.calculate(
-        getElevatorVelocityMeters(),
-        currentTargetPosition 
-    );
-    motor.set(velocity);
+    setDefaultCommand(getRetainCurrentPositionCommand());
   }
 
   public double getElevatorPositionMeters() {
@@ -93,13 +55,55 @@ public class Elevator extends SubsystemBase {
     return motor.getEncoder().getVelocity() * Constants.Elevator.ROTATIONS_TO_METERS;
   }
 
-  public Command getMoveToPositionCommand(double heightMeters) {
-    return Commands.runOnce(
+  public Command getMoveToPositionCommand(double targetHeightMeters) {
+    double[] startPosition = new double[0];
+    double[] startVelocity = new double[0];
+    Timer[] timeElapsed = new Timer[0];
+    return Commands.startRun(
       () -> {
-        timeElapsed = new Timer();
-        targetPosition = heightMeters;
-        startPosition = getElevatorPositionMeters();
-        startVelocity = getElevatorVelocityMeters();
+        timeElapsed[0] = new Timer();
+        startPosition[0] = getElevatorPositionMeters();
+        startVelocity[0] = getElevatorVelocityMeters();
+      }, () -> {
+        State motionProfileResult = motionProfile.calculate(
+          timeElapsed[0].get(),
+          new State(
+            startPosition[0],
+            startVelocity[0]
+          ),
+          new State(
+            targetHeightMeters,
+            0.0 // We want the elevator to stop moving
+          )
+        );
+
+        motor.set(
+          positionController.calculate(
+            getElevatorPositionMeters(),
+            motionProfileResult.position
+          )
+        );
+      }
+    ).until(
+      () -> (Constants.Elevator.TOLORENCE_METERS > 
+        Math.abs(targetHeightMeters - getElevatorPositionMeters()))
+    );
+  }
+
+  // TODO: Check if this is the wanted behavior
+  public Command getRetainCurrentPositionCommand(){
+    double[] currentTargetPosition = new double[0];
+    return Commands.startRun(
+      () -> {
+        currentTargetPosition[0] = getElevatorPositionMeters();
+      },
+      () -> {
+        double velocity = positionController
+          .calculate(
+            getElevatorPositionMeters(),
+            currentTargetPosition[0]
+          );
+        motor.set(velocity);
       }
     );
   }
