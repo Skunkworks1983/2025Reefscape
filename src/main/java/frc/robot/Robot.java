@@ -10,8 +10,8 @@ import frc.robot.subsystems.*;
 public class Robot extends TimedRobot {
 
   Drivebase drivebase = new Drivebase();
-  OI oi = new OI();
   Elevator elevator = new Elevator();
+  OI oi = new OI(elevator);
 
   public Robot() {}
 

@@ -43,6 +43,10 @@ public class Elevator extends SubsystemBase {
   Timer timeElapsed;
   double targetPosition = Constants.Elevator.Setpoints.FLOOR_POSITION_METERS;
 
+  // Start means the start of the path to a new position
+  public double startPosition = getElevatorPositionMeters();
+  public double startVelocity = getElevatorVelocityMeters();
+
   public Elevator() {}
 
   @Override
@@ -63,8 +67,8 @@ public class Elevator extends SubsystemBase {
        State motionProfileResult = motionProfile.calculate(
         timeElapsed.get(), 
         new State(
-          getElevatorPositionMeters(),
-          getElevatorVelocityMeters()
+          startPosition,
+          startVelocity
         ),
         new State(
           targetPosition,
@@ -89,11 +93,13 @@ public class Elevator extends SubsystemBase {
     return motor.getEncoder().getVelocity() * Constants.Elevator.ROTATIONS_TO_METERS;
   }
 
-  public Command getMoveTopositionCommand(double heightMeters) {
+  public Command getMoveToPositionCommand(double heightMeters) {
     return Commands.runOnce(
       () -> {
         timeElapsed = new Timer();
         targetPosition = heightMeters;
+        startPosition = getElevatorPositionMeters();
+        startVelocity = getElevatorVelocityMeters();
       }
     );
   }

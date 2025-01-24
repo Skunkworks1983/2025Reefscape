@@ -42,27 +42,26 @@ public class Constants {
         // In order to stop moving based on profile and start
         // pathing to the overall position target.
         public static double TOLORENCE_METERS = 1.0;
+        public static double ROTATIONS_TO_METERS = 1.0;
         public class PIDs {
             public static double ELEVATOR_kP = 1.0;
             public static double ELEVATOR_kI = 1.0;
             public static double ELEVATOR_kD = 1.0;
             public static double ELEVATOR_kF = 1.0;
         }
-        public static double ROTATIONS_TO_METERS = 1.0;
+
+        public class Profile {
+            public static double MAX_VELOCITY = 1.0;
+            public static double MAX_ACCELERATION = 1.0;
+        }
+
         public class Setpoints {
             public static double FLOOR_POSITION_METERS;
             public static double L1_POSITION_METERS;
             public static double L2_POSITION_METERS;
             public static double L3_POSITION_METERS;
             public static double L4_POSITION_METERS;
-
-            
         }
-        public class Profile {
-            public static double MAX_VELOCITY = 1.0;
-            public static double MAX_ACCELERATION = 1.0;
-        }
-
     }
 
     public class OI {
@@ -79,10 +78,24 @@ public class Constants {
         // that is always positive.
         public static double AXIS_INPUT_EXPONENT = 3;
 
-        public class IDS {
-            public static int ROTATION_JOYSTICK_ID = 1;
-            public static int TRANSLATION_JOYSTICK_ID = 2;
-            public static int BUTTON_STICK_ID = 3;
+        public class IDs {
+            public class Joysticks {
+              public static int ROTATION_JOYSTICK_ID = 1;
+              public static int TRANSLATION_JOYSTICK_ID = 2;
+              public static int BUTTON_STICK_ID = 3;
+            }
+
+            public class Buttons {
+              public class Elevator {
+                public static int GOTO_L1 = 0;
+                public static int GOTO_L2 = 0;
+                public static int GOTO_L3 = 0;
+                public static int GOTO_L4 = 0;
+                public static int GOTO_FLOOR_POSITION = 0;
+              }
+
+
+            }
         }
     }
 

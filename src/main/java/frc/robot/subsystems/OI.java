@@ -10,15 +10,16 @@ import java.util.function.Function;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.constants.Constants.OI.LIMITS;
 import frc.robot.constants.Constants;
-import frc.robot.constants.Constants.OI.IDS;
+import frc.robot.constants.Constants.OI.IDs.Joysticks;
 
 public class OI extends SubsystemBase {
 
-  Joystick rotationJoystick = new Joystick(IDS.ROTATION_JOYSTICK_ID);
-  Joystick translationJoystick = new Joystick(IDS.TRANSLATION_JOYSTICK_ID);
-  Joystick buttonJoystick = new Joystick(IDS.BUTTON_STICK_ID);
+  Joystick rotationJoystick = new Joystick(Joysticks.ROTATION_JOYSTICK_ID);
+  Joystick translationJoystick = new Joystick(Joysticks.TRANSLATION_JOYSTICK_ID);
+  Joystick buttonJoystick = new Joystick(Joysticks.BUTTON_STICK_ID);
 
   // Input to the function could be x or y axis.
   DoubleFunction<Double> joystickToMetersPerSecond = 
@@ -39,7 +40,23 @@ public class OI extends SubsystemBase {
     (axisInput) -> Math.abs(axisInput) < Constants.OI.AXIS_DEADBAND 
       ? 0.0 : axisInput;
 
-  public OI() {}
+  public OI(Elevator elevator) {
+    // There is repetition here but not enough to Warrant a different aproach
+    new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_FLOOR_POSITION)
+      .onTrue(elevator.getMoveToPositionCommand(Constants.Elevator.Setpoints.FLOOR_POSITION_METERS));
+
+    new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L1)
+      .onTrue(elevator.getMoveToPositionCommand(Constants.Elevator.Setpoints.L1_POSITION_METERS));
+
+    new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L2)
+      .onTrue(elevator.getMoveToPositionCommand(Constants.Elevator.Setpoints.L2_POSITION_METERS));
+
+    new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L3)
+      .onTrue(elevator.getMoveToPositionCommand(Constants.Elevator.Setpoints.L3_POSITION_METERS));
+
+    new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L4)
+      .onTrue(elevator.getMoveToPositionCommand(Constants.Elevator.Setpoints.L4_POSITION_METERS));
+  }
 
   @Override
   public void periodic() {}
