@@ -41,18 +41,18 @@ public class Constants {
 
         // In order to stop moving based on profile and start
         // pathing to the overall position target.
-        public static double TOLORENCE_METERS = 1.0;
-        public static double ROTATIONS_TO_METERS = 1.0;
+        public static double TOLORENCE_METERS = 0.0;
+        public static double ROTATIONS_TO_METERS = 0.0;
         public class PIDs {
-            public static double ELEVATOR_kP = 1.0;
-            public static double ELEVATOR_kI = 1.0;
-            public static double ELEVATOR_kD = 1.0;
-            public static double ELEVATOR_kF = 1.0;
+            public static double ELEVATOR_kP = 0.0;
+            public static double ELEVATOR_kI = 0.0;
+            public static double ELEVATOR_kD = 0.0;
+            public static double ELEVATOR_kF = 0.0;
         }
 
         public class Profile {
-            public static double MAX_VELOCITY = 1.0;
-            public static double MAX_ACCELERATION = 1.0;
+            public static double MAX_VELOCITY = 0.0;
+            public static double MAX_ACCELERATION = 0.0;
         }
 
         public class Setpoints {
@@ -66,8 +66,8 @@ public class Constants {
 
     public class OI {
         public class LIMITS {
-            public static double MAX_INSTRUCTED_METERS_PER_SECOND = 2.0;
-            public static double MAX_INSTRUCTED_DEGREES_PER_SECOND = 90.0;
+            public static double MAX_INSTRUCTED_METERS_PER_SECOND = .0;
+            public static double MAX_INSTRUCTED_DEGREES_PER_SECOND = 0.0;
         }
 
         public static double AXIS_DEADBAND = .08;
