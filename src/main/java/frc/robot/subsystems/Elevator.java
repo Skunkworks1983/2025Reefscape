@@ -56,21 +56,18 @@ public class Elevator extends SubsystemBase {
   }
 
   public Command getMoveToPositionCommand(double targetHeightMeters) {
-    double[] startPosition = new double[1];
-    double[] startVelocity = new double[1];
-    Timer[] timeElapsed = new Timer[1];
+    Timer timeElapsed = new Timer();
+    State startState = new State();
+    timeElapsed.stop();
     return Commands.startRun(
       () -> {
-        timeElapsed[0] = new Timer();
-        startPosition[0] = getElevatorPositionMeters();
-        startVelocity[0] = getElevatorVelocityMeters();
+        timeElapsed.restart();
+        startState.position = getElevatorPositionMeters();
+        startState.velocity = getElevatorVelocityMeters();
       }, () -> {
         State motionProfileResult = motionProfile.calculate(
-          timeElapsed[0].get(),
-          new State(
-            startPosition[0],
-            startVelocity[0]
-          ),
+          timeElapsed.get(),
+          startState,
           new State(
             targetHeightMeters,
             0.0 // We want the elevator to stop moving
