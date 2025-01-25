@@ -90,7 +90,6 @@ public class Elevator extends SubsystemBase {
     );
   }
 
-  // TODO: Check if this is the wanted behavior
   public Command getRetainCurrentPositionCommand(){
     double[] currentTargetPosition = new double[1];
     return Commands.startRun(
