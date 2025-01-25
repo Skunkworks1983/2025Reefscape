@@ -66,7 +66,7 @@ public class Constants {
 
     public class OI {
         public class LIMITS {
-            public static double MAX_INSTRUCTED_METERS_PER_SECOND = .0;
+            public static double MAX_INSTRUCTED_METERS_PER_SECOND = 0.0;
             public static double MAX_INSTRUCTED_DEGREES_PER_SECOND = 0.0;
         }
 
@@ -76,7 +76,7 @@ public class Constants {
         //  * MAX_INSTRUCTED_METERS_PER_SECOND = instructed meters per second
         // Ensure that this AXIS_INPUT_EXPONENT does not result in a result
         // that is always positive.
-        public static double AXIS_INPUT_EXPONENT = 3;
+        public static double AXIS_INPUT_EXPONENT = 3.0;
 
         public class IDs {
             public class Joysticks {

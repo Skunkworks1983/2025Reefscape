@@ -55,9 +55,9 @@ public class Elevator extends SubsystemBase {
     return motor.getEncoder().getVelocity() * Constants.Elevator.ROTATIONS_TO_METERS;
   }
 
-  // From -1 to 1.
-  private void setMotorSpeed(double speed) {
-    motor.set(speed);
+  // Input ranges from -1 to 1.
+  private void setMotor(double power) {
+    motor.set(power);
   }
 
   public Command getMoveToPositionCommand(double targetHeightMeters) {
@@ -77,7 +77,7 @@ public class Elevator extends SubsystemBase {
           targetState
         );
 
-        setMotorSpeed(
+        setMotor(
           positionController.calculate(
             getElevatorPositionMeters(),
             motionProfileResult.position
@@ -103,7 +103,7 @@ public class Elevator extends SubsystemBase {
             getElevatorPositionMeters(),
             currentTargetPosition[0]
           );
-        setMotorSpeed(velocity);
+        setMotor(velocity);
       }
     );
   }
