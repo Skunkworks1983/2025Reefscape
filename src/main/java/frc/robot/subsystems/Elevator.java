@@ -55,9 +55,15 @@ public class Elevator extends SubsystemBase {
     return motor.getEncoder().getVelocity() * Constants.Elevator.ROTATIONS_TO_METERS;
   }
 
+  // From -1 to 1.
+  private void setMotorSpeed(double speed) {
+    motor.set(speed);
+  }
+
   public Command getMoveToPositionCommand(double targetHeightMeters) {
     Timer timeElapsed = new Timer();
     State startState = new State();
+    State targetState = new State(targetHeightMeters, 0.0);
     timeElapsed.stop();
     return Commands.startRun(
       () -> {
@@ -66,15 +72,12 @@ public class Elevator extends SubsystemBase {
         startState.velocity = getElevatorVelocityMeters();
       }, () -> {
         State motionProfileResult = motionProfile.calculate(
-          timeElapsed.get(),
-          startState,
-          new State(
-            targetHeightMeters,
-            0.0 // We want the elevator to stop moving
-          )
+          timeElapsed.get(), // Time is the only variable that changes
+          startState, 
+          targetState
         );
 
-        motor.set(
+        setMotorSpeed(
           positionController.calculate(
             getElevatorPositionMeters(),
             motionProfileResult.position
@@ -100,7 +103,7 @@ public class Elevator extends SubsystemBase {
             getElevatorPositionMeters(),
             currentTargetPosition[0]
           );
-        motor.set(velocity);
+        setMotorSpeed(velocity);
       }
     );
   }
