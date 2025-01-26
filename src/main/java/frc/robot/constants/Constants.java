@@ -40,9 +40,13 @@ public class Constants {
   public class Elevator {
     public static final int MOTOR_ID = 0;
 
-    // In order to stop moving based on profile and start
-    // pathing to the overall position target.
-    public static final double TOLORENCE_METERS = 0.0;
+    // This tolerance value will be used for deciding if the elevator
+    // should target to its setpoint or if the setpoint is too far
+    // away and the elevator should just maintain its current position.
+    public static final double TOLORENCE_METERS_FOR_SETPOINT = 0.0;
+    // This tolerance value will be used for moving to a setpoint
+    // using the MoveToPositionCommand.
+    public static final double TOLERENCE_METERS_FOR_MOVE_TO_POSITION = 0.0;
     public static final double ROTATIONS_TO_METERS = 0.0;
     public class PIDs {
       public static final double ELEVATOR_kP = 0.0;
