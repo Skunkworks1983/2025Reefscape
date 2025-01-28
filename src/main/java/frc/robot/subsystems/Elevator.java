@@ -16,8 +16,10 @@ import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.Elevator.Profile;
 
 import com.revrobotics.spark.SparkMax;
-
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 
 // All positions are stored in meters, all velocities are in meters/seconds, 
@@ -26,7 +28,7 @@ public class Elevator extends SubsystemBase {
 
   SparkMax motor = new SparkMax(
     Constants.Elevator.MOTOR_ID, 
-    MotorType.kBrushed
+    MotorType.kBrushless
   );
 
   final TrapezoidProfile motionProfile = new TrapezoidProfile(
@@ -36,7 +38,7 @@ public class Elevator extends SubsystemBase {
     )
   );
 
-  double targetPosition = getElevatorPosition();
+  private double targetPosition = getElevatorPosition();
 
   PIDController positionController = new PIDController(
     Constants.Elevator.PIDs.ELEVATOR_kP,
@@ -47,6 +49,13 @@ public class Elevator extends SubsystemBase {
 
   public Elevator() {
     setDefaultCommand(getRetainTargetPositionCommand());
+
+    SparkMaxConfig config = new SparkMaxConfig();
+    config.idleMode(IdleMode.kBrake);
+
+    motor.configure(config, 
+      ResetMode.kResetSafeParameters,
+      PersistMode.kPersistParameters);
   }
 
   @Override
@@ -111,7 +120,9 @@ public class Elevator extends SubsystemBase {
   // that if a command (like MoveToPosition) ends and this command
   // starts, this command will stop the elevator from falling back down.
   public Command getRetainCurrentPositionCommand() {
-    double[] currentTargetPosition = new double[1];
+    // This array exists because currentTargetPosition must be
+    // final in lambda expressions (because it must be a reference type). 
+    final double[] currentTargetPosition = new double[1];
     return Commands.startRun(
       () -> {
         currentTargetPosition[0] = getElevatorPosition();

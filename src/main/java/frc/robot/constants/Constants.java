@@ -11,15 +11,18 @@ public class Constants {
     public class Drivebase {
         public static final String CANIVORE_NAME = "Practice Swerve";
 
+      public static final double MAX_METERS_PER_SECOND = 0.0;
+      public static final double MAX_DEGREES_PER_SECOND = 0.0;
+
         public class PIDs {
-          public static final double SWERVE_MODULE_TURN_kP = 1.0;
-          public static final double SWERVE_MODULE_TURN_kI = 1.0;
-          public static final double SWERVE_MODULE_TURN_kD = 1.0;
-          public static final double SWERVE_MODULE_TURN_kF = 1.0;
-          public static final double SWERVE_MODULE_DRIVE_kP = 1.0;
-          public static final double SWERVE_MODULE_DRIVE_kI = 1.0;
-          public static final double SWERVE_MODULE_DRIVE_kD = 1.0;
-          public static final double SWERVE_MODULE_DRIVE_kF = 1.0;
+          public static final double SWERVE_MODULE_TURN_kP = 0.0;
+          public static final double SWERVE_MODULE_TURN_kI = 0.0;
+          public static final double SWERVE_MODULE_TURN_kD = 0.0;
+          public static final double SWERVE_MODULE_TURN_kF = 0.0;
+          public static final double SWERVE_MODULE_DRIVE_kP = 0.0;
+          public static final double SWERVE_MODULE_DRIVE_kI = 0.0;
+          public static final double SWERVE_MODULE_DRIVE_kD = 0.0;
+          public static final double SWERVE_MODULE_DRIVE_kF = 0.0;
 
           public static final boolean SMART_PID_ENABLED = true;
           public static final boolean SMART_PID_TURN_ENABLED = true;
@@ -88,8 +91,10 @@ public class Constants {
 
   public class OI {
     public class LIMITS {
-      public static final double MAX_INSTRUCTED_METERS_PER_SECOND = 0.0;
-      public static final double MAX_INSTRUCTED_DEGREES_PER_SECOND = 0.0;
+      public static final double MAX_INSTRUCTED_METERS_PER_SECOND = 
+        Constants.Drivebase.MAX_METERS_PER_SECOND;
+      public static final double MAX_INSTRUCTED_DEGREES_PER_SECOND = 
+        Constants.Drivebase.MAX_DEGREES_PER_SECOND;
     }
 
     public static final double AXIS_DEADBAND = .08;
