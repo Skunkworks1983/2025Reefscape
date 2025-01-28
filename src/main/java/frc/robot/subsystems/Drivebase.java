@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -44,14 +45,15 @@ public class Drivebase extends SubsystemBase {
 
   // TODO: add docstring
   private void drive(double xMetersPerSecond,
-  double yMetersPerSecond, Rotation2d rotationsPerSecond, boolean isFieldRelative) {
+  double yMetersPerSecond, double degreesPerSecond, boolean isFieldRelative) {
     ChassisSpeeds chassisSpeeds;
+    double radiansPerSecond = Units.degreesToRadians(degreesPerSecond);
     if (isFieldRelative) {
       chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xMetersPerSecond, yMetersPerSecond,
-        rotationsPerSecond.getRadians(), getGyroAngle());
+        radiansPerSecond, getGyroAngle());
     } 
     else {
-      chassisSpeeds = new ChassisSpeeds(xMetersPerSecond, yMetersPerSecond, rotationsPerSecond.getRadians());
+      chassisSpeeds = new ChassisSpeeds(xMetersPerSecond, yMetersPerSecond, radiansPerSecond);
     }
 
     SwerveModuleState[] swerveModuleStates = swerveDriveKinematics.toSwerveModuleStates(chassisSpeeds);
@@ -100,7 +102,7 @@ public class Drivebase extends SubsystemBase {
   public Command getSwerveTeleopCommand(
     DoubleSupplier xMetersPerSecond,
     DoubleSupplier yMetersPerSecond, 
-    Supplier<Rotation2d> rotationPerSecond,
+    DoubleSupplier degreesPerSecond,
     boolean isFieldRelative
   ) {
     int fieldOrientationMultiplier;
@@ -116,7 +118,7 @@ public class Drivebase extends SubsystemBase {
         drive(
           xMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
           yMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
-          rotationPerSecond.get(),
+          degreesPerSecond.getAsDouble(),
           isFieldRelative
         );
       },
@@ -124,7 +126,7 @@ public class Drivebase extends SubsystemBase {
         drive(
           0,
           0,
-          Rotation2d.kZero,
+          0,
           isFieldRelative
         );
       }
