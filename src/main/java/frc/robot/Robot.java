@@ -23,29 +23,27 @@ public class Robot extends TimedRobot {
     )
   );
 
-  public Robot() {
-  }
+  public Robot() {}
 
   @Override
-  public void robotPeriodic() {
-  }
+  public void robotPeriodic() {}
 
   @Override
-  public void autonomousInit() {
-  }
+  public void autonomousInit() {}
 
   @Override
-  public void autonomousPeriodic() {
-  }
+  public void autonomousPeriodic() {}
 
   @Override
-  public void teleopInit() {
+  public void teleopInit() { 
     drivebase.getSwerveTeleopCommand(
-        oi::getInstructedXMetersPerSecond,
-        oi::getInstructedYMetersPerSecond,
-        oi::getInstructedRotationPerSecond).schedule();
+      oi::getInstructedXMetersPerSecond,
+      oi::getInstructedYMetersPerSecond,
+      oi::getInstructedRotationPerSecond,
+      true
+    ).schedule();
   }
-
+  
   @Override
   public void teleopPeriodic() {
   }

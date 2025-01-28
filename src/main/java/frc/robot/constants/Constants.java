@@ -6,12 +6,15 @@ package frc.robot.constants;
 
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 
 // TODO: add all robot constant values when they have been decided
 public class Constants {
 
     public class Drivebase {
     
+        public static final String CANIVORE_NAME = "Practice Swerve";
+
         public class PIDs {
             public static double SWERVE_MODULE_TURN_kP = 1.0;
             public static double SWERVE_MODULE_TURN_kI = 1.0;
@@ -21,23 +24,38 @@ public class Constants {
             public static double SWERVE_MODULE_DRIVE_kI = 1.0;
             public static double SWERVE_MODULE_DRIVE_kD = 1.0;
             public static double SWERVE_MODULE_DRIVE_kF = 1.0;
+
+            public static final boolean SMART_PID_ENABLED = true;
+            public static final boolean SMART_PID_TURN_ENABLED = true;
+            public static final boolean SMART_PID_DRIVE_ENABLED = true;
+
+            public static final double PID_LOW_LIMIT = -0.8;
+            public static final double PID_HIGH_LIMIT = 0.8;
         }
 
         public static SwerveModuleConstants MODULES[] = {
             new SwerveModuleConstants(
-                0, 0
+                9, 3, 4, -0.212402, new Translation2d(0.28194, 0.28194), "Front Left"
             ),
             new SwerveModuleConstants(
-                0, 0
+                11, 7, 8, 0.120361, new Translation2d(0.28194, -0.28194), "Front Right"
 
             ),
             new SwerveModuleConstants(
-                0, 0
+                12, 1, 2, -0.377441, new Translation2d(-0.28194, 0.28194), "Back Left"
             ),
             new SwerveModuleConstants(
-                0, 0
+                10, 5, 6, 0.096680, new Translation2d(-0.28194, -0.28194), "Back Right"
             )
         };
+
+        public class Info {
+            public static final double DRIVE_MOTOR_GEAR_RATIO = 6.75;
+            public static final double WHEEL_DIAMETER = 0.0991108;
+            public static final double REVS_PER_METER = DRIVE_MOTOR_GEAR_RATIO / (WHEEL_DIAMETER * Math.PI);
+
+            public static final double MAX_MODULE_SPEED = 4.498848;
+        }
     }
 
     public class OI {

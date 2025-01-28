@@ -14,6 +14,13 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import com.studica.frc.AHRS;
+import com.studica.frc.AHRS.NavXComType;
+
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,8 +28,11 @@ import frc.robot.constants.Constants;
 
 public class Drivebase extends SubsystemBase {
 
-  SwerveModule swerveModules[] = new SwerveModule[4];
   private final Field2d visualOdometryField2d = new Field2d();
+  private SwerveModule swerveModules[] = new SwerveModule[Constants.Drivebase.MODULES.length];
+  private AHRS gyro = new AHRS(NavXComType.kUSB1);
+
+  private SwerveDriveKinematics swerveDriveKinematics;
 
   public Drivebase() {
     for (int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
@@ -31,12 +41,20 @@ public class Drivebase extends SubsystemBase {
 
     SmartDashboard.putData("Visual Odometry", visualOdometryField2d);
     visualOdometryField2d.setRobotPose(new Pose2d());
+
+    swerveDriveKinematics = new SwerveDriveKinematics(
+      swerveModules[0].moduleLocation,
+      swerveModules[1].moduleLocation, 
+      swerveModules[2].moduleLocation, 
+      swerveModules[3].moduleLocation
+    );
   }
 
   public void addVisionMeasurement(
       Pose2d estimatedPose,
       double timestamp,
       Matrix<N3, N1> stdDevs) {
+    
   }
 
   @Override
@@ -44,28 +62,91 @@ public class Drivebase extends SubsystemBase {
   }
 
   // TODO: add docstring
-  // TODO: add code
   private void drive(double xMetersPerSecond,
-      double ymetersPerSecond, Rotation2d rotationPerSecond) {
+  double yMetersPerSecond, Rotation2d rotationsPerSecond, boolean isFieldRelative) {
+    ChassisSpeeds chassisSpeeds;
+    if (isFieldRelative) {
+      chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xMetersPerSecond, yMetersPerSecond,
+        rotationsPerSecond.getRadians(), getGyroAngle());
+    } 
+    else {
+      chassisSpeeds = new ChassisSpeeds(xMetersPerSecond, yMetersPerSecond, rotationsPerSecond.getRadians());
+    }
 
+    SwerveModuleState[] swerveModuleStates = swerveDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+    SwerveDriveKinematics.desaturateWheelSpeeds(
+      swerveModuleStates, 
+      Constants.Drivebase.Info.MAX_MODULE_SPEED
+    );
+    setModuleStates(swerveModuleStates);
+  }
+
+  public void setModuleStates(SwerveModuleState[] moduleStates) {
+    for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
+      swerveModules[i].setSwerveModulState(moduleStates[i]);
+    }
+  }
+
+  public void setGyroHeading(Rotation2d newHeading) {
+    gyro.setAngleAdjustment(newHeading.getDegrees());
+  }
+
+  public void setAllDriveMotorBreakMode(boolean breakMode) {
+    for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
+      swerveModules[i].setBrakeMode(breakMode);
+    }
+  }
+
+  // rotation from gyro is counterclockwise positive while we need clockwise positive
+  public Rotation2d getGyroAngle() {
+    return Rotation2d.fromDegrees(-gyro.getAngle());
+  }
+
+  public ChassisSpeeds getRobotRelativeSpeeds() {
+    return swerveDriveKinematics.toChassisSpeeds(
+      swerveModules[0].getSwerveModuleState(),
+      swerveModules[1].getSwerveModuleState(), 
+      swerveModules[2].getSwerveModuleState(), 
+      swerveModules[3].getSwerveModuleState()
+    );
+  }
+
+  public ChassisSpeeds getFieldRelativeSpeeds() {
+    return ChassisSpeeds.fromRobotRelativeSpeeds(getRobotRelativeSpeeds(),
+      getGyroAngle());
   }
 
   public Command getSwerveTeleopCommand(
-      DoubleSupplier xMetersPerSecond,
-      DoubleSupplier yMetersPerSecond,
-      Supplier<Rotation2d> rotationPerSecond) {
+    DoubleSupplier xMetersPerSecond,
+    DoubleSupplier yMetersPerSecond, 
+    Supplier<Rotation2d> rotationPerSecond,
+    boolean isFieldRelative
+  ) {
+    int fieldOrientationMultiplier;
+    var alliance = DriverStation.getAlliance();
+    if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Blue) {
+      fieldOrientationMultiplier = 1;
+    }
+    else {
+      fieldOrientationMultiplier = -1;
+    }
     return Commands.runEnd(
-        () -> {
-          drive(
-              xMetersPerSecond.getAsDouble(),
-              yMetersPerSecond.getAsDouble(),
-              rotationPerSecond.get());
-        },
-        () -> {
-          drive(
-              0,
-              0,
-              Rotation2d.kZero);
-        });
+      () -> {
+        drive(
+          xMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
+          yMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
+          rotationPerSecond.get(),
+          isFieldRelative
+        );
+      },
+      () -> {
+        drive(
+          0,
+          0,
+          Rotation2d.kZero,
+          isFieldRelative
+        );
+      }
+    );
   }
 }
