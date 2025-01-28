@@ -5,9 +5,7 @@
 package frc.robot.subsystems;
 
 import java.util.function.DoubleFunction;
-import java.util.function.Function;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -26,10 +24,9 @@ public class OI extends SubsystemBase {
     (axisInput) -> Math.pow(axisInput, Constants.OI.AXIS_INPUT_EXPONENT) 
     * LIMITS.MAX_INSTRUCTED_METERS_PER_SECOND;
 
-  Function<Double,Rotation2d> joystickToRotationPerSecond = 
-    (xInput) -> Rotation2d.fromDegrees(
-      Math.pow(xInput, Constants.OI.AXIS_INPUT_EXPONENT) * LIMITS.MAX_INSTRUCTED_DEGREES_PER_SECOND
-    );
+  DoubleFunction<Double> joystickToDegreesPerSecond = 
+    (xInput) -> 
+      Math.pow(xInput, Constants.OI.AXIS_INPUT_EXPONENT) * LIMITS.MAX_INSTRUCTED_DEGREES_PER_SECOND;
 
 
   // Input to the function could be x or y axis. 
@@ -73,8 +70,8 @@ public class OI extends SubsystemBase {
     );
   }
 
-  public Rotation2d getInstructedRotationPerSecond() {
-    return joystickToRotationPerSecond.apply(
+  public double getInstructedDegreesPerSecond() {
+    return joystickToDegreesPerSecond.apply(
       applyDeadband.apply(rotationJoystick.getY())
     );
   }
