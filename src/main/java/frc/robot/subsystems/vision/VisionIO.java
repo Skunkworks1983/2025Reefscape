@@ -16,9 +16,11 @@ public interface VisionIO {
         Matrix<N3, N1> stdDevs) {
     }
 
+
     public class VisionIOData {
         public List<PoseObservation> poseObservations = new LinkedList<PoseObservation>();
     }
 
     public VisionIOData getLatestData();
+    public String getName();
 }

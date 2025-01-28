@@ -20,11 +20,15 @@ import edu.wpi.first.math.numbers.N3;
 
 public class VisionIOPhotonVision implements VisionIO {
 
+    private final String name;
     private final PhotonCamera camera;
     private AprilTagFieldLayout aprilTagFieldLayout;
     private PhotonPoseEstimator poseEstimator;
 
+
     public VisionIOPhotonVision(String cameraName, Transform3d robotToCamera) {
+
+        this.name = cameraName;
         camera = new PhotonCamera(cameraName);
 
         try {
@@ -69,5 +73,10 @@ public class VisionIOPhotonVision implements VisionIO {
         }
         
         return latest;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 }
