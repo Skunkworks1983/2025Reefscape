@@ -4,6 +4,9 @@
 
 package frc.robot.constants;
 
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+
 // TODO: add all robot constant values when they have been decided
 public class Constants {
 
@@ -58,4 +61,21 @@ public class Constants {
         }
     }
 
+    public class VisionConstants {
+        public static final String[] CAMERA_NAMES = {
+            "CAMERA_1"
+        };
+
+        public static final Transform3d ROBOT_TO_CAMERA_TRANSFORM = 
+            new Transform3d(
+                0, 
+                0, 
+                0, 
+                new Rotation3d(
+                    0, 
+                    0, 
+                    0
+                )
+            );
+    }
 }

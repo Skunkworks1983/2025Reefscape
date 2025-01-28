@@ -28,9 +28,8 @@ public class VisionIOPhotonVision implements VisionIO {
         camera = new PhotonCamera(cameraName);
 
         try {
-            // TODO: Replace 2024 for 2025 field layout definitions
             aprilTagFieldLayout = AprilTagFieldLayout
-                    .loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+                    .loadFromResource(AprilTagFields.k2025Reefscape.m_resourceFile);
         } catch (IOException e) {
             System.out.println("Exception loading AprilTag field layout JSON: " + e.toString());
         }
