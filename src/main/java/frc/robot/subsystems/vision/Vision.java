@@ -39,15 +39,18 @@ public class Vision extends SubsystemBase {
       SmartDashboard.putData(i.getName() + " Visual Odometry", field);
       field2ds.add(field);
     }
+
+    System.out.println("Vision Constructor Running");
   }
 
   @Override
   public void periodic() {
+    System.out.println("Vision Periodic Running");
     for (int i = 0; i < io.length; i++) {
       VisionIOData data = io[i].getLatestData();
       for (PoseObservation observation : data.poseObservations) {
         consumer.accept(observation.estimatedPose(), observation.timestamp(), observation.stdDevs());
-        field2ds.get(i).setRobotPose(observation.estimatedPose());
+        // field2ds.get(i).setRobotPose(observation.estimatedPose());
       }
     }
   }
