@@ -19,9 +19,6 @@ public class OI extends SubsystemBase {
   Joystick translationJoystick = new Joystick(Joysticks.TRANSLATION_JOYSTICK_ID);
   Joystick buttonJoystick = new Joystick(Joysticks.BUTTON_STICK_ID);
 
-  JoystickButton roateCoral = new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.ROTATE_CORAL);
-  JoystickButton intakeCoral = new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.INTAKE_CORAL);
-
   // Input to the function could be x or y axis.
   DoubleFunction<Double> joystickToMetersPerSecond = 
     (axisInput) -> Math.pow(axisInput, Constants.OI.AXIS_INPUT_EXPONENT) 
@@ -57,8 +54,8 @@ public class OI extends SubsystemBase {
     new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L4)
       .onTrue(elevator.getMoveToPositionCommand(Constants.Elevator.Setpoints.L4_POSITION_METERS));
 
-    roateCoral.whileTrue(collector.rotateCoral());
-    intakeCoral.whileTrue(collector.intakeCoral());
+    new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.ROTATE_CORAL).whileTrue(collector.rotateCoral());
+    new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.INTAKE_CORAL).whileTrue(collector.intakeCoral());
   }
 
   @Override
