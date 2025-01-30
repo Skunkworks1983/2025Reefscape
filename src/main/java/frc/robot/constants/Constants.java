@@ -8,6 +8,18 @@ import edu.wpi.first.math.geometry.Translation2d;
 
 // TODO: add all robot constant values when they have been decided
 public class Constants {
+
+  public class Collector{
+    public static int RIGHT_MOTOR = 42; //CHANGE LATER TO REAL ID
+    public static int LEFT_MOTOR = 11; //CHANGE LATER TO REAL ID
+
+    public static double COLLECTOR_ROTATIONS_PER_METER = 0.0762 * Math.PI;
+
+    public static double COLLECOR_ROTATE_SLOW = 4.0;
+    public static double COLLECOR_ROTATE_FAST = 6.0;
+
+
+}
     public class Drivebase {
         public static final String CANIVORE_NAME = "Practice Swerve";
 
@@ -15,6 +27,14 @@ public class Constants {
       public static final double MAX_DEGREES_PER_SECOND = 0.0;
 
         public class PIDs {
+          public class CollectorPID {
+            public static final double KP = 0.0;
+            public static final double KI = 0.0;
+            public static final double KD = 0.0;
+            public static final double KF = 1.3;
+            
+            
+          }
           public static final double SWERVE_MODULE_TURN_kP = 0.0;
           public static final double SWERVE_MODULE_TURN_kI = 0.0;
           public static final double SWERVE_MODULE_TURN_kD = 0.0;
@@ -109,7 +129,7 @@ public class Constants {
       public class Joysticks {
         public static final int ROTATION_JOYSTICK_ID = 1;
         public static final int TRANSLATION_JOYSTICK_ID = 2;
-        public static final int BUTTON_STICK_ID = 3;
+        public static final int BUTTON_STICK_ID = 0;
       }
 
       public class Buttons {
@@ -121,7 +141,12 @@ public class Constants {
           public static final int GOTO_L4 = 0;
           public static final int GOTO_NET = 0;
         }
+        public class Collector {
+          public static final int ROTATE_CORAL = 23;
+          public static final int INTAKE_CORAL = 14;        
+          
+        }
       }
-    }
-  } 
+   } 
+  }
 }
