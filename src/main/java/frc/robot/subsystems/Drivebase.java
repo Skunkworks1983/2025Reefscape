@@ -22,7 +22,7 @@ import frc.robot.constants.Constants;
 
 public class Drivebase extends SubsystemBase {
 
-  private SwerveModule swerveModules[] = new SwerveModule[Constants.Drivebase.MODULES.length];
+  public SwerveModule swerveModules[] = new SwerveModule[Constants.Drivebase.MODULES.length];
   private AHRS gyro = new AHRS(NavXComType.kUSB1);
 
   private SwerveDriveKinematics swerveDriveKinematics;
@@ -92,6 +92,12 @@ public class Drivebase extends SubsystemBase {
     );
   }
 
+  public void setAllModulesTurnPidActive() {
+    for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
+      swerveModules[i].setTurnControllerActive(true);
+    }
+  }
+
   public ChassisSpeeds getFieldRelativeSpeeds() {
     return ChassisSpeeds.fromRobotRelativeSpeeds(getRobotRelativeSpeeds(),
       getGyroAngle());
@@ -127,6 +133,10 @@ public class Drivebase extends SubsystemBase {
           Rotation2d.kZero,
           isFieldRelative
         );
+      }
+    ).beforeStarting(
+      () -> {
+        setAllModulesTurnPidActive();
       }
     );
   }

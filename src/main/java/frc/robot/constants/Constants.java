@@ -14,16 +14,16 @@ public class Constants {
         public static final String CANIVORE_NAME = "Practice Swerve";
 
         public class PIDs {
-            public static double SWERVE_MODULE_TURN_kP = 1.0;
-            public static double SWERVE_MODULE_TURN_kI = 1.0;
-            public static double SWERVE_MODULE_TURN_kD = 1.0;
-            public static double SWERVE_MODULE_TURN_kF = 1.0;
-            public static double SWERVE_MODULE_DRIVE_kP = 1.0;
-            public static double SWERVE_MODULE_DRIVE_kI = 1.0;
-            public static double SWERVE_MODULE_DRIVE_kD = 1.0;
-            public static double SWERVE_MODULE_DRIVE_kF = 1.0;
+            public static double SWERVE_MODULE_TURN_kP = 0.013;
+            public static double SWERVE_MODULE_TURN_kI = 0.0;
+            public static double SWERVE_MODULE_TURN_kD = 0.00025;
+            public static double SWERVE_MODULE_TURN_kF = 0.0;
+            public static double SWERVE_MODULE_DRIVE_kP = 0.125;
+            public static double SWERVE_MODULE_DRIVE_kI = 0.0;
+            public static double SWERVE_MODULE_DRIVE_kD = 0.0;
+            public static double SWERVE_MODULE_DRIVE_kF = 0.1075;
 
-            public static final boolean SMART_PID_ENABLED = true;
+            public static final boolean SMART_PID_ENABLED = false;
             public static final boolean SMART_PID_TURN_ENABLED = true;
             public static final boolean SMART_PID_DRIVE_ENABLED = true;
 
@@ -51,6 +51,7 @@ public class Constants {
             public static final double DRIVE_MOTOR_GEAR_RATIO = 6.75;
             public static final double WHEEL_DIAMETER = 0.0991108;
             public static final double REVS_PER_METER = DRIVE_MOTOR_GEAR_RATIO / (WHEEL_DIAMETER * Math.PI);
+            public static final double TURN_MOTOR_GEAR_RATIO = 150.0 / 7.0;
 
             public static final double MAX_MODULE_SPEED = 4.498848;
         }
@@ -71,9 +72,9 @@ public class Constants {
         public static double AXIS_INPUT_EXPONENT = 3;
 
         public class IDS {
-            public static int ROTATION_JOYSTICK_ID = 1;
-            public static int TRANSLATION_JOYSTICK_ID = 2;
-            public static int BUTTON_STICK_ID = 3;
+            public static int ROTATION_JOYSTICK_ID = 0;
+            public static int TRANSLATION_JOYSTICK_ID = 1;
+            public static int BUTTON_STICK_ID = 2;
         }
     }
 

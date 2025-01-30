@@ -5,18 +5,24 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Commands.TestTurnMotorAndEncoder;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.OI;
+import frc.robot.utils.ErrorGroupHandler;
 
 public class Robot extends TimedRobot {
 
   Drivebase drivebase = new Drivebase();
   OI oi = new OI();
+  ErrorGroupHandler errorGroupHandler = new ErrorGroupHandler();
 
   public Robot() {}
 
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+    CommandScheduler.getInstance().run();
+  }
 
   @Override
   public void autonomousInit() {}
@@ -38,13 +44,20 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {}
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    errorGroupHandler.putAllErrors();
+  }
 
   @Override
   public void disabledPeriodic() {}
 
   @Override
-  public void testInit() {}
+  public void testInit() {
+    new TestTurnMotorAndEncoder(errorGroupHandler::addErrorMapEntry, drivebase.swerveModules[0]).schedule();
+    new TestTurnMotorAndEncoder(errorGroupHandler::addErrorMapEntry, drivebase.swerveModules[1]).schedule();
+    new TestTurnMotorAndEncoder(errorGroupHandler::addErrorMapEntry, drivebase.swerveModules[2]).schedule();
+    new TestTurnMotorAndEncoder(errorGroupHandler::addErrorMapEntry, drivebase.swerveModules[3]).schedule();
+  }
 
   @Override
   public void testPeriodic() {}

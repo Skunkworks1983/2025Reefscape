@@ -32,11 +32,12 @@ public class SwerveModule extends SubsystemBase {
 
   SparkMax turnMotor;
   TalonFX driveMotor;
-  CANcoder turnEncoder;
-  String moduleName;
+  public CANcoder turnEncoder;
+  public String moduleName;
   SmartPIDController turnController;
   SmartPIDControllerTalonFX driveController;
   Translation2d moduleLocation;
+  boolean turnControllerActive;
 
   final VelocityVoltage m_Velocity = new VelocityVoltage(0);
 
@@ -104,9 +105,13 @@ public class SwerveModule extends SubsystemBase {
   @Override
   public void periodic() {
     driveController.updatePID();
-    if (!turnController.atSetpoint()) {
+    if (!turnController.atSetpoint() && turnControllerActive) {
       updateSpeedToSetpointTurn();
     }
+  }
+
+  public void setTurnControllerActive(boolean isControllerActive) {
+    turnControllerActive = isControllerActive;
   }
 
   public void setModuleTurnSetpoint(Rotation2d angle) {
@@ -123,6 +128,10 @@ public class SwerveModule extends SubsystemBase {
     return driveMotor.getPosition().getValueAsDouble() / Constants.Drivebase.Info.REVS_PER_METER;
   }
 
+  public double getTurnMotorEncoderPosition() {
+    return turnMotor.getEncoder().getPosition() / Constants.Drivebase.Info.TURN_MOTOR_GEAR_RATIO; 
+  }
+
   // returns velocity in meters
   public double getDriveMotorVelocity() {
     return driveMotor.getVelocity().getValueAsDouble() / Constants.Drivebase.Info.REVS_PER_METER;
@@ -132,7 +141,7 @@ public class SwerveModule extends SubsystemBase {
     turnMotor.set(speed);
   }
 
-  public void setBrakeMode(boolean brakeMode){
+  public void setBrakeMode(boolean brakeMode) {
     if(brakeMode) {
       driveMotor.setNeutralMode(NeutralModeValue.Brake);
     }
@@ -152,6 +161,10 @@ public class SwerveModule extends SubsystemBase {
   public Rotation2d getTurnMotorAngle() {
     Rotation2d turnMotorRotation = Rotation2d.fromRotations(turnEncoder.getAbsolutePosition().getValueAsDouble());
     return turnMotorRotation;
+  }
+
+  public double getTurnMotorCurrent() {
+    return turnMotor.getBusVoltage();
   }
 
   public boolean isEncoderConnected() {
