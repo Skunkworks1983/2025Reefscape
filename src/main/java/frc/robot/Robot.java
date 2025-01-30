@@ -10,10 +10,10 @@ import frc.robot.subsystems.*;
 
 public class Robot extends TimedRobot {
 
-  // Drivebase drivebase = new Drivebase();
-  // Elevator elevator = new Elevator();
+  Drivebase drivebase = new Drivebase();
+  Elevator elevator = new Elevator();
   Collector collector = new Collector();
-  OI oi = new OI(/*elevator,*/ collector);
+  OI oi = new OI(elevator, collector);
 
   public Robot() {}
 
@@ -30,12 +30,12 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() { 
-    // drivebase.getSwerveTeleopCommand(
-    //   oi::getInstructedXMetersPerSecond,
-    //   oi::getInstructedYMetersPerSecond,
-    //   oi::getInstructedDegreesPerSecond,
-    //   true
-    // ).schedule();
+    drivebase.getSwerveTeleopCommand(
+      oi::getInstructedXMetersPerSecond,
+      oi::getInstructedYMetersPerSecond,
+      oi::getInstructedDegreesPerSecond,
+      true
+    ).schedule();
   }
 
   @Override

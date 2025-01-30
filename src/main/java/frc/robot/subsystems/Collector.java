@@ -19,8 +19,8 @@ import frc.robot.utils.SmartPIDControllerTalonFX;
 
 public class Collector extends SubsystemBase {
 
-  TalonFX rightMotor; //change to mini krakens
-  TalonFX leftMotor; //change to mini krakens
+  TalonFX rightMotor; 
+  TalonFX leftMotor; 
 
    final VelocityVoltage velocityVoltage = new VelocityVoltage(0);
    double lastRightSpeed;
@@ -50,20 +50,19 @@ public class Collector extends SubsystemBase {
    rightMotor.getConfigurator().apply(talonConfigCollectorMotor);
    leftMotor.getConfigurator().apply(talonConfigCollectorMotor);
 
-   // rightMotor.run();
+   rightMotorController = new SmartPIDControllerTalonFX(Constants.Collector.PIDS.KP,
+        Constants.Collector.PIDS.KI, Constants.Collector.PIDS.KD,
+        Constants.Collector.PIDS.KF, "right motor",
+        Constants.Collector.PIDS.SMART_PID_ENABLED, rightMotor);
 
-   rightMotorController = new SmartPIDControllerTalonFX(Constants.Drivebase.PIDs.CollectorPID.KP,
-        Constants.Drivebase.PIDs.CollectorPID.KI, Constants.Drivebase.PIDs.CollectorPID.KD,
-        Constants.Drivebase.PIDs.CollectorPID.KF, "right motor",
-        Constants.Drivebase.PIDs.SMART_PID_ENABLED, rightMotor);
-
-    leftMotorController = new SmartPIDControllerTalonFX(Constants.Drivebase.PIDs.CollectorPID.KP,
-        Constants.Drivebase.PIDs.CollectorPID.KI, Constants.Drivebase.PIDs.CollectorPID.KD,
-        Constants.Drivebase.PIDs.CollectorPID.KF, "left motor",
+    leftMotorController = new SmartPIDControllerTalonFX(Constants.Collector.PIDS.KP,
+        Constants.Collector.PIDS.KI, Constants.Collector.PIDS.KD,
+        Constants.Collector.PIDS.KF, "left motor",
         Constants.Drivebase.PIDs.SMART_PID_ENABLED, leftMotor);
     
   }
 
+  // meters per sec 
   public void setCollectorSpeeds(double rightSpeed, double leftSpeed){
     if (rightSpeed != lastRightSpeed) {
       rightMotor.setControl(velocityVoltage
@@ -96,10 +95,6 @@ public class Collector extends SubsystemBase {
       }, 
       () -> {
         setCollectorSpeeds(0, 0);
-      }
-    ).until(
-      () -> {
-      return false;
       }
     );
   }
