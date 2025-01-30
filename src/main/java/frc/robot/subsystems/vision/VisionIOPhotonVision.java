@@ -75,8 +75,8 @@ public class VisionIOPhotonVision implements VisionIO {
         return latest;
     }
 
-    @Override
-    public String getName() {
-        return name;
-    }
+    // @Override
+    // public String getName() {
+    //     return name;
+    // }
 }

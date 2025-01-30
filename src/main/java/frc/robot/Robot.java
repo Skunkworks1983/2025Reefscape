@@ -4,7 +4,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.constants.Constants.VisionConstants;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.OI;
@@ -13,17 +16,23 @@ import frc.robot.subsystems.vision.VisionIOPhotonVision;
 
 public class Robot extends TimedRobot {
 
-  Drivebase drivebase = new Drivebase();
-  OI oi = new OI();
-  Vision vision = new Vision(
+  Drivebase drivebase;
+  Vision vision;
+  // OI oi = new OI();
+  
+
+
+  public Robot() {
+    drivebase = new Drivebase();
+
+    vision = new Vision(
     drivebase::addVisionMeasurement,
     new VisionIOPhotonVision(
-      VisionConstants.CAMERA_NAMES[0],
-      VisionConstants.ROBOT_TO_CAMERA_TRANSFORM
+      "Camera_1",
+      new Transform3d()
     )
   );
-
-  public Robot() {}
+  }
 
   @Override
   public void robotPeriodic() {}
@@ -36,12 +45,12 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() { 
-    drivebase.getSwerveTeleopCommand(
-      oi::getInstructedXMetersPerSecond,
-      oi::getInstructedYMetersPerSecond,
-      oi::getInstructedRotationPerSecond,
-      true
-    ).schedule();
+    // drivebase.getSwerveTeleopCommand(
+    //   oi::getInstructedXMetersPerSecond,
+    //   oi::getInstructedYMetersPerSecond,
+    //   oi::getInstructedRotationPerSecond,
+    //   true
+    // ).schedule();
   }
   
   @Override
@@ -51,6 +60,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
+    
   }
 
   @Override

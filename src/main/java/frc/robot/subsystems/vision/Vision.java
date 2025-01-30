@@ -36,7 +36,7 @@ public class Vision extends SubsystemBase {
 
     for (VisionIO i : io) {
       Field2d field = new Field2d();
-      SmartDashboard.putData(i.getName() + " Visual Odometry", field);
+      SmartDashboard.putData("Camera_1" + " Visual Odometry", field);
       field2ds.add(field);
     }
 
