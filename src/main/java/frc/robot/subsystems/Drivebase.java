@@ -21,6 +21,7 @@ import com.studica.frc.AHRS.NavXComType;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -51,10 +52,11 @@ public class Drivebase extends SubsystemBase {
     swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(
         swerveDriveKinematics,
         getGyroAngle(),
-        Arrays.stream(swerveModules)
-            .map(swerveModule -> swerveModule.getSwerveModulePosition())
-            .toArray(SwerveModulePosition[]::new),
-        new Pose2d());
+        new SwerveModulePosition[] {new SwerveModulePosition()}, new Pose2d());
+        // Arrays.stream(swerveModules)
+        //     .map(swerveModule -> swerveModule.getSwerveModulePosition())
+        //     .toArray(SwerveModulePosition[]::new),
+        // new Pose2d());
 
       SmartDashboard.putData("Drivebase Odometry", drivebaseOdometryField2d);
       drivebaseOdometryField2d.setRobotPose(new Pose2d());
