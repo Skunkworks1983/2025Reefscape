@@ -108,7 +108,7 @@ public class Collector extends SubsystemBase {
     return Commands.runEnd(
       () -> {
         System.out.println("intake running?");
-        setCollectorSpeeds(Constants.Collector.COLLECOR_ROTATE_FAST, -Constants.Collector.COLLECOR_ROTATE_FAST);
+        setCollectorSpeeds(-Constants.Collector.COLLECOR_ROTATE_FAST, Constants.Collector.COLLECOR_ROTATE_FAST);
       },
       () -> {
         setCollectorSpeeds(0, 0);
