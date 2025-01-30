@@ -9,6 +9,7 @@ import java.util.List;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -36,21 +37,20 @@ public class Vision extends SubsystemBase {
 
     for (VisionIO i : io) {
       Field2d field = new Field2d();
-      SmartDashboard.putData("Camera_1" + " Visual Odometry", field);
+      SmartDashboard.putData(i.getName() + " Visual Odometry", field);
       field2ds.add(field);
     }
 
-    System.out.println("Vision Constructor Running");
-  }
-
+    System.out.println("Vision Constructor Running" + field2ds.toString());
+  
   @Override
   public void periodic() {
-    System.out.println("Vision Periodic Running");
     for (int i = 0; i < io.length; i++) {
       VisionIOData data = io[i].getLatestData();
       for (PoseObservation observation : data.poseObservations) {
         consumer.accept(observation.estimatedPose(), observation.timestamp(), observation.stdDevs());
-        // field2ds.get(i).setRobotPose(observation.estimatedPose());
+        field2ds.get(i).setRobotPose(new Pose2d(10, 10, new Rotation2d()));
+        System.out.println(observation.estimatedPose());
       }
     }
   }

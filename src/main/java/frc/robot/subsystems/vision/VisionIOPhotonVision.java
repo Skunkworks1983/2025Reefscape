@@ -63,9 +63,9 @@ public class VisionIOPhotonVision implements VisionIO {
                         Pose2d pose2d = pose.estimatedPose.toPose2d();
 
                         // TODO: Figure out how to handle uncertainty
-                        double[] stdDevs = { 0 };
+                        // double[] stdDevs = { 0 };
                         PoseObservation poseObservation = new PoseObservation(timestamp, pose2d,
-                                new Matrix<N3, N1>(new SimpleMatrix(stdDevs)));
+                                new Matrix<N3, N1>(new SimpleMatrix(new double[] {0, 0, 0})));
                         latest.poseObservations.add(poseObservation);
                     }
                 }
@@ -75,8 +75,8 @@ public class VisionIOPhotonVision implements VisionIO {
         return latest;
     }
 
-    // @Override
-    // public String getName() {
-    //     return name;
-    // }
+    @Override
+    public String getName() {
+        return name;
+    }
 }
