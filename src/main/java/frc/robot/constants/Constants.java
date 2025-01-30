@@ -145,8 +145,8 @@ public class Constants {
           public static final int ROTATE_CORAL = 23;
           public static final int INTAKE_CORAL = 14;        
           
-      }
     }
-   } 
-  }
+   }
+  } 
+ }
 }
