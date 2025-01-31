@@ -56,6 +56,19 @@ public class Constants {
         }
     }
 
+    public class ClimberIDs {
+        public static final int CLIMBER_MAGNET_SENSOR_1 = 0;
+        public static final int CLIMBER_MAGNET_SENSOR_2 = 0;
+        public static final int CLIMBER_KRAKEN_MOTOR = 0;
+
+        public static double CLIMBER_KP = 0.0;
+        public static double CLIMBER_KD = 0.0;
+        public static double CLIMBER_KI = 0.0;
+        public static double CLIMBER_KF = 0.0;
+
+        public static boolean CLIMBER_SMARTPID_ACTIVE = false;
+    }
+
     public class OI {
         public class LIMITS {
             public static double MAX_INSTRUCTED_METERS_PER_SECOND = 2.0;
