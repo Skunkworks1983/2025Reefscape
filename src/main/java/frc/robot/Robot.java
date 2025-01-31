@@ -5,18 +5,22 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import frc.robot.subsystems.Drivebase;
-import frc.robot.subsystems.OI;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.*;
 
 public class Robot extends TimedRobot {
 
   Drivebase drivebase = new Drivebase();
-  OI oi = new OI();
+  Elevator elevator = new Elevator();
+  Collector collector = new Collector();
+  OI oi = new OI(elevator, collector);
 
   public Robot() {}
 
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+    CommandScheduler.getInstance().run();
+  }
 
   @Override
   public void autonomousInit() {}
@@ -29,7 +33,7 @@ public class Robot extends TimedRobot {
     drivebase.getSwerveTeleopCommand(
       oi::getInstructedXMetersPerSecond,
       oi::getInstructedYMetersPerSecond,
-      oi::getInstructedRotationPerSecond,
+      oi::getInstructedDegreesPerSecond,
       true
     ).schedule();
   }
