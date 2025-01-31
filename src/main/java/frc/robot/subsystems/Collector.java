@@ -89,8 +89,8 @@ public class Collector extends SubsystemBase {
       () -> {
         setCollectorSpeeds(Constants.Collector.COLLECOR_ROTATE_SLOW, 
         Constants.Collector.COLLECOR_ROTATE_FAST);
-        SmartDashboard.putNumber("right current speed",getRightMotorVelocity());
-        SmartDashboard.putNumber("left current speed",getLeftMotorVelocity());
+        SmartDashboard.putNumber("right collector current speed",getRightMotorVelocity());
+        SmartDashboard.putNumber("left collector current speed",getLeftMotorVelocity());
       }, 
       () -> {
         setCollectorSpeeds(0, 0);
@@ -101,12 +101,13 @@ public class Collector extends SubsystemBase {
   public Command intakeCoral() {
     return Commands.runEnd(
       () -> {
-        setCollectorSpeeds(-Constants.Collector.COLLECOR_ROTATE_FAST, Constants.Collector.COLLECOR_ROTATE_FAST);
+        setCollectorSpeeds(-Constants.Collector.COLLECOR_ROTATE_FAST, 
+          Constants.Collector.COLLECOR_ROTATE_FAST);
       },
       () -> {
         setCollectorSpeeds(0, 0);
       }
-      );
+    );
   }
 
 }

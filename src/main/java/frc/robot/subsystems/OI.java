@@ -54,8 +54,10 @@ public class OI extends SubsystemBase {
     new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L4)
       .onTrue(elevator.getMoveToPositionCommand(Constants.Elevator.Setpoints.L4_POSITION_METERS));
 
-    new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.ROTATE_CORAL).whileTrue(collector.rotateCoral());
-    new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.INTAKE_CORAL).whileTrue(collector.intakeCoral());
+    new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.ROTATE_CORAL)
+      .whileTrue(collector.rotateCoral());
+    new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.INTAKE_CORAL)
+      .whileTrue(collector.intakeCoral());
   }
 
   @Override
