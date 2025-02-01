@@ -74,17 +74,17 @@ public class Climber extends SubsystemBase {
     return climbPos.getValueAsDouble();
   }
 
-  public void moveUP(double speed) {
+  public void moveInDirection(double setPoint) {
 
-    while (getMagnetSensor1() != true && getMagnetSensor2() != true) {
-      climbMotor.set(speed);
+    while (climbMotor.getPosition().getValueAsDouble() != setPoint) {
+      climbMotor.set(0.4);
       SmartDashboard.putNumber("climber KP: ", 0.0);
       SmartDashboard.putNumber("climber KD: ", 0.0);
       SmartDashboard.putNumber("climber KI: ", 0.0);
       SmartDashboard.putNumber("climber KF: ", 0.0);
       climberSmartPID.updatePID();
-      if (getMagnetSensor1() == true && getMagnetSensor2() == true) {
-        climbMotor.set(0);
+      if (climbMotor.getPosition().getValueAsDouble() == setPoint) {
+        climbMotor.stopMotor();
         break;
       }
     }
@@ -97,7 +97,7 @@ public class Climber extends SubsystemBase {
       // when i ask it to go up, it go up
       case UP:
         System.out.println("TBD");
-        moveUP(.001);
+        moveInDirection(Constants.ClimberIDs.CLIMBER_MAX);
         break;
 
       // when i ask it to stay, it stay
