@@ -26,7 +26,7 @@ public class Constants {
     public static double COLLECOR_ROTATE_SLOW = 4.0;
     public static double COLLECOR_ROTATE_FAST = 6.0;
 
-    public class PIDS {
+    public class PIDs {
       public static final double KP = 0.0;
       public static final double KI = 0.0;
       public static final double KD = 0.0;

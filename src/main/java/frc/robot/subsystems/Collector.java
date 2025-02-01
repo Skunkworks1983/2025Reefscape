@@ -21,18 +21,19 @@ public class Collector extends SubsystemBase {
   TalonFX rightMotor; 
   TalonFX leftMotor; 
 
-   final VelocityVoltage velocityVoltage = new VelocityVoltage(0);
+   private final VelocityVoltage velocityVoltage = new VelocityVoltage(0);
    double lastRightSpeed;
    double lastLeftSpeed;
 
-   
-   SmartPIDControllerTalonFX rightMotorController;
-   SmartPIDControllerTalonFX leftMotorController;
+   // BUG: these motor controllers are not used! Something is likely wrong
+   // with the collector.
+   private SmartPIDControllerTalonFX rightMotorController;
+   private SmartPIDControllerTalonFX leftMotorController;
 
-   public double getLeftMotorVelocity() {
+   private double getLeftMotorVelocity() {
     return leftMotor.getVelocity().getValueAsDouble();
   }
-  public double getRightMotorVelocity() {
+  private double getRightMotorVelocity() {
     return rightMotor.getVelocity().getValueAsDouble();
   }
 
@@ -49,20 +50,20 @@ public class Collector extends SubsystemBase {
    rightMotor.getConfigurator().apply(talonConfigCollectorMotor);
    leftMotor.getConfigurator().apply(talonConfigCollectorMotor);
 
-   rightMotorController = new SmartPIDControllerTalonFX(Constants.Collector.PIDS.KP,
-        Constants.Collector.PIDS.KI, Constants.Collector.PIDS.KD,
-        Constants.Collector.PIDS.KF, "right motor",
-        Constants.Collector.PIDS.SMART_PID_ENABLED, rightMotor);
+   rightMotorController = new SmartPIDControllerTalonFX(Constants.Collector.PIDs.KP,
+        Constants.Collector.PIDs.KI, Constants.Collector.PIDs.KD,
+        Constants.Collector.PIDs.KF, "right motor",
+        Constants.Collector.PIDs.SMART_PID_ENABLED, rightMotor);
 
-    leftMotorController = new SmartPIDControllerTalonFX(Constants.Collector.PIDS.KP,
-        Constants.Collector.PIDS.KI, Constants.Collector.PIDS.KD,
-        Constants.Collector.PIDS.KF, "left motor",
+    leftMotorController = new SmartPIDControllerTalonFX(Constants.Collector.PIDs.KP,
+        Constants.Collector.PIDs.KI, Constants.Collector.PIDs.KD,
+        Constants.Collector.PIDs.KF, "left motor",
         Constants.Drivebase.PIDs.SMART_PID_ENABLED, leftMotor);
     
   }
 
   // meters per sec 
-  public void setCollectorSpeeds(double rightSpeed, double leftSpeed){
+  private void setCollectorSpeeds(double rightSpeed, double leftSpeed){
     if (rightSpeed != lastRightSpeed) {
       rightMotor.setControl(velocityVoltage
           .withVelocity(rightSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER));
@@ -78,18 +79,15 @@ public class Collector extends SubsystemBase {
     lastLeftSpeed = leftSpeed;
   }
   @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
-
+  public void periodic() { }
   
-  public Command rotateCoral() {
+  public Command getRotateCoralCommand() {
     return Commands.runEnd(
       () -> {
         setCollectorSpeeds(Constants.Collector.COLLECOR_ROTATE_SLOW, 
         Constants.Collector.COLLECOR_ROTATE_FAST);
-        SmartDashboard.putNumber("right collector current speed",getRightMotorVelocity());
-        SmartDashboard.putNumber("left collector current speed",getLeftMotorVelocity());
+        SmartDashboard.putNumber("right collector current speed", getRightMotorVelocity());
+        SmartDashboard.putNumber("left collector current speed", getLeftMotorVelocity());
       }, 
       () -> {
         setCollectorSpeeds(0, 0);
@@ -97,7 +95,7 @@ public class Collector extends SubsystemBase {
     );
   }
 
-  public Command intakeCoral() {
+  public Command getIntakeCoralCommand() {
     return Commands.runEnd(
       () -> {
         setCollectorSpeeds(-Constants.Collector.COLLECOR_ROTATE_FAST, 

@@ -12,10 +12,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.constants.Constants.OI.LIMITS;
 import frc.robot.constants.Constants;
+import frc.robot.commands.elevator.*;
 import frc.robot.constants.Constants.OI.IDs.Joysticks;
 
 public class OI extends SubsystemBase {
-
   Joystick rotationJoystick = new Joystick(Joysticks.ROTATION_JOYSTICK_ID);
   Joystick translationJoystick = new Joystick(Joysticks.TRANSLATION_JOYSTICK_ID);
   Joystick buttonJoystick = new Joystick(Joysticks.BUTTON_STICK_ID);
@@ -44,27 +44,20 @@ public class OI extends SubsystemBase {
     if(optionalElevator.isPresent()) {
       Elevator elevator = optionalElevator.get();
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_FLOOR_POSITION)
-        .onTrue(elevator.getMoveToPositionCommand(Constants.Elevator.Setpoints.FLOOR_POSITION_METERS));
-
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L1)
-        .onTrue(elevator.getMoveToPositionCommand(Constants.Elevator.Setpoints.L1_POSITION_METERS));
-
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L2)
-        .onTrue(elevator.getMoveToPositionCommand(Constants.Elevator.Setpoints.L2_POSITION_METERS));
-
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L3)
-        .onTrue(elevator.getMoveToPositionCommand(Constants.Elevator.Setpoints.L3_POSITION_METERS));
-
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L4)
-        .onTrue(elevator.getMoveToPositionCommand(Constants.Elevator.Setpoints.L4_POSITION_METERS));
+        .onTrue(
+          new MoveToPositionCommand(
+            elevator,
+            Constants.Elevator.Setpoints.FLOOR_POSITION_METERS
+          )
+        );
     }
 
     if(optionalCollector.isPresent()) {
       Collector collector = optionalCollector.get();
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.ROTATE_CORAL)
-        .whileTrue(collector.rotateCoral());
+        .whileTrue(collector.getRotateCoralCommand());
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.INTAKE_CORAL)
-        .whileTrue(collector.intakeCoral());
+        .whileTrue(collector.getIntakeCoralCommand());
     }
   }
 

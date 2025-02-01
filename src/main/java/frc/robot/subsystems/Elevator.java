@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.Elevator.Profile;
 
+import frc.robot.commands.elevator.RetainCurrentPosition;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -39,6 +40,10 @@ public class Elevator extends SubsystemBase {
     )
   );
 
+  public TrapezoidProfile getMotionProfile() {
+    return motionProfile;
+  }
+
   private double targetPosition = getElevatorPosition();
 
   PIDController positionController = new PIDController(
@@ -47,6 +52,10 @@ public class Elevator extends SubsystemBase {
     Constants.Elevator.PIDs.ELEVATOR_kD,
     Constants.Elevator.PIDs.ELEVATOR_kF
   );
+
+  public PIDController getPositionController() {
+    return positionController;
+  }
 
   public Elevator() {
     setDefaultCommand(getRetainTargetPositionCommand());
@@ -63,7 +72,7 @@ public class Elevator extends SubsystemBase {
   public void periodic() {}
 
   // Reminder: all positions are measured in meters
-  private double getElevatorPosition() {
+  public double getElevatorPosition() {
     return motor.getEncoder().getPosition() * Constants.Elevator.ROTATIONS_TO_METERS;
   }
 
@@ -73,7 +82,7 @@ public class Elevator extends SubsystemBase {
   }
 
   // Input is a percentage that ranges from -1 to 1.
-  private void setMotor(double power) {
+  public void setMotor(double power) {
     motor.set(power);
   }
 
@@ -82,65 +91,8 @@ public class Elevator extends SubsystemBase {
       < Constants.Elevator.TOLORENCE_METERS_FOR_SETPOINT;
   }
 
-  // This command moves to the elevator from its current position to the argument
-  // targetHeight (meters). This command will end when the elevator is within some
-  // tolorence of the desired position.
-  public Command getMoveToPositionCommand(double targetHeight) {
-    Timer timeElapsed = new Timer();
-    State startState = new State(); // This will be set in the start of the command
-    State targetState = new State(targetHeight, 0.0);
-    timeElapsed.stop();
-    return Commands.startRun(
-      () -> {
-        timeElapsed.restart();
-        targetPosition = targetHeight;
-        startState.position = getElevatorPosition();
-        startState.velocity = getElevatorVelocity();
-      }, () -> {
-        State motionProfileResult = motionProfile.calculate(
-          timeElapsed.get(), // Time is the only variable that changes throughout run
-          startState, 
-          targetState
-        );
-
-        setMotor(
-          positionController.calculate(
-            getElevatorPosition(),
-            motionProfileResult.position
-          )
-        );
-      }
-    ).until(
-      () -> (Constants.Elevator.TOLERENCE_METERS_FOR_MOVE_TO_POSITION > 
-        Math.abs(targetHeight - getElevatorPosition()))
-    );
-  }
-
-  // This command maintains the current position of the elevator.
-  // The position of the elevator is measured on start. This means
-  // that if a command (like MoveToPosition) ends and this command
-  // starts, this command will stop the elevator from falling back down.
-  public Command getRetainCurrentPositionCommand() {
-    // This array exists because currentTargetPosition must be
-    // final in lambda expressions (because it must be a reference type). 
-    final double[] currentTargetPosition = new double[1];
-    return Commands.startRun(
-      () -> {
-        currentTargetPosition[0] = getElevatorPosition();
-      },
-      () -> {
-        double velocity = positionController
-          .calculate(
-            getElevatorPosition(),
-            currentTargetPosition[0]
-          );
-        setMotor(velocity);
-      }
-    );
-  }
-
   public Command getRetainTargetPositionCommand() {
-    return Commands.run(
+    return run(
       () -> {
         double velocity = positionController
           .calculate(
@@ -155,10 +107,10 @@ public class Elevator extends SubsystemBase {
   // This command will move the elevator to the target position if it is close enough.
   // If the elevator has not reached the target position, it will retain its current 
   // position instead.
-  public Command retainReseaonablePosition() {
+  public Command retainReasonablePosition() {
     return Commands.either(
       getRetainTargetPositionCommand(),
-      getRetainCurrentPositionCommand(),
+      new RetainCurrentPosition(this),
       () -> isAtSetpoint()
     );
   }
