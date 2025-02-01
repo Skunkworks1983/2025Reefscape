@@ -32,7 +32,7 @@ public class OI extends SubsystemBase {
 
   // Input to the function could be x or y axis. 
   // Deadband is applied on each axis individually. This might not be desirable.
-  // This function uses the turnary operator ("?") to select between two options 
+  // This function uses the ternary operator ("?") to select between two options 
   // in a single expression.
   public DoubleFunction <Double> applyDeadband =
     (axisInput) -> Math.abs(axisInput) < Constants.OI.AXIS_DEADBAND 
