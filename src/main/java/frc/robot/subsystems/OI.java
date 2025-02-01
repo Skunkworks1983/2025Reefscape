@@ -38,33 +38,33 @@ public class OI extends SubsystemBase {
     (axisInput) -> Math.abs(axisInput) < Constants.OI.AXIS_DEADBAND 
       ? 0.0 : axisInput;
 
-  public OI(Optional<Elevator> elevator, Optional<Collector> collector) {
+  public OI(Optional<Elevator> optionalElevator, Optional<Collector> optionalCollector) {
     // There is repetition here but not enough to warrant a different aproach
 
-    if(elevator.isPresent()) {
-      Elevator extantElevator = elevator.get();
+    if(optionalElevator.isPresent()) {
+      Elevator elevator = optionalElevator.get();
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_FLOOR_POSITION)
-        .onTrue(extantElevator.getMoveToPositionCommand(Constants.Elevator.Setpoints.FLOOR_POSITION_METERS));
+        .onTrue(elevator.getMoveToPositionCommand(Constants.Elevator.Setpoints.FLOOR_POSITION_METERS));
 
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L1)
-        .onTrue(extantElevator.getMoveToPositionCommand(Constants.Elevator.Setpoints.L1_POSITION_METERS));
+        .onTrue(elevator.getMoveToPositionCommand(Constants.Elevator.Setpoints.L1_POSITION_METERS));
 
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L2)
-        .onTrue(extantElevator.getMoveToPositionCommand(Constants.Elevator.Setpoints.L2_POSITION_METERS));
+        .onTrue(elevator.getMoveToPositionCommand(Constants.Elevator.Setpoints.L2_POSITION_METERS));
 
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L3)
-        .onTrue(extantElevator.getMoveToPositionCommand(Constants.Elevator.Setpoints.L3_POSITION_METERS));
+        .onTrue(elevator.getMoveToPositionCommand(Constants.Elevator.Setpoints.L3_POSITION_METERS));
 
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L4)
-        .onTrue(extantElevator.getMoveToPositionCommand(Constants.Elevator.Setpoints.L4_POSITION_METERS));
+        .onTrue(elevator.getMoveToPositionCommand(Constants.Elevator.Setpoints.L4_POSITION_METERS));
     }
 
-    if(collector.isPresent()) {
-      Collector extantCollector = collector.get();
+    if(optionalCollector.isPresent()) {
+      Collector collector = optionalCollector.get();
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.ROTATE_CORAL)
-        .whileTrue(extantCollector.rotateCoral());
+        .whileTrue(collector.rotateCoral());
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.INTAKE_CORAL)
-        .whileTrue(extantCollector.intakeCoral());
+        .whileTrue(collector.intakeCoral());
     }
   }
 
