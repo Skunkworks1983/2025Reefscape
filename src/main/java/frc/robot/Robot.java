@@ -13,7 +13,7 @@ import frc.robot.subsystems.*;
 
 public class Robot extends TimedRobot {
 
-  // replace subsywith Optional.empty() for testing
+  // replace subsystem with Optional.empty() for testing
   // ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
   Optional<Drivebase> drivebase = Optional.of(new Drivebase());
   Optional<Elevator> elevator = Optional.of(new Elevator());
