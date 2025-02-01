@@ -12,7 +12,9 @@ import frc.robot.subsystems.Elevator;
 
 // This command moves to the elevator from its current position to the argument
 // targetHeight (meters). This command will end when the elevator is within some
-// tolorence of the desired position.
+// tolorence of the desired position. This command uses the trapazoid motion profile.
+// This command is long and requires a fair amount of state so it is not defined within the
+// Elevator subsystem.
 public class MoveToPositionCommand extends Command {
   Timer timeElapsed;
   State startState;

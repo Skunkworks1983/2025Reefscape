@@ -4,7 +4,9 @@
 
 package frc.robot.subsystems;
 
+import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.function.DoubleFunction;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -39,25 +41,27 @@ public class OI extends SubsystemBase {
       ? 0.0 : axisInput;
 
   public OI(Optional<Elevator> optionalElevator, Optional<Collector> optionalCollector) {
-    // There is repetition here but not enough to warrant a different aproach
 
     if(optionalElevator.isPresent()) {
       Elevator elevator = optionalElevator.get();
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_FLOOR_POSITION)
-        .onTrue(
-          new MoveToPositionCommand(
-            elevator,
-            Constants.Elevator.Setpoints.FLOOR_POSITION_METERS
-          )
-        );
+        .onTrue(new MoveToPositionCommand(elevator, Constants.Elevator.Setpoints.FLOOR_POSITION));
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L1)
+        .onTrue(new MoveToPositionCommand(elevator, Constants.Elevator.Setpoints.L1_POSITION));
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L2)
+        .onTrue(new MoveToPositionCommand(elevator, Constants.Elevator.Setpoints.L2_POSITION));
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L3)
+        .onTrue(new MoveToPositionCommand(elevator, Constants.Elevator.Setpoints.L3_POSITION));
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L4)
+        .onTrue(new MoveToPositionCommand(elevator, Constants.Elevator.Setpoints.L4_POSITION));
     }
 
     if(optionalCollector.isPresent()) {
       Collector collector = optionalCollector.get();
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.ROTATE_CORAL)
-        .whileTrue(collector.getRotateCoralCommand());
+        .whileTrue(collector.rotateCoralCommand());
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.INTAKE_CORAL)
-        .whileTrue(collector.getIntakeCoralCommand());
+        .whileTrue(collector.intakeCoralCommand());
     }
   }
 

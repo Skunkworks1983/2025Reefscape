@@ -81,7 +81,7 @@ public class Collector extends SubsystemBase {
   @Override
   public void periodic() { }
   
-  public Command getRotateCoralCommand() {
+  public Command rotateCoralCommand() {
     return Commands.runEnd(
       () -> {
         setCollectorSpeeds(Constants.Collector.COLLECOR_ROTATE_SLOW, 
@@ -95,7 +95,7 @@ public class Collector extends SubsystemBase {
     );
   }
 
-  public Command getIntakeCoralCommand() {
+  public Command intakeCoralCommand() {
     return Commands.runEnd(
       () -> {
         setCollectorSpeeds(-Constants.Collector.COLLECOR_ROTATE_FAST, 

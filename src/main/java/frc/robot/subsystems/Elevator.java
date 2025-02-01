@@ -15,7 +15,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.Elevator.Profile;
 
-import frc.robot.commands.elevator.RetainCurrentPosition;
+import java.util.function.DoubleSupplier;
+
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -58,7 +59,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public Elevator() {
-    setDefaultCommand(getRetainTargetPositionCommand());
+    setDefaultCommand(retainTargetPositionCommand());
 
     SparkMaxConfig config = new SparkMaxConfig();
     config.idleMode(IdleMode.kBrake);
@@ -91,15 +92,40 @@ public class Elevator extends SubsystemBase {
       < Constants.Elevator.TOLORENCE_METERS_FOR_SETPOINT;
   }
 
-  public Command getRetainTargetPositionCommand() {
+  // The lambda is used so that targetPosition is decided upon when the command starts, not
+  // when it is constructed.
+  public Command retainTargetPositionCommand() {
+    return holdPositionCommand(() -> targetPosition);
+  }
+
+  public Command retainCurrentPositionCommand() {
+    return holdPositionCommand(this::getElevatorPosition);
+  }
+
+  // This command does not use a motion profile. It is only for maintaing
+  // positions and moving very small distances after 
+  // MoveToPositionCommand has done almost all of the work.
+  public Command holdPositionCommand(double currentTargePosition) {
     return run(
       () -> {
         double velocity = positionController
           .calculate(
             getElevatorPosition(),
-            targetPosition
+            currentTargePosition 
           );
         setMotor(velocity);
+      }
+    );
+  }
+
+  // Note: In this code, defer is used to create a holdPositionCommand once this 
+  // command has already started. defer is used to that currentTargetPosition
+  // can be decided once this command starts, not when it is constructed.
+  public Command holdPositionCommand(DoubleSupplier positionToSampleAtStart) {
+    return defer(
+      () -> {
+        double currentTargetPosition = positionToSampleAtStart.getAsDouble();
+        return holdPositionCommand(currentTargetPosition);
       }
     );
   }
@@ -109,8 +135,8 @@ public class Elevator extends SubsystemBase {
   // position instead.
   public Command retainReasonablePosition() {
     return Commands.either(
-      getRetainTargetPositionCommand(),
-      new RetainCurrentPosition(this),
+      retainTargetPositionCommand(),
+      retainCurrentPositionCommand(),
       () -> isAtSetpoint()
     );
   }

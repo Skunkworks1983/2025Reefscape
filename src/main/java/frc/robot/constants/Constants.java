@@ -106,12 +106,13 @@ public class Constants {
     }
 
     public class Setpoints {
-      public static final double FLOOR_POSITION_METERS = 0.0;
-      public static final double L1_POSITION_METERS = 0.0;
-      public static final double L2_POSITION_METERS = 0.0;
-      public static final double L3_POSITION_METERS = 0.0;
-      public static final double L4_POSITION_METERS = 0.0;
-      public static final double NET_POSITION_METERS = 0.0;
+      // All positions are in meters
+      public static final double FLOOR_POSITION = 0.0;
+      public static final double L1_POSITION = 0.0;
+      public static final double L2_POSITION = 0.0;
+      public static final double L3_POSITION = 0.0;
+      public static final double L4_POSITION = 0.0;
+      public static final double NET_POSITION = 0.0;
     }
   }
 
