@@ -31,7 +31,7 @@ public class Climber extends SubsystemBase {
   private DigitalInput magnetSensor1;
   private DigitalInput magnetSensor2;
 
-  SmartPIDControllerTalonFX climberSmartPID;
+  SmartPIDControllerTalonFX climberSmartPID;                                                                                                                       
 
   public Climber() {
     // instantiates climb motor
@@ -77,7 +77,7 @@ public class Climber extends SubsystemBase {
   public void moveInDirection(double setPoint) {
 
     while (climbMotor.getPosition().getValueAsDouble() != setPoint) {
-
+      
       climbMotor.set(0.4);
       SmartDashboard.putNumber("climber KP: ", 0.0);
       SmartDashboard.putNumber("climber KD: ", 0.0);
@@ -98,7 +98,6 @@ public class Climber extends SubsystemBase {
     switch (myDirection) {
       // when i ask it to go up, it go up
       case UP:
-        System.out.println("TBD");
         moveInDirection(Constants.ClimberIDs.CLIMBER_MAX);
         break;
 
@@ -117,8 +116,10 @@ public class Climber extends SubsystemBase {
   }
 
   public Command moveUP() {
-    direction UP = direction.UP;
+    direction UP = direction.UP;  //instantiates the UP direction
 
+
+    //runs a command to make it go up
     return Commands.runOnce(
         () -> {
           move(UP);
