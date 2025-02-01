@@ -14,10 +14,10 @@ import frc.robot.subsystems.Elevator;
 // targetHeight (meters). This command will end when the elevator is within some
 // tolorence of the desired position.
 public class MoveToPositionCommand extends Command {
-Timer timeElapsed;
-State startState;
-State targetState;
-double targetHeight;
+  Timer timeElapsed;
+  State startState;
+  State targetState;
+  double targetHeight;
   Elevator elevator;
   public MoveToPositionCommand(Elevator elevator, double targetHeight) {
     this.targetHeight = targetHeight;
@@ -34,9 +34,9 @@ double targetHeight;
   @Override
   public void execute() {
     State motionProfileResult = elevator.getMotionProfile().calculate(
-        timeElapsed.get(), // Time is the only variable that changes throughout run
-        startState, 
-        targetState
+      timeElapsed.get(), // Time is the only variable that changes throughout run
+      startState, 
+      targetState
     );
 
     elevator.setMotor(
