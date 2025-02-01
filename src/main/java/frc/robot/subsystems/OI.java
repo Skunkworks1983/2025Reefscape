@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import java.util.Optional;
 import java.util.function.DoubleFunction;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -31,34 +32,40 @@ public class OI extends SubsystemBase {
 
   // Input to the function could be x or y axis. 
   // Deadband is applied on each axis individually. This might not be desirable.
-  // This function uses the turnary opperator (?) to select between two options 
+  // This function uses the ternary operator ("?") to select between two options 
   // in a single expression.
   public DoubleFunction <Double> applyDeadband =
     (axisInput) -> Math.abs(axisInput) < Constants.OI.AXIS_DEADBAND 
       ? 0.0 : axisInput;
 
-  public OI(Elevator elevator, Collector collector) {
-    // There is repetition here but not enough to Warrant a different aproach
-    new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_FLOOR_POSITION)
-      .onTrue(elevator.getMoveToPositionCommand(Constants.Elevator.Setpoints.FLOOR_POSITION_METERS));
+  public OI(Optional<Elevator> optionalElevator, Optional<Collector> optionalCollector) {
+    // There is repetition here but not enough to warrant a different aproach
 
-    new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L1)
-      .onTrue(elevator.getMoveToPositionCommand(Constants.Elevator.Setpoints.L1_POSITION_METERS));
+    if(optionalElevator.isPresent()) {
+      Elevator elevator = optionalElevator.get();
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_FLOOR_POSITION)
+        .onTrue(elevator.getMoveToPositionCommand(Constants.Elevator.Setpoints.FLOOR_POSITION_METERS));
 
-    new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L2)
-      .onTrue(elevator.getMoveToPositionCommand(Constants.Elevator.Setpoints.L2_POSITION_METERS));
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L1)
+        .onTrue(elevator.getMoveToPositionCommand(Constants.Elevator.Setpoints.L1_POSITION_METERS));
 
-    new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L3)
-      .onTrue(elevator.getMoveToPositionCommand(Constants.Elevator.Setpoints.L3_POSITION_METERS));
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L2)
+        .onTrue(elevator.getMoveToPositionCommand(Constants.Elevator.Setpoints.L2_POSITION_METERS));
 
-    new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L4)
-      .onTrue(elevator.getMoveToPositionCommand(Constants.Elevator.Setpoints.L4_POSITION_METERS));
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L3)
+        .onTrue(elevator.getMoveToPositionCommand(Constants.Elevator.Setpoints.L3_POSITION_METERS));
 
-    new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.ROTATE_CORAL)
-      .whileTrue(collector.rotateCoral());
-      
-    new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.INTAKE_CORAL)
-      .whileTrue(collector.intakeCoral());
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L4)
+        .onTrue(elevator.getMoveToPositionCommand(Constants.Elevator.Setpoints.L4_POSITION_METERS));
+    }
+
+    if(optionalCollector.isPresent()) {
+      Collector collector = optionalCollector.get();
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.ROTATE_CORAL)
+        .whileTrue(collector.rotateCoral());
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.INTAKE_CORAL)
+        .whileTrue(collector.intakeCoral());
+    }
   }
 
   @Override
