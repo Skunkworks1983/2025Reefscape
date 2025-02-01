@@ -9,6 +9,14 @@ import edu.wpi.first.math.geometry.Translation2d;
 // TODO: add all robot constant values when they have been decided
 public class Constants {
 
+  public class Testing {
+    // if ENSURE_COMPETITION_READY_SUBSYSTEMS is true, all subystems
+    // must be constructed and assigned to the correct variable in Robot.java.
+    // If some subsystems are not created and this value is true, an exeption
+    // will be thrown.
+    public static boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = true;
+  }
+
   public class Collector {
     public static int RIGHT_MOTOR = 42;
     public static int LEFT_MOTOR = 11;
