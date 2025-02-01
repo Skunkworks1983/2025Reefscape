@@ -35,8 +35,9 @@ public class Drivebase extends SubsystemBase {
   private SwerveModule swerveModules[] = new SwerveModule[Constants.Drivebase.MODULES.length];
   private SwerveDriveKinematics swerveDriveKinematics;
   private SwerveDrivePoseEstimator swerveDrivePoseEstimator;
-  private final Field2d drivebaseOdometryField2d = new Field2d();
+  private final Field2d swerveOdometryField2d = new Field2d();
 
+  // TODO: add vision to drivebase constructor, construct vision in robot.java
   public Drivebase() {
     for (int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
       swerveModules[i] = new SwerveModule(Constants.Drivebase.MODULES[i]);
@@ -51,27 +52,61 @@ public class Drivebase extends SubsystemBase {
     swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(
         swerveDriveKinematics,
         getGyroAngle(),
-        Arrays.stream(swerveModules)
-            .map(swerveModule -> swerveModule.getSwerveModulePosition())
-            .toArray(SwerveModulePosition[]::new),
+        new SwerveModulePosition[] { 
+          swerveModules[0].getSwerveModulePosition(),
+          swerveModules[1].getSwerveModulePosition(),
+          swerveModules[2].getSwerveModulePosition(),
+          swerveModules[3].getSwerveModulePosition()
+        },
         new Pose2d());
 
-      SmartDashboard.putData("Drivebase Odometry", drivebaseOdometryField2d);
-      drivebaseOdometryField2d.setRobotPose(new Pose2d());
+    SmartDashboard.putData("Swerve Drive Odometry", swerveOdometryField2d);
+    swerveOdometryField2d.setRobotPose(new Pose2d());
   }
 
+  @Override
+  public void periodic() {
+    updateOdometry();
+  }
+
+  /**
+   * Called only in the vision class' periodic method.
+   */
   public void addVisionMeasurement(
       Pose2d estimatedPose,
       double timestamp,
       Matrix<N3, N1> stdDevs) {
 
-      swerveDrivePoseEstimator.addVisionMeasurement(estimatedPose, timestamp, stdDevs);
-      drivebaseOdometryField2d.setRobotPose(swerveDrivePoseEstimator.getEstimatedPosition());
+    swerveDrivePoseEstimator.addVisionMeasurement(estimatedPose, timestamp, stdDevs);
+    swerveOdometryField2d.setRobotPose(swerveDrivePoseEstimator.getEstimatedPosition());
   }
 
-  @Override
-  public void periodic() {
-    swerveDrivePoseEstimator.update(getGyroAngle(), new SwerveModulePosition[] {new SwerveModulePosition(),new SwerveModulePosition(),new SwerveModulePosition(),new SwerveModulePosition()});
+  /**
+   * Must be called every loop in <code>periodic()</code> to keep odometry up to
+   * date.
+   */
+  public void updateOdometry() {
+    swerveDrivePoseEstimator.update(
+        getGyroAngle(),
+        new SwerveModulePosition[] { 
+          swerveModules[0].getSwerveModulePosition(),
+          swerveModules[1].getSwerveModulePosition(),
+          swerveModules[2].getSwerveModulePosition(),
+          swerveModules[3].getSwerveModulePosition()
+        }
+    );
+    
+    swerveOdometryField2d.setRobotPose(swerveDrivePoseEstimator.getEstimatedPosition());
+  }
+
+  /** Reset the <code>SwerveDrivePoseEstimator</code> to the given pose. */
+  public void resetOdometry(Pose2d newPose) {
+    swerveDrivePoseEstimator.resetPosition(
+        getGyroAngle(),
+        Arrays.stream(swerveModules)
+            .map(swerveModule -> swerveModule.getSwerveModulePosition())
+            .toArray(SwerveModulePosition[]::new),
+        newPose);
   }
 
   // TODO: add docstring
@@ -108,10 +143,11 @@ public class Drivebase extends SubsystemBase {
     }
   }
 
-  // rotation from gyro is counterclockwise positive while we need clockwise
-  // positive
   public Rotation2d getGyroAngle() {
-    return Rotation2d.fromDegrees(-gyro.getAngle());
+    // Negated because gyro measurements are counterclockwise-positive.
+    double angleDegrees = -gyro.getAngle();
+    SmartDashboard.putNumber("Gyro", angleDegrees);
+    return Rotation2d.fromDegrees(angleDegrees);
   }
 
   public ChassisSpeeds getRobotRelativeSpeeds() {

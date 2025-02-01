@@ -82,7 +82,6 @@ public class Constants {
     public class VisionConstants {
         public static final String[] CAMERA_NAMES = {
             "Camera_1",
-            "Fake_Camera"
         };
 
         public static final Transform3d ROBOT_TO_CAMERA_TRANSFORM = 

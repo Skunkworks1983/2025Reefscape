@@ -21,10 +21,6 @@ public class Robot extends TimedRobot {
     new VisionIOPhotonVision(
       VisionConstants.CAMERA_NAMES[0],
       VisionConstants.ROBOT_TO_CAMERA_TRANSFORM
-    ),
-    new VisionIOPhotonVision(
-      VisionConstants.CAMERA_NAMES[1],
-      VisionConstants.ROBOT_TO_CAMERA_TRANSFORM
     )
   );
 

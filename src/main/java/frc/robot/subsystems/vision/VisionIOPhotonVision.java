@@ -55,17 +55,17 @@ public class VisionIOPhotonVision implements VisionIO {
                     EstimatedRobotPose pose = updatedPose.get();
 
                     if (pose.estimatedPose.toPose2d().getX() > 0.0
-                            && pose.estimatedPose.toPose2d().getX() < 20
+                            && pose.estimatedPose.toPose2d().getX() < aprilTagFieldLayout.getFieldLength()
                             && pose.estimatedPose.toPose2d().getY() > 0.0
-                            && pose.estimatedPose.toPose2d().getY() < 20) {
+                            && pose.estimatedPose.toPose2d().getY() < aprilTagFieldLayout.getFieldWidth()) {
 
                         double timestamp = pose.timestampSeconds;
                         Pose2d pose2d = pose.estimatedPose.toPose2d();
 
-                        // TODO: Figure out how to handle uncertainty
-                        // double[] stdDevs = { 0 };
+                        // TODO: Figure out how to handle uncertainty, consider scaling based on dist and num of tags
+                        double[] stdDevs = { .75, .75, 5 };
                         PoseObservation poseObservation = new PoseObservation(timestamp, pose2d,
-                                new Matrix<N3, N1>(new SimpleMatrix(new double[] {0, 0, 0})));
+                                new Matrix<N3, N1>(new SimpleMatrix(stdDevs)));
                         latest.poseObservations.add(poseObservation);
                     }
                 }

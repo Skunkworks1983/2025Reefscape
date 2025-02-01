@@ -9,7 +9,6 @@ import java.util.List;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -29,7 +28,7 @@ public class Vision extends SubsystemBase {
 
   VisionConsumer consumer;
   VisionIO[] io;
-  private final List<Field2d> field2ds = new LinkedList<Field2d>();
+  List<Field2d> field2ds = new LinkedList<Field2d>();
 
   public Vision(VisionConsumer consumer, VisionIO... io) {
     this.consumer = consumer;
@@ -37,11 +36,10 @@ public class Vision extends SubsystemBase {
 
     for (VisionIO i : io) {
       Field2d field = new Field2d();
-      SmartDashboard.putData(i.getName() + " Visual Odometry", field);
+      SmartDashboard.putData(i.getName() + " Odometry", field);
       field2ds.add(field);
     }
-
-    System.out.println("Vision Constructor Running" + field2ds.toString());
+  }
   
   @Override
   public void periodic() {
@@ -49,8 +47,7 @@ public class Vision extends SubsystemBase {
       VisionIOData data = io[i].getLatestData();
       for (PoseObservation observation : data.poseObservations) {
         consumer.accept(observation.estimatedPose(), observation.timestamp(), observation.stdDevs());
-        field2ds.get(i).setRobotPose(new Pose2d(10, 10, new Rotation2d()));
-        System.out.println(observation.estimatedPose());
+        field2ds.get(i).setRobotPose(observation.estimatedPose());
       }
     }
   }
