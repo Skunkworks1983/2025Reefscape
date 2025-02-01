@@ -43,13 +43,13 @@ public class Climber extends SubsystemBase {
     magnetSensor2 = new DigitalInput(Constants.ClimberIDs.CLIMBER_MAGNET_SENSOR_2);
 
     // instantiates PID
-    climberSmartPID = new SmartPIDControllerTalonFX(Constants.ClimberIDs.CLIMBER_KP, 
-                                                    Constants.ClimberIDs.CLIMBER_KI,
-                                                    Constants.ClimberIDs.CLIMBER_KD,
-                                                    Constants.ClimberIDs.CLIMBER_KF,
-                                                    "Climb Motor", 
-                                                    Constants.ClimberIDs.CLIMBER_SMARTPID_ACTIVE, 
-                                                    climbMotor);
+    climberSmartPID = new SmartPIDControllerTalonFX(Constants.ClimberIDs.CLIMBER_KP,
+        Constants.ClimberIDs.CLIMBER_KI,
+        Constants.ClimberIDs.CLIMBER_KD,
+        Constants.ClimberIDs.CLIMBER_KF,
+        "Climb Motor",
+        Constants.ClimberIDs.CLIMBER_SMARTPID_ACTIVE,
+        climbMotor);
 
     // instantiates enum
     direction up = direction.UP;
@@ -77,12 +77,14 @@ public class Climber extends SubsystemBase {
   public void moveInDirection(double setPoint) {
 
     while (climbMotor.getPosition().getValueAsDouble() != setPoint) {
+
       climbMotor.set(0.4);
       SmartDashboard.putNumber("climber KP: ", 0.0);
       SmartDashboard.putNumber("climber KD: ", 0.0);
       SmartDashboard.putNumber("climber KI: ", 0.0);
       SmartDashboard.putNumber("climber KF: ", 0.0);
       climberSmartPID.updatePID();
+
       if (climbMotor.getPosition().getValueAsDouble() == setPoint) {
         climbMotor.stopMotor();
         break;
@@ -91,9 +93,9 @@ public class Climber extends SubsystemBase {
 
   }
 
-  public void move(direction myVar) {
+  public void move(direction myDirection) {
 
-    switch (myVar) {
+    switch (myDirection) {
       // when i ask it to go up, it go up
       case UP:
         System.out.println("TBD");
@@ -118,9 +120,8 @@ public class Climber extends SubsystemBase {
     direction UP = direction.UP;
 
     return Commands.runOnce(
-      () -> {
-        move(UP);
-      }
-    );
+        () -> {
+          move(UP);
+        });
   }
 }

@@ -13,7 +13,10 @@ public class Robot extends TimedRobot {
   Drivebase drivebase = new Drivebase();
   Elevator elevator = new Elevator();
   Collector collector = new Collector();
+  Climber climber = new Climber();
   OI oi = new OI(elevator, collector);
+
+
 
   public Robot() {}
 
@@ -23,10 +26,14 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousInit() {}
+  public void autonomousInit() {
+    climber.moveUP().schedule();
+  }
 
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    
+  }
 
   @Override
   public void teleopInit() { 
