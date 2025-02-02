@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -63,19 +64,21 @@ public class Collector extends SubsystemBase {
 
   // meters per sec 
   public void setCollectorSpeeds(double rightSpeed, double leftSpeed){
-    if (rightSpeed != lastRightSpeed) {
-      rightMotor.setControl(velocityVoltage
-          .withVelocity(rightSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER));
-    SmartDashboard.putNumber("right speed", rightSpeed);
-    }
-    lastRightSpeed = rightSpeed;
+    rightMotor.setControl(new DutyCycleOut(rightSpeed));
+    leftMotor.setControl(new DutyCycleOut(leftSpeed));
+    // if (rightSpeed != lastRightSpeed) {
+    //   rightMotor.setControl(velocityVoltage
+    //       .withVelocity(rightSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER));
+    // SmartDashboard.putNumber("right speed", rightSpeed);
+    // }
+    // lastRightSpeed = rightSpeed;
 
-    if (leftSpeed != lastLeftSpeed) {
-      leftMotor.setControl(velocityVoltage
-          .withVelocity(leftSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER));
-    SmartDashboard.putNumber("left speed", leftSpeed);
-    }
-    lastLeftSpeed = leftSpeed;
+    // if (leftSpeed != lastLeftSpeed) {
+    //   leftMotor.setControl(velocityVoltage
+    //       .withVelocity(leftSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER));
+    // SmartDashboard.putNumber("left speed", leftSpeed);
+    // }
+    // lastLeftSpeed = leftSpeed;
   }
   @Override
   public void periodic() {
@@ -86,8 +89,8 @@ public class Collector extends SubsystemBase {
   public Command rotateCoral() {
     return Commands.runEnd(
       () -> {
-        setCollectorSpeeds(Constants.Collector.COLLECOR_ROTATE_SLOW, 
-        Constants.Collector.COLLECOR_ROTATE_FAST);
+        // setCollectorSpeeds(Constants.Collector.COLLECOR_ROTATE_SLOW, 
+        // Constants.Collector.COLLECOR_ROTATE_FAST);
         SmartDashboard.putNumber("right collector current speed",getRightMotorVelocity());
         SmartDashboard.putNumber("left collector current speed",getLeftMotorVelocity());
       }, 
@@ -100,8 +103,9 @@ public class Collector extends SubsystemBase {
   public Command intakeCoral() {
     return Commands.runEnd(
       () -> {
-        setCollectorSpeeds(-Constants.Collector.COLLECOR_ROTATE_FAST, 
-          Constants.Collector.COLLECOR_ROTATE_FAST);
+        // setCollectorSpeeds(-Constants.Collector.COLLECOR_ROTATE_FAST, 
+        //   Constants.Collector.COLLECOR_ROTATE_FAST);
+        setCollectorSpeeds(-.15, .15);
       },
       () -> {
         setCollectorSpeeds(0, 0);
