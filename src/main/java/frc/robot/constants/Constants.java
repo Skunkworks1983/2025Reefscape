@@ -120,14 +120,14 @@ public class Constants {
     public static final int CLIMBER_MAGNET_SENSOR_1 = 0;
     public static final int CLIMBER_MAGNET_SENSOR_2 = 0;
 
-    public static double CLIMBER_KP = 0.0008;
+    public static double CLIMBER_KP = 0.1;
     public static double CLIMBER_KD = 0.0;
     public static double CLIMBER_KI = 0.0;
     public static double CLIMBER_KF = 0.0;
 
     public static final boolean CLIMBER_SMARTPID_ACTIVE = false;
 
-    public static final double CLIMBER_MAX = 0.5; //in Rotations
+    public static final double CLIMBER_MAX = 2.0; //in rotations
   }
 
   public class OI {

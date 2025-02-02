@@ -15,9 +15,11 @@ public class Robot extends TimedRobot {
 
   // replace subsystem with Optional.empty() for testing
   // ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
-  Optional<Drivebase> drivebase = Optional.of(new Drivebase());
-  Optional<Elevator> elevator = Optional.of(new Elevator());
-  Optional<Collector> collector = Optional.of(new Collector());
+  Optional<Drivebase> drivebase = Optional.ofNullable(null);
+  Optional<Elevator> elevator = Optional.ofNullable(null);
+  Optional<Collector> collector = Optional.ofNullable(null);
+  Optional<Climber> climber = Optional.of(new Climber());
+
   OI oi = new OI( 
     elevator,
     collector
@@ -25,9 +27,10 @@ public class Robot extends TimedRobot {
 
   public Robot() {
     if(Constants.Testing.ENSURE_COMPETITION_READY_SUBSYSTEMS) {
-      assert drivebase.isPresent();
-      assert collector.isPresent();
-      assert elevator.isPresent();
+      // assert drivebase.isPresent();
+      // assert collector.isPresent();
+      // assert elevator.isPresent();
+      assert climber.isPresent();
     }
   }
 
@@ -38,7 +41,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    climber.moveUP().schedule();
+    climber.get().moveUP().schedule();
   }
 
   @Override

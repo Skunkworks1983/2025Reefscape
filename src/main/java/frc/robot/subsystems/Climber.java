@@ -5,10 +5,12 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -36,11 +38,13 @@ public class Climber extends SubsystemBase {
   public Climber() {
     // instantiates climb motor
     climbMotor = new TalonFX(Constants.ClimberIDs.CLIMBER_KRAKEN_MOTOR);
-    climbPos = climbMotor.getPosition();
+    climbMotor.setPosition(0.0);
+    
+    
 
     // instantiates magnet senors
     magnetSensor1 = new DigitalInput(Constants.ClimberIDs.CLIMBER_MAGNET_SENSOR_1);
-    magnetSensor2 = new DigitalInput(Constants.ClimberIDs.CLIMBER_MAGNET_SENSOR_2);
+    //magnetSensor2 = new DigitalInput(Constants.ClimberIDs.CLIMBER_MAGNET_SENSOR_2);
 
     // instantiates PID
     climberSmartPID = new SmartPIDControllerTalonFX(Constants.ClimberIDs.CLIMBER_KP,
@@ -71,21 +75,26 @@ public class Climber extends SubsystemBase {
   }
 
   public double getPosition() {
-    return climbPos.getValueAsDouble();
+    return climbMotor.getPosition().getValueAsDouble();
   }
 
   public void moveInDirection(double setPoint) {
+    climbMotor.setPosition(0.0);
 
-    while (climbMotor.getPosition().getValueAsDouble() != setPoint) {
+    while (getPosition() != setPoint) {
       
-      climbMotor.set(0.4);
+      VelocityVoltage VV = new VelocityVoltage(5);
+      climbMotor.setControl(VV);
       SmartDashboard.putNumber("climber KP: ", 0.0);
       SmartDashboard.putNumber("climber KD: ", 0.0);
       SmartDashboard.putNumber("climber KI: ", 0.0);
       SmartDashboard.putNumber("climber KF: ", 0.0);
+
+      System.out.println("Position: " + getPosition());
+      System.out.println("set Point: " + setPoint);
       climberSmartPID.updatePID();
 
-      if (climbMotor.getPosition().getValueAsDouble() == setPoint) {
+      if (getPosition() > setPoint) {
         climbMotor.stopMotor();
         break;
       }
