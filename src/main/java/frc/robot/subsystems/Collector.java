@@ -18,12 +18,12 @@ import frc.robot.utils.SmartPIDControllerTalonFX;
 
 public class Collector extends SubsystemBase {
 
-  TalonFX rightMotor; 
-  TalonFX leftMotor; 
+  private TalonFX rightMotor; 
+  private TalonFX leftMotor; 
 
    private final VelocityVoltage velocityVoltage = new VelocityVoltage(0);
-   double lastRightSpeed;
-   double lastLeftSpeed;
+   private double lastRightSpeed;
+   private double lastLeftSpeed;
 
    // BUG: these motor controllers are not used! Something is likely wrong
    // with the collector.

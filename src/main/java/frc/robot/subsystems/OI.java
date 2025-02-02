@@ -18,16 +18,16 @@ import frc.robot.commands.elevator.*;
 import frc.robot.constants.Constants.OI.IDs.Joysticks;
 
 public class OI extends SubsystemBase {
-  Joystick rotationJoystick = new Joystick(Joysticks.ROTATION_JOYSTICK_ID);
-  Joystick translationJoystick = new Joystick(Joysticks.TRANSLATION_JOYSTICK_ID);
-  Joystick buttonJoystick = new Joystick(Joysticks.BUTTON_STICK_ID);
+  private Joystick rotationJoystick = new Joystick(Joysticks.ROTATION_JOYSTICK_ID);
+  private Joystick translationJoystick = new Joystick(Joysticks.TRANSLATION_JOYSTICK_ID);
+  private Joystick buttonJoystick = new Joystick(Joysticks.BUTTON_STICK_ID);
 
   // Input to the function could be x or y axis.
-  DoubleFunction<Double> joystickToMetersPerSecond = 
+  private DoubleFunction<Double> joystickToMetersPerSecond = 
     (axisInput) -> Math.pow(axisInput, Constants.OI.AXIS_INPUT_EXPONENT) 
     * LIMITS.MAX_INSTRUCTED_METERS_PER_SECOND;
 
-  DoubleFunction<Double> joystickToDegreesPerSecond = 
+  private DoubleFunction<Double> joystickToDegreesPerSecond = 
     (xInput) -> 
       Math.pow(xInput, Constants.OI.AXIS_INPUT_EXPONENT) * LIMITS.MAX_INSTRUCTED_DEGREES_PER_SECOND;
 

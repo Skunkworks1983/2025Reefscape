@@ -29,12 +29,12 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 // all accelerations are stored in meters/second/second.
 public class Elevator extends SubsystemBase {
 
-  SparkMax motor = new SparkMax(
+  private SparkMax motor = new SparkMax(
     Constants.Elevator.MOTOR_ID, 
     MotorType.kBrushless
   );
 
-  final TrapezoidProfile motionProfile = new TrapezoidProfile(
+  private final TrapezoidProfile motionProfile = new TrapezoidProfile(
     new Constraints(
       Profile.MAX_VELOCITY,
       Profile.MAX_ACCELERATION
