@@ -33,9 +33,10 @@ public class SwerveModule extends SubsystemBase {
   private SparkMax turnMotor;
   private TalonFX driveMotor;
   private CANcoder turnEncoder;
-  private String moduleName;
-  private SmartPIDController turnController;
   private SmartPIDControllerTalonFX driveController;
+  private SmartPIDController turnController;
+
+  public String moduleName;
   public Translation2d moduleLocation;
 
   final VelocityVoltage m_Velocity = new VelocityVoltage(0);
