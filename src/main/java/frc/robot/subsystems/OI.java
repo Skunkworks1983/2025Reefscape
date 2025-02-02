@@ -52,13 +52,13 @@ public class OI extends SubsystemBase {
 
   public double getInstructedYMetersPerSecond() {
     return joystickToMetersPerSecond.apply(
-      applyDeadband.apply(translationJoystick.getY())
+      applyDeadband.apply(-translationJoystick.getY())
     );
   }
 
   public Rotation2d getInstructedRotationPerSecond() {
     return joystickToRotationPerSecond.apply(
-      applyDeadband.apply(rotationJoystick.getY())
+      applyDeadband.apply(rotationJoystick.getX())
     );
   }
 }

@@ -49,7 +49,6 @@ public class Robot extends TimedRobot {
   
   @Override
   public void teleopPeriodic() {
-    System.out.println("Teleop Periodic Running");
   }
 
   @Override

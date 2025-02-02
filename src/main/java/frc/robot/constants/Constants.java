@@ -16,14 +16,14 @@ public class Constants {
         public static final String CANIVORE_NAME = "Practice Swerve";
 
         public class PIDs {
-            public static double SWERVE_MODULE_TURN_kP = 1.0;
-            public static double SWERVE_MODULE_TURN_kI = 1.0;
-            public static double SWERVE_MODULE_TURN_kD = 1.0;
-            public static double SWERVE_MODULE_TURN_kF = 1.0;
-            public static double SWERVE_MODULE_DRIVE_kP = 1.0;
-            public static double SWERVE_MODULE_DRIVE_kI = 1.0;
-            public static double SWERVE_MODULE_DRIVE_kD = 1.0;
-            public static double SWERVE_MODULE_DRIVE_kF = 1.0;
+            public static double SWERVE_MODULE_TURN_kP = .005;
+            public static double SWERVE_MODULE_TURN_kI = 0;
+            public static double SWERVE_MODULE_TURN_kD = 0;
+            public static double SWERVE_MODULE_TURN_kF = 0;
+            public static double SWERVE_MODULE_DRIVE_kP = .1;
+            public static double SWERVE_MODULE_DRIVE_kI = 0;
+            public static double SWERVE_MODULE_DRIVE_kD = 0;
+            public static double SWERVE_MODULE_DRIVE_kF = 0;
 
             public static final boolean SMART_PID_ENABLED = true;
             public static final boolean SMART_PID_TURN_ENABLED = true;
@@ -74,7 +74,7 @@ public class Constants {
 
         public class IDS {
             public static int ROTATION_JOYSTICK_ID = 1;
-            public static int TRANSLATION_JOYSTICK_ID = 2;
+            public static int TRANSLATION_JOYSTICK_ID = 0;
             public static int BUTTON_STICK_ID = 3;
         }
     }
