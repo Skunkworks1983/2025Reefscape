@@ -71,11 +71,11 @@ public class Drivebase extends SubsystemBase {
     }
   }
 
-  private void setGyroHeading(Rotation2d newHeading) {
+  public void setGyroHeading(Rotation2d newHeading) {
     gyro.setAngleAdjustment(newHeading.getDegrees());
   }
 
-  private void setAllDriveMotorBreakMode(boolean breakMode) {
+  public void setAllDriveMotorBreakMode(boolean breakMode) {
     for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
       swerveModules[i].setBrakeMode(breakMode);
     }
@@ -95,7 +95,7 @@ public class Drivebase extends SubsystemBase {
     );
   }
 
-  private ChassisSpeeds getFieldRelativeSpeeds() {
+  public ChassisSpeeds getFieldRelativeSpeeds() {
     return ChassisSpeeds.fromRobotRelativeSpeeds(getRobotRelativeSpeeds(),
       getGyroAngle());
   }

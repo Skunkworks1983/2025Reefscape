@@ -4,9 +4,7 @@
 
 package frc.robot.subsystems;
 
-import java.util.Map;
 import java.util.Optional;
-import java.util.TreeMap;
 import java.util.function.DoubleFunction;
 
 import edu.wpi.first.wpilibj.Joystick;

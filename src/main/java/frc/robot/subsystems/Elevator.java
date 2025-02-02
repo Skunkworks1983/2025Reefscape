@@ -7,15 +7,10 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.Elevator.Profile;
-
-import java.util.function.DoubleSupplier;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -78,7 +73,7 @@ public class Elevator extends SubsystemBase {
   }
 
   // Reminder: all velocities are measured in meters/second
-  private double getElevatorVelocity() {
+  public double getElevatorVelocity() {
     return motor.getEncoder().getVelocity() * Constants.Elevator.ROTATIONS_TO_METERS;
   }
 
@@ -87,7 +82,7 @@ public class Elevator extends SubsystemBase {
     motor.set(power);
   }
 
-  private boolean isAtSetpoint(){
+  public boolean isAtSetpoint(){
     return Math.abs(getElevatorPosition() - targetPosition) 
       < Constants.Elevator.TOLORENCE_METERS_FOR_SETPOINT;
   }
