@@ -92,52 +92,19 @@ public class Elevator extends SubsystemBase {
       < Constants.Elevator.TOLORENCE_METERS_FOR_SETPOINT;
   }
 
-  // The lambda is used so that targetPosition is decided upon when the command starts, not
-  // when it is constructed.
-  public Command retainTargetPositionCommand() {
-    return holdPositionCommand(() -> targetPosition);
-  }
-
-  public Command retainCurrentPositionCommand() {
-    return holdPositionCommand(this::getElevatorPosition);
-  }
-
   // This command does not use a motion profile. It is only for maintaing
   // positions and moving very small distances after 
   // MoveToPositionCommand has done almost all of the work.
-  public Command holdPositionCommand(double currentTargePosition) {
+  public Command retainTargetPositionCommand() {
     return run(
       () -> {
         double velocity = positionController
           .calculate(
             getElevatorPosition(),
-            currentTargePosition 
+            targetPosition 
           );
         setMotor(velocity);
       }
-    );
-  }
-
-  // Note: In this code, defer is used to create a holdPositionCommand once this 
-  // command has already started. defer is used to that currentTargetPosition
-  // can be decided once this command starts, not when it is constructed.
-  public Command holdPositionCommand(DoubleSupplier positionToSampleAtStart) {
-    return defer(
-      () -> {
-        double currentTargetPosition = positionToSampleAtStart.getAsDouble();
-        return holdPositionCommand(currentTargetPosition);
-      }
-    );
-  }
-
-  // This command will move the elevator to the target position if it is close enough.
-  // If the elevator has not reached the target position, it will retain its current 
-  // position instead.
-  public Command retainReasonablePosition() {
-    return Commands.either(
-      retainTargetPositionCommand(),
-      retainCurrentPositionCommand(),
-      () -> isAtSetpoint()
     );
   }
 }
