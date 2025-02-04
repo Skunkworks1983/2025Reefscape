@@ -9,7 +9,10 @@ import java.util.Optional;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.constants.Constants;
+import frc.robot.constants.Constants.VisionConstants;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
 
 public class Robot extends TimedRobot {
 
@@ -23,14 +26,7 @@ public class Robot extends TimedRobot {
     collector
   );
 
-  // Drivebase drivebase = new Drivebase();
-  // OI oi = new OI(elevator, collector);
-  // Vision vision = new Vision(
-  //   drivebase::addVisionMeasurement,
-  //   new VisionIOPhotonVision(
-  //     VisionConstants.CAMERA_NAMES[0],
-  //     VisionConstants.ROBOT_TO_CAMERA_TRANSFORM
-  //   )
+  
 
   public Robot() {
     if(Constants.Testing.ENSURE_COMPETITION_READY_SUBSYSTEMS) {
