@@ -82,25 +82,27 @@ public class Climber extends SubsystemBase {
     
     setPoint += getPosition();
 
-    while (getPosition() != setPoint) {
+    if(getMagnetSensor1() == true && getMagnetSensor2() == true){
+      while (getPosition() != setPoint) {
       
-      VelocityVoltage VV = new VelocityVoltage(5);
-      climbMotor.setControl(VV);
-      SmartDashboard.putNumber("climber KP: ", 0.0);
-      SmartDashboard.putNumber("climber KD: ", 0.0);
-      SmartDashboard.putNumber("climber KI: ", 0.0);
-      SmartDashboard.putNumber("climber KF: ", 0.0);
-
-      System.out.println("Position: " + getPosition());
-      System.out.println("set Point: " + setPoint);
-      SmartDashboard.putNumber("position", getPosition());
-      SmartDashboard.putNumber("set point", setPoint);
-      
-      climberSmartPID.updatePID();
-
-      if (getPosition() > setPoint) {
-        climbMotor.stopMotor();
-        break;
+        VelocityVoltage VV = new VelocityVoltage(5);
+        climbMotor.setControl(VV);
+        SmartDashboard.putNumber("climber KP: ", 0.0);
+        SmartDashboard.putNumber("climber KD: ", 0.0);
+        SmartDashboard.putNumber("climber KI: ", 0.0);
+        SmartDashboard.putNumber("climber KF: ", 0.0);
+  
+        System.out.println("Position: " + getPosition());
+        System.out.println("set Point: " + setPoint);
+        SmartDashboard.putNumber("position", getPosition());
+        SmartDashboard.putNumber("set point", setPoint);
+        
+        climberSmartPID.updatePID();
+  
+        if (getPosition() > setPoint) {
+          climbMotor.stopMotor();
+          break;
+        }
       }
     }
 
