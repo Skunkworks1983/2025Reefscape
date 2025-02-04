@@ -79,7 +79,8 @@ public class Climber extends SubsystemBase {
   }
 
   public void moveInDirection(double setPoint) {
-    climbMotor.setPosition(0.0);
+    
+    setPoint += getPosition();
 
     while (getPosition() != setPoint) {
       
@@ -92,6 +93,9 @@ public class Climber extends SubsystemBase {
 
       System.out.println("Position: " + getPosition());
       System.out.println("set Point: " + setPoint);
+      SmartDashboard.putNumber("position", getPosition());
+      SmartDashboard.putNumber("set point", setPoint);
+      
       climberSmartPID.updatePID();
 
       if (getPosition() > setPoint) {
