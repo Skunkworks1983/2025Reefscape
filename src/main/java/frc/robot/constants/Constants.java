@@ -19,16 +19,8 @@ public class Constants {
     public static boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = true;
   }
 
-  public class PIDs {
-    public static double SWERVE_MODULE_TURN_kP = .005;
-    public static double SWERVE_MODULE_TURN_kI = 0;
-    public static double SWERVE_MODULE_TURN_kD = 0;
-    public static double SWERVE_MODULE_TURN_kF = 0;
-    public static double SWERVE_MODULE_DRIVE_kP = .1;
-    public static double SWERVE_MODULE_DRIVE_kI = 0;
-    public static double SWERVE_MODULE_DRIVE_kD = 0;
-    public static double SWERVE_MODULE_DRIVE_kF = 0;
-            
+  
+
   public class Collector {
     public static int RIGHT_MOTOR = 42;
     public static int LEFT_MOTOR = 11;
@@ -54,59 +46,21 @@ public class Constants {
     public static final double MAX_METERS_PER_SECOND = 0.0;
     public static final double MAX_DEGREES_PER_SECOND = 0.0;
 
-        public class IDS {
-            public static int ROTATION_JOYSTICK_ID = 1;
-            public static int TRANSLATION_JOYSTICK_ID = 0;
-            public static int BUTTON_STICK_ID = 3;
-        }
-  }
-
-  public class VisionConstants {
-    public static final String[] CAMERA_NAMES = {
-            "Camera_1",
-        };
-
-        public static final Transform3d ROBOT_TO_CAMERA_TRANSFORM = 
-            new Transform3d(
-                0, 
-                0, 
-                0, 
-                new Rotation3d(
-                    0, 
-                    0, 
-                    0
-                )
-            );
-    }
-}
-
-    public class PIDs {
-      public static final double SWERVE_MODULE_TURN_kP = 0.0;
-      public static final double SWERVE_MODULE_TURN_kI = 0.0;
-      public static final double SWERVE_MODULE_TURN_kD = 0.0;
-      public static final double SWERVE_MODULE_TURN_kF = 0.0;
-      public static final double SWERVE_MODULE_DRIVE_kP = 0.0;
-      public static final double SWERVE_MODULE_DRIVE_kI = 0.0;
-      public static final double SWERVE_MODULE_DRIVE_kD = 0.0;
-      public static final double SWERVE_MODULE_DRIVE_kF = 0.0;
-
-      public static final boolean SMART_PID_ENABLED = true;
-      public static final boolean SMART_PID_TURN_ENABLED = true;
-      public static final boolean SMART_PID_DRIVE_ENABLED = true;
-
-      public static final double PID_LOW_LIMIT = -0.8;
-      public static final double PID_HIGH_LIMIT = 0.8;
+    public class IDS {
+      public static int ROTATION_JOYSTICK_ID = 1;
+      public static int TRANSLATION_JOYSTICK_ID = 0;
+      public static int BUTTON_STICK_ID = 3;
     }
 
     public static SwerveModuleConstants MODULES[] = {
-        new SwerveModuleConstants(
-            9, 3, 4, -0.212402, new Translation2d(0.28194, 0.28194), "Front Left"),
-        new SwerveModuleConstants(
-            11, 7, 8, 0.120361, new Translation2d(0.28194, -0.28194), "Front Right"),
-        new SwerveModuleConstants(
-            12, 1, 2, -0.377441, new Translation2d(-0.28194, 0.28194), "Back Left"),
-        new SwerveModuleConstants(
-            10, 5, 6, 0.096680, new Translation2d(-0.28194, -0.28194), "Back Right")
+      new SwerveModuleConstants(
+          9, 3, 4, -0.212402, new Translation2d(0.28194, 0.28194), "Front Left"),
+      new SwerveModuleConstants(
+          11, 7, 8, 0.120361, new Translation2d(0.28194, -0.28194), "Front Right"),
+      new SwerveModuleConstants(
+          12, 1, 2, -0.377441, new Translation2d(-0.28194, 0.28194), "Back Left"),
+      new SwerveModuleConstants(
+          10, 5, 6, 0.096680, new Translation2d(-0.28194, -0.28194), "Back Right")
     };
 
     public class Info {
@@ -117,77 +71,112 @@ public class Constants {
       public static final double MAX_MODULE_SPEED = 4.498848;
     }
 
-  public class Elevator {
-    public static final int MOTOR_ID = 0;
-
-    // This tolerance value will be used for deciding if the elevator
-    // should target to its setpoint or if the setpoint is too far
-    // away and the elevator should just maintain its current position.
-    public static final double TOLORENCE_METERS_FOR_SETPOINT = 0.0;
-    // This tolerance value will be used for moving to a setpoint
-    // using the MoveToPositionCommand.
-    public static final double TOLERENCE_METERS_FOR_MOVE_TO_POSITION = 0.0;
-    public static final double ROTATIONS_TO_METERS = 0.0;
-
     public class PIDs {
-      public static final double ELEVATOR_kP = 0.0;
-      public static final double ELEVATOR_kI = 0.0;
-      public static final double ELEVATOR_kD = 0.0;
-      public static final double ELEVATOR_kF = 0.0;
-    }
+      public static double SWERVE_MODULE_TURN_kP = .005;
+      public static double SWERVE_MODULE_TURN_kI = 0;
+      public static double SWERVE_MODULE_TURN_kD = 0;
+      public static double SWERVE_MODULE_TURN_kF = 0;
+      public static double SWERVE_MODULE_DRIVE_kP = .1;
+      public static double SWERVE_MODULE_DRIVE_kI = 0;
+      public static double SWERVE_MODULE_DRIVE_kD = 0;
+      public static double SWERVE_MODULE_DRIVE_kF = 0;
 
-    public class Profile {
-      public static final double MAX_VELOCITY = 0.0;
-      public static final double MAX_ACCELERATION = 0.0;
-    }
+      public static final boolean SMART_PID_ENABLED = true;
+      public static final boolean SMART_PID_TURN_ENABLED = true;
+      public static final boolean SMART_PID_DRIVE_ENABLED = true;
 
-    public class Setpoints {
-      public static final double FLOOR_POSITION_METERS = 0.0;
-      public static final double L1_POSITION_METERS = 0.0;
-      public static final double L2_POSITION_METERS = 0.0;
-      public static final double L3_POSITION_METERS = 0.0;
-      public static final double L4_POSITION_METERS = 0.0;
-      public static final double NET_POSITION_METERS = 0.0;
+      public static final double PID_LOW_LIMIT = -0.8;
+      public static final double PID_HIGH_LIMIT = 0.8;
     }
   }
 
-  public class OI {
-    public class LIMITS {
-      public static final double MAX_INSTRUCTED_METERS_PER_SECOND = Constants.Drivebase.MAX_METERS_PER_SECOND;
-      public static final double MAX_INSTRUCTED_DEGREES_PER_SECOND = Constants.Drivebase.MAX_DEGREES_PER_SECOND;
+    public class VisionConstants {
+      public static final String[] CAMERA_NAMES = {
+          "Camera_1",
+      };
+
+      public static final Transform3d ROBOT_TO_CAMERA_TRANSFORM = new Transform3d(
+          0,
+          0,
+          0,
+          new Rotation3d(
+              0,
+              0,
+              0));
     }
 
-    public static final double AXIS_DEADBAND = .08;
+    
 
-    // (x or y joystick axis input after deadband ^ AXIS_INPUT_EXPONENT)
-    // * MAX_INSTRUCTED_METERS_PER_SECOND = instructed meters per second
-    // Ensure that this AXIS_INPUT_EXPONENT does not result in a result
-    // that is always positive.
-    public static final double AXIS_INPUT_EXPONENT = 3.0;
+    public class Elevator {
+      public static final int MOTOR_ID = 0;
 
-    public class IDs {
-      public class Joysticks {
-        public static final int ROTATION_JOYSTICK_ID = 1;
-        public static final int TRANSLATION_JOYSTICK_ID = 2;
-        public static final int BUTTON_STICK_ID = 0;
+      // This tolerance value will be used for deciding if the elevator
+      // should target to its setpoint or if the setpoint is too far
+      // away and the elevator should just maintain its current position.
+      public static final double TOLORENCE_METERS_FOR_SETPOINT = 0.0;
+      // This tolerance value will be used for moving to a setpoint
+      // using the MoveToPositionCommand.
+      public static final double TOLERENCE_METERS_FOR_MOVE_TO_POSITION = 0.0;
+      public static final double ROTATIONS_TO_METERS = 0.0;
+
+      public class PIDs {
+        public static final double ELEVATOR_kP = 0.0;
+        public static final double ELEVATOR_kI = 0.0;
+        public static final double ELEVATOR_kD = 0.0;
+        public static final double ELEVATOR_kF = 0.0;
       }
 
-      public class Buttons {
-        public class Elevator {
-          public static final int GOTO_FLOOR_POSITION = 0;
-          public static final int GOTO_L1 = 0;
-          public static final int GOTO_L2 = 0;
-          public static final int GOTO_L3 = 0;
-          public static final int GOTO_L4 = 0;
-          public static final int GOTO_NET = 0;
+      public class Profile {
+        public static final double MAX_VELOCITY = 0.0;
+        public static final double MAX_ACCELERATION = 0.0;
+      }
+
+      public class Setpoints {
+        public static final double FLOOR_POSITION_METERS = 0.0;
+        public static final double L1_POSITION_METERS = 0.0;
+        public static final double L2_POSITION_METERS = 0.0;
+        public static final double L3_POSITION_METERS = 0.0;
+        public static final double L4_POSITION_METERS = 0.0;
+        public static final double NET_POSITION_METERS = 0.0;
+      }
+    }
+
+    public class OI {
+      public class LIMITS {
+        public static final double MAX_INSTRUCTED_METERS_PER_SECOND = Constants.Drivebase.MAX_METERS_PER_SECOND;
+        public static final double MAX_INSTRUCTED_DEGREES_PER_SECOND = Constants.Drivebase.MAX_DEGREES_PER_SECOND;
+      }
+
+      public static final double AXIS_DEADBAND = .08;
+
+      // (x or y joystick axis input after deadband ^ AXIS_INPUT_EXPONENT)
+      // * MAX_INSTRUCTED_METERS_PER_SECOND = instructed meters per second
+      // Ensure that this AXIS_INPUT_EXPONENT does not result in a result
+      // that is always positive.
+      public static final double AXIS_INPUT_EXPONENT = 3.0;
+
+      public class IDs {
+        public class Joysticks {
+          public static final int ROTATION_JOYSTICK_ID = 1;
+          public static final int TRANSLATION_JOYSTICK_ID = 2;
+          public static final int BUTTON_STICK_ID = 0;
         }
 
-        public class Collector {
-          public static final int ROTATE_CORAL = 23;
-          public static final int INTAKE_CORAL = 14;
+        public class Buttons {
+          public class Elevator {
+            public static final int GOTO_FLOOR_POSITION = 0;
+            public static final int GOTO_L1 = 0;
+            public static final int GOTO_L2 = 0;
+            public static final int GOTO_L3 = 0;
+            public static final int GOTO_L4 = 0;
+            public static final int GOTO_NET = 0;
+          }
 
+          public class Collector {
+            public static final int ROTATE_CORAL = 23;
+            public static final int INTAKE_CORAL = 14;
+          }
         }
       }
     }
   }
-}
