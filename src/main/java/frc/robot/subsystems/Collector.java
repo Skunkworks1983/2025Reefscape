@@ -42,6 +42,7 @@ public class Collector extends SubsystemBase {
   public Collector() {
    rightMotor = new TalonFX(Constants.Collector.RIGHT_MOTOR);
    leftMotor = new TalonFX(Constants.Collector.LEFT_MOTOR);
+
     
     TalonFXConfiguration talonConfigCollectorMotor = new TalonFXConfiguration();
 
@@ -105,7 +106,7 @@ public class Collector extends SubsystemBase {
       () -> {
         // setCollectorSpeeds(-Constants.Collector.COLLECOR_ROTATE_FAST, 
         //   Constants.Collector.COLLECOR_ROTATE_FAST);
-        setCollectorSpeeds(-.15, .15);
+        setCollectorSpeeds(-1, 1);
       },
       () -> {
         setCollectorSpeeds(0, 0);
