@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.constants.Constants.OI.LIMITS;
+import frc.robot.utils.headingControllers.ReefHeadingController;
 import frc.robot.constants.Constants;
 import frc.robot.commands.elevator.*;
 import frc.robot.constants.Constants.OI.IDs.Joysticks;
@@ -38,7 +39,11 @@ public class OI extends SubsystemBase {
     (axisInput) -> Math.abs(axisInput) < Constants.OI.AXIS_DEADBAND 
       ? 0.0 : axisInput;
 
-  public OI(Optional<Elevator> optionalElevator, Optional<Collector> optionalCollector) {
+  public OI(
+    Optional<Elevator> optionalElevator, 
+    Optional<Collector> optionalCollector,
+    Optional<Drivebase> optionalDrivebase
+  ) {
 
     if(optionalElevator.isPresent()) {
       Elevator elevator = optionalElevator.get();
@@ -61,6 +66,20 @@ public class OI extends SubsystemBase {
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.INTAKE_CORAL)
         .whileTrue(collector.intakeCoralCommand());
     }
+
+    if(optionalDrivebase.isPresent()) { 
+      Drivebase drivebase = optionalDrivebase.get();
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.HeadingControl.TARGET_REEF)
+        .whileTrue(drivebase.getSwerveTeleopCommand(
+          this::getInstructedXMetersPerSecond, //Move location of this specification
+          this::getInstructedYMetersPerSecond, //Move location of this specification
+          new ReefHeadingController()::getDesiredRotation,
+          false // Move location of this logic. Put in constants?
+        )
+      );
+    }
+
+
   }
 
   @Override

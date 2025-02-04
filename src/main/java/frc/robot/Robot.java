@@ -15,19 +15,32 @@ public class Robot extends TimedRobot {
 
   // replace subsystem with Optional.empty() for testing
   // ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
-  Optional<Drivebase> drivebase = Optional.of(new Drivebase());
   Optional<Elevator> elevator = Optional.of(new Elevator());
   Optional<Collector> collector = Optional.of(new Collector());
+  Optional<Drivebase> drivebase = Optional.of(new Drivebase());
   OI oi = new OI( 
     elevator,
-    collector
+    collector,
+    drivebase
   );
+  // Likely bad code. Think about how default commands work.
 
   public Robot() {
     if(Constants.Testing.ENSURE_COMPETITION_READY_SUBSYSTEMS) {
       assert drivebase.isPresent();
       assert collector.isPresent();
       assert elevator.isPresent();
+    }
+    if(drivebase.isPresent()) {
+      drivebase.get().setDefaultCommand(
+        drivebase.get().getSwerveTeleopCommand(
+          oi::getInstructedXMetersPerSecond,
+          oi::getInstructedYMetersPerSecond,
+          oi::getInstructedDegreesPerSecond,
+          true
+        )
+      ); // add a set translation controls function. Create a curried function that creates
+      // a getSwerveTeleopCommand function. getSwerveTeleopRotationCommand
     }
   }
 
@@ -43,16 +56,7 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {}
 
   @Override
-  public void teleopInit() { 
-    if(drivebase.isPresent()) {
-      drivebase.get().getSwerveTeleopCommand(
-        oi::getInstructedXMetersPerSecond,
-        oi::getInstructedYMetersPerSecond,
-        oi::getInstructedDegreesPerSecond,
-        true
-      ).schedule();
-    }
-  }
+  public void teleopInit() {}
 
   @Override
   public void teleopPeriodic() {}

@@ -6,10 +6,12 @@ package frc.robot.subsystems;
 
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -25,6 +27,13 @@ import frc.robot.constants.Constants;
 public class Drivebase extends SubsystemBase {
 
   private SwerveModule swerveModules[] = new SwerveModule[Constants.Drivebase.MODULES.length];
+  private PIDController headingPIDController = 
+    new PIDController(
+      Constants.Drivebase.PIDs.HEADING_kP,
+      Constants.Drivebase.PIDs.HEADING_kI,
+      Constants.Drivebase.PIDs.HEADING_kD
+    );
+
   private AHRS gyro = new AHRS(NavXComType.kUSB1);
 
   private SwerveDriveKinematics swerveDriveKinematics;
@@ -99,6 +108,22 @@ public class Drivebase extends SubsystemBase {
     return ChassisSpeeds.fromRobotRelativeSpeeds(getRobotRelativeSpeeds(),
       getGyroAngle());
   }
+
+  public Command getSwerveTeleopCommand(
+    DoubleSupplier xMetersPerSecond,
+    DoubleSupplier yMetersPerSecond, 
+    Supplier<Rotation2d> desiredRotation,
+    boolean isFieldRelative
+  ) {
+    return getSwerveTeleopCommand(
+      xMetersPerSecond, 
+      yMetersPerSecond, 
+      (DoubleSupplier)() ->
+        (desiredRotation.get().getDegrees() - getGyroAngle().getDegrees() + 180) % 360 - 180, 
+      isFieldRelative
+    );
+  }
+
 
   public Command getSwerveTeleopCommand(
     DoubleSupplier xMetersPerSecond,

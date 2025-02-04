@@ -48,10 +48,9 @@ public class Constants {
       public static final double SWERVE_MODULE_TURN_kI = 0.0;
       public static final double SWERVE_MODULE_TURN_kD = 0.0;
       public static final double SWERVE_MODULE_TURN_kF = 0.0;
-      public static final double SWERVE_MODULE_DRIVE_kP = 0.0;
-      public static final double SWERVE_MODULE_DRIVE_kI = 0.0;
-      public static final double SWERVE_MODULE_DRIVE_kD = 0.0;
-      public static final double SWERVE_MODULE_DRIVE_kF = 0.0;
+      public static final double HEADING_kP = 0.0;
+      public static final double HEADING_kI = 0.0;
+      public static final double HEADING_kD = 0.0;
 
       public static final boolean SMART_PID_ENABLED = true;
       public static final boolean SMART_PID_TURN_ENABLED = true;
@@ -151,6 +150,11 @@ public class Constants {
           public static final int ROTATE_CORAL = 23;
           public static final int INTAKE_CORAL = 14;
 
+        }
+
+        public class HeadingControl {
+          public static final int TARGET_REEF = 0;
+          
         }
       }
     }
