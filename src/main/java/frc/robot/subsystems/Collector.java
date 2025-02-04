@@ -21,16 +21,16 @@ public class Collector extends SubsystemBase {
   private TalonFX rightMotor; 
   private TalonFX leftMotor; 
 
-   private final VelocityVoltage velocityVoltage = new VelocityVoltage(0);
-   private double lastRightSpeed;
-   private double lastLeftSpeed;
+  private final VelocityVoltage velocityVoltage = new VelocityVoltage(0);
+  private double lastRightSpeed;
+  private double lastLeftSpeed;
 
-   // BUG: these motor controllers are not used! Something is likely wrong
-   // with the collector.
-   private SmartPIDControllerTalonFX rightMotorController;
-   private SmartPIDControllerTalonFX leftMotorController;
+  // BUG: these motor controllers are not used! Something is likely wrong
+  // with the collector.
+  private SmartPIDControllerTalonFX rightMotorController;
+  private SmartPIDControllerTalonFX leftMotorController;
 
-   private double getLeftMotorVelocity() {
+  private double getLeftMotorVelocity() {
     return leftMotor.getVelocity().getValueAsDouble();
   }
   private double getRightMotorVelocity() {

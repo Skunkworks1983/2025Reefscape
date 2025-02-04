@@ -19,10 +19,8 @@ public class MoveToPositionCommand extends Command {
   Timer timeElapsed;
   State startState;
   State targetState;
-  double targetHeight;
   Elevator elevator;
   public MoveToPositionCommand(Elevator elevator, double targetHeight) {
-    this.targetHeight = targetHeight;
     this.targetState = new State(targetHeight, 0.0);
     this.elevator = elevator;
     addRequirements(elevator);
@@ -55,6 +53,6 @@ public class MoveToPositionCommand extends Command {
   @Override
   public boolean isFinished() {
     return Constants.Elevator.TOLERENCE_METERS_FOR_MOVE_TO_POSITION > 
-      Math.abs(targetHeight - elevator.getElevatorPosition());
+      Math.abs(targetState.position - elevator.getElevatorPosition());
   }
 }
