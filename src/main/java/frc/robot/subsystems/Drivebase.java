@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import java.util.Arrays;
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -23,6 +22,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -111,13 +111,15 @@ public class Drivebase extends SubsystemBase {
 
   // TODO: add docstring
   private void drive(double xMetersPerSecond,
-      double yMetersPerSecond, Rotation2d rotationsPerSecond, boolean isFieldRelative) {
+  double yMetersPerSecond, double degreesPerSecond, boolean isFieldRelative) {
     ChassisSpeeds chassisSpeeds;
+    double radiansPerSecond = Units.degreesToRadians(degreesPerSecond);
     if (isFieldRelative) {
       chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xMetersPerSecond, yMetersPerSecond,
-          rotationsPerSecond.getRadians(), getGyroAngle());
-    } else {
-      chassisSpeeds = new ChassisSpeeds(xMetersPerSecond, yMetersPerSecond, rotationsPerSecond.getRadians());
+        radiansPerSecond, getGyroAngle());
+    } 
+    else {
+      chassisSpeeds = new ChassisSpeeds(xMetersPerSecond, yMetersPerSecond, radiansPerSecond);
     }
 
     SwerveModuleState[] swerveModuleStates = swerveDriveKinematics.toSwerveModuleStates(chassisSpeeds);
@@ -164,10 +166,11 @@ public class Drivebase extends SubsystemBase {
   }
 
   public Command getSwerveTeleopCommand(
-      DoubleSupplier xMetersPerSecond,
-      DoubleSupplier yMetersPerSecond,
-      Supplier<Rotation2d> rotationPerSecond,
-      boolean isFieldRelative) {
+    DoubleSupplier xMetersPerSecond,
+    DoubleSupplier yMetersPerSecond, 
+    DoubleSupplier degreesPerSecond,
+    boolean isFieldRelative
+  ) {
     int fieldOrientationMultiplier;
     var alliance = DriverStation.getAlliance();
     if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Blue) {
@@ -176,19 +179,22 @@ public class Drivebase extends SubsystemBase {
       fieldOrientationMultiplier = -1;
     }
     return Commands.runEnd(
-        () -> {
-          drive(
-              xMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
-              yMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
-              rotationPerSecond.get(),
-              isFieldRelative);
-        },
-        () -> {
-          drive(
-              0,
-              0,
-              Rotation2d.kZero,
-              isFieldRelative);
-        });
+      () -> {
+        drive(
+          xMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
+          yMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
+          degreesPerSecond.getAsDouble(),
+          isFieldRelative
+        );
+      },
+      () -> {
+        drive(
+          0,
+          0,
+          0,
+          isFieldRelative
+        );
+      }
+    );
   }
 }

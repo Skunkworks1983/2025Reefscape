@@ -4,27 +4,41 @@
 
 package frc.robot;
 
+import java.util.Optional;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.constants.Constants.VisionConstants;
-import frc.robot.subsystems.Drivebase;
-import frc.robot.subsystems.OI;
-import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.VisionIOPhotonVision;
+import frc.robot.constants.Constants;
+import frc.robot.subsystems.*;
 
 public class Robot extends TimedRobot {
 
-  Drivebase drivebase = new Drivebase();
-  OI oi = new OI();
-  Vision vision = new Vision(
-    drivebase::addVisionMeasurement,
-    new VisionIOPhotonVision(
-      VisionConstants.CAMERA_NAMES[0],
-      VisionConstants.ROBOT_TO_CAMERA_TRANSFORM
-    )
+  // replace subsystem with Optional.empty() for testing
+  // ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
+  Optional<Drivebase> drivebase = Optional.of(new Drivebase());
+  Optional<Elevator> elevator = Optional.of(new Elevator());
+  Optional<Collector> collector = Optional.of(new Collector());
+  OI oi = new OI( 
+    elevator,
+    collector
   );
 
-  public Robot() {}
+  // Drivebase drivebase = new Drivebase();
+  // OI oi = new OI(elevator, collector);
+  // Vision vision = new Vision(
+  //   drivebase::addVisionMeasurement,
+  //   new VisionIOPhotonVision(
+  //     VisionConstants.CAMERA_NAMES[0],
+  //     VisionConstants.ROBOT_TO_CAMERA_TRANSFORM
+  //   )
+
+  public Robot() {
+    if(Constants.Testing.ENSURE_COMPETITION_READY_SUBSYSTEMS) {
+      assert drivebase.isPresent();
+      assert collector.isPresent();
+      assert elevator.isPresent();
+    }
+  }
 
   @Override
   public void robotPeriodic() {
@@ -39,12 +53,14 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() { 
-    drivebase.getSwerveTeleopCommand(
-      oi::getInstructedXMetersPerSecond,
-      oi::getInstructedYMetersPerSecond,
-      oi::getInstructedRotationPerSecond,
-      true
-    ).schedule();
+    if(drivebase.isPresent()) {
+      drivebase.get().getSwerveTeleopCommand(
+        oi::getInstructedXMetersPerSecond,
+        oi::getInstructedYMetersPerSecond,
+        oi::getInstructedDegreesPerSecond,
+        true
+      ).schedule();
+    }
   }
   
   @Override
