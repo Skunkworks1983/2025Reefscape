@@ -123,7 +123,6 @@ public class Constants {
         public static final double ELEVATOR_kP = 0.0;
         public static final double ELEVATOR_kI = 0.0;
         public static final double ELEVATOR_kD = 0.0;
-        public static final double ELEVATOR_kF = 0.0;
       }
 
       public class Profile {

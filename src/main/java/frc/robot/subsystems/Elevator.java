@@ -44,8 +44,7 @@ public class Elevator extends SubsystemBase {
   PIDController positionController = new PIDController(
     Constants.Elevator.PIDs.ELEVATOR_kP,
     Constants.Elevator.PIDs.ELEVATOR_kI,
-    Constants.Elevator.PIDs.ELEVATOR_kD,
-    Constants.Elevator.PIDs.ELEVATOR_kF
+    Constants.Elevator.PIDs.ELEVATOR_kD
   );
 
   public Elevator() {
@@ -90,7 +89,7 @@ public class Elevator extends SubsystemBase {
     State startState = new State(); // This will be set in the start of the command
     State targetState = new State(targetHeight, 0.0);
     timeElapsed.stop();
-    return Commands.startRun(
+    return startRun(
       () -> {
         timeElapsed.restart();
         targetPosition = targetHeight;
@@ -140,7 +139,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public Command getRetainTargetPositionCommand() {
-    return Commands.run(
+    return run(
       () -> {
         double velocity = positionController
           .calculate(
