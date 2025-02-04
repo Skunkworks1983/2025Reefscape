@@ -128,6 +128,7 @@ public class Constants {
     public static final boolean CLIMBER_SMARTPID_ACTIVE = false;
 
     public static final double CLIMBER_MAX = 2.0; //in rotations
+    public static final double CLIMBER_MIN = -2.0; //in rotations
   }
 
   public class OI {

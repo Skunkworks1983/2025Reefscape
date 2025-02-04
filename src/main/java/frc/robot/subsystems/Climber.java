@@ -116,13 +116,12 @@ public class Climber extends SubsystemBase {
 
       // when i ask it to stay, it stay
       case STATIONARY:
-        System.out.println("TBD");
+        moveInDirection(0.0);
         break;
 
       // when i ask it to go down, it go down
       case DOWN:
-        System.out.println("TBD");
-        climbMotor.set(-.01);
+        moveInDirection(Constants.ClimberIDs.CLIMBER_MIN);
         break;
     }
 
@@ -136,6 +135,28 @@ public class Climber extends SubsystemBase {
     return Commands.runOnce(
         () -> {
           move(UP);
+        });
+  }
+
+  public Command moveDOWN() {
+    direction DOWN = direction.DOWN;  //instantiates the DOWN direction
+
+
+    //runs a command to make it go down
+    return Commands.runOnce(
+        () -> {
+          move(DOWN);
+        });
+  }
+
+  public Command stay() {
+    direction STATIONARY = direction.STATIONARY;  //instantiates the STATIONARY direction
+
+
+    //runs a command to make it stay where it is
+    return Commands.runOnce(
+        () -> {
+          move(STATIONARY);
         });
   }
 }
