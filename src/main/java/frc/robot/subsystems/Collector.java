@@ -25,9 +25,12 @@ public class Collector extends SubsystemBase {
   private double lastRightSpeed;
   private double lastLeftSpeed;
 
-  // BUG: these motor controllers are not used! Something is likely wrong
-  // with the collector.
+  // Neither of these smart PIDs are 'used' after they are constructed because the
+  // PID controller is built into the motor (we don't have to call .calculate like we
+  // do with the PIDController class).
+  @SuppressWarnings("unused")
   private SmartPIDControllerTalonFX rightMotorController;
+  @SuppressWarnings("unused")
   private SmartPIDControllerTalonFX leftMotorController;
 
   private double getLeftMotorVelocity() {
