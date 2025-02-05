@@ -5,12 +5,9 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
-import frc.robot.constants.Constants.Elevator.Profile;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -28,17 +25,6 @@ public class Elevator extends SubsystemBase {
     Constants.Elevator.MOTOR_ID, 
     MotorType.kBrushless
   );
-
-  private final TrapezoidProfile motionProfile = new TrapezoidProfile(
-    new Constraints(
-      Profile.MAX_VELOCITY,
-      Profile.MAX_ACCELERATION
-    )
-  );
-
-  public TrapezoidProfile getMotionProfile() {
-    return motionProfile;
-  }
 
   private double targetPosition = getElevatorPosition();
 
