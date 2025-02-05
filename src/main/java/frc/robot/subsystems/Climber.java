@@ -33,18 +33,17 @@ public class Climber extends SubsystemBase {
   private DigitalInput magnetSensor1;
   private DigitalInput magnetSensor2;
 
-  SmartPIDControllerTalonFX climberSmartPID;                                                                                                                       
+  SmartPIDControllerTalonFX climberSmartPID;
 
   public Climber() {
     // instantiates climb motor
     climbMotor = new TalonFX(Constants.ClimberIDs.CLIMBER_KRAKEN_MOTOR);
     climbMotor.setPosition(0.0);
-    
-    
 
     // instantiates magnet senors
     magnetSensor1 = new DigitalInput(Constants.ClimberIDs.CLIMBER_MAGNET_SENSOR_1);
-    //magnetSensor2 = new DigitalInput(Constants.ClimberIDs.CLIMBER_MAGNET_SENSOR_2);
+    // magnetSensor2 = new
+    // DigitalInput(Constants.ClimberIDs.CLIMBER_MAGNET_SENSOR_2);
 
     // instantiates PID
     climberSmartPID = new SmartPIDControllerTalonFX(Constants.ClimberIDs.CLIMBER_KP,
@@ -79,30 +78,30 @@ public class Climber extends SubsystemBase {
   }
 
   public void moveInDirection(double setPoint) {
-    
+
     setPoint += getPosition();
 
-      while (getPosition() != setPoint) {
-      
-        VelocityVoltage VV = new VelocityVoltage(5);
-        climbMotor.setControl(VV);
-        SmartDashboard.putNumber("climber KP: ", 0.0);
-        SmartDashboard.putNumber("climber KD: ", 0.0);
-        SmartDashboard.putNumber("climber KI: ", 0.0);
-        SmartDashboard.putNumber("climber KF: ", 0.0);
-  
-        System.out.println("Position: " + getPosition());
-        System.out.println("set Point: " + setPoint);
-        SmartDashboard.putNumber("position", getPosition());
-        SmartDashboard.putNumber("set point", setPoint);
-        
-        climberSmartPID.updatePID();
-  
-        if (getPosition() > setPoint) {
-          climbMotor.stopMotor();
-          break;
-        }
+    while (getPosition() != setPoint) {
+
+      VelocityVoltage VV = new VelocityVoltage(5);
+      climbMotor.setControl(VV);
+      SmartDashboard.putNumber("climber KP: ", 0.0);
+      SmartDashboard.putNumber("climber KD: ", 0.0);
+      SmartDashboard.putNumber("climber KI: ", 0.0);
+      SmartDashboard.putNumber("climber KF: ", 0.0);
+
+      System.out.println("Position: " + getPosition());
+      System.out.println("set Point: " + setPoint);
+      SmartDashboard.putNumber("position", getPosition());
+      SmartDashboard.putNumber("set point", setPoint);
+
+      climberSmartPID.updatePID();
+
+      if (getPosition() > setPoint) {
+        climbMotor.stopMotor();
+        break;
       }
+    }
 
   }
 
@@ -127,31 +126,28 @@ public class Climber extends SubsystemBase {
 
   }
 
-  public Command checkMagnetSensors(){
-    
+  public Command checkMagnetSensors() {
+
     return Commands.startEnd(
-      () -> {
+        () -> {
 
-      },
-      () -> {
+        },
+        () -> {
 
-      }
-    ).until(
-      () -> {
-        if(getMagnetSensor1() != true && getMagnetSensor2() != true){
-          return false;
-        } else {
-          return true;
-        }
-      }
-    );
+        }).until(
+            () -> {
+              if (getMagnetSensor1() != true && getMagnetSensor2() != true) {
+                return false;
+              } else {
+                return true;
+              }
+            });
   }
 
   public Command moveUP() {
-    direction UP = direction.UP;  //instantiates the UP direction
+    direction UP = direction.UP; // instantiates the UP direction
 
-
-    //runs a command to make it go up
+    // runs a command to make it go up
     return Commands.runOnce(
         () -> {
           checkMagnetSensors();
@@ -160,10 +156,9 @@ public class Climber extends SubsystemBase {
   }
 
   public Command moveDOWN() {
-    direction DOWN = direction.DOWN;  //instantiates the DOWN direction
+    direction DOWN = direction.DOWN; // instantiates the DOWN direction
 
-
-    //runs a command to make it go down
+    // runs a command to make it go down
     return Commands.runOnce(
         () -> {
           checkMagnetSensors();
@@ -172,10 +167,9 @@ public class Climber extends SubsystemBase {
   }
 
   public Command stayInPlace() {
-    direction STATIONARY = direction.STATIONARY;  //instantiates the STATIONARY direction
+    direction STATIONARY = direction.STATIONARY; // instantiates the STATIONARY direction
 
-
-    //runs a command to make it stay where it is
+    // runs a command to make it stay where it is
     return Commands.runOnce(
         () -> {
           checkMagnetSensors();
