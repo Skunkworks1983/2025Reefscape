@@ -127,27 +127,24 @@ public class Climber extends SubsystemBase {
 
   }
 
-  public class checkMagnetSensors extends Command {
+  public Command checkMagnetSensors(){
     
-    @Override
-    public void initialize() {}
-  
-    @Override
-    public void execute() {}
-  
-    @Override
-    public void end(boolean interrupted) {
-      
-    }
+    return Commands.startEnd(
+      () -> {
 
-    @Override
-    public boolean isFinished() {
-      if(getMagnetSensor1() != true && getMagnetSensor2() != true){
-        return false;
-      } else {
-        return true;
+      },
+      () -> {
+
       }
-    }
+    ).until(
+      () -> {
+        if(getMagnetSensor1() != true && getMagnetSensor2() != true){
+          return false;
+        } else {
+          return true;
+        }
+      }
+    );
   }
 
   public Command moveUP() {
@@ -157,6 +154,7 @@ public class Climber extends SubsystemBase {
     //runs a command to make it go up
     return Commands.runOnce(
         () -> {
+          checkMagnetSensors();
           move(UP);
         });
   }
@@ -168,6 +166,7 @@ public class Climber extends SubsystemBase {
     //runs a command to make it go down
     return Commands.runOnce(
         () -> {
+          checkMagnetSensors();
           move(DOWN);
         });
   }
@@ -179,6 +178,7 @@ public class Climber extends SubsystemBase {
     //runs a command to make it stay where it is
     return Commands.runOnce(
         () -> {
+          checkMagnetSensors();
           move(STATIONARY);
         });
   }
