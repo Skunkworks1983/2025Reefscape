@@ -82,7 +82,6 @@ public class Climber extends SubsystemBase {
     
     setPoint += getPosition();
 
-    if(getMagnetSensor1() == true && getMagnetSensor2() == true){
       while (getPosition() != setPoint) {
       
         VelocityVoltage VV = new VelocityVoltage(5);
@@ -104,7 +103,6 @@ public class Climber extends SubsystemBase {
           break;
         }
       }
-    }
 
   }
 
@@ -129,6 +127,29 @@ public class Climber extends SubsystemBase {
 
   }
 
+  public class checkMagnetSensors extends Command {
+    
+    @Override
+    public void initialize() {}
+  
+    @Override
+    public void execute() {}
+  
+    @Override
+    public void end(boolean interrupted) {
+      
+    }
+
+    @Override
+    public boolean isFinished() {
+      if(getMagnetSensor1() != true && getMagnetSensor2() != true){
+        return false;
+      } else {
+        return true;
+      }
+    }
+  }
+
   public Command moveUP() {
     direction UP = direction.UP;  //instantiates the UP direction
 
@@ -151,7 +172,7 @@ public class Climber extends SubsystemBase {
         });
   }
 
-  public Command stay() {
+  public Command stayInPlace() {
     direction STATIONARY = direction.STATIONARY;  //instantiates the STATIONARY direction
 
 
