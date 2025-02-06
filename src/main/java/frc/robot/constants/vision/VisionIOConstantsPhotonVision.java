@@ -25,8 +25,9 @@ public class VisionIOConstantsPhotonVision implements VisionIOConstants {
         try {
             VisionIO io = new VisionIOPhotonVision(this.cameraName, this.robotToCamera);
             return Optional.of(io);
-        } catch(Exception e) {
-            System.err.println("Unable to initialize " + cameraName + " camera.");
+        } catch(Exception exception) {
+            System.err.println("UNABLE TO INITIALIZE " + cameraName + " CAMERA.");
+            exception.printStackTrace();
             return Optional.empty();
         }
     }

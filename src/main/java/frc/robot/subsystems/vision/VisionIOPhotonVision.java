@@ -1,6 +1,5 @@
 package frc.robot.subsystems.vision;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import org.ejml.simple.SimpleMatrix;
@@ -25,17 +24,13 @@ public class VisionIOPhotonVision implements VisionIO {
     private AprilTagFieldLayout aprilTagFieldLayout;
     private PhotonPoseEstimator poseEstimator;
 
-    public VisionIOPhotonVision(String cameraName, Transform3d robotToCamera) {
+    public VisionIOPhotonVision(String cameraName, Transform3d robotToCamera) throws Exception {
 
         name = cameraName;
         camera = new PhotonCamera(cameraName);
-
-        try {
-            aprilTagFieldLayout = AprilTagFieldLayout
-                    .loadFromResource(AprilTagFields.k2025Reefscape.m_resourceFile);
-        } catch (IOException e) {
-            System.err.println("Exception loading AprilTag field layout JSON: " + e.toString());
-        }
+        
+        aprilTagFieldLayout = AprilTagFieldLayout
+            .loadFromResource(AprilTagFields.k2025Reefscape.m_resourceFile);
 
         poseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout,
                 PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCamera);
