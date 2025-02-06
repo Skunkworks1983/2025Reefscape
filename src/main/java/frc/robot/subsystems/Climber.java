@@ -81,19 +81,19 @@ public class Climber extends SubsystemBase {
         switch (myDirection) {
           // when i ask it to go up, it go up
           case UP:
-            checkMagnetSensors();
+            checkIfMagnetSensorsAreTrue();
             moveInDirection(Constants.ClimberIDs.CLIMBER_MAX);
             break;
     
           // when i ask it to stay, it stay
           case STATIONARY:
-            checkMagnetSensors();
+            checkIfMagnetSensorsAreTrue();
             moveInDirection(0.0);
             break;
     
           // when i ask it to go down, it go down
           case DOWN:
-            checkMagnetSensors();
+            checkIfMagnetSensorsAreTrue();
             moveInDirection(Constants.ClimberIDs.CLIMBER_MIN);
             break;
         }
@@ -103,20 +103,11 @@ public class Climber extends SubsystemBase {
 
   }
 
-  public Command checkMagnetSensors() {
+  public Command checkIfMagnetSensorsAreTrue() {
 
-    return Commands.startEnd(
+    return Commands.waitUntil(
       () -> {
-      },
-      () -> {
-      }
-      ).until(
-      () -> {
-          if (getMagnetSensor1() && getMagnetSensor2()) {
-              return true;
-          } else {
-              return false;
-          }
+        return getMagnetSensor1() && getMagnetSensor2();
         }
       );
   }
@@ -129,7 +120,7 @@ public class Climber extends SubsystemBase {
       () -> {
         climberSmartPID.updatePID();
 
-        climbMotor.setControl(VV.withVelocity(5)); // TODO figure out velocity
+        climbMotor.setControl(VV.withVelocity(Constants.ClimberIDs.CLIMBER_VELOCITY));
 
         System.out.println("Position: " + getPosition());
         System.out.println("set Point: " + newSetPoint);
