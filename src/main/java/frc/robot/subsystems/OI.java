@@ -8,14 +8,13 @@ import java.util.Optional;
 import java.util.function.DoubleFunction;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.constants.Constants.OI.LIMITS;
 import frc.robot.constants.Constants;
 import frc.robot.commands.elevator.*;
 import frc.robot.constants.Constants.OI.IDs.Joysticks;
 
-public class OI extends SubsystemBase {
+public class OI {
   private Joystick rotationJoystick = new Joystick(Joysticks.ROTATION_JOYSTICK_ID);
   private Joystick translationJoystick = new Joystick(Joysticks.TRANSLATION_JOYSTICK_ID);
   private Joystick buttonJoystick = new Joystick(Joysticks.BUTTON_STICK_ID);
@@ -62,9 +61,6 @@ public class OI extends SubsystemBase {
         .whileTrue(collector.intakeCoralCommand());
     }
   }
-
-  @Override
-  public void periodic() {}
 
   public double getInstructedXMetersPerSecond() {
     return joystickToMetersPerSecond.apply(
