@@ -34,9 +34,10 @@ public class MoveToPositionCommand extends Command {
   public MoveToPositionCommand(Elevator elevator, double targetHeight) {
     this.targetState = new State(targetHeight, 0.0);
     this.elevator = elevator;
-    (timeElapsed = new Timer()).stop();
+    timeElapsed = new Timer();
+    timeElapsed.stop();
     addRequirements(elevator);
-   }
+  }
 
   @Override
   public void initialize() {
