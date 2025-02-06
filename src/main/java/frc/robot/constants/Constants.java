@@ -115,6 +115,26 @@ public class Constants {
     }
   }
 
+  public class ClimberIDs {
+    public static final int CLIMBER_KRAKEN_MOTOR = 12;
+    public static final int CLIMBER_MAGNET_SENSOR_1 = 0;
+    public static final int CLIMBER_MAGNET_SENSOR_2 = 0;
+
+    public static final double CLIMBER_KP = 0.1;
+    public static final double CLIMBER_KD = 0.0;
+    public static final double CLIMBER_KI = 0.0;
+    public static final double CLIMBER_KF = 0.0;
+
+    public static final boolean CLIMBER_SMARTPID_ACTIVE = false;
+
+    public static final double CLIMBER_MAX = 2.0; // in motor rotations
+    public static final double CLIMBER_MIN = -2.0; // in motor rotations
+
+    public static final double CLIMBER_VELOCITY = 5; // TODO figure out velocity
+
+    public static final double CLIMBER_RANGE = .1; // TODO figure out range
+  }
+
   public class OI {
     public class LIMITS {
       public static final double MAX_INSTRUCTED_METERS_PER_SECOND = Constants.Drivebase.MAX_METERS_PER_SECOND;
