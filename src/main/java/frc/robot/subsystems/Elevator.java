@@ -82,7 +82,7 @@ public class Elevator extends SubsystemBase {
         double velocity = positionController
           .calculate(
             getElevatorPosition(),
-            targetPosition 
+            targetPosition
           );
         setMotor(velocity);
       }

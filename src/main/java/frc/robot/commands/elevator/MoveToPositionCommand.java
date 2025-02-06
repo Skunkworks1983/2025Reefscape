@@ -24,9 +24,6 @@ public class MoveToPositionCommand extends Command {
   State targetState;
   Elevator elevator;
 
-  // TODO: Ensure that this is the best solution. 
-  // Using static in a command is uncommon, although it does not make sense for
-  // this to be in Constants.java or Elevator.java
   private final static TrapezoidProfile motionProfile = new TrapezoidProfile(
     new Constraints(
       Profile.MAX_VELOCITY,
