@@ -74,23 +74,23 @@ public class Climber extends SubsystemBase {
   }
 
 
-  public Command moveInAnyDirection(direction myDirection) {
+  public Command waitUntilMagnetSensorsAreTrueThenMove(direction myDirection) {
 
     return defer(
       () -> {
         switch (myDirection) {
           // when I ask it to go up, it go up
           case UP:
-            return checkIfMagnetSensorsAreTrue().andThen(moveInDirection(Constants.ClimberIDs.CLIMBER_MAX));
+            return waitUntilMagnetSensorsAreTrue().andThen(moveInDirection(Constants.ClimberIDs.CLIMBER_MAX));
     
           // when I ask it to stay, it stay
           case STATIONARY:
-            return checkIfMagnetSensorsAreTrue().andThen(moveInDirection(0.0));
+            return waitUntilMagnetSensorsAreTrue().andThen(moveInDirection(0.0));
             
     
           // when I ask it to go down, it go down
           case DOWN:
-            return checkIfMagnetSensorsAreTrue().andThen(moveInDirection(Constants.ClimberIDs.CLIMBER_MIN));
+            return waitUntilMagnetSensorsAreTrue().andThen(moveInDirection(Constants.ClimberIDs.CLIMBER_MIN));
 
           default:
             throw new EnumConstantNotPresentException(null, null);
@@ -101,7 +101,7 @@ public class Climber extends SubsystemBase {
 
   }
 
-  public Command checkIfMagnetSensorsAreTrue() {
+  public Command waitUntilMagnetSensorsAreTrue() {
 
     return Commands.waitUntil(
       () -> {
@@ -126,7 +126,8 @@ public class Climber extends SubsystemBase {
       () -> {
         climbMotor.stopMotor();
       }
-    ).until(() -> getPosition() > newSetPoint);
+    ).until(() -> getPosition() > newSetPoint + Constants.ClimberIDs.CLIMBER_RANGE && 
+      getPosition() < newSetPoint - Constants.ClimberIDs.CLIMBER_RANGE);
   }
 
   

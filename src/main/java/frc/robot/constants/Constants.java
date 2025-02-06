@@ -131,6 +131,8 @@ public class Constants {
     public static final double CLIMBER_MIN = -2.0; // in motor rotations
 
     public static final double CLIMBER_VELOCITY = 5; // TODO figure out velocity
+
+    public static final double CLIMBER_RANGE = .1; // TODO figure out range
   }
 
   public class OI {
