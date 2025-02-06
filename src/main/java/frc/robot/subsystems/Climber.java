@@ -20,7 +20,6 @@ import frc.robot.constants.Constants;
 import frc.robot.utils.SmartPIDControllerTalonFX;
 
 public class Climber extends SubsystemBase {
-  /** Creates a new Climber. */
   TalonFX climbMotor;
   StatusSignal<Angle> climbPos;
 
@@ -33,28 +32,25 @@ public class Climber extends SubsystemBase {
   private DigitalInput magnetSensor1;
   private DigitalInput magnetSensor2;
 
-  SmartPIDControllerTalonFX climberSmartPID;
+  private SmartPIDControllerTalonFX climberSmartPID;
 
   public Climber() {
-    // instantiates climb motor
     climbMotor = new TalonFX(Constants.ClimberIDs.CLIMBER_KRAKEN_MOTOR);
     climbMotor.setPosition(0.0);
 
-    // instantiates magnet senors
     magnetSensor1 = new DigitalInput(Constants.ClimberIDs.CLIMBER_MAGNET_SENSOR_1);
-    // magnetSensor2 = new
-    // DigitalInput(Constants.ClimberIDs.CLIMBER_MAGNET_SENSOR_2);
+    magnetSensor2 = new DigitalInput(Constants.ClimberIDs.CLIMBER_MAGNET_SENSOR_2);
 
-    // instantiates PID
-    climberSmartPID = new SmartPIDControllerTalonFX(Constants.ClimberIDs.CLIMBER_KP,
+    climberSmartPID = new SmartPIDControllerTalonFX(
+        Constants.ClimberIDs.CLIMBER_KP,
         Constants.ClimberIDs.CLIMBER_KI,
         Constants.ClimberIDs.CLIMBER_KD,
         Constants.ClimberIDs.CLIMBER_KF,
         "Climb Motor",
         Constants.ClimberIDs.CLIMBER_SMARTPID_ACTIVE,
-        climbMotor);
+        climbMotor
+        );
 
-    // instantiates enum
     direction up = direction.UP;
     direction stationary = direction.STATIONARY;
     direction down = direction.DOWN;
@@ -77,103 +73,74 @@ public class Climber extends SubsystemBase {
     return climbMotor.getPosition().getValueAsDouble();
   }
 
-  public void moveInDirection(double setPoint) {
 
-    setPoint += getPosition();
+  public Command move(direction myDirection) {
 
-    while (getPosition() != setPoint) {
-
-      VelocityVoltage VV = new VelocityVoltage(5);
-      climbMotor.setControl(VV);
-      SmartDashboard.putNumber("climber KP: ", 0.0);
-      SmartDashboard.putNumber("climber KD: ", 0.0);
-      SmartDashboard.putNumber("climber KI: ", 0.0);
-      SmartDashboard.putNumber("climber KF: ", 0.0);
-
-      System.out.println("Position: " + getPosition());
-      System.out.println("set Point: " + setPoint);
-      SmartDashboard.putNumber("position", getPosition());
-      SmartDashboard.putNumber("set point", setPoint);
-
-      climberSmartPID.updatePID();
-
-      if (getPosition() > setPoint) {
-        climbMotor.stopMotor();
-        break;
+    return Commands.runOnce(
+      () -> {
+        switch (myDirection) {
+          // when i ask it to go up, it go up
+          case UP:
+            checkMagnetSensors();
+            moveInDirection(Constants.ClimberIDs.CLIMBER_MAX);
+            break;
+    
+          // when i ask it to stay, it stay
+          case STATIONARY:
+            checkMagnetSensors();
+            moveInDirection(0.0);
+            break;
+    
+          // when i ask it to go down, it go down
+          case DOWN:
+            checkMagnetSensors();
+            moveInDirection(Constants.ClimberIDs.CLIMBER_MIN);
+            break;
+        }
       }
-    }
-
-  }
-
-  public void move(direction myDirection) {
-
-    switch (myDirection) {
-      // when i ask it to go up, it go up
-      case UP:
-        moveInDirection(Constants.ClimberIDs.CLIMBER_MAX);
-        break;
-
-      // when i ask it to stay, it stay
-      case STATIONARY:
-        moveInDirection(0.0);
-        break;
-
-      // when i ask it to go down, it go down
-      case DOWN:
-        moveInDirection(Constants.ClimberIDs.CLIMBER_MIN);
-        break;
-    }
+    );
+    
 
   }
 
   public Command checkMagnetSensors() {
 
     return Commands.startEnd(
-        () -> {
-
-        },
-        () -> {
-
-        }).until(
-            () -> {
-              if (getMagnetSensor1() != true && getMagnetSensor2() != true) {
-                return false;
-              } else {
-                return true;
-              }
-            });
+      () -> {
+      },
+      () -> {
+      }
+      ).until(
+      () -> {
+          if (getMagnetSensor1() && getMagnetSensor2()) {
+              return true;
+          } else {
+              return false;
+          }
+        }
+      );
   }
 
-  public Command moveUP() {
-    direction UP = direction.UP; // instantiates the UP direction
+  public Command moveInDirection(double setPoint)
+  {
+    VelocityVoltage VV = new VelocityVoltage(0);
+    final double newSetPoint = setPoint + getPosition();
+    return Commands.runEnd(
+      () -> {
+        climberSmartPID.updatePID();
 
-    // runs a command to make it go up
-    return Commands.runOnce(
-        () -> {
-          checkMagnetSensors();
-          move(UP);
-        });
+        climbMotor.setControl(VV.withVelocity(5)); // TODO figure out velocity
+
+        System.out.println("Position: " + getPosition());
+        System.out.println("set Point: " + newSetPoint);
+        SmartDashboard.putNumber("position", getPosition());
+        SmartDashboard.putNumber("set point", newSetPoint);
+      },
+      () -> {
+        climbMotor.stopMotor();
+      }
+    ).until(() -> getPosition() > newSetPoint);
   }
 
-  public Command moveDOWN() {
-    direction DOWN = direction.DOWN; // instantiates the DOWN direction
-
-    // runs a command to make it go down
-    return Commands.runOnce(
-        () -> {
-          checkMagnetSensors();
-          move(DOWN);
-        });
-  }
-
-  public Command stayInPlace() {
-    direction STATIONARY = direction.STATIONARY; // instantiates the STATIONARY direction
-
-    // runs a command to make it stay where it is
-    return Commands.runOnce(
-        () -> {
-          checkMagnetSensors();
-          move(STATIONARY);
-        });
-  }
+  
 }

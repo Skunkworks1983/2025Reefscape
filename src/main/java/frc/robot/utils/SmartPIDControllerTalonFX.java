@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.constants.Constants;
 
 /** Makes it super easy to tune, allows to change K values from smart dashboard*/
+/** Makes it super easy to tune controllers, allows programmers to change constants from smart dashboard */
 
 public class SmartPIDControllerTalonFX {
 
