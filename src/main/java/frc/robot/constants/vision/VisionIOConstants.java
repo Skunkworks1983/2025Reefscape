@@ -8,7 +8,10 @@ import java.util.Optional;
 
 import frc.robot.subsystems.vision.VisionIO;
 
-/** A factory class for initializing a VisionIO. */
+/**
+ * A factory class for initializing one VisionIO. The purpose of this class is to
+ * catch any exceptions and log them apon initialization to prevent code from crashing.
+ */
 public interface VisionIOConstants {
 
     /**
