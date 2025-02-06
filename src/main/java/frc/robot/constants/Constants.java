@@ -26,7 +26,7 @@ public class Constants {
     public static double COLLECOR_ROTATE_SLOW = 4.0;
     public static double COLLECOR_ROTATE_FAST = 6.0;
 
-    public class PIDS {
+    public class PIDs {
       public static final double KP = 0.0;
       public static final double KI = 0.0;
       public static final double KD = 0.0;
@@ -106,12 +106,13 @@ public class Constants {
     }
 
     public class Setpoints {
-      public static final double FLOOR_POSITION_METERS = 0.0;
-      public static final double L1_POSITION_METERS = 0.0;
-      public static final double L2_POSITION_METERS = 0.0;
-      public static final double L3_POSITION_METERS = 0.0;
-      public static final double L4_POSITION_METERS = 0.0;
-      public static final double NET_POSITION_METERS = 0.0;
+      // All positions are in meters
+      public static final double FLOOR_POSITION = 0.0;
+      public static final double L1_POSITION = 0.0;
+      public static final double L2_POSITION = 0.0;
+      public static final double L3_POSITION = 0.0;
+      public static final double L4_POSITION = 0.0;
+      public static final double NET_POSITION = 0.0;
     }
   }
 
