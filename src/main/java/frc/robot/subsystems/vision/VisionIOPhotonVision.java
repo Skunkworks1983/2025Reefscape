@@ -25,17 +25,16 @@ public class VisionIOPhotonVision implements VisionIO {
     private AprilTagFieldLayout aprilTagFieldLayout;
     private PhotonPoseEstimator poseEstimator;
 
-
     public VisionIOPhotonVision(String cameraName, Transform3d robotToCamera) {
 
-        this.name = cameraName;
+        name = cameraName;
         camera = new PhotonCamera(cameraName);
 
         try {
             aprilTagFieldLayout = AprilTagFieldLayout
                     .loadFromResource(AprilTagFields.k2025Reefscape.m_resourceFile);
         } catch (IOException e) {
-            System.out.println("Exception loading AprilTag field layout JSON: " + e.toString());
+            System.err.println("Exception loading AprilTag field layout JSON: " + e.toString());
         }
 
         poseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout,

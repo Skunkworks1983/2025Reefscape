@@ -4,9 +4,10 @@
 
 package frc.robot.constants;
 
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import frc.robot.constants.vision.VisionIOConstants;
+import frc.robot.constants.vision.VisionIOConstantsPhotonVision;
 
 // TODO: add all robot constant values when they have been decided
 public class Constants {
@@ -91,21 +92,10 @@ public class Constants {
   }
 
     public class VisionConstants {
-      public static final String[] CAMERA_NAMES = {
-          "Camera_1",
+      public static VisionIOConstants[] VISION_IO_CONSTANTS = {
+        new VisionIOConstantsPhotonVision("Camera_1", new Transform3d())
       };
-
-      public static final Transform3d ROBOT_TO_CAMERA_TRANSFORM = new Transform3d(
-          0,
-          0,
-          0,
-          new Rotation3d(
-              0,
-              0,
-              0));
     }
-
-    
 
     public class Elevator {
       public static final int MOTOR_ID = 0;
