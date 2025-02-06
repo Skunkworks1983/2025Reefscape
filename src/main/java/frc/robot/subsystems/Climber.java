@@ -74,28 +74,26 @@ public class Climber extends SubsystemBase {
   }
 
 
-  public Command move(direction myDirection) {
+  public Command moveInAnyDirection(direction myDirection) {
 
-    return Commands.runOnce(
+    return defer(
       () -> {
         switch (myDirection) {
-          // when i ask it to go up, it go up
+          // when I ask it to go up, it go up
           case UP:
-            checkIfMagnetSensorsAreTrue();
-            moveInDirection(Constants.ClimberIDs.CLIMBER_MAX);
-            break;
+            return checkIfMagnetSensorsAreTrue().andThen(moveInDirection(Constants.ClimberIDs.CLIMBER_MAX));
     
-          // when i ask it to stay, it stay
+          // when I ask it to stay, it stay
           case STATIONARY:
-            checkIfMagnetSensorsAreTrue();
-            moveInDirection(0.0);
-            break;
+            return checkIfMagnetSensorsAreTrue().andThen(moveInDirection(0.0));
+            
     
-          // when i ask it to go down, it go down
+          // when I ask it to go down, it go down
           case DOWN:
-            checkIfMagnetSensorsAreTrue();
-            moveInDirection(Constants.ClimberIDs.CLIMBER_MIN);
-            break;
+            return checkIfMagnetSensorsAreTrue().andThen(moveInDirection(Constants.ClimberIDs.CLIMBER_MIN));
+
+          default:
+            throw new EnumConstantNotPresentException(null, null);
         }
       }
     );
@@ -122,10 +120,8 @@ public class Climber extends SubsystemBase {
 
         climbMotor.setControl(VV.withVelocity(Constants.ClimberIDs.CLIMBER_VELOCITY));
 
-        System.out.println("Position: " + getPosition());
-        System.out.println("set Point: " + newSetPoint);
-        SmartDashboard.putNumber("position", getPosition());
-        SmartDashboard.putNumber("set point", newSetPoint);
+        SmartDashboard.putNumber("position of climber motor", getPosition());
+        SmartDashboard.putNumber("set point of climb", newSetPoint);
       },
       () -> {
         climbMotor.stopMotor();
