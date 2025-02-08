@@ -73,7 +73,6 @@ public class Climber extends SubsystemBase {
     return climbMotor.getPosition().getValueAsDouble();
   }
 
-
   public Command waitUntilMagnetSensorsAreTrueThenMove(direction myDirection) {
 
     return defer(
@@ -97,8 +96,6 @@ public class Climber extends SubsystemBase {
         }
       }
     );
-    
-
   }
 
   public Command waitUntilMagnetSensorsAreTrue() {
@@ -129,6 +126,4 @@ public class Climber extends SubsystemBase {
     ).until(() -> getPosition() > newSetPoint + Constants.ClimberIDs.CLIMBER_RANGE && 
       getPosition() < newSetPoint - Constants.ClimberIDs.CLIMBER_RANGE);
   }
-
-  
 }
