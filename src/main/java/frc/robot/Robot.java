@@ -18,6 +18,7 @@ public class Robot extends TimedRobot {
   Optional<Drivebase> drivebase = Optional.of(new Drivebase());
   Optional<Elevator> elevator = Optional.of(new Elevator());
   Optional<Collector> collector = Optional.of(new Collector());
+  
 
   OI oi = new OI( 
     elevator,
@@ -29,6 +30,7 @@ public class Robot extends TimedRobot {
       assert drivebase.isPresent();
       assert collector.isPresent();
       assert elevator.isPresent();
+      
     }
   }
 
@@ -39,6 +41,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    
   }
 
   @Override

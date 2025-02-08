@@ -23,7 +23,7 @@ public class Climber extends SubsystemBase {
   TalonFX climbMotor;
   StatusSignal<Angle> climbPos;
 
-  enum direction {
+  public enum direction {
     UP,
     STATIONARY,
     DOWN
@@ -62,11 +62,11 @@ public class Climber extends SubsystemBase {
   }
 
   public boolean getMagnetSensor1() {
-    return magnetSensor1.get();
+    return !magnetSensor1.get();
   }
 
   public boolean getMagnetSensor2() {
-    return magnetSensor2.get();
+    return !magnetSensor2.get();
   }
 
   public double getPosition() {
@@ -100,16 +100,17 @@ public class Climber extends SubsystemBase {
 
   public Command waitUntilMagnetSensorsAreTrue() {
 
-    return Commands.waitUntil(
+    return Commands.run(
       () -> {
-        return getMagnetSensor1() && getMagnetSensor2();
-        }
-      );
+        SmartDashboard.putBoolean("MagnetSensor1", getMagnetSensor1());
+        SmartDashboard.putBoolean("MagnetSensor2", getMagnetSensor2());
+      }
+      ).until(() -> {return getMagnetSensor1() && getMagnetSensor2();});
   }
 
   public Command moveInDirection(double setPoint)
   {
-    VelocityVoltage VV = new VelocityVoltage(0);
+    VelocityVoltage VV = new VelocityVoltage(0).withSlot(0);
     final double newSetPoint = setPoint + getPosition();
     return Commands.runEnd(
       () -> {
@@ -123,7 +124,6 @@ public class Climber extends SubsystemBase {
       () -> {
         climbMotor.stopMotor();
       }
-    ).until(() -> getPosition() > newSetPoint + Constants.ClimberIDs.CLIMBER_RANGE && 
-      getPosition() < newSetPoint - Constants.ClimberIDs.CLIMBER_RANGE);
+    ).until(() -> getPosition() > (newSetPoint + Constants.ClimberIDs.CLIMBER_RANGE));
   }
 }
