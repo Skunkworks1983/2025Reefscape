@@ -43,19 +43,19 @@ public class Constants {
     public static final double MAX_METERS_PER_SECOND = 0.0;
     public static final double MAX_DEGREES_PER_SECOND = 0.0;
 
-        public class PIDs {
-            public static double SWERVE_MODULE_TURN_kP = 0.013;
-            public static double SWERVE_MODULE_TURN_kI = 0.0;
-            public static double SWERVE_MODULE_TURN_kD = 0.00025;
-            public static double SWERVE_MODULE_TURN_kF = 0.0;
-            public static double SWERVE_MODULE_DRIVE_kP = 0.125;
-            public static double SWERVE_MODULE_DRIVE_kI = 0.0;
-            public static double SWERVE_MODULE_DRIVE_kD = 0.0;
-            public static double SWERVE_MODULE_DRIVE_kF = 0.1075;
+      public class PIDs {
+        public static final double SWERVE_MODULE_TURN_kP = 0.013;
+        public static final double SWERVE_MODULE_TURN_kI = 0.0;
+        public static final double SWERVE_MODULE_TURN_kD = 0.00025;
+        public static final double SWERVE_MODULE_TURN_kF = 0.0;
+        public static final double SWERVE_MODULE_DRIVE_kP = 0.125;
+        public static final double SWERVE_MODULE_DRIVE_kI = 0.0;
+        public static final double SWERVE_MODULE_DRIVE_kD = 0.0;
+        public static final double SWERVE_MODULE_DRIVE_kF = 0.1075;
 
-            public static final boolean SMART_PID_ENABLED = false;
-            public static final boolean SMART_PID_TURN_ENABLED = true;
-            public static final boolean SMART_PID_DRIVE_ENABLED = true;
+        public static final boolean SMART_PID_ENABLED = false;
+        public static final boolean SMART_PID_TURN_ENABLED = true;
+        public static final boolean SMART_PID_DRIVE_ENABLED = true;
 
       public static final double PID_LOW_LIMIT = -0.8;
       public static final double PID_HIGH_LIMIT = 0.8;
