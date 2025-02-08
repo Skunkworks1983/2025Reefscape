@@ -11,55 +11,55 @@ import frc.robot.constants.Constants;
 /** Add your docs here. */
 public class SmartPIDController extends PIDController {
 
-    public String name;
-    public boolean smart;
-    public String setpointLabel;
-    public String errorLabel;
+  public String name;
+  public boolean smart;
+  public String setpointLabel;
+  public String errorLabel;
 
-    public SmartPIDController(double kp, double ki, double kd, String name, boolean smart) {
-        super(kp, ki, kd);
+  public SmartPIDController(double kp, double ki, double kd, String name, boolean smart) {
+    super(kp, ki, kd);
 
-        this.name = name;
-        this.smart = smart;
+    this.name = name;
+    this.smart = smart;
 
-        SmartDashboard.putNumber(name + " kp Value", kp);
-        SmartDashboard.putNumber(name + " ki Value", ki);
-        SmartDashboard.putNumber(name + " kd Value", kd);
+    SmartDashboard.putNumber(name + " kp Value", kp);
+    SmartDashboard.putNumber(name + " ki Value", ki);
+    SmartDashboard.putNumber(name + " kd Value", kd);
 
-        setpointLabel = name + " Setpoint";
-        errorLabel = name + " Error";
+    setpointLabel = name + " Setpoint";
+    errorLabel = name + " Error";
+  }
+
+  @Override
+  public double calculate(double measurement) {
+
+    if (smart && Constants.Drivebase.PIDs.SMART_PID_ENABLED) {
+      super.setP(SmartDashboard.getNumber(name + " kp Value", super.getP()));
+      super.setI(SmartDashboard.getNumber(name + " ki Value", super.getI()));
+      super.setD(SmartDashboard.getNumber(name + " kd Value", super.getD()));
     }
 
-    @Override
-    public double calculate(double measurement) {
+    double calculate = super.calculate(measurement);
+    SmartDashboard.putNumber(name + " Measurement", measurement);
+    SmartDashboard.putNumber(errorLabel, getPositionError());
+    SmartDashboard.putNumber(setpointLabel, getSetpoint());
+    SmartDashboard.putNumber(name + " Calculated Value", calculate);
 
-        if (smart && Constants.Drivebase.PIDs.SMART_PID_ENABLED) {
-            super.setP(SmartDashboard.getNumber(name + " kp Value", super.getP()));
-            super.setI(SmartDashboard.getNumber(name + " ki Value", super.getI()));
-            super.setD(SmartDashboard.getNumber(name + " kd Value", super.getD()));
-        }
+    return calculate;
+  }
 
-        double calculate = super.calculate(measurement);
-        SmartDashboard.putNumber(name + " Measurement", measurement);
-        SmartDashboard.putNumber(errorLabel, getPositionError());
-        SmartDashboard.putNumber(setpointLabel, getSetpoint());
-        SmartDashboard.putNumber(name + " Calculated Value", calculate);
-        
-        return calculate;
+  @Override
+  public double calculate(double measurement, double setpoint) {
+
+    if (smart && Constants.Drivebase.PIDs.SMART_PID_ENABLED) {
+      super.setP(SmartDashboard.getNumber(name + " kp Value", super.getP()));
+      super.setI(SmartDashboard.getNumber(name + " ki Value", super.getI()));
+      super.setD(SmartDashboard.getNumber(name + " kd Value", super.getD()));
     }
 
-    @Override
-    public double calculate(double measurement, double setpoint) {
+    SmartDashboard.putNumber(errorLabel, getPositionError());
+    SmartDashboard.putNumber(setpointLabel, getSetpoint());
 
-        if (smart && Constants.Drivebase.PIDs.SMART_PID_ENABLED) {
-            super.setP(SmartDashboard.getNumber(name + " kp Value", super.getP()));
-            super.setI(SmartDashboard.getNumber(name + " ki Value", super.getI()));
-            super.setD(SmartDashboard.getNumber(name + " kd Value", super.getD()));
-        }
-
-        SmartDashboard.putNumber(errorLabel, getPositionError());
-        SmartDashboard.putNumber(setpointLabel, getSetpoint());
-
-        return super.calculate(measurement, setpoint);
-    }
+    return super.calculate(measurement, setpoint);
+  }
 }
