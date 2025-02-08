@@ -4,8 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.Optional;
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
@@ -14,9 +14,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.utils.error.ErrorGroupHandler;
@@ -45,15 +46,16 @@ public class Drivebase extends SubsystemBase implements SubsystemError {
   public void periodic() {}
 
   // TODO: add docstring
-  private void drive(double xMetersPerSecond,
-  double yMetersPerSecond, Rotation2d rotationsPerSecond, boolean isFieldRelative) {
+  private void drive(double xMetersPerSecond, double yMetersPerSecond,
+    double degreesPerSecond, boolean isFieldRelative) {
     ChassisSpeeds chassisSpeeds;
+    double radiansPerSecond = Units.degreesToRadians(degreesPerSecond);
     if (isFieldRelative) {
       chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xMetersPerSecond, yMetersPerSecond,
-        rotationsPerSecond.getRadians(), getGyroAngle());
+        radiansPerSecond, getGyroAngle());
     } 
     else {
-      chassisSpeeds = new ChassisSpeeds(xMetersPerSecond, yMetersPerSecond, rotationsPerSecond.getRadians());
+      chassisSpeeds = new ChassisSpeeds(xMetersPerSecond, yMetersPerSecond, radiansPerSecond);
     }
 
     SwerveModuleState[] swerveModuleStates = swerveDriveKinematics.toSwerveModuleStates(chassisSpeeds);
@@ -64,7 +66,7 @@ public class Drivebase extends SubsystemBase implements SubsystemError {
     setModuleStates(swerveModuleStates);
   }
 
-  public void setModuleStates(SwerveModuleState[] moduleStates) {
+  private void setModuleStates(SwerveModuleState[] moduleStates) {
     for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
       swerveModules[i].setSwerveModulState(moduleStates[i]);
     }
@@ -81,11 +83,11 @@ public class Drivebase extends SubsystemBase implements SubsystemError {
   }
 
   // rotation from gyro is counterclockwise positive while we need clockwise positive
-  public Rotation2d getGyroAngle() {
+  private Rotation2d getGyroAngle() {
     return Rotation2d.fromDegrees(-gyro.getAngle());
   }
 
-  public ChassisSpeeds getRobotRelativeSpeeds() {
+  private ChassisSpeeds getRobotRelativeSpeeds() {
     return swerveDriveKinematics.toChassisSpeeds(
       swerveModules[0].getSwerveModuleState(),
       swerveModules[1].getSwerveModuleState(), 
@@ -108,23 +110,23 @@ public class Drivebase extends SubsystemBase implements SubsystemError {
   public Command getSwerveTeleopCommand(
     DoubleSupplier xMetersPerSecond,
     DoubleSupplier yMetersPerSecond, 
-    Supplier<Rotation2d> rotationPerSecond,
+    DoubleSupplier degreesPerSecond,
     boolean isFieldRelative
   ) {
     int fieldOrientationMultiplier;
-    var alliance = DriverStation.getAlliance();
+    Optional<Alliance> alliance = DriverStation.getAlliance();
     if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Blue) {
       fieldOrientationMultiplier = 1;
     }
     else {
       fieldOrientationMultiplier = -1;
     }
-    return Commands.runEnd(
+    return runEnd(
       () -> {
         drive(
           xMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
           yMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
-          rotationPerSecond.get(),
+          degreesPerSecond.getAsDouble(),
           isFieldRelative
         );
       },
@@ -132,7 +134,7 @@ public class Drivebase extends SubsystemBase implements SubsystemError {
         drive(
           0,
           0,
-          Rotation2d.kZero,
+          0,
           isFieldRelative
         );
       }

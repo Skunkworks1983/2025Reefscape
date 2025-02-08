@@ -35,14 +35,15 @@ import frc.robot.utils.error.ErrorGroupHandler;
 
 public class SwerveModule extends SubsystemBase {
 
-  SparkMax turnMotor;
-  TalonFX driveMotor;
-  public CANcoder turnEncoder;
+  private SparkMax turnMotor;
+  private TalonFX driveMotor;
+  private CANcoder turnEncoder;
+  private SmartPIDControllerTalonFX driveController;
+  private SmartPIDController turnController;
+  private boolean turnControllerActive;
+  
   public String moduleName;
-  SmartPIDController turnController;
-  SmartPIDControllerTalonFX driveController;
-  Translation2d moduleLocation;
-  boolean turnControllerActive;
+  public Translation2d moduleLocation;
 
   final VelocityVoltage m_Velocity = new VelocityVoltage(0);
 

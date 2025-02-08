@@ -15,59 +15,59 @@ import frc.robot.constants.Constants;
 /** Add your docs here. */
 public class SmartPIDControllerCANSparkMax {
 
-    public String name;
-    public boolean smart;
-    public SparkMax motor;
-    public double lastKpValue;
-    public double lastKiValue;
-    public double lastKdValue;
-    public double lastKfValue;
-    public SparkMaxConfig config;
+  public String name;
+  public boolean smart;
+  public SparkMax motor;
+  public double lastKpValue;
+  public double lastKiValue;
+  public double lastKdValue;
+  public double lastKfValue;
+  public SparkMaxConfig config;
 
+  public SmartPIDControllerCANSparkMax(double kp, double ki, double kd, double kf, String name,
+      boolean smart, SparkMax motor) {
 
-    public SmartPIDControllerCANSparkMax(double kp, double ki, double kd, double kf, String name,
-            boolean smart, SparkMax motor) {
+    this.motor = motor;
+    this.name = name;
+    this.smart = smart;
+    config = new SparkMaxConfig();
 
-        this.motor = motor;
-        this.name = name;
-        this.smart = smart;
-        config = new SparkMaxConfig();
+    lastKpValue = kp;
+    lastKiValue = ki;
+    lastKdValue = kd;
+    lastKfValue = kf;
 
-        lastKpValue = kp;
-        lastKiValue = ki;
-        lastKdValue = kd;
-        lastKfValue = kf;
+    config.closedLoop.pidf(kp, ki, kd, kf);
+    motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        config.closedLoop.pidf(kp, ki, kd, kf);
-        motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    SmartDashboard.putNumber(name + " kp Value", kp);
+    SmartDashboard.putNumber(name + " ki Value", ki);
+    SmartDashboard.putNumber(name + " kd Value", kd);
+    SmartDashboard.putNumber(name + " kf Value", kd);
+  }
 
-        SmartDashboard.putNumber(name + " kp Value", kp);
-        SmartDashboard.putNumber(name + " ki Value", ki);
-        SmartDashboard.putNumber(name + " kd Value", kd);
-        SmartDashboard.putNumber(name + " kf Value", kd);
+  public void updatePID() {
+    // if we pass this test, we are smart, so we can save some bandwith by only
+    // grabing the k values once
+    if (!smart || !Constants.Drivebase.PIDs.SMART_PID_ENABLED) {
+      return;
     }
 
-    public void updatePID() {
-        //if we pass this test, we are smart, so we can save some bandwith by only grabing the k values once
-        if (!smart || !Constants.Drivebase.PIDs.SMART_PID_ENABLED) {
-            return;
-        }
+    double currentKpValue = SmartDashboard.getNumber(name + " kp Value", lastKpValue);
+    double currentKiValue = SmartDashboard.getNumber(name + " ki Value", lastKiValue);
+    double currentKdValue = SmartDashboard.getNumber(name + " kd Value", lastKdValue);
+    double currentKfValue = SmartDashboard.getNumber(name + " kf Value", lastKfValue);
 
-        double currentKpValue = SmartDashboard.getNumber(name + " kp Value", lastKpValue);
-        double currentKiValue = SmartDashboard.getNumber(name + " ki Value", lastKiValue);
-        double currentKdValue = SmartDashboard.getNumber(name + " kd Value", lastKdValue);
-        double currentKfValue = SmartDashboard.getNumber(name + " kf Value", lastKfValue);
+    if (currentKpValue != lastKpValue || currentKiValue != lastKiValue
+        || currentKdValue != lastKdValue || currentKfValue != lastKfValue) {
 
-        if (currentKpValue != lastKpValue || currentKiValue != lastKiValue
-                || currentKdValue != lastKdValue || currentKfValue != lastKfValue) {
+      lastKpValue = currentKpValue;
+      lastKiValue = currentKiValue;
+      lastKdValue = currentKdValue;
+      lastKfValue = currentKfValue;
 
-            lastKpValue = currentKpValue;
-            lastKiValue = currentKiValue;
-            lastKdValue = currentKdValue;
-            lastKfValue = currentKfValue;
-
-            config.closedLoop.pidf(lastKpValue, lastKiValue, lastKdValue, lastKfValue);
-            motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        }
+      config.closedLoop.pidf(lastKpValue, lastKiValue, lastKdValue, lastKfValue);
+      motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
+  }
 }

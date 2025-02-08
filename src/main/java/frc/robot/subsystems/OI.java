@@ -4,45 +4,63 @@
 
 package frc.robot.subsystems;
 
+import java.util.Optional;
 import java.util.function.DoubleFunction;
-import java.util.function.Function;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.constants.Constants.OI.LIMITS;
 import frc.robot.constants.Constants;
-import frc.robot.constants.Constants.OI.IDS;
+import frc.robot.commands.elevator.*;
+import frc.robot.constants.Constants.OI.IDs.Joysticks;
 
-public class OI extends SubsystemBase {
-
-  Joystick rotationJoystick = new Joystick(IDS.ROTATION_JOYSTICK_ID);
-  Joystick translationJoystick = new Joystick(IDS.TRANSLATION_JOYSTICK_ID);
-  Joystick buttonJoystick = new Joystick(IDS.BUTTON_STICK_ID);
+public class OI {
+  private Joystick rotationJoystick = new Joystick(Joysticks.ROTATION_JOYSTICK_ID);
+  private Joystick translationJoystick = new Joystick(Joysticks.TRANSLATION_JOYSTICK_ID);
+  private Joystick buttonJoystick = new Joystick(Joysticks.BUTTON_STICK_ID);
 
   // Input to the function could be x or y axis.
-  DoubleFunction<Double> joystickToMetersPerSecond = 
+  private DoubleFunction<Double> joystickToMetersPerSecond = 
     (axisInput) -> Math.pow(axisInput, Constants.OI.AXIS_INPUT_EXPONENT) 
     * LIMITS.MAX_INSTRUCTED_METERS_PER_SECOND;
 
-  Function<Double,Rotation2d> joystickToRotationPerSecond = 
-    (xInput) -> Rotation2d.fromDegrees(
-      Math.pow(xInput, Constants.OI.AXIS_INPUT_EXPONENT) * LIMITS.MAX_INSTRUCTED_DEGREES_PER_SECOND
-    );
+  private DoubleFunction<Double> joystickToDegreesPerSecond = 
+    (xInput) -> 
+      Math.pow(xInput, Constants.OI.AXIS_INPUT_EXPONENT) * LIMITS.MAX_INSTRUCTED_DEGREES_PER_SECOND;
 
 
   // Input to the function could be x or y axis. 
   // Deadband is applied on each axis individually. This might not be desirable.
-  // This function uses the turnary opperator (?) to select between two options 
+  // This function uses the ternary operator ("?") to select between two options 
   // in a single expression.
   public DoubleFunction <Double> applyDeadband =
     (axisInput) -> Math.abs(axisInput) < Constants.OI.AXIS_DEADBAND 
       ? 0.0 : axisInput;
 
-  public OI() {}
+  public OI(Optional<Elevator> optionalElevator, Optional<Collector> optionalCollector) {
 
-  @Override
-  public void periodic() {}
+    if(optionalElevator.isPresent()) {
+      Elevator elevator = optionalElevator.get();
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_FLOOR_POSITION)
+        .onTrue(new MoveToPositionCommand(elevator, Constants.Elevator.Setpoints.FLOOR_POSITION));
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L1)
+        .onTrue(new MoveToPositionCommand(elevator, Constants.Elevator.Setpoints.L1_POSITION));
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L2)
+        .onTrue(new MoveToPositionCommand(elevator, Constants.Elevator.Setpoints.L2_POSITION));
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L3)
+        .onTrue(new MoveToPositionCommand(elevator, Constants.Elevator.Setpoints.L3_POSITION));
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L4)
+        .onTrue(new MoveToPositionCommand(elevator, Constants.Elevator.Setpoints.L4_POSITION));
+    }
+
+    if(optionalCollector.isPresent()) {
+      Collector collector = optionalCollector.get();
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.ROTATE_CORAL)
+        .whileTrue(collector.rotateCoralCommand());
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.INTAKE_CORAL)
+        .whileTrue(collector.intakeCoralCommand());
+    }
+  }
 
   public double getInstructedXMetersPerSecond() {
     return joystickToMetersPerSecond.apply(
@@ -56,8 +74,8 @@ public class OI extends SubsystemBase {
     );
   }
 
-  public Rotation2d getInstructedRotationPerSecond() {
-    return joystickToRotationPerSecond.apply(
+  public double getInstructedDegreesPerSecond() {
+    return joystickToDegreesPerSecond.apply(
       applyDeadband.apply(rotationJoystick.getY())
     );
   }
