@@ -9,7 +9,9 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Commands.TestTurnMotorAndEncoder;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.OI;
-import frc.robot.utils.ErrorGroupHandler;
+import frc.robot.utils.error.ErrorCommandGenerator;
+import frc.robot.utils.error.ErrorGroupHandler;
+import frc.robot.utils.error.SubsystemError;
 
 public class Robot extends TimedRobot {
 
@@ -53,10 +55,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testInit() {
-    new TestTurnMotorAndEncoder(errorGroupHandler::addErrorMapEntry, drivebase.swerveModules[0]).schedule();
-    new TestTurnMotorAndEncoder(errorGroupHandler::addErrorMapEntry, drivebase.swerveModules[1]).schedule();
-    new TestTurnMotorAndEncoder(errorGroupHandler::addErrorMapEntry, drivebase.swerveModules[2]).schedule();
-    new TestTurnMotorAndEncoder(errorGroupHandler::addErrorMapEntry, drivebase.swerveModules[3]).schedule();
+    errorGroupHandler.clearAllErrors();
+    ErrorCommandGenerator.getErrorCommand(
+      errorGroupHandler,
+      new SubsystemError[] {drivebase}
+    );
   }
 
   @Override

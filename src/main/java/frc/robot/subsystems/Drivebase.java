@@ -19,8 +19,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
+import frc.robot.utils.error.ErrorGroupHandler;
+import frc.robot.utils.error.SubsystemError;
 
-public class Drivebase extends SubsystemBase {
+public class Drivebase extends SubsystemBase implements SubsystemError {
 
   public SwerveModule swerveModules[] = new SwerveModule[Constants.Drivebase.MODULES.length];
   private AHRS gyro = new AHRS(NavXComType.kUSB1);
@@ -139,5 +141,16 @@ public class Drivebase extends SubsystemBase {
         setAllModulesTurnPidActive();
       }
     );
+  }
+
+  @Override
+  public Command getErrorCommand(
+    ErrorGroupHandler errorGroupHandler
+  ) {
+    Command[] swerveModuleCommandArray = new Command[Constants.Drivebase.MODULES.length];
+    for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
+      swerveModuleCommandArray[i] = swerveModules[i].TestConnectionThenModule(errorGroupHandler);
+    }
+    return Commands.parallel(swerveModuleCommandArray);
   }
 }

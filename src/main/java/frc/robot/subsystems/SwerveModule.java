@@ -22,11 +22,16 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Commands.TestModuleComponentsConnection;
+import frc.robot.Commands.TestTurnMotorAndEncoder;
 import frc.robot.constants.Constants;
 import frc.robot.constants.SwerveModuleConstants;
 import frc.robot.utils.SmartPIDController;
 import frc.robot.utils.SmartPIDControllerTalonFX;
+import frc.robot.utils.error.ErrorGroupHandler;
 
 public class SwerveModule extends SubsystemBase {
 
@@ -196,5 +201,35 @@ public class SwerveModule extends SubsystemBase {
   public SwerveModulePosition getSwerveModulePosition() {
     return new SwerveModulePosition(getDriveMotorEncoderPosition(),
       getTurnMotorAngle());
+  }
+
+  @Override
+  public String toString() {
+    return moduleName + " Module";
+  }
+
+  public boolean isTurnMotorConnected() {
+    return turnMotor.getFirmwareVersion() != 0;
+  }
+
+  public boolean isDriveMotorConnected() {
+    return driveMotor.isConnected();
+  }
+
+  public Command TestConnectionThenModule(
+    ErrorGroupHandler errorGroupHandler
+  ) {
+    return Commands.sequence(
+      new TestModuleComponentsConnection(errorGroupHandler::addErrorMapEntry, this),
+      Commands.either(
+        Commands.race(
+          new TestTurnMotorAndEncoder(errorGroupHandler::addErrorMapEntry, this),
+          Commands.waitSeconds(5)
+        ),
+        Commands.none(),
+        () -> !errorGroupHandler.getErrorStatus("Turn Encoder Not Connected", this) && 
+              !errorGroupHandler.getErrorStatus("Turn Motor Not Connected", this)
+      )
+    );
   }
 }

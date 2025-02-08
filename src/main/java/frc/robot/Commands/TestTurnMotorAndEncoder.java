@@ -8,16 +8,14 @@ import java.util.function.Consumer;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.SwerveModule;
-import frc.robot.utils.ErrorT;
+import frc.robot.utils.error.ErrorT;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class TestTurnMotorAndEncoder extends Command {
-  /** Creates a new testTurnMotorAndEncoder. */
 
   double numOfTurns;
   double startPos;
   double encoderStartPos;
-  double highestMotorCurrent;
+  double highestMotorVoltage;
   SwerveModule swerveModule;
   Consumer<ErrorT> alert;
 
@@ -31,68 +29,43 @@ public class TestTurnMotorAndEncoder extends Command {
     addRequirements(swerveModule);
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     swerveModule.setTurnControllerActive(false);
     swerveModule.setTurnMotorSpeed(0.075);
-    highestMotorCurrent = 0;
+    highestMotorVoltage = 0;
     startPos = swerveModule.getTurnMotorEncoderPosition();
     encoderStartPos = swerveModule.turnEncoder.getPosition().getValueAsDouble();
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double turnMotorCurrent = swerveModule.getTurnMotorCurrent();
-    System.out.println(turnMotorCurrent);
-    if(highestMotorCurrent < turnMotorCurrent) {
-      highestMotorCurrent = turnMotorCurrent;
+    double turnMotorVoltage = swerveModule.getTurnMotorCurrent();
+    if(highestMotorVoltage < turnMotorVoltage) {
+      highestMotorVoltage = turnMotorVoltage;
     }
     
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     swerveModule.setTurnMotorSpeed(0);
     double encoderDifference = swerveModule.turnEncoder.getPosition().getValueAsDouble() - encoderStartPos;
 
     //tolerance of .05
-    if(Math.abs(Math.abs(encoderDifference) - numOfTurns) > 0.05 ) {
-      alert.accept(new ErrorT(swerveModule.moduleName + " Turn Motor/Encoder Misaligned", true, swerveModule));
-    }
-    else {
-      alert.accept(new ErrorT(swerveModule.moduleName + " Turn Motor/Encoder Misaligned", false, swerveModule));
-    }
+    alert.accept(new ErrorT("Turn Motor/Encoder Misaligned", Math.abs(Math.abs(encoderDifference) - numOfTurns) > 0.05, swerveModule));
 
-    if(swerveModule.getTurnMotorEncoderPosition() == startPos) {
-      alert.accept(new ErrorT(swerveModule.moduleName + " Turn Motor did not move", true, swerveModule));
-    }
-    else {
-      alert.accept(new ErrorT(swerveModule.moduleName + " Turn Motor did not move", false, swerveModule));
-    }
+    alert.accept(new ErrorT("Turn Motor did not move", swerveModule.getTurnMotorEncoderPosition() == startPos, swerveModule));
 
-    System.out.println(highestMotorCurrent);
+    System.out.println(highestMotorVoltage);
 
-    if(highestMotorCurrent > 12) {
-      alert.accept(new ErrorT(swerveModule.moduleName + " Turn Motor pulled too much Current", true, swerveModule));
-    }
-    else {
-      alert.accept(new ErrorT(swerveModule.moduleName + " Turn Motor pulled too much Current", false, swerveModule));
-    }
+    alert.accept(new ErrorT("Turn Motor pulled too much Voltage", highestMotorVoltage > 13, swerveModule));
 
-    if(encoderStartPos == 0.0 && swerveModule.turnEncoder.getPosition().getValueAsDouble() == 0.0) {
-      alert.accept(new ErrorT(swerveModule.moduleName + " Encoder is reporting 0", true, swerveModule));
-    }
-    else {
-      alert.accept(new ErrorT(swerveModule.moduleName + " Encoder is reporting 0", false, swerveModule));
-    }
+    alert.accept(new ErrorT("Encoder is reporting 0", encoderStartPos == 0.0 && swerveModule.turnEncoder.getPosition().getValueAsDouble() == 0.0, swerveModule));
 
     swerveModule.setTurnControllerActive(true);
   }
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return numOfTurns < Math.abs(swerveModule.getTurnMotorEncoderPosition() - startPos);
