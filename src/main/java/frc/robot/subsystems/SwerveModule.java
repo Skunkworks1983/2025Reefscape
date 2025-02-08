@@ -25,8 +25,8 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Commands.TestModuleComponentsConnection;
-import frc.robot.Commands.TestTurnMotorAndEncoder;
+import frc.robot.Commands.errorCommands.TestModuleComponentsConnection;
+import frc.robot.Commands.errorCommands.TestTurnMotorAndEncoder;
 import frc.robot.constants.Constants;
 import frc.robot.constants.SwerveModuleConstants;
 import frc.robot.utils.SmartPIDController;
@@ -41,7 +41,7 @@ public class SwerveModule extends SubsystemBase {
   private SmartPIDControllerTalonFX driveController;
   private SmartPIDController turnController;
   private boolean turnControllerActive;
-  
+
   public String moduleName;
   public Translation2d moduleLocation;
 
@@ -179,6 +179,10 @@ public class SwerveModule extends SubsystemBase {
 
   public double getTurnError() {
     return turnController.getPositionError();
+  }
+
+  public double getRawEncoderValue() {
+    return turnEncoder.getPosition().getValueAsDouble();
   }
 
   public void setSwerveModulState(SwerveModuleState newState) {

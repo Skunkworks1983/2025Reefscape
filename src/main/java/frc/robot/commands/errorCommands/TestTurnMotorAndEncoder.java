@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.Commands;
+package frc.robot.Commands.errorCommands;
 
 import java.util.function.Consumer;
 
@@ -35,7 +35,7 @@ public class TestTurnMotorAndEncoder extends Command {
     swerveModule.setTurnMotorSpeed(0.075);
     highestMotorVoltage = 0;
     startPos = swerveModule.getTurnMotorEncoderPosition();
-    encoderStartPos = swerveModule.turnEncoder.getPosition().getValueAsDouble();
+    encoderStartPos = swerveModule.getRawEncoderValue();
   }
 
   @Override
@@ -50,7 +50,7 @@ public class TestTurnMotorAndEncoder extends Command {
   @Override
   public void end(boolean interrupted) {
     swerveModule.setTurnMotorSpeed(0);
-    double encoderDifference = swerveModule.turnEncoder.getPosition().getValueAsDouble() - encoderStartPos;
+    double encoderDifference = swerveModule.getRawEncoderValue() - encoderStartPos;
 
     //tolerance of .05
     alert.accept(new ErrorT("Turn Motor/Encoder Misaligned", Math.abs(Math.abs(encoderDifference) - numOfTurns) > 0.05, swerveModule));
@@ -61,7 +61,7 @@ public class TestTurnMotorAndEncoder extends Command {
 
     alert.accept(new ErrorT("Turn Motor pulled too much Voltage", highestMotorVoltage > 13, swerveModule));
 
-    alert.accept(new ErrorT("Encoder is reporting 0", encoderStartPos == 0.0 && swerveModule.turnEncoder.getPosition().getValueAsDouble() == 0.0, swerveModule));
+    alert.accept(new ErrorT("Encoder is reporting 0", encoderStartPos == 0.0 && swerveModule.getRawEncoderValue() == 0.0, swerveModule));
 
     swerveModule.setTurnControllerActive(true);
   }

@@ -8,11 +8,11 @@ import java.util.Optional;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.Commands.TestTurnMotorAndEncoder;
 import frc.robot.utils.error.ErrorCommandGenerator;
 import frc.robot.utils.error.ErrorGroupHandler;
 import frc.robot.utils.error.SubsystemError;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Commands.errorCommands.TestTurnMotorAndEncoder;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.*;
 
@@ -28,8 +28,6 @@ public class Robot extends TimedRobot {
     elevator,
     collector
   );
-  Drivebase drivebase = new Drivebase();
-  OI oi = new OI();
   ErrorGroupHandler errorGroupHandler = new ErrorGroupHandler();
 
   public Robot() {
@@ -79,10 +77,12 @@ public class Robot extends TimedRobot {
   @Override
   public void testInit() {
     errorGroupHandler.clearAllErrors();
-    ErrorCommandGenerator.getErrorCommand(
-      errorGroupHandler,
-      new SubsystemError[] {drivebase}
-    );
+    if(drivebase.isPresent()) {
+      ErrorCommandGenerator.getErrorCommand(
+        errorGroupHandler,
+        new SubsystemError[] {drivebase.get()}
+      ).schedule();
+    }
   }
 
   @Override
