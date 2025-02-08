@@ -8,16 +8,14 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
-import frc.robot.utils.SmartPIDControllerTalonFX;
+import frc.robot.utils.PIDs.SmartPIDControllerTalonFX;
 
 public class Climber extends SubsystemBase {
   TalonFX climbMotor;
@@ -50,10 +48,6 @@ public class Climber extends SubsystemBase {
         Constants.ClimberIDs.CLIMBER_SMARTPID_ACTIVE,
         climbMotor
         );
-
-    direction up = direction.UP;
-    direction stationary = direction.STATIONARY;
-    direction down = direction.DOWN;
   }
 
   @Override

@@ -25,8 +25,8 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.constants.SwerveModuleConstants;
-import frc.robot.utils.SmartPIDController;
-import frc.robot.utils.SmartPIDControllerTalonFX;
+import frc.robot.utils.PIDs.SmartPIDController;
+import frc.robot.utils.PIDs.SmartPIDControllerTalonFX;
 
 public class SwerveModule extends SubsystemBase {
 

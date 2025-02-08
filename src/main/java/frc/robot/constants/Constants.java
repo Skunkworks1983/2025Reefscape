@@ -175,4 +175,9 @@ public class Constants {
       }
     }
   }
+
+  public class Pheonix6Odometry {
+    public static final double updatesPerSecond = 100.0;
+
+  }
 }
