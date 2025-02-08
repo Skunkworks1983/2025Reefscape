@@ -111,7 +111,7 @@ public class SwerveModule extends SubsystemBase {
   @Override
   public void periodic() {
     driveController.updatePID();
-    if (!turnController.atSetpoint() && turnControllerActive) {
+    if (turnControllerActive && !turnController.atSetpoint()) {
       updateSpeedToSetpointTurn();
     }
   }
@@ -169,7 +169,7 @@ public class SwerveModule extends SubsystemBase {
     return turnMotorRotation;
   }
 
-  public double getTurnMotorCurrent() {
+  public double getTurnMotorVoltage() {
     return turnMotor.getBusVoltage();
   }
 

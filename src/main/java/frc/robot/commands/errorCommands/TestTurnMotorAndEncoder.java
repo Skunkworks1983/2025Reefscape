@@ -40,7 +40,7 @@ public class TestTurnMotorAndEncoder extends Command {
 
   @Override
   public void execute() {
-    double turnMotorVoltage = swerveModule.getTurnMotorCurrent();
+    double turnMotorVoltage = swerveModule.getTurnMotorVoltage();
     if(highestMotorVoltage < turnMotorVoltage) {
       highestMotorVoltage = turnMotorVoltage;
     }
