@@ -6,6 +6,6 @@ package frc.robot.utils.error;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
-public interface SubsystemError {
-  Command getErrorCommand(ErrorGroupHandler errorGroupHandler);
+public interface DiagnosticSubsystem {
+  Command getErrorCommand(ErrorGroup errorGroupHandler);
 }

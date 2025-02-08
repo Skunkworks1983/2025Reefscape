@@ -10,8 +10,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 /** Add your docs here. */
 public class ErrorCommandGenerator {
   public static Command getErrorCommand(
-    ErrorGroupHandler errorGroupHandler,
-    SubsystemError[] errorSubsystem
+    ErrorGroup errorGroupHandler,
+    DiagnosticSubsystem[] errorSubsystem
   ) {
     Command[] errorCommandArray = new Command[errorSubsystem.length];
     for(int i = 0; i < errorSubsystem.length; i++) {

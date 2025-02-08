@@ -11,11 +11,11 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 /** Add your docs here. */
-public class ErrorGroupHandler {
+public class ErrorGroup {
 
   private List<ErrorT> errorList = new LinkedList<ErrorT>();
 
-  public ErrorGroupHandler() {
+  public ErrorGroup() {
 
   }
 

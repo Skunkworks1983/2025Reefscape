@@ -9,8 +9,8 @@ import java.util.Optional;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.utils.error.ErrorCommandGenerator;
-import frc.robot.utils.error.ErrorGroupHandler;
-import frc.robot.utils.error.SubsystemError;
+import frc.robot.utils.error.ErrorGroup;
+import frc.robot.utils.error.DiagnosticSubsystem;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.*;
 
@@ -26,7 +26,7 @@ public class Robot extends TimedRobot {
     elevator,
     collector
   );
-  ErrorGroupHandler errorGroupHandler = new ErrorGroupHandler();
+  ErrorGroup errorGroupHandler = new ErrorGroup();
 
   public Robot() {
     if(Constants.Testing.ENSURE_COMPETITION_READY_SUBSYSTEMS) {
@@ -78,7 +78,7 @@ public class Robot extends TimedRobot {
     if(drivebase.isPresent()) {
       ErrorCommandGenerator.getErrorCommand(
         errorGroupHandler,
-        new SubsystemError[] {drivebase.get()}
+        new DiagnosticSubsystem[] {drivebase.get()}
       ).schedule();
     }
   }

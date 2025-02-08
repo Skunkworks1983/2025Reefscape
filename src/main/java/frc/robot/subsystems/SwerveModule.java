@@ -25,13 +25,13 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.errorCommands.TestModuleComponentsConnection;
-import frc.robot.commands.errorCommands.TestTurnMotorAndEncoder;
+import frc.robot.commands.AutomatedTests.TestModuleComponentsConnection;
+import frc.robot.commands.AutomatedTests.TestTurnMotorAndEncoder;
 import frc.robot.constants.Constants;
 import frc.robot.constants.SwerveModuleConstants;
 import frc.robot.utils.SmartPIDController;
 import frc.robot.utils.SmartPIDControllerTalonFX;
-import frc.robot.utils.error.ErrorGroupHandler;
+import frc.robot.utils.error.ErrorGroup;
 
 public class SwerveModule extends SubsystemBase {
 
@@ -222,7 +222,7 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public Command TestConnectionThenModule(
-    ErrorGroupHandler errorGroupHandler
+    ErrorGroup errorGroupHandler
   ) {
     return Commands.sequence(
       new TestModuleComponentsConnection(errorGroupHandler::addErrorMapEntry, this),
