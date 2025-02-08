@@ -11,8 +11,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.utils.error.ErrorCommandGenerator;
 import frc.robot.utils.error.ErrorGroupHandler;
 import frc.robot.utils.error.SubsystemError;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.Commands.errorCommands.TestTurnMotorAndEncoder;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.*;
 
