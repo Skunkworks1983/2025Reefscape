@@ -26,7 +26,7 @@ public class Robot extends TimedRobot {
     elevator,
     collector
   );
-  ErrorGroup errorGroupHandler = new ErrorGroup();
+  ErrorGroup errorGroup = new ErrorGroup();
 
   public Robot() {
     if(Constants.Testing.ENSURE_COMPETITION_READY_SUBSYSTEMS) {
@@ -66,7 +66,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
-    errorGroupHandler.putAllErrors();
+    errorGroup.putAllErrors();
   }
 
   @Override
@@ -74,10 +74,12 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testInit() {
-    errorGroupHandler.clearAllErrors();
+    errorGroup.clearAllErrors();
+
+    //we provide the errorCommandGenerator with the error group and a array of subsystems to get commands from
     if(drivebase.isPresent()) {
       ErrorCommandGenerator.getErrorCommand(
-        errorGroupHandler,
+        errorGroup,
         new DiagnosticSubsystem[] {drivebase.get()}
       ).schedule();
     }

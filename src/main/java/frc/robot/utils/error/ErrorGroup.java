@@ -15,9 +15,7 @@ public class ErrorGroup {
 
   private List<ErrorT> errorList = new LinkedList<ErrorT>();
 
-  public ErrorGroup() {
-
-  }
+  public ErrorGroup() {}
 
   public void addErrorMapEntry(ErrorT error) {
     errorList.add(error);
@@ -38,6 +36,7 @@ public class ErrorGroup {
         return errorT.errorStatus;
       }
     }
+    System.out.println("getErrorStatus couldn't find the error " + entryName + " connected to subsystem " + subsystem.toString());
     //returns true because id rather get an error if it couldn't find the requested error than not an error
     return true;
   }

@@ -26,7 +26,7 @@ import frc.robot.utils.error.DiagnosticSubsystem;
 
 public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
-  public SwerveModule swerveModules[] = new SwerveModule[Constants.Drivebase.MODULES.length];
+  private SwerveModule swerveModules[] = new SwerveModule[Constants.Drivebase.MODULES.length];
   private AHRS gyro = new AHRS(NavXComType.kUSB1);
 
   private SwerveDriveKinematics swerveDriveKinematics;

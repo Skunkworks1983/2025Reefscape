@@ -7,31 +7,34 @@ package frc.robot.commands.AutomatedTests;
 import java.util.function.Consumer;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.SwerveModule;
 import frc.robot.utils.error.ErrorT;
 
-public class TestTurnMotorAndEncoder extends Command {
+public class TestTurnMotorAndEncoderOnModule extends Command {
 
-  double numOfTurns;
   double startPos;
   double encoderStartPos;
   SwerveModule swerveModule;
   Consumer<ErrorT> alert;
 
-  public TestTurnMotorAndEncoder(
+  //This command spins a turn motor one full rotation of the wheel then extrapolates what data it can from that test
+  public TestTurnMotorAndEncoderOnModule(
     Consumer<ErrorT> alert,
     SwerveModule swerveModule
   ) {
     this.alert = alert;
     this.swerveModule = swerveModule;
-    numOfTurns = 1;
+    //Number of times to rotate the wheel for the test, currently one
     addRequirements(swerveModule);
   }
 
   @Override
   public void initialize() {
+    //We need to turn off the Turn motors pid controller to run a manual test
     swerveModule.setTurnControllerActive(false);
-    swerveModule.setTurnMotorSpeed(0.075);
+
+    swerveModule.setTurnMotorSpeed(Constants.Testing.TURN_MOTOR_ROTATION_SPEED);
     startPos = swerveModule.getTurnMotorEncoderPosition();
     encoderStartPos = swerveModule.getRawEncoderValue();
   }
@@ -48,20 +51,21 @@ public class TestTurnMotorAndEncoder extends Command {
 
     //An error is logged if the encoder and turn motor on a module report different values
     //this has a tolerance of 0.05 rotations
-    alert.accept(new ErrorT("Turn Motor/Encoder Misaligned", Math.abs(Math.abs(encoderDifference) - numOfTurns) > 0.05, swerveModule));
-
+    alert.accept(new ErrorT("Turn Motor/Encoder Misaligned", Math.abs(Math.abs(encoderDifference) - Constants.Testing.NUMBER_OF_MOTOR_ROTATIONS_FOR_MODULE_TEST) > Constants.Testing.TURN_MOTOR_AND_ENCODER_TOLERANCE, 
+        swerveModule));
     //An error is logged if the turn motor did not move when Instructed to
-    alert.accept(new ErrorT("Turn Motor did not move", swerveModule.getTurnMotorEncoderPosition() == startPos, swerveModule));
-
+    alert.accept(new ErrorT("Turn Motor did not move", swerveModule.getTurnMotorEncoderPosition() == startPos, 
+        swerveModule));
     //An error is logged if the encoder reports 0 in its start and end position. 
     //This happens when the encoder is unplugged or has other mechanical errors
-    alert.accept(new ErrorT("Encoder is reporting 0", encoderStartPos == 0.0 && swerveModule.getRawEncoderValue() == 0.0, swerveModule));
+    alert.accept(new ErrorT("Encoder is reporting 0", encoderStartPos == 0.0 && swerveModule.getRawEncoderValue() == 0.0, 
+        swerveModule));
 
     swerveModule.setTurnControllerActive(true);
   }
 
   @Override
   public boolean isFinished() {
-    return numOfTurns < Math.abs(swerveModule.getTurnMotorEncoderPosition() - startPos);
+    return Constants.Testing.NUMBER_OF_MOTOR_ROTATIONS_FOR_MODULE_TEST < Math.abs(swerveModule.getTurnMotorEncoderPosition() - startPos);
   }
 }

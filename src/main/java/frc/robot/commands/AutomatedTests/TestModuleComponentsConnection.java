@@ -34,13 +34,16 @@ public class TestModuleComponentsConnection extends Command {
   public void end(boolean interrupted) {
 
     //Testing the Modules Encoder connection status
-    alert.accept(new ErrorT("Turn Encoder Not Connected", !swerveModule.isEncoderConnected(), swerveModule));
+    alert.accept(new ErrorT("Turn Encoder Not Connected", !swerveModule.isEncoderConnected(), 
+        swerveModule));
 
     //Testing the Modules Turn Motor connection status
-    alert.accept(new ErrorT("Turn Motor Not Connected", !swerveModule.isTurnMotorConnected(), swerveModule));
+    alert.accept(new ErrorT("Turn Motor Not Connected", !swerveModule.isTurnMotorConnected(), 
+        swerveModule));
 
     //Testing the Modules Drive Motor connection status
-    alert.accept(new ErrorT("Drive Motor Not Connected", !swerveModule.isDriveMotorConnected(), swerveModule));
+    alert.accept(new ErrorT("Drive Motor Not Connected", !swerveModule.isDriveMotorConnected(), 
+        swerveModule));
   }
 
   @Override

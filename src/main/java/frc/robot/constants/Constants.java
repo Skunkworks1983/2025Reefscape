@@ -15,6 +15,10 @@ public class Constants {
     // If some subsystems are not created and this value is true, an exeption
     // will be thrown.
     public static boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = true;
+
+    public static double NUMBER_OF_MOTOR_ROTATIONS_FOR_MODULE_TEST = 1.0;
+    public static double TURN_MOTOR_ROTATION_SPEED = 0.15;
+    public static double TURN_MOTOR_AND_ENCODER_TOLERANCE = 0.05;
   }
 
   public class Collector {
