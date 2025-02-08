@@ -184,6 +184,10 @@ public class Drivebase extends SubsystemBase {
     }
     return Commands.runEnd(
         () -> {
+          System.out.println("SWERVE TELEOP RUNNING");
+          System.out.println("x" + xMetersPerSecond.getAsDouble());
+          System.out.println("y" + yMetersPerSecond.getAsDouble());
+          System.out.println("rot" + degreesPerSecond.getAsDouble());
           drive(
               xMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
               yMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,

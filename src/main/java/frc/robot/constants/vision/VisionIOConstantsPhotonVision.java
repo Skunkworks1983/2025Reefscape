@@ -10,7 +10,6 @@ import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 
-
 public class VisionIOConstantsPhotonVision implements VisionIOConstants {
     public String cameraName;
     public Transform3d robotToCamera;
@@ -25,8 +24,9 @@ public class VisionIOConstantsPhotonVision implements VisionIOConstants {
         try {
             VisionIO io = new VisionIOPhotonVision(this.cameraName, this.robotToCamera);
             return Optional.of(io);
-        } catch(Exception exception) {
-            System.err.println("UNABLE TO INITIALIZE " + cameraName + " CAMERA.");
+        } catch (Exception exception) {
+            System.err.println("Vision: Unable to initialize " + cameraName
+                    + " Vision IO. See below stacktrace for more details.");
             exception.printStackTrace();
             return Optional.empty();
         }

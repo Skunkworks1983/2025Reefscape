@@ -17,7 +17,8 @@ public class Constants {
     // must be constructed and assigned to the correct variable in Robot.java.
     // If some subsystems are not created and this value is true, an exeption
     // will be thrown.
-    public static boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = true;
+    // TODO: Made false for testing, switch back to true
+    public static boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = false;
   }
 
   
@@ -44,8 +45,8 @@ public class Constants {
   public class Drivebase {
     public static final String CANIVORE_NAME = "Practice Swerve";
 
-    public static final double MAX_METERS_PER_SECOND = 0.0;
-    public static final double MAX_DEGREES_PER_SECOND = 0.0;
+    public static final double MAX_METERS_PER_SECOND = 1.0;
+    public static final double MAX_DEGREES_PER_SECOND = 90.0;
 
     public class IDS {
       public static int ROTATION_JOYSTICK_ID = 1;
@@ -147,8 +148,8 @@ public class Constants {
       public class IDs {
         public class Joysticks {
           public static final int ROTATION_JOYSTICK_ID = 1;
-          public static final int TRANSLATION_JOYSTICK_ID = 2;
-          public static final int BUTTON_STICK_ID = 0;
+          public static final int TRANSLATION_JOYSTICK_ID = 0;
+          public static final int BUTTON_STICK_ID = 2;
         }
 
         public class Buttons {

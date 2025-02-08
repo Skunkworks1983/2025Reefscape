@@ -8,6 +8,7 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PnpResult;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -41,30 +42,48 @@ public class VisionIOPhotonVision implements VisionIO {
         VisionIOData latest = new VisionIOData();
 
         for (PhotonPipelineResult result : camera.getAllUnreadResults()) {
+
+            Transform3d fieldToCamera = result.getMultiTagResult().get().estimatedPose.best
             
-            if (result.hasTargets()) {
-                Optional<EstimatedRobotPose> updatedPose = poseEstimator.update(result);
+            Optional<EstimatedRobotPose> updatedPose = poseEstimator.update(result);
+            EstimatedRobotPose pose;
 
-                if (updatedPose.isPresent()) {
-                    EstimatedRobotPose pose = updatedPose.get();
-
-                    if (pose.estimatedPose.toPose2d().getX() > 0.0
-                            && pose.estimatedPose.toPose2d().getX() < aprilTagFieldLayout.getFieldLength()
-                            && pose.estimatedPose.toPose2d().getY() > 0.0
-                            && pose.estimatedPose.toPose2d().getY() < aprilTagFieldLayout.getFieldWidth()) {
-
-                        double timestamp = pose.timestampSeconds;
-                        Pose2d pose2d = pose.estimatedPose.toPose2d();
-
-                        // TODO: Figure out how to handle uncertainty, consider scaling based on dist and num of tags
-                        double[] stdDevs = { .75, .75, 5 };
-                        PoseObservation poseObservation = new PoseObservation(timestamp, pose2d,
-                                new Matrix<N3, N1>(new SimpleMatrix(stdDevs)));
-                        latest.poseObservations.add(poseObservation);
-                    }
-                }
+            // Get the optional.
+            if (poseEstimator.update(result).isPresent()) {
+                pose = updatedPose.get();
+            } else {
+                continue;
             }
+            
+            // Ensure that the estimated pose is within the field dimensions.
+            if (pose.estimatedPose.toPose2d().getX() < 0.0
+                || pose.estimatedPose.toPose2d().getX() > aprilTagFieldLayout.getFieldLength()
+                || pose.estimatedPose.toPose2d().getY() < 0.0
+                || pose.estimatedPose.toPose2d().getY() > aprilTagFieldLayout.getFieldWidth()) { 
+
+                continue;
+            }
+
+            PnpResult e = result.multitagResult.get().estimatedPose;
+            e.ambiguity
+
+            Transform3d distanceToTargetTransform;
+
+            // try/catch statement to ensure getBestCameraToTarget() won't crash code
+            try {
+                distanceToTargetTransform = result.getBestTarget().getBestCameraToTarget();
+            } catch (NullPointerException e) {
+                continue;
+            }
+
+            double timestamp = pose.timestampSeconds;
+            Pose2d pose2d = pose.estimatedPose.toPose2d();
+            double[] stdDevs = { .75, .75, 5 };
+            PoseObservation poseObservation = new PoseObservation(timestamp, pose2d,
+                new Matrix<N3, N1>(new SimpleMatrix(stdDevs)));
+                latest.poseObservations.add(poseObservation);
         }
+            
         
         return latest;
     }
