@@ -8,6 +8,9 @@ import java.util.Optional;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.utils.error.ErrorCommandGenerator;
+import frc.robot.utils.error.ErrorGroup;
+import frc.robot.utils.error.DiagnosticSubsystem;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.*;
 
@@ -23,6 +26,7 @@ public class Robot extends TimedRobot {
     elevator,
     collector
   );
+  ErrorGroup errorGroup = new ErrorGroup();
 
   public Robot() {
     if(Constants.Testing.ENSURE_COMPETITION_READY_SUBSYSTEMS) {
@@ -61,13 +65,25 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {}
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    errorGroup.putAllErrors();
+  }
 
   @Override
   public void disabledPeriodic() {}
 
   @Override
-  public void testInit() {}
+  public void testInit() {
+    errorGroup.clearAllTest();
+
+    //we provide the errorCommandGenerator with the error group and a array of subsystems to get commands from
+    if(drivebase.isPresent()) {
+      ErrorCommandGenerator.getErrorCommand(
+        errorGroup,
+        new DiagnosticSubsystem[] {drivebase.get()}
+      ).schedule();
+    }
+  }
 
   @Override
   public void testPeriodic() {}
@@ -77,4 +93,5 @@ public class Robot extends TimedRobot {
 
   @Override
   public void simulationPeriodic() {}
+
 }
