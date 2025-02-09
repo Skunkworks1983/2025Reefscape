@@ -4,8 +4,10 @@
 
 package frc.robot.subsystems;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
@@ -20,17 +22,20 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
+import frc.robot.utils.odometry.Pheonix6Odometry;
+import frc.robot.utils.odometry.PheonixUpdatable;
 
-public class Drivebase extends SubsystemBase {
+public class Drivebase extends SubsystemBase implements PheonixUpdatable {
 
   private SwerveModule swerveModules[] = new SwerveModule[Constants.Drivebase.MODULES.length];
   private AHRS gyro = new AHRS(NavXComType.kUSB1);
+  Pheonix6Odometry pheonix6Odometry = new Pheonix6Odometry(null);
 
   private SwerveDriveKinematics swerveDriveKinematics;
 
   public Drivebase() {
     for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
-      swerveModules[i] = new SwerveModule(Constants.Drivebase.MODULES[i]);
+      swerveModules[i] = new SwerveModule(Constants.Drivebase.MODULES[i], pheonix6Odometry::registerSignal);
     }
     swerveDriveKinematics = new SwerveDriveKinematics(
       swerveModules[0].moduleLocation,
@@ -131,5 +136,12 @@ public class Drivebase extends SubsystemBase {
         );
       }
     );
+  }
+
+  @Override
+  public void updateMeasurement() {
+    for (SwerveModule swerveModule : swerveModules) {
+      swerveModule.updateMeasurement();
+    }
   }
 }

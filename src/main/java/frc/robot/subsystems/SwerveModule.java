@@ -4,6 +4,10 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -22,6 +26,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.constants.SwerveModuleConstants;
@@ -184,5 +189,13 @@ public class SwerveModule extends SubsystemBase {
   public SwerveModulePosition getSwerveModulePosition() {
     return new SwerveModulePosition(getDriveMotorEncoderPosition(),
       getTurnMotorAngle());
+  }
+
+  public StatusSignal<Angle> getDrivePositionSignal() {
+    return driveMotor.getPosition().clone();
+  }
+
+  public StatusSignal<Angle> getDriveVelocitySignal() {
+    return driveMotor.getPosition().clone();
   }
 }
