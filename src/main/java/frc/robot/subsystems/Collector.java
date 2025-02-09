@@ -101,14 +101,20 @@ public class Collector extends SubsystemBase {
     );
   }
 
-  public Command intakeCoralCommand() {
+  //true if you want it to stop the motor when the command ends
+  //it should almost always be true unless there will be a following command right after that will end it
+  public Command intakeCoralCommand(
+    boolean stopOnEnd
+  ) {
     return runEnd(
       () -> {
         setCollectorSpeeds(-Constants.Collector.COLLECOR_ROTATE_FAST, 
           Constants.Collector.COLLECOR_ROTATE_FAST);
       },
       () -> {
-        setCollectorSpeeds(0, 0);
+        if(stopOnEnd) {
+          setCollectorSpeeds(0, 0);
+        }
       }
     ).until(
       () -> {
@@ -130,9 +136,9 @@ public class Collector extends SubsystemBase {
     );
   }
 
-  public Command waitAfterCatchPeiceCommand() {
+  public Command waitAfterCatchPieceCommand() {
     return Commands.sequence(
-      intakeCoralCommand(),
+      intakeCoralCommand(false),
       Commands.race(
         scorePeiceCommand(),
         Commands.waitSeconds(Constants.Collector.SECONDS_BEFORE_CUTTOF)

@@ -58,7 +58,7 @@ public class OI {
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.ROTATE_CORAL)
         .whileTrue(collector.rotateCoralCommand());
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.COLLECT_CORAL)
-        .whileTrue(collector.waitAfterCatchPeiceCommand());
+        .whileTrue(collector.waitAfterCatchPieceCommand());
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.SCORE_CORAL)
         .whileTrue(collector.scorePeiceCommand());
     }
