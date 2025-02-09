@@ -18,20 +18,20 @@ public class TestTurnMotorAndEncoderOnModule extends Command {
   SwerveModule swerveModule;
   Consumer<TestResult> alert;
 
-  //This command spins a turn motor one full rotation of the wheel then extrapolates what data it can from that test
+  // This command spins a turn motor one full rotation of the wheel then extrapolates what data it can from that test
   public TestTurnMotorAndEncoderOnModule(
     Consumer<TestResult> alert,
     SwerveModule swerveModule
   ) {
     this.alert = alert;
     this.swerveModule = swerveModule;
-    //Number of times to rotate the wheel for the test, currently one
+    // Number of times to rotate the wheel for the test, currently one
     addRequirements(swerveModule);
   }
 
   @Override
   public void initialize() {
-    //We need to turn off the Turn motors pid controller to run a manual test
+    // We need to turn off the Turn motors pid controller to run a manual test
     swerveModule.setTurnControllerActive(false);
 
     swerveModule.setTurnMotorSpeed(Constants.Testing.TURN_MOTOR_ROTATION_SPEED);
@@ -49,8 +49,8 @@ public class TestTurnMotorAndEncoderOnModule extends Command {
     swerveModule.setTurnMotorSpeed(0);
     double encoderDifference = swerveModule.getRawEncoderValue() - encoderStartPos;
 
-    //An error is logged if the encoder and turn motor on a module report different values
-    //this has a tolerance of 0.05 rotations
+    // An error is logged if the encoder and turn motor on a module report different values
+    // this has a tolerance of 0.05 rotations
     alert.accept(
       new TestResult(
         "Turn Motor/Encoder Misaligned", 
@@ -59,7 +59,7 @@ public class TestTurnMotorAndEncoderOnModule extends Command {
         "The encoder and motor reported two rotations different enough to get detected by this Error"
       )
     );
-    //An error is logged if the turn motor did not move when Instructed to
+    // An error is logged if the turn motor did not move when Instructed to
     alert.accept(
       new TestResult(
         "Turn Motor did not move", 
@@ -68,8 +68,8 @@ public class TestTurnMotorAndEncoderOnModule extends Command {
         "The motors position is the same as when it started, we can assume it did not move"
       )
     );
-    //An error is logged if the encoder reports 0 in its start and end position. 
-    //This happens when the encoder is unplugged or has other mechanical errors
+    // An error is logged if the encoder reports 0 in its start and end position. 
+    // This happens when the encoder is unplugged or has other mechanical errors
     alert.accept(
       new TestResult(
         "Encoder is reporting 0", 

@@ -101,8 +101,8 @@ public class Collector extends SubsystemBase {
     );
   }
 
-  //true if you want it to stop the motor when the command ends
-  //it should almost always be true unless there will be a following command right after that will end it
+  // true if you want it to stop the motor when the command ends
+  // it should almost always be true unless there will be a following command right after that will end it
   public Command intakeCoralCommand(
     boolean stopOnEnd
   ) {
@@ -124,7 +124,7 @@ public class Collector extends SubsystemBase {
     );
   }
 
-  public Command scorePeiceCommand() {
+  public Command scorePieceCommand() {
     return runEnd(
       () -> {
         setCollectorSpeeds(-Constants.Collector.COLLECOR_ROTATE_FAST, 
@@ -140,7 +140,7 @@ public class Collector extends SubsystemBase {
     return Commands.sequence(
       intakeCoralCommand(false),
       Commands.race(
-        scorePeiceCommand(),
+        scorePieceCommand(),
         Commands.waitSeconds(Constants.Collector.SECONDS_BEFORE_CUTTOF)
       )
     );

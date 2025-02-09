@@ -116,8 +116,8 @@ public class SwerveModule extends SubsystemBase {
     }
   }
 
-  //only used if we want to run a manual speed on the motor
-  //the turn controller would overwrite it if we dont turn it off first
+  // only used if we want to run a manual speed on the motor
+  // the turn controller would overwrite it if we dont turn it off first
   public void setTurnControllerActive(boolean isControllerActive) {
     turnControllerActive = isControllerActive;
   }
@@ -136,10 +136,10 @@ public class SwerveModule extends SubsystemBase {
     return driveMotor.getPosition().getValueAsDouble() / Constants.Drivebase.Info.REVS_PER_METER;
   }
 
-  //Almost nothing should be calling this exept tests, this gets position from the turn motor
-  //what should be used would be getTurnMotorAngle()
+  // Almost nothing should be calling this exept tests, this gets position from the turn motor
+  // what should be used would be getTurnMotorAngle()
   public double getTurnMotorEncoderPosition() {
-    //TODO find a way to check robot to see if we are in test mode then log an error if not
+    // TODO find a way to check robot to see if we are in test mode then log an error if not
     return turnMotor.getEncoder().getPosition() / Constants.Drivebase.Info.TURN_MOTOR_GEAR_RATIO; 
   }
 
@@ -226,18 +226,18 @@ public class SwerveModule extends SubsystemBase {
     return driveMotor.isConnected();
   }
 
-  //This runs a command to test the connection of each component, then runs another test if the relevent components are connected
+  // This runs a command to test the connection of each component, then runs another test if the relevent components are connected
   public Command TestConnectionThenModule(
     ErrorGroup errorGroupHandler
   ) {
     return Commands.sequence(
       new TestModuleComponentsConnection(errorGroupHandler::addTestMapEntry, this),
-      //This Commands.either runs an empty command or a test command based on the result of the command above
-      //It checks two different error status' before running the command
+      // This Commands.either runs an empty command or a test command based on the result of the command above
+      // It checks two different error status' before running the command
       Commands.either(
         Commands.race(
           new TestTurnMotorAndEncoderOnModule(errorGroupHandler::addTestMapEntry, this),
-          //the command is also in a 5 second time out, because the command takes aprox 4.5
+          // the command is also in a 5 second time out, because the command takes aprox 4.5
           Commands.waitSeconds(5)
         ),
         Commands.none(),

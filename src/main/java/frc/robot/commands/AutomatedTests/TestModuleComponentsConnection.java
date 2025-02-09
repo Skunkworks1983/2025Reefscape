@@ -15,7 +15,7 @@ public class TestModuleComponentsConnection extends Command {
   SwerveModule swerveModule;
   Consumer<TestResult> alert;
 
-  //test command to test the connection of swerve module components
+  // test command to test the connection of swerve module components
   public TestModuleComponentsConnection(
     Consumer<TestResult> alert,
     SwerveModule swerveModule
@@ -33,7 +33,7 @@ public class TestModuleComponentsConnection extends Command {
   @Override
   public void end(boolean interrupted) {
 
-    //Testing the Modules Encoder connection status
+    // Testing the Modules Encoder connection status
     alert.accept(
       new TestResult(
         "Turn Encoder Not Connected", 
@@ -43,7 +43,7 @@ public class TestModuleComponentsConnection extends Command {
       )
     );
 
-    //Testing the Modules Turn Motor connection status
+    // Testing the Modules Turn Motor connection status
     alert.accept(
       new TestResult(
         "Turn Motor Not Connected", 
@@ -53,7 +53,7 @@ public class TestModuleComponentsConnection extends Command {
       )
     );
 
-    //Testing the Modules Drive Motor connection status
+    // Testing the Modules Drive Motor connection status
     alert.accept(
       new TestResult(
         "Drive Motor Not Connected",
