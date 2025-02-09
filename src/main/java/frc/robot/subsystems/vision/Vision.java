@@ -7,14 +7,15 @@ package frc.robot.subsystems.vision;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.Constants.VisionConstants;
 import frc.robot.constants.vision.VisionIOConstants;
 import frc.robot.subsystems.vision.VisionIO.PoseObservation;
 import frc.robot.subsystems.vision.VisionIO.VisionIOData;
@@ -48,11 +49,41 @@ public class Vision extends SubsystemBase {
   
   @Override
   public void periodic() {
+
     for (int i = 0; i < presentIO.size(); i++) {
       VisionIOData data = presentIO.get(i).getLatestData();
+      System.out.println("SIZE!!!!!! " + data.poseObservations.size());
       for (PoseObservation observation : data.poseObservations) {
-        consumer.accept(observation.estimatedPose(), observation.timestamp(), observation.stdDevs());
-        field2ds.get(i).setRobotPose(observation.estimatedPose());
+
+        SmartDashboard.putNumber("Ambiguity", observation.ambiguity());
+        SmartDashboard.putNumber("Z Error", observation.estimatedPose().getZ());
+
+        boolean rejectPose = 
+          observation.tagCount() == 0 ||
+          observation.ambiguity() > VisionConstants.MAX_AMBIGUITY ||
+          observation.estimatedPose().getZ() > VisionConstants.MAX_Z_ERROR ||
+          observation.estimatedPose().getX() < 0.0 ||
+          observation.estimatedPose().getX() > VisionConstants.APRIL_TAG_FIELD_LAYOUT.getFieldLength() ||
+          observation.estimatedPose().getY() < 0.0 ||
+          observation.estimatedPose().getY() > VisionConstants.APRIL_TAG_FIELD_LAYOUT.getFieldWidth();
+
+        if(rejectPose) {
+          continue;
+        }
+
+        System.out.println("ROBOT POSE" + observation.estimatedPose());
+
+        double stdDevFactor = Math.pow(observation.averageTagDistance(), 2.0) / observation.tagCount();
+        double linearStdDev = VisionConstants.LINEAR_STD_DEV_BASELINE * stdDevFactor;
+        double angularStdDev = VisionConstants.ANGULAR_STD_DEV_BASELINE * stdDevFactor;
+          
+        consumer.accept(
+            observation.estimatedPose().toPose2d(), 
+            observation.timestamp(), 
+            VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev)
+          );
+
+        field2ds.get(i).setRobotPose(observation.estimatedPose().toPose2d());
       }
     }
   }
