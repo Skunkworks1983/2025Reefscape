@@ -33,6 +33,7 @@ public class Vision extends SubsystemBase {
 
   public Vision(VisionConsumer consumer, VisionIO... io) {
     this.consumer = consumer;
+    this.io = io;
 
     for(VisionIO i : io) {
       Field2d field = new Field2d();
@@ -46,11 +47,10 @@ public class Vision extends SubsystemBase {
 
     for (int i = 0; i < io.length; i++) {
       VisionIOData data = io[i].getLatestData();
-      System.out.println("SIZE!!!!!! " + data.poseObservations.size());
       for (PoseObservation observation : data.poseObservations) {
 
-        SmartDashboard.putNumber("Ambiguity", observation.ambiguity());
-        SmartDashboard.putNumber("Z Error", observation.estimatedPose().getZ());
+        SmartDashboard.putNumber(io[i].getName() + " Latest Ambiguity", observation.ambiguity());
+        SmartDashboard.putNumber(io[i].getName() + " Latest Z Error", observation.estimatedPose().getZ());
 
         boolean rejectPose = 
           observation.tagCount() == 0 ||

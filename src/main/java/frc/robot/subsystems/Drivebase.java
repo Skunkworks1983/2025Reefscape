@@ -42,7 +42,7 @@ public class Drivebase extends SubsystemBase {
 
   Vision vision = new Vision(
       this::addVisionMeasurement,
-      new VisionIOPhotonVision(VisionConstants.CAMERA_0_NAME, VisionConstants.ROBOT_TO_CAMERA_0)
+      new VisionIOPhotonVision(VisionConstants.CAMERA_0_NAME, VisionConstants.CAMERA_0_TRANSFORM)
     );
 
   public Drivebase() {
@@ -184,10 +184,6 @@ public class Drivebase extends SubsystemBase {
     }
     return Commands.runEnd(
         () -> {
-          System.out.println("SWERVE TELEOP RUNNING");
-          System.out.println("x" + xMetersPerSecond.getAsDouble());
-          System.out.println("y" + yMetersPerSecond.getAsDouble());
-          System.out.println("rot" + degreesPerSecond.getAsDouble());
           drive(
               xMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
               yMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
