@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.VisionConstants;
 import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
 
 public class Drivebase extends SubsystemBase {
 
@@ -41,10 +42,9 @@ public class Drivebase extends SubsystemBase {
 
   Vision vision = new Vision(
       this::addVisionMeasurement,
-      VisionConstants.VISION_IO_CONSTANTS[0]
-  );
+      new VisionIOPhotonVision(VisionConstants.CAMERA_0_NAME, VisionConstants.ROBOT_TO_CAMERA_0)
+    );
 
-  // TODO: add vision to drivebase constructor, construct vision in robot.java
   public Drivebase() {
     for (int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
       swerveModules[i] = new SwerveModule(Constants.Drivebase.MODULES[i]);

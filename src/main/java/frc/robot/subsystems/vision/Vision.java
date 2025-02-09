@@ -6,7 +6,6 @@ package frc.robot.subsystems.vision;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -16,7 +15,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants.VisionConstants;
-import frc.robot.constants.vision.VisionIOConstants;
 import frc.robot.subsystems.vision.VisionIO.PoseObservation;
 import frc.robot.subsystems.vision.VisionIO.VisionIOData;
 
@@ -29,29 +27,25 @@ import frc.robot.subsystems.vision.VisionIO.VisionIOData;
  */
 public class Vision extends SubsystemBase {
 
-  VisionConsumer consumer;
-  List<VisionIO> presentIO = new LinkedList<VisionIO>();
-  List<Field2d> field2ds = new LinkedList<Field2d>();
+  private VisionConsumer consumer;
+  private VisionIO[] io;
+  private List<Field2d> field2ds = new LinkedList<Field2d>();
 
-  public Vision(VisionConsumer consumer, VisionIOConstants... visionConstants) {
+  public Vision(VisionConsumer consumer, VisionIO... io) {
     this.consumer = consumer;
 
-    for(VisionIOConstants i : visionConstants) {
-      Optional<VisionIO> initialized = i.initialize();
-      if (initialized.isPresent()) {
-        presentIO.add(initialized.get());
-        Field2d field = new Field2d();
-        SmartDashboard.putData(initialized.get().getName() + " Odometry", field);
-        field2ds.add(field);
-      }
+    for(VisionIO i : io) {
+      Field2d field = new Field2d();
+      SmartDashboard.putData(i.getName() + " Odometry", field);
+      field2ds.add(field);
     }
   }
   
   @Override
   public void periodic() {
 
-    for (int i = 0; i < presentIO.size(); i++) {
-      VisionIOData data = presentIO.get(i).getLatestData();
+    for (int i = 0; i < io.length; i++) {
+      VisionIOData data = io[i].getLatestData();
       System.out.println("SIZE!!!!!! " + data.poseObservations.size());
       for (PoseObservation observation : data.poseObservations) {
 
@@ -70,8 +64,6 @@ public class Vision extends SubsystemBase {
         if(rejectPose) {
           continue;
         }
-
-        System.out.println("ROBOT POSE" + observation.estimatedPose());
 
         double stdDevFactor = Math.pow(observation.averageTagDistance(), 2.0) / observation.tagCount();
         double linearStdDev = VisionConstants.LINEAR_STD_DEV_BASELINE * stdDevFactor;

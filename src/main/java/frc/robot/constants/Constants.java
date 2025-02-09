@@ -8,8 +8,6 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import frc.robot.constants.vision.VisionIOConstants;
-import frc.robot.constants.vision.VisionIOConstantsPhotonVision;
 
 // TODO: add all robot constant values when they have been decided
 public class Constants {
@@ -93,9 +91,9 @@ public class Constants {
   }
 
   public class VisionConstants {
-    public static VisionIOConstants[] VISION_IO_CONSTANTS = {
-        new VisionIOConstantsPhotonVision("Camera_1", new Transform3d())
-    };
+  
+    public static final String CAMERA_0_NAME = "Camera_0";
+    public static final Transform3d ROBOT_TO_CAMERA_0 = new Transform3d();
 
     public static final double MAX_AMBIGUITY = .3;
     public static final double LINEAR_STD_DEV_BASELINE = .02;
