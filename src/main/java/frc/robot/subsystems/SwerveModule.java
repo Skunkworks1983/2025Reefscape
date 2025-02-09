@@ -237,6 +237,7 @@ public class SwerveModule extends SubsystemBase {
       Commands.either(
         Commands.race(
           new TestTurnMotorAndEncoderOnModule(errorGroupHandler::addTestMapEntry, this),
+          //the command is also in a 5 second time out, because the command takes aprox 4.5
           Commands.waitSeconds(5)
         ),
         Commands.none(),

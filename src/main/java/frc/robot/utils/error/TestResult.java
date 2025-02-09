@@ -11,9 +11,12 @@ public class TestResult {
   //true if the test failed, false if the test passed
   public boolean errorStatus;
   public SubsystemBase subsystem;
-  public TestResult(String name, boolean errorStatus, SubsystemBase subsystem) {
+  //tell someone what your test did
+  public String testDescription;
+  public TestResult(String name, boolean errorStatus, SubsystemBase subsystem, String testDescription) {
     this.name = name;
     this.errorStatus = errorStatus;
     this.subsystem = subsystem;
+    this.testDescription = testDescription;
   }
 }

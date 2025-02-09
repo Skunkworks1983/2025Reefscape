@@ -51,15 +51,33 @@ public class TestTurnMotorAndEncoderOnModule extends Command {
 
     //An error is logged if the encoder and turn motor on a module report different values
     //this has a tolerance of 0.05 rotations
-    alert.accept(new TestResult("Turn Motor/Encoder Misaligned", Math.abs(Math.abs(encoderDifference) - Constants.Testing.NUMBER_OF_MOTOR_ROTATIONS_FOR_MODULE_TEST) > Constants.Testing.TURN_MOTOR_AND_ENCODER_TOLERANCE, 
-        swerveModule));
+    alert.accept(
+      new TestResult(
+        "Turn Motor/Encoder Misaligned", 
+        Math.abs(Math.abs(encoderDifference) - Constants.Testing.NUMBER_OF_MOTOR_ROTATIONS_FOR_MODULE_TEST) > Constants.Testing.TURN_MOTOR_AND_ENCODER_TOLERANCE, 
+        swerveModule,
+        "The encoder and motor reported two rotations different enough to get detected by this Error"
+      )
+    );
     //An error is logged if the turn motor did not move when Instructed to
-    alert.accept(new TestResult("Turn Motor did not move", swerveModule.getTurnMotorEncoderPosition() == startPos, 
-        swerveModule));
+    alert.accept(
+      new TestResult(
+        "Turn Motor did not move", 
+        swerveModule.getTurnMotorEncoderPosition() == startPos, 
+        swerveModule,
+        "The motors position is the same as when it started, we can assume it did not move"
+      )
+    );
     //An error is logged if the encoder reports 0 in its start and end position. 
     //This happens when the encoder is unplugged or has other mechanical errors
-    alert.accept(new TestResult("Encoder is reporting 0", encoderStartPos == 0.0 && swerveModule.getRawEncoderValue() == 0.0, 
-        swerveModule));
+    alert.accept(
+      new TestResult(
+        "Encoder is reporting 0", 
+        encoderStartPos == 0.0 && swerveModule.getRawEncoderValue() == 0.0, 
+        swerveModule,
+        "The encoder reported a 0.0 position on startup and a 0.0 position on end."
+      )
+    );
 
     swerveModule.setTurnControllerActive(true);
   }
