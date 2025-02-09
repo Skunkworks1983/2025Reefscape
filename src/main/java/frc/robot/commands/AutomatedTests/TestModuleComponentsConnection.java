@@ -8,16 +8,16 @@ import java.util.function.Consumer;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.SwerveModule;
-import frc.robot.utils.error.ErrorT;
+import frc.robot.utils.error.TestResult;
 
 public class TestModuleComponentsConnection extends Command {
   
   SwerveModule swerveModule;
-  Consumer<ErrorT> alert;
+  Consumer<TestResult> alert;
 
   //test command to test the connection of swerve module components
   public TestModuleComponentsConnection(
-    Consumer<ErrorT> alert,
+    Consumer<TestResult> alert,
     SwerveModule swerveModule
   ) {
     this.alert = alert;
@@ -34,15 +34,15 @@ public class TestModuleComponentsConnection extends Command {
   public void end(boolean interrupted) {
 
     //Testing the Modules Encoder connection status
-    alert.accept(new ErrorT("Turn Encoder Not Connected", !swerveModule.isEncoderConnected(), 
+    alert.accept(new TestResult("Turn Encoder Not Connected", !swerveModule.isEncoderConnected(), 
         swerveModule));
 
     //Testing the Modules Turn Motor connection status
-    alert.accept(new ErrorT("Turn Motor Not Connected", !swerveModule.isTurnMotorConnected(), 
+    alert.accept(new TestResult("Turn Motor Not Connected", !swerveModule.isTurnMotorConnected(), 
         swerveModule));
 
     //Testing the Modules Drive Motor connection status
-    alert.accept(new ErrorT("Drive Motor Not Connected", !swerveModule.isDriveMotorConnected(), 
+    alert.accept(new TestResult("Drive Motor Not Connected", !swerveModule.isDriveMotorConnected(), 
         swerveModule));
   }
 

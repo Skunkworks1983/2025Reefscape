@@ -74,7 +74,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testInit() {
-    errorGroup.clearAllErrors();
+    errorGroup.clearAllTest();
 
     //we provide the errorCommandGenerator with the error group and a array of subsystems to get commands from
     if(drivebase.isPresent()) {
@@ -93,4 +93,5 @@ public class Robot extends TimedRobot {
 
   @Override
   public void simulationPeriodic() {}
+
 }

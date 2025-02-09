@@ -9,18 +9,18 @@ import java.util.function.Consumer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.SwerveModule;
-import frc.robot.utils.error.ErrorT;
+import frc.robot.utils.error.TestResult;
 
 public class TestTurnMotorAndEncoderOnModule extends Command {
 
   double startPos;
   double encoderStartPos;
   SwerveModule swerveModule;
-  Consumer<ErrorT> alert;
+  Consumer<TestResult> alert;
 
   //This command spins a turn motor one full rotation of the wheel then extrapolates what data it can from that test
   public TestTurnMotorAndEncoderOnModule(
-    Consumer<ErrorT> alert,
+    Consumer<TestResult> alert,
     SwerveModule swerveModule
   ) {
     this.alert = alert;
@@ -51,14 +51,14 @@ public class TestTurnMotorAndEncoderOnModule extends Command {
 
     //An error is logged if the encoder and turn motor on a module report different values
     //this has a tolerance of 0.05 rotations
-    alert.accept(new ErrorT("Turn Motor/Encoder Misaligned", Math.abs(Math.abs(encoderDifference) - Constants.Testing.NUMBER_OF_MOTOR_ROTATIONS_FOR_MODULE_TEST) > Constants.Testing.TURN_MOTOR_AND_ENCODER_TOLERANCE, 
+    alert.accept(new TestResult("Turn Motor/Encoder Misaligned", Math.abs(Math.abs(encoderDifference) - Constants.Testing.NUMBER_OF_MOTOR_ROTATIONS_FOR_MODULE_TEST) > Constants.Testing.TURN_MOTOR_AND_ENCODER_TOLERANCE, 
         swerveModule));
     //An error is logged if the turn motor did not move when Instructed to
-    alert.accept(new ErrorT("Turn Motor did not move", swerveModule.getTurnMotorEncoderPosition() == startPos, 
+    alert.accept(new TestResult("Turn Motor did not move", swerveModule.getTurnMotorEncoderPosition() == startPos, 
         swerveModule));
     //An error is logged if the encoder reports 0 in its start and end position. 
     //This happens when the encoder is unplugged or has other mechanical errors
-    alert.accept(new ErrorT("Encoder is reporting 0", encoderStartPos == 0.0 && swerveModule.getRawEncoderValue() == 0.0, 
+    alert.accept(new TestResult("Encoder is reporting 0", encoderStartPos == 0.0 && swerveModule.getRawEncoderValue() == 0.0, 
         swerveModule));
 
     swerveModule.setTurnControllerActive(true);

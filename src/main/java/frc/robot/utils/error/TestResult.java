@@ -6,11 +6,12 @@ package frc.robot.utils.error;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class ErrorT {
+public class TestResult {
   public String name;
+  //true if the test failed, false if the test passed
   public boolean errorStatus;
   public SubsystemBase subsystem;
-  public ErrorT(String name, boolean errorStatus, SubsystemBase subsystem) {
+  public TestResult(String name, boolean errorStatus, SubsystemBase subsystem) {
     this.name = name;
     this.errorStatus = errorStatus;
     this.subsystem = subsystem;

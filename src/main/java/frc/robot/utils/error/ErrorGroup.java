@@ -3,8 +3,8 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.utils.error;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
@@ -13,27 +13,37 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 /** Add your docs here. */
 public class ErrorGroup {
 
-  private List<ErrorT> errorList = new LinkedList<ErrorT>();
+  private Set<TestResult> testList = new TreeSet<TestResult>();
 
   public ErrorGroup() {}
 
-  public void addErrorMapEntry(ErrorT error) {
-    errorList.add(error);
+  public void addTestMapEntry(TestResult test) {
+    //checks the list to see if there is a duplicate, and if either is an error, the final becomes an error
+    for(TestResult testResult : testList) {
+      if(testResult.name.equals(test.name) && testResult.subsystem == test.subsystem) {
+        if(test.errorStatus = true) {
+          setTestStatus(test.name, test.subsystem, true);
+        }
+        System.out.println("Duplicate entry in list, please check to see what is doing this");
+        return;
+      }
+    }
+    testList.add(test);
   }
 
-  public void setErrorStatus(String entryName, Subsystem subsystem, boolean error) {
-    for(ErrorT errorT : errorList) {
-      if(errorT.name.equals(entryName)) {
-        errorT.errorStatus = error;
+  public void setTestStatus(String entryName, Subsystem subsystem, boolean error) {
+    for(TestResult testResult : testList) {
+      if(testResult.name.equals(entryName)) {
+        testResult.errorStatus = error;
         return;
       }
     }
   }
 
-  public boolean getErrorStatus(String entryName, Subsystem subsystem) {
-    for(ErrorT errorT : errorList) {
-      if(errorT.name.equals(entryName) && errorT.subsystem == subsystem) {
-        return errorT.errorStatus;
+  public boolean getTestStatus(String entryName, Subsystem subsystem) {
+    for(TestResult testResult : testList) {
+      if(testResult.name.equals(entryName) && testResult.subsystem == subsystem) {
+        return testResult.errorStatus;
       }
     }
     System.out.println("getErrorStatus couldn't find the error " + entryName + " connected to subsystem " + subsystem.toString());
@@ -41,14 +51,14 @@ public class ErrorGroup {
     return true;
   }
 
-  public void clearAllErrors() {
-    errorList = new LinkedList<ErrorT>();
+  public void clearAllTest() {
+    testList = new TreeSet<TestResult>();
   }
 
   public void putAllErrors() {
-    for(ErrorT errorT : errorList) {
-      Alert alert = new Alert(errorT.name + " " + errorT.subsystem.toString(), AlertType.kError);
-      alert.set(errorT.errorStatus);
+    for(TestResult testResult : testList) {
+      Alert alert = new Alert(testResult.name + " " + testResult.subsystem.toString(), AlertType.kError);
+      alert.set(testResult.errorStatus);
     }
   }
 }

@@ -139,6 +139,7 @@ public class SwerveModule extends SubsystemBase {
   //Almost nothing should be calling this exept tests, this gets position from the turn motor
   //what should be used would be getTurnMotorAngle()
   public double getTurnMotorEncoderPosition() {
+    //TODO find a way to check robot to see if we are in test mode then log an error if not
     return turnMotor.getEncoder().getPosition() / Constants.Drivebase.Info.TURN_MOTOR_GEAR_RATIO; 
   }
 
@@ -230,17 +231,17 @@ public class SwerveModule extends SubsystemBase {
     ErrorGroup errorGroupHandler
   ) {
     return Commands.sequence(
-      new TestModuleComponentsConnection(errorGroupHandler::addErrorMapEntry, this),
+      new TestModuleComponentsConnection(errorGroupHandler::addTestMapEntry, this),
       //This Commands.either runs an empty command or a test command based on the result of the command above
       //It checks two different error status' before running the command
       Commands.either(
         Commands.race(
-          new TestTurnMotorAndEncoderOnModule(errorGroupHandler::addErrorMapEntry, this),
+          new TestTurnMotorAndEncoderOnModule(errorGroupHandler::addTestMapEntry, this),
           Commands.waitSeconds(5)
         ),
         Commands.none(),
-        () -> !errorGroupHandler.getErrorStatus("Turn Encoder Not Connected", this) && 
-              !errorGroupHandler.getErrorStatus("Turn Motor Not Connected", this)
+        () -> !errorGroupHandler.getTestStatus("Turn Encoder Not Connected", this) && 
+              !errorGroupHandler.getTestStatus("Turn Motor Not Connected", this)
       )
     );
   }
