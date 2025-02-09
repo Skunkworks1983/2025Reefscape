@@ -7,10 +7,11 @@ package frc.robot.subsystems;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
-import com.studica.frc.AHRS;
-import com.studica.frc.AHRS.NavXComType;
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
+import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -27,20 +28,24 @@ import frc.robot.utils.error.DiagnosticSubsystem;
 public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
   private SwerveModule swerveModules[] = new SwerveModule[Constants.Drivebase.MODULES.length];
-  private AHRS gyro = new AHRS(NavXComType.kUSB1);
+  private Pigeon2 gyro = new Pigeon2(0, Constants.Drivebase.CANIVORE_NAME);
 
   private SwerveDriveKinematics swerveDriveKinematics;
 
   public Drivebase() {
+    Translation2d[] moduleLocations = new Translation2d[Constants.Drivebase.MODULES.length];
+
     for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
       swerveModules[i] = new SwerveModule(Constants.Drivebase.MODULES[i]);
+      moduleLocations[i] = swerveModules[i].moduleLocation;
     }
-    swerveDriveKinematics = new SwerveDriveKinematics(
-      swerveModules[0].moduleLocation,
-      swerveModules[1].moduleLocation, 
-      swerveModules[2].moduleLocation, 
-      swerveModules[3].moduleLocation
-    );
+
+    Pigeon2Configuration gConfiguration = new Pigeon2Configuration();
+    gConfiguration.MountPose.MountPoseYaw = 0; 
+    gyro.getConfigurator().apply(gConfiguration);
+    resetGyroHeading();
+
+    swerveDriveKinematics = new SwerveDriveKinematics(moduleLocations);
   }
 
   @Override
@@ -73,8 +78,8 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     }
   }
 
-  public void setGyroHeading(Rotation2d newHeading) {
-    gyro.setAngleAdjustment(newHeading.getDegrees());
+  public void resetGyroHeading() {
+    gyro.setYaw(0);
   }
 
   public void setAllDriveMotorBreakMode(boolean breakMode) {
@@ -85,16 +90,17 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
   // rotation from gyro is counterclockwise positive while we need clockwise positive
   private Rotation2d getGyroAngle() {
-    return Rotation2d.fromDegrees(-gyro.getAngle());
+    return Rotation2d.fromDegrees(-gyro.getYaw().getValueAsDouble());
   }
 
   private ChassisSpeeds getRobotRelativeSpeeds() {
-    return swerveDriveKinematics.toChassisSpeeds(
-      swerveModules[0].getSwerveModuleState(),
-      swerveModules[1].getSwerveModuleState(), 
-      swerveModules[2].getSwerveModuleState(), 
-      swerveModules[3].getSwerveModuleState()
-    );
+
+    SwerveModuleState[] moduleStates = new SwerveModuleState[Constants.Drivebase.MODULES.length];
+    for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
+      moduleStates[i] = swerveModules[i].getSwerveModuleState();
+    }
+
+    return swerveDriveKinematics.toChassisSpeeds(moduleStates);
   }
 
   public void setAllModulesTurnPidActive() {
