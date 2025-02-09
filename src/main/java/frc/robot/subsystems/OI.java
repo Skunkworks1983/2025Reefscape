@@ -10,8 +10,8 @@ import java.util.function.DoubleFunction;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.constants.Constants.OI.LIMITS;
-import frc.robot.constants.Constants;
 import frc.robot.commands.elevator.*;
+import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.OI.IDs.Joysticks;
 
 public class OI {
