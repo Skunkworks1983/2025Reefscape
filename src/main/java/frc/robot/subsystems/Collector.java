@@ -82,7 +82,10 @@ public class Collector extends SubsystemBase {
     lastLeftSpeed = leftSpeed;
   }
   @Override
-  public void periodic() { }
+  public void periodic() {
+    SmartDashboard.putNumber("Right motor current", rightMotor.getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Left motor current", leftMotor.getSupplyCurrent().getValueAsDouble());
+  }
   
   public Command rotateCoralCommand() {
     return runEnd(
@@ -103,9 +106,6 @@ public class Collector extends SubsystemBase {
       () -> {
         setCollectorSpeeds(-Constants.Collector.COLLECOR_ROTATE_FAST, 
           Constants.Collector.COLLECOR_ROTATE_FAST);
-        SmartDashboard.putNumber("Right motor current", rightMotor.getSupplyCurrent().getValueAsDouble());
-        SmartDashboard.putNumber("Left motor current", leftMotor.getSupplyCurrent().getValueAsDouble());
-
       },
       () -> {
         setCollectorSpeeds(0, 0);
@@ -123,9 +123,6 @@ public class Collector extends SubsystemBase {
       () -> {
         setCollectorSpeeds(-Constants.Collector.COLLECOR_ROTATE_FAST, 
           Constants.Collector.COLLECOR_ROTATE_FAST);
-        SmartDashboard.putNumber("Right motor current", rightMotor.getSupplyCurrent().getValueAsDouble());
-        SmartDashboard.putNumber("Left motor current", leftMotor.getSupplyCurrent().getValueAsDouble());
-
       },
       () -> {
         setCollectorSpeeds(0, 0);
