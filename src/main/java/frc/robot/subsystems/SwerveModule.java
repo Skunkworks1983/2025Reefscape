@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.StatusSignal;
@@ -32,6 +31,7 @@ import frc.robot.constants.Constants;
 import frc.robot.constants.SwerveModuleConstants;
 import frc.robot.utils.PIDs.SmartPIDController;
 import frc.robot.utils.PIDs.SmartPIDControllerTalonFX;
+import frc.robot.utils.odometry.Pheonix6Odometry;
 
 public class SwerveModule extends SubsystemBase {
 
@@ -40,20 +40,25 @@ public class SwerveModule extends SubsystemBase {
   private CANcoder turnEncoder;
   private SmartPIDControllerTalonFX driveController;
   private SmartPIDController turnController;
+  final private Supplier<Double> driveMotorRawVelocity;
+  final private Supplier<Double> driveMotorRawPosition;
 
   public String moduleName;
   public Translation2d moduleLocation;
 
   final VelocityVoltage m_Velocity = new VelocityVoltage(0);
 
-  public SwerveModule(SwerveModuleConstants swerveConstants) {
+  public SwerveModule(
+    SwerveModuleConstants swerveConstants,
+    Pheonix6Odometry pheonix6Odometry) {
     this(
       swerveConstants.driveMotorId, 
       swerveConstants.turnMotorId, 
       swerveConstants.turnEncoderId, 
       swerveConstants.turnEncoderOffset, 
       swerveConstants.moduleLocation, 
-      swerveConstants.moduleName
+      swerveConstants.moduleName,
+      pheonix6Odometry
     );
   }
   
@@ -63,7 +68,8 @@ public class SwerveModule extends SubsystemBase {
     int turnEncoderId,
     double turnEncoderOffset, 
     Translation2d moduleLocation, 
-    String moduleName
+    String moduleName,
+    Pheonix6Odometry pheonix6odometry
   ) {
     this.driveMotor = new TalonFX(driveModuleId, Constants.Drivebase.CANIVORE_NAME);
     this.turnMotor = new SparkMax(turnModuleId, MotorType.kBrushless);
@@ -105,6 +111,9 @@ public class SwerveModule extends SubsystemBase {
     turnEncoder.getConfigurator().apply(encoder);
 
     m_Velocity.Slot = 0;
+    
+    driveMotorRawVelocity = pheonix6odometry.registerSignal(driveMotor.getVelocity().clone());
+    driveMotorRawPosition = pheonix6odometry.registerSignal(driveMotor.getPosition().clone());
   }
 
   @Override
@@ -126,12 +135,12 @@ public class SwerveModule extends SubsystemBase {
 
   // returns meters traveled
   public double getDriveMotorEncoderPosition() {
-    return driveMotor.getPosition().getValueAsDouble() / Constants.Drivebase.Info.REVS_PER_METER;
+    return driveMotorRawPosition.get() / Constants.Drivebase.Info.REVS_PER_METER;
   }
 
   // returns velocity in meters
   public double getDriveMotorVelocity() {
-    return driveMotor.getVelocity().getValueAsDouble() / Constants.Drivebase.Info.REVS_PER_METER;
+    return driveMotorRawVelocity.get() / Constants.Drivebase.Info.REVS_PER_METER;
   }
 
   public void setTurnMotorSpeed(double speed) {

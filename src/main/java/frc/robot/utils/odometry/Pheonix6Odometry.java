@@ -4,26 +4,26 @@
 
 package frc.robot.utils.odometry;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Supplier;
-import java.util.function.Consumer;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 
-import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Unit;
 import frc.robot.constants.Constants;
 
-/** Add your docs here. */
 public class Pheonix6Odometry {
 
-  StatusSignal<Angle>[] signals;
+  // Measuer<Unit> just means that signals can be a measurment of any unit 
+  // (AngularVelocity, Angle, Position, etc.)
+  StatusSignal<Measure<Unit>>[] signals;
   // Maps signals the 
-  Map<StatusSignal<Angle>,Consumer<Double>> signalConsumerMap;
+  Map<StatusSignal<Measure<Unit>>,Double> signalToPositionMap;
   Thread thread = new Thread(this::run);
   public AtomicBoolean isRunning;
   int failedUpdates;
@@ -44,30 +44,23 @@ public class Pheonix6Odometry {
       } else {
         failedUpdates++;
       }
+
+      for (StatusSignal<Measure<Unit>> signal : signalToPositionMap.keySet()) {
+        Double position = BaseStatusSignal.getLatencyCompensatedValue(
+          signal, null /*TODO*/).magnitude();
+        signalToPositionMap.put(signal, position);
+      }
     }
   }
 
-  public Pheonix6Odometry(List<StatusSignal<Angle>> signals){
-    this.signals = signals.toArray(this.signals);
-
-    BaseStatusSignal.setUpdateFrequencyForAll(
-      Constants.Pheonix6Odometry.updatesPerSecond, 
-      this.signals
-    );
-  }
+  public Pheonix6Odometry(){}
 
   // This function registers the signal (ensuring it always updates at the same 
   // time as other signals). This funciton returns a supplier that autmatically
-  // returns the most recent value.
-  public Supplier<Double> registerSignal(StatusSignal statusSignal) {
-    addSignal(statusSignal);
-    double currentValue = 0;
-    return () -> currentValue;
-    // BaseStatusSignal.getLatencyCompensatedValue(statusSignal, null /*TODO*/).baseUnitMagnitude(); // TODO: check baseUnitMagnitude
-  }
-
-  private void addSignal(StatusSignal statusSignal) {
-
-
+  // returns the most recent value. Critically, Getting the supplier value of other 
+  // registered signals will always be sampled from the same position in time.
+  public Supplier<Double> registerSignal(StatusSignal<Measure<Unit>> statusSignal) {
+    signalToPositionMap.put(statusSignal, statusSignal.getValueAsDouble());
+    return () -> signalToPositionMap.get(statusSignal);
   }
 }
