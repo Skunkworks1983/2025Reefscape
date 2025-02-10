@@ -4,6 +4,7 @@
 
 package frc.robot.utils.odometry;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -13,17 +14,24 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.PerUnit;
+import edu.wpi.first.units.TimeUnit;
 import edu.wpi.first.units.Unit;
 import frc.robot.constants.Constants;
+import frc.robot.utils.MutableTriplet;
 
 public class Pheonix6Odometry {
 
-  // Measuer<Unit> just means that signals can be a measurment of any unit 
-  // (AngularVelocity, Angle, Position, etc.)
-  StatusSignal<Measure<Unit>>[] signals;
   // Maps signals the 
-  Map<StatusSignal<Measure<Unit>>,Double> signalToPositionMap;
+
+  // Contains signal, signal rate of change, and measurement
+  List<Pair<StatusSignal<Measure<Unit>>,Double>> signalValuePairList;
+
+  // Contains signal, signal rate of change, and measurement
+  List<MutableTriplet<StatusSignal<Measure<Unit>>,StatusSignal<Measure<PerUnit<Unit, TimeUnit>>>, Double>> 
+    compensatedSignalValueGroup;
   Thread thread = new Thread(this::run);
   public AtomicBoolean isRunning;
   int failedUpdates;
@@ -45,10 +53,11 @@ public class Pheonix6Odometry {
         failedUpdates++;
       }
 
-      for (StatusSignal<Measure<Unit>> signal : signalToPositionMap.keySet()) {
+      for (MutableTriplet<StatusSignal<Measure<Unit>>,StatusSignal<Measure<PerUnit<Unit, TimeUnit>>>, Double>
+        triplet : compensatedSignalValueGroup) {
         Double position = BaseStatusSignal.getLatencyCompensatedValue(
-          signal, null /*TODO*/).magnitude();
-        signalToPositionMap.put(signal, position);
+          triplet.getFirst(),  triplet.getSecond()).magnitude();
+        triplet.setThird(position);
       }
     }
   }
@@ -60,7 +69,31 @@ public class Pheonix6Odometry {
   // returns the most recent value. Critically, Getting the supplier value of other 
   // registered signals will always be sampled from the same position in time.
   public Supplier<Double> registerSignal(StatusSignal<Measure<Unit>> statusSignal) {
+    BaseStatusSignal.setUpdateFrequencyForAll(Constants.Pheonix6Odometry.updatesPerSecond, statusSignal);
     signalToPositionMap.put(statusSignal, statusSignal.getValueAsDouble());
     return () -> signalToPositionMap.get(statusSignal);
+  }
+
+
+  public Supplier<Double> registerSignalWithLatencyCompensation(
+    StatusSignal<Measure<Unit>> statusSignal,
+    StatusSignal<Measure<PerUnit<Unit, TimeUnit>>> statusSignalRateOfChange) {
+    BaseStatusSignal.setUpdateFrequencyForAll(Constants.Pheonix6Odometry.updatesPerSecond, statusSignal);
+
+    MutableTriplet<
+        StatusSignal<Measure<Unit>>,
+        StatusSignal<Measure<PerUnit<Unit, TimeUnit>>>,
+        Double
+      > triplet = 
+      new MutableTriplet<> (
+        statusSignal, 
+        statusSignalRateOfChange, 
+        statusSignal.getValueAsDouble()
+      );
+    compensatedSignalValueGroup.add(
+      triplet
+    );
+
+    return () -> triplet.getThird();
   }
 }
