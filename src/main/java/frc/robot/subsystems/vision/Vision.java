@@ -66,7 +66,7 @@ public class Vision extends SubsystemBase {
           observation.estimatedPose().getX() > aprilTagLayout.getFieldLength() ||
           observation.estimatedPose().getY() < 0.0 ||
           observation.estimatedPose().getY() > aprilTagLayout.getFieldWidth() ||
-          observation.averageTagDistance() > 3.0;
+          observation.averageTagDistance() > VisionConstants.MAX_AVERAGE_TAG_DISTANCE;
 
         if (rejectPose) {
           continue;

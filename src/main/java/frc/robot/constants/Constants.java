@@ -100,10 +100,11 @@ public class Constants {
           new Rotation3d(0,0,0)
         );
 
-    public static final double MAX_AMBIGUITY = .3;
-    public static final double LINEAR_STD_DEV_BASELINE = .02;
-    public static final double ANGULAR_STD_DEV_BASELINE = .06;
-    public static final double MAX_Z_ERROR = 3;
+    public static final double MAX_AMBIGUITY = 0.3;
+    public static final double LINEAR_STD_DEV_BASELINE = 0.02;
+    public static final double ANGULAR_STD_DEV_BASELINE = 0.06;
+    public static final double MAX_Z_ERROR = 3.0;
+    public static final double MAX_AVERAGE_TAG_DISTANCE = 3.0; // Meters
   }
 
   public class Elevator {
