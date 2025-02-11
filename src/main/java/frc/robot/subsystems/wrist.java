@@ -7,27 +7,14 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
-import frc.robot.constants.Constants.Wrist.WristProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
-import java.io.ObjectInputFilter.Config;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import frc.robot.utils.SmartPIDControllerTalonFX;
+import edu.wpi.first.wpilibj2.command.Command;
 import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.revrobotics.servohub.ServoHub.ResetMode;
-import com.revrobotics.spark.SparkBase.PersistMode;
-// import com.studica.frc.AHRS;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
-public class wrist extends SubsystemBase {
+public class Wrist extends SubsystemBase {
   TalonFX wristMotor;
-  CANcoder canCoder;
   double degrees;
-  PIDController pidWrist;
   double pidSpeed;
   double degreesSetpoint;
 
@@ -35,22 +22,16 @@ public class wrist extends SubsystemBase {
   // TODO figure out if position 0 is starting position
 
   private double targetDegrees = getWristPosition();
-  final TrapezoidProfile motionProfile = new TrapezoidProfile(
-      new Constraints(WristProfile.MAX_VELOCITY, WristProfile.MAX_ACCELERATION));
+  @SuppressWarnings("unused")
+  private SmartPIDControllerTalonFX wristMotorController;
 
   /** Creates a new wrist. */
-  public wrist(int wristMotorID, int canCoderId) {
-    SparkMaxConfig config = new SparkMaxConfig();
-    config.idleMode(IdleMode.kBrake);
+  public Wrist(int wristMotorID, int canCoderId) {
     wristMotor = new TalonFX(wristMotorID);
     // wristMotor.setNeutralMode(NeutralModeValue.Brake);
-    pidWrist = new PIDController(
-    Constants.Wrist.PIDs.WRIST_MOTOR_kP,
-    Constants.Wrist.PIDs.WRIST_MOTOR_kI,
-    Constants.Wrist.PIDs.WRIST_MOTOR_kD,
-    Constants.Wrist.PIDs.WRIST_MOTOR_kF
-    );
-    canCoder = new CANcoder(canCoderId, "Practice Swerve");
+    wristMotorController = new SmartPIDControllerTalonFX(Constants.Wrist.PIDs.WRIST_MOTOR_kP,
+        Constants.Wrist.PIDs.WRIST_MOTOR_kI, Constants.Wrist.PIDs.WRIST_MOTOR_kD, Constants.Wrist.PIDs.WRIST_MOTOR_kF,
+        "wrist motor", Constants.Wrist.PIDs.SMART_PID_ENABLED, wristMotor);
   }
 
   public void setWristAnglePosition(double degrees) {
@@ -68,11 +49,25 @@ public class wrist extends SubsystemBase {
   private double getWristPosition() {
     return wristMotor.getPosition().getValueAsDouble() * Constants.Wrist.WRIST_REVS_TO_DEGREES;
   }
+
   private double getWristVelocity() {
     return wristMotor.getVelocity().getValueAsDouble() * Constants.Wrist.WRIST_REVS_TO_DEGREES;
   }
-  private boolean isAtSetpoint(){
-    return Math.abs(getWristPosition() - targetDegrees) 
-      < Constants.Wrist.TOLORENCE_DEGREES_FOR_SETPOINT;
+
+  private boolean isAtSetpoint() {
+    return Math.abs(getWristPosition() - targetDegrees) < Constants.Wrist.TOLERENCE_DEGREES_FOR_SETPOINT;
   }
+
+  // public Command retainTargetPosition()
+  // {
+  //   return run(
+  //     () -> {
+  //         double velocity = getWristVelocity()
+  //         .getVelocity(
+  //             getWristPosition(), 
+  //             targetDegrees
+  //         );
+  //     }
+  //   );
+  // }
 }

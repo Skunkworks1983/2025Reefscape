@@ -16,9 +16,10 @@ public class Constants {
             public static final double WRIST_MOTOR_kI = 0.0;
             public static final double WRIST_MOTOR_kD = 0.0;
             public static final double WRIST_MOTOR_kF = 0.0;
+            public static final boolean SMART_PID_ENABLED = true;
         }
 
-        public static final double TOLORENCE_DEGREES_FOR_SETPOINT = 0.0;
+        public static final double TOLERENCE_DEGREES_FOR_SETPOINT = 0.0;
         // This tolerance value is for moving to a setpoint
         // using the MoveToPositionCommand.
         public static final double TOLERENCE_DEGREES_FOR_MOVE_TO_POSITION = 0.0;
