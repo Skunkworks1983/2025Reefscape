@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.Consumer;
+
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -16,10 +18,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.AutomatedTests.RunClimberMotorTest;
 import frc.robot.constants.Constants;
 import frc.robot.utils.SmartPIDControllerTalonFX;
+import frc.robot.utils.error.DiagnosticSubsystem;
+import frc.robot.utils.error.ErrorGroup;
+import frc.robot.utils.error.TestResult;
 
-public class Climber extends SubsystemBase {
+public class Climber extends SubsystemBase implements DiagnosticSubsystem{
   TalonFX climbMotor;
   StatusSignal<Angle> climbPos;
 
@@ -71,6 +77,25 @@ public class Climber extends SubsystemBase {
 
   public double getPosition() {
     return climbMotor.getPosition().getValueAsDouble();
+  }
+
+  public boolean isMotorConnected(){
+    return climbMotor.isConnected();
+  }
+
+  public boolean didMotorRunWhenSensorIsTrue(){
+    boolean didItRun = false;
+    double startingPos = getPosition();
+    while(getMagnetSensor1() == false && getMagnetSensor2() == false)
+    {
+        if(getMagnetSensor1() == true && getMagnetSensor2() == true)
+      {
+        moveInDirection(0.1);
+      }
+    }
+    didItRun = (getPosition() != startingPos);
+    moveInDirection(-.1);
+    return didItRun;
   }
 
   public Command waitUntilMagnetSensorsAreTrueThenMove(direction myDirection) {
@@ -125,5 +150,49 @@ public class Climber extends SubsystemBase {
         climbMotor.stopMotor();
       }
     ).until(() -> getPosition() > (newSetPoint + Constants.ClimberIDs.CLIMBER_RANGE));
+  }
+
+  public Command getCoponentsConections(Consumer<TestResult> alert) {
+    return Commands.startEnd(
+      () -> {
+
+      },
+      () -> {
+        alert.accept(
+          new TestResult(
+            "Magnet Sensor 1 Reporting Tripped", 
+            !getMagnetSensor1(), 
+            this,
+            "Checks if the magnet sensor is true, does this when unplugged"
+          )
+        );
+
+        alert.accept(
+          new TestResult(
+            "Magnet Sensor 2 Reporting Tripped", 
+            !getMagnetSensor2(), 
+            this,
+            "Checks if the magnet sensor is true, does this when unplugged"
+          )
+        );
+
+        alert.accept(
+          new TestResult(
+            "Climb Motor is not Connected", 
+            !isMotorConnected(), 
+            this,
+            "checks if motor is connected"
+          )
+        );
+      }
+    );
+  }
+
+  @Override
+  public Command getErrorCommand(ErrorGroup errorGroupHandler) {
+    return Commands.sequence(
+      getCoponentsConections(errorGroupHandler::addTestMapEntry),
+      new RunClimberMotorTest(errorGroupHandler::addTestMapEntry, this)
+    );
   }
 }
