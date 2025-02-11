@@ -65,13 +65,14 @@ public class Drivebase extends SubsystemBase {
     SmartDashboard.putData("Swerve Drive Odometry", swerveOdometryField2d);
     swerveOdometryField2d.setRobotPose(new Pose2d());
     
+    // Ensure robot code won't crash if the vision subsytem fails to initialize.
     try {
       new Vision(
         this::addVisionMeasurement,
         new VisionIOPhotonVision(VisionConstants.CAMERA_0_NAME, VisionConstants.CAMERA_0_TRANSFORM)
       );
     } catch(Exception exception) {
-      System.out.println("ERROR: VISION: Vision subsystem failed to initialize. See the below stacktrace for more details: ");
+      System.out.println("Vision subsystem failed to initialize. See the below stacktrace for more details: ");
       exception.printStackTrace();
     }
   }
