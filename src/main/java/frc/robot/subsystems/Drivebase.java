@@ -40,11 +40,6 @@ public class Drivebase extends SubsystemBase {
   private SwerveDrivePoseEstimator swerveDrivePoseEstimator;
   private final Field2d swerveOdometryField2d = new Field2d();
 
-  Vision vision = new Vision(
-      this::addVisionMeasurement,
-      new VisionIOPhotonVision(VisionConstants.CAMERA_0_NAME, VisionConstants.CAMERA_0_TRANSFORM)
-    );
-
   public Drivebase() {
     for (int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
       swerveModules[i] = new SwerveModule(Constants.Drivebase.MODULES[i]);
@@ -69,6 +64,16 @@ public class Drivebase extends SubsystemBase {
 
     SmartDashboard.putData("Swerve Drive Odometry", swerveOdometryField2d);
     swerveOdometryField2d.setRobotPose(new Pose2d());
+    
+    try {
+      new Vision(
+        this::addVisionMeasurement,
+        new VisionIOPhotonVision(VisionConstants.CAMERA_0_NAME, VisionConstants.CAMERA_0_TRANSFORM)
+      );
+    } catch(Exception exception) {
+      System.err.println("Vision subsystem failed to initialize. See the below stacktrace for more details: ");
+      exception.printStackTrace();
+    }
   }
 
   @Override
@@ -80,9 +85,9 @@ public class Drivebase extends SubsystemBase {
    * Called only in the vision class' periodic method.
    */
   public void addVisionMeasurement(
-      Pose2d estimatedPose,
-      double timestamp,
-      Matrix<N3, N1> stdDevs) {
+    Pose2d estimatedPose,
+    double timestamp,
+    Matrix<N3, N1> stdDevs) {
 
     swerveDrivePoseEstimator.addVisionMeasurement(estimatedPose, timestamp, stdDevs);
     swerveOdometryField2d.setRobotPose(swerveDrivePoseEstimator.getEstimatedPosition());

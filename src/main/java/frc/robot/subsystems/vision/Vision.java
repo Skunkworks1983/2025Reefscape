@@ -6,6 +6,9 @@ package frc.robot.subsystems.vision;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -30,18 +33,20 @@ public class Vision extends SubsystemBase {
   private VisionConsumer consumer;
   private VisionIO[] io;
   private List<Field2d> field2ds = new LinkedList<Field2d>();
+  private final AprilTagFieldLayout aprilTagLayout = 
+    AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
   public Vision(VisionConsumer consumer, VisionIO... io) {
     this.consumer = consumer;
     this.io = io;
 
-    for(VisionIO i : io) {
+    for (VisionIO i : io) {
       Field2d field = new Field2d();
       SmartDashboard.putData(i.getName() + " Odometry", field);
       field2ds.add(field);
     }
   }
-  
+
   @Override
   public void periodic() {
 
@@ -57,23 +62,22 @@ public class Vision extends SubsystemBase {
           observation.ambiguity() > VisionConstants.MAX_AMBIGUITY ||
           observation.estimatedPose().getZ() > VisionConstants.MAX_Z_ERROR ||
           observation.estimatedPose().getX() < 0.0 ||
-          observation.estimatedPose().getX() > VisionConstants.APRIL_TAG_FIELD_LAYOUT.getFieldLength() ||
+          observation.estimatedPose().getX() > aprilTagLayout.getFieldLength() ||
           observation.estimatedPose().getY() < 0.0 ||
-          observation.estimatedPose().getY() > VisionConstants.APRIL_TAG_FIELD_LAYOUT.getFieldWidth();
+          observation.estimatedPose().getY() > aprilTagLayout.getFieldWidth();
 
-        if(rejectPose) {
+        if (rejectPose) {
           continue;
         }
 
         double stdDevFactor = Math.pow(observation.averageTagDistance(), 2.0) / observation.tagCount();
         double linearStdDev = VisionConstants.LINEAR_STD_DEV_BASELINE * stdDevFactor;
         double angularStdDev = VisionConstants.ANGULAR_STD_DEV_BASELINE * stdDevFactor;
-          
+
         consumer.accept(
-            observation.estimatedPose().toPose2d(), 
-            observation.timestamp(), 
-            VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev)
-          );
+            observation.estimatedPose().toPose2d(),
+            observation.timestamp(),
+            VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
 
         field2ds.get(i).setRobotPose(observation.estimatedPose().toPose2d());
       }
@@ -85,7 +89,6 @@ public class Vision extends SubsystemBase {
     public void accept(
         Pose2d estimatedPose,
         double timestamp,
-        Matrix<N3, N1> stdDevs
-    );
+        Matrix<N3, N1> stdDevs);
   }
 }

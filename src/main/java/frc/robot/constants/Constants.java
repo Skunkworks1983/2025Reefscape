@@ -4,8 +4,6 @@
 
 package frc.robot.constants;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -106,9 +104,6 @@ public class Constants {
     public static final double LINEAR_STD_DEV_BASELINE = .02;
     public static final double ANGULAR_STD_DEV_BASELINE = .06;
     public static final double MAX_Z_ERROR = 3;
-
-    public static final AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT = AprilTagFieldLayout
-        .loadField(AprilTagFields.kDefaultField);
   }
 
   public class Elevator {

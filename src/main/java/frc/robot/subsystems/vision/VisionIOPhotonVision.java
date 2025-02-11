@@ -6,18 +6,20 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.MultiTargetPNPResult;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import frc.robot.constants.Constants.VisionConstants;
 
 public class VisionIOPhotonVision implements VisionIO {
 
     private final String cameraName;
     private final Transform3d robotToCamera;
     private final PhotonCamera camera;
+    private final AprilTagFieldLayout aprilTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
     public VisionIOPhotonVision(String cameraName, Transform3d robotToCamera) {
-
         this.cameraName = cameraName;
         this.robotToCamera = robotToCamera;
         this.camera = new PhotonCamera(cameraName);
@@ -30,7 +32,7 @@ public class VisionIOPhotonVision implements VisionIO {
         for (PhotonPipelineResult result : camera.getAllUnreadResults()) {
 
             if (result.getMultiTagResult().isPresent()) {
-                MultiTargetPNPResult multitagResult  = result.getMultiTagResult().get();
+                MultiTargetPNPResult multitagResult = result.getMultiTagResult().get();
 
                 Transform3d fieldToCamera = multitagResult.estimatedPose.best;
                 Transform3d fieldToRobot = fieldToCamera.plus(robotToCamera.inverse());
@@ -41,25 +43,21 @@ public class VisionIOPhotonVision implements VisionIO {
                     totalTagDistance += target.bestCameraToTarget.getTranslation().getNorm();
                 }
 
-                latestData.poseObservations.add( 
+                latestData.poseObservations.add(
                         new PoseObservation(
-                            result.getTimestampSeconds(), 
-                            estimatedRobotPose, 
-                            multitagResult.estimatedPose.ambiguity, 
-                            multitagResult.fiducialIDsUsed.size(), 
-                            totalTagDistance / result.targets.size()
-                        )
-                    );
+                                result.getTimestampSeconds(),
+                                estimatedRobotPose,
+                                multitagResult.estimatedPose.ambiguity,
+                                multitagResult.fiducialIDsUsed.size(),
+                                totalTagDistance / result.targets.size()));
 
             } else if (!result.targets.isEmpty()) {
-
                 PhotonTrackedTarget target = result.targets.get(0);
-                Optional<Pose3d> tagPose = VisionConstants.APRIL_TAG_FIELD_LAYOUT.getTagPose(target.fiducialId);
+                Optional<Pose3d> tagPose = aprilTagLayout.getTagPose(target.fiducialId);
 
                 if (tagPose.isPresent()) {
-
-                    Transform3d fieldToTarget =
-                        new Transform3d(tagPose.get().getTranslation(), tagPose.get().getRotation());
+                    Transform3d fieldToTarget = new Transform3d(tagPose.get().getTranslation(),
+                            tagPose.get().getRotation());
 
                     Transform3d cameraToTarget = target.bestCameraToTarget;
                     Transform3d fieldToCamera = fieldToTarget.plus(cameraToTarget.inverse());
@@ -68,16 +66,15 @@ public class VisionIOPhotonVision implements VisionIO {
 
                     latestData.poseObservations.add(
                             new PoseObservation(
-                                result.getTimestampSeconds(), 
-                                estimatedRobotPose, 
-                                target.poseAmbiguity, 
-                                1, 
-                                cameraToTarget.getTranslation().getNorm())
-                        );
-                } 
+                                    result.getTimestampSeconds(),
+                                    estimatedRobotPose,
+                                    target.poseAmbiguity,
+                                    1,
+                                    cameraToTarget.getTranslation().getNorm()));
+                }
             }
         }
-            
+
         return latestData;
     }
 
