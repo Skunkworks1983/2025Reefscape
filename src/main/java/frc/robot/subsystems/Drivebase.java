@@ -49,23 +49,24 @@ public class Drivebase extends SubsystemBase {
         swerveModules[0].moduleLocation,
         swerveModules[1].moduleLocation,
         swerveModules[2].moduleLocation,
-        swerveModules[3].moduleLocation);
+        swerveModules[3].moduleLocation
+      );
 
     swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(
-        swerveDriveKinematics,
-        getGyroAngle(),
-        new SwerveModulePosition[] {
-            swerveModules[0].getSwerveModulePosition(),
-            swerveModules[1].getSwerveModulePosition(),
-            swerveModules[2].getSwerveModulePosition(),
-            swerveModules[3].getSwerveModulePosition()
+      swerveDriveKinematics,
+      getGyroAngle(),
+      new SwerveModulePosition[] {
+          swerveModules[0].getSwerveModulePosition(),
+          swerveModules[1].getSwerveModulePosition(),
+          swerveModules[2].getSwerveModulePosition(),
+          swerveModules[3].getSwerveModulePosition()
         },
-        new Pose2d());
+      new Pose2d());
 
     SmartDashboard.putData("Swerve Drive Odometry", swerveOdometryField2d);
     swerveOdometryField2d.setRobotPose(new Pose2d());
     
-    // Ensure robot code won't crash if the vision subsytem fails to initialize.
+    // Ensure robot code won't crash if the vision subsystem fails to initialize.
     try {
       new Vision(
         this::addVisionMeasurement,
@@ -127,8 +128,13 @@ public class Drivebase extends SubsystemBase {
     ChassisSpeeds chassisSpeeds;
     double radiansPerSecond = Units.degreesToRadians(degreesPerSecond);
     if (isFieldRelative) {
-      chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xMetersPerSecond, yMetersPerSecond,
-          radiansPerSecond, getGyroAngle());
+      chassisSpeeds = 
+        ChassisSpeeds.fromFieldRelativeSpeeds(
+            xMetersPerSecond, 
+            yMetersPerSecond,
+            radiansPerSecond, 
+            getGyroAngle()
+          );
     } else {
       chassisSpeeds = new ChassisSpeeds(xMetersPerSecond, yMetersPerSecond, radiansPerSecond);
     }
