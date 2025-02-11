@@ -44,12 +44,14 @@ public class VisionIOPhotonVision implements VisionIO {
                 }
 
                 latestData.poseObservations.add(
-                        new PoseObservation(
-                                result.getTimestampSeconds(),
-                                estimatedRobotPose,
-                                multitagResult.estimatedPose.ambiguity,
-                                multitagResult.fiducialIDsUsed.size(),
-                                totalTagDistance / result.targets.size()));
+                    new PoseObservation(
+                        result.getTimestampSeconds(),
+                        estimatedRobotPose,
+                        multitagResult.estimatedPose.ambiguity,
+                        multitagResult.fiducialIDsUsed.size(),
+                        totalTagDistance / result.targets.size()
+                    )
+                );
 
             } else if (!result.targets.isEmpty()) {
                 PhotonTrackedTarget target = result.targets.get(0);
@@ -65,12 +67,14 @@ public class VisionIOPhotonVision implements VisionIO {
                     Pose3d estimatedRobotPose = new Pose3d(fieldToRobot.getTranslation(), fieldToRobot.getRotation());
 
                     latestData.poseObservations.add(
-                            new PoseObservation(
-                                    result.getTimestampSeconds(),
-                                    estimatedRobotPose,
-                                    target.poseAmbiguity,
-                                    1,
-                                    cameraToTarget.getTranslation().getNorm()));
+                        new PoseObservation(
+                            result.getTimestampSeconds(),
+                                estimatedRobotPose,
+                                target.poseAmbiguity,
+                                1,
+                                cameraToTarget.getTranslation().getNorm()
+                        )
+                    );
                 }
             }
         }

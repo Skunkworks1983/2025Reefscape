@@ -46,22 +46,23 @@ public class Drivebase extends SubsystemBase {
     }
 
     swerveDriveKinematics = new SwerveDriveKinematics(
-        swerveModules[0].moduleLocation,
-        swerveModules[1].moduleLocation,
-        swerveModules[2].moduleLocation,
-        swerveModules[3].moduleLocation
-      );
+      swerveModules[0].moduleLocation,
+      swerveModules[1].moduleLocation,
+      swerveModules[2].moduleLocation,
+      swerveModules[3].moduleLocation
+    );
 
     swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(
       swerveDriveKinematics,
       getGyroAngle(),
       new SwerveModulePosition[] {
-          swerveModules[0].getSwerveModulePosition(),
-          swerveModules[1].getSwerveModulePosition(),
-          swerveModules[2].getSwerveModulePosition(),
-          swerveModules[3].getSwerveModulePosition()
-        },
-      new Pose2d());
+        swerveModules[0].getSwerveModulePosition(),
+        swerveModules[1].getSwerveModulePosition(),
+        swerveModules[2].getSwerveModulePosition(),
+        swerveModules[3].getSwerveModulePosition()
+      },
+      new Pose2d()
+    );
 
     SmartDashboard.putData("Swerve Drive Odometry", swerveOdometryField2d);
     swerveOdometryField2d.setRobotPose(new Pose2d());
@@ -101,13 +102,14 @@ public class Drivebase extends SubsystemBase {
    */
   public void updateOdometry() {
     swerveDrivePoseEstimator.update(
-        getGyroAngle(),
-        new SwerveModulePosition[] {
-            swerveModules[0].getSwerveModulePosition(),
-            swerveModules[1].getSwerveModulePosition(),
-            swerveModules[2].getSwerveModulePosition(),
-            swerveModules[3].getSwerveModulePosition()
-        });
+      getGyroAngle(),
+      new SwerveModulePosition[] {
+        swerveModules[0].getSwerveModulePosition(),
+        swerveModules[1].getSwerveModulePosition(),
+        swerveModules[2].getSwerveModulePosition(),
+        swerveModules[3].getSwerveModulePosition()
+      }
+    );
 
     swerveOdometryField2d.setRobotPose(swerveDrivePoseEstimator.getEstimatedPosition());
   }
@@ -115,11 +117,12 @@ public class Drivebase extends SubsystemBase {
   /** Reset the <code>SwerveDrivePoseEstimator</code> to the given pose. */
   public void resetOdometry(Pose2d newPose) {
     swerveDrivePoseEstimator.resetPosition(
-        getGyroAngle(),
-        Arrays.stream(swerveModules)
-            .map(swerveModule -> swerveModule.getSwerveModulePosition())
-            .toArray(SwerveModulePosition[]::new),
-        newPose);
+      getGyroAngle(),
+      Arrays.stream(swerveModules)
+        .map(swerveModule -> swerveModule.getSwerveModulePosition())
+        .toArray(SwerveModulePosition[]::new),
+      newPose
+    );
   }
 
   // TODO: add docstring
