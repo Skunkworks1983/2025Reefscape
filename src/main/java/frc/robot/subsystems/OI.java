@@ -71,6 +71,8 @@ public class OI extends SubsystemBase {
   @Override
   public void periodic() {}
 
+  // X and Y and flipped because joystick frame of reference
+  // is different from the field frame of reference.
   public double getInstructedXMetersPerSecond() {
     return joystickToMetersPerSecond.apply(
       applyDeadband.apply(-translationJoystick.getY())

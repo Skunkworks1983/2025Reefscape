@@ -20,70 +20,70 @@ public class VisionIOPhotonVision implements VisionIO {
     private final AprilTagFieldLayout aprilTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
     public VisionIOPhotonVision(String cameraName, Transform3d robotToCamera) {
-        this.cameraName = cameraName;
-        this.robotToCamera = robotToCamera;
-        this.camera = new PhotonCamera(cameraName);
+      this.cameraName = cameraName;
+      this.robotToCamera = robotToCamera;
+      this.camera = new PhotonCamera(cameraName);
     }
 
     @Override
     public VisionIOData getLatestData() {
-        VisionIOData latestData = new VisionIOData();
+      VisionIOData latestData = new VisionIOData();
 
-        for (PhotonPipelineResult result : camera.getAllUnreadResults()) {
+      for (PhotonPipelineResult result : camera.getAllUnreadResults()) {
 
-            if (result.getMultiTagResult().isPresent()) {
-                MultiTargetPNPResult multitagResult = result.getMultiTagResult().get();
+        if (result.getMultiTagResult().isPresent()) {
+          MultiTargetPNPResult multitagResult = result.getMultiTagResult().get();
 
-                Transform3d fieldToCamera = multitagResult.estimatedPose.best;
-                Transform3d fieldToRobot = fieldToCamera.plus(robotToCamera.inverse());
-                Pose3d estimatedRobotPose = new Pose3d(fieldToRobot.getTranslation(), fieldToRobot.getRotation());
+          Transform3d fieldToCamera = multitagResult.estimatedPose.best;
+          Transform3d fieldToRobot = fieldToCamera.plus(robotToCamera.inverse());
+          Pose3d estimatedRobotPose = new Pose3d(fieldToRobot.getTranslation(), fieldToRobot.getRotation());
 
-                double totalTagDistance = 0.0;
-                for (PhotonTrackedTarget target : result.targets) {
-                    totalTagDistance += target.bestCameraToTarget.getTranslation().getNorm();
-                }
+          double totalTagDistance = 0.0;
+          for (PhotonTrackedTarget target : result.targets) {
+            totalTagDistance += target.bestCameraToTarget.getTranslation().getNorm();
+          }
 
-                latestData.poseObservations.add(
-                    new PoseObservation(
-                        result.getTimestampSeconds(),
-                        estimatedRobotPose,
-                        multitagResult.estimatedPose.ambiguity,
-                        multitagResult.fiducialIDsUsed.size(),
-                        totalTagDistance / result.targets.size()
-                    )
-                );
+          latestData.poseObservations.add(
+            new PoseObservation(
+              result.getTimestampSeconds(),
+              estimatedRobotPose,
+              multitagResult.estimatedPose.ambiguity,
+              multitagResult.fiducialIDsUsed.size(),
+              totalTagDistance / result.targets.size()
+            )
+          );
 
-            } else if (!result.targets.isEmpty()) {
-                PhotonTrackedTarget target = result.targets.get(0);
-                Optional<Pose3d> tagPose = aprilTagLayout.getTagPose(target.fiducialId);
+          } else if (!result.targets.isEmpty()) {
+            PhotonTrackedTarget target = result.targets.get(0);
+            Optional<Pose3d> tagPose = aprilTagLayout.getTagPose(target.fiducialId);
 
-                if (tagPose.isPresent()) {
-                    Transform3d fieldToTarget = new Transform3d(tagPose.get().getTranslation(),
-                            tagPose.get().getRotation());
+            if (tagPose.isPresent()) {
+              Transform3d fieldToTarget = new Transform3d(tagPose.get().getTranslation(),
+              tagPose.get().getRotation());
 
-                    Transform3d cameraToTarget = target.bestCameraToTarget;
-                    Transform3d fieldToCamera = fieldToTarget.plus(cameraToTarget.inverse());
-                    Transform3d fieldToRobot = fieldToCamera.plus(robotToCamera.inverse());
-                    Pose3d estimatedRobotPose = new Pose3d(fieldToRobot.getTranslation(), fieldToRobot.getRotation());
+              Transform3d cameraToTarget = target.bestCameraToTarget;
+              Transform3d fieldToCamera = fieldToTarget.plus(cameraToTarget.inverse());
+              Transform3d fieldToRobot = fieldToCamera.plus(robotToCamera.inverse());
+              Pose3d estimatedRobotPose = new Pose3d(fieldToRobot.getTranslation(), fieldToRobot.getRotation());
 
-                    latestData.poseObservations.add(
-                        new PoseObservation(
-                            result.getTimestampSeconds(),
-                                estimatedRobotPose,
-                                target.poseAmbiguity,
-                                1,
-                                cameraToTarget.getTranslation().getNorm()
-                        )
-                    );
-                }
+              latestData.poseObservations.add(
+                new PoseObservation(
+                  result.getTimestampSeconds(),
+                  estimatedRobotPose,
+                  target.poseAmbiguity,
+                  1,
+                  cameraToTarget.getTranslation().getNorm()
+                )
+              );
             }
         }
+      }
 
-        return latestData;
+      return latestData;
     }
 
     @Override
     public String getName() {
-        return cameraName;
+      return cameraName;
     }
 }
