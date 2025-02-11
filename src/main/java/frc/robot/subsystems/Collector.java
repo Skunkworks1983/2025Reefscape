@@ -11,6 +11,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.utils.SmartPIDControllerTalonFX;
@@ -81,7 +82,10 @@ public class Collector extends SubsystemBase {
     lastLeftSpeed = leftSpeed;
   }
   @Override
-  public void periodic() { }
+  public void periodic() {
+    SmartDashboard.putNumber("Right motor current", rightMotor.getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Left motor current", leftMotor.getSupplyCurrent().getValueAsDouble());
+  }
   
   public Command rotateCoralCommand() {
     return runEnd(
@@ -97,7 +101,30 @@ public class Collector extends SubsystemBase {
     );
   }
 
-  public Command intakeCoralCommand() {
+  // true if you want it to stop the motor when the command ends
+  // it should almost always be true unless there will be a following command right after that will end it
+  public Command intakeCoralCommand(
+    boolean stopOnEnd
+  ) {
+    return runEnd(
+      () -> {
+        setCollectorSpeeds(-Constants.Collector.COLLECOR_ROTATE_FAST, 
+          Constants.Collector.COLLECOR_ROTATE_FAST);
+      },
+      () -> {
+        if(stopOnEnd) {
+          setCollectorSpeeds(0, 0);
+        }
+      }
+    ).until(
+      () -> {
+        return rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF &&
+        leftMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF;
+      }
+    );
+  }
+
+  public Command scorePieceCommand() {
     return runEnd(
       () -> {
         setCollectorSpeeds(-Constants.Collector.COLLECOR_ROTATE_FAST, 
@@ -109,4 +136,13 @@ public class Collector extends SubsystemBase {
     );
   }
 
+  public Command waitAfterCatchPieceCommand() {
+    return Commands.sequence(
+      intakeCoralCommand(false),
+      Commands.race(
+        scorePieceCommand(),
+        Commands.waitSeconds(Constants.Collector.SECONDS_BEFORE_CUTTOF)
+      )
+    );
+  }
 }

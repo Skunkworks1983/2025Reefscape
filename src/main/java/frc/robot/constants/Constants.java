@@ -14,21 +14,24 @@ public class Constants {
     // must be constructed and assigned to the correct variable in Robot.java.
     // If some subsystems are not created and this value is true, an exeption
     // will be thrown.
-    public static boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = true;
+    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = true;
 
-    public static double NUMBER_OF_MOTOR_ROTATIONS_FOR_MODULE_TEST = 1.0;
-    public static double TURN_MOTOR_ROTATION_SPEED = 0.15;
-    public static double TURN_MOTOR_AND_ENCODER_TOLERANCE = 0.05;
+    public static final double NUMBER_OF_MOTOR_ROTATIONS_FOR_MODULE_TEST = 1.0;
+    public static final double TURN_MOTOR_ROTATION_SPEED = 0.15;
+    public static final double TURN_MOTOR_AND_ENCODER_TOLERANCE = 0.05;
   }
 
   public class Collector {
-    public static int RIGHT_MOTOR = 42;
-    public static int LEFT_MOTOR = 11;
+    public static final int RIGHT_MOTOR = 42;
+    public static final int LEFT_MOTOR = 11;
 
-    public static double COLLECTOR_ROTATIONS_PER_METER = 0.0762 * Math.PI;
+    public static final double COLLECTOR_ROTATIONS_PER_METER = 0.0762 * Math.PI;
 
-    public static double COLLECOR_ROTATE_SLOW = 4.0;
-    public static double COLLECOR_ROTATE_FAST = 6.0;
+    public static final double COLLECOR_ROTATE_SLOW = 4.0;
+    public static final double COLLECOR_ROTATE_FAST = 6.0;
+
+    public static final double COLLECTOR_AMPS_BEFORE_CUTTOF = 3.0;
+    public static final double SECONDS_BEFORE_CUTTOF = 0.5;
 
     public class PIDs {
       public static final double KP = 0.0;
@@ -174,8 +177,8 @@ public class Constants {
 
         public class Collector {
           public static final int ROTATE_CORAL = 23;
-          public static final int INTAKE_CORAL = 14;
-
+          public static final int COLLECT_CORAL = 11;
+          public static final int SCORE_CORAL = 12;
         }
       }
     }

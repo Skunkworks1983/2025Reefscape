@@ -8,10 +8,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class TestResult {
   public String name;
-  //true if the test failed, false if the test passed
+  // true if the test failed, false if the test passed
   public boolean errorStatus;
   public SubsystemBase subsystem;
-  //tell someone what your test did
+  // tell someone what your test did
   public String testDescription;
   public TestResult(String name, boolean errorStatus, SubsystemBase subsystem, String testDescription) {
     this.name = name;
