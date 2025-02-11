@@ -18,9 +18,10 @@ public class Robot extends TimedRobot {
 
   // replace subsystem with Optional.empty() for testing
   // ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
-  Optional<Drivebase> drivebase = Optional.of(new Drivebase());
-  Optional<Elevator> elevator = Optional.of(new Elevator());
-  Optional<Collector> collector = Optional.of(new Collector());
+  Optional<Drivebase> drivebase = Optional.empty(); //Optional.of(new Drivebase());
+  Optional<Elevator> elevator = Optional.empty(); //Optional.of(new Elevator());
+  Optional<Collector> collector = Optional.empty();//Optional.of(new Collector());
+  Optional<Wrist> wrist = Optional.of(new Wrist());
 
   OI oi = new OI( 
     elevator,
@@ -33,6 +34,7 @@ public class Robot extends TimedRobot {
       assert drivebase.isPresent();
       assert collector.isPresent();
       assert elevator.isPresent();
+      assert wrist.isPresent();
     }
   }
 
