@@ -71,7 +71,7 @@ public class Drivebase extends SubsystemBase {
         new VisionIOPhotonVision(VisionConstants.CAMERA_0_NAME, VisionConstants.CAMERA_0_TRANSFORM)
       );
     } catch(Exception exception) {
-      System.err.println("Vision subsystem failed to initialize. See the below stacktrace for more details: ");
+      System.out.println("ERROR: VISION: Vision subsystem failed to initialize. See the below stacktrace for more details: ");
       exception.printStackTrace();
     }
   }

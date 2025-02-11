@@ -56,6 +56,7 @@ public class Vision extends SubsystemBase {
 
         SmartDashboard.putNumber(io[i].getName() + " Latest Ambiguity", observation.ambiguity());
         SmartDashboard.putNumber(io[i].getName() + " Latest Z Error", observation.estimatedPose().getZ());
+        SmartDashboard.putNumber(io[i].getName() + " Average Tag Distance", observation.averageTagDistance());
 
         boolean rejectPose = 
           observation.tagCount() == 0 ||
@@ -64,7 +65,8 @@ public class Vision extends SubsystemBase {
           observation.estimatedPose().getX() < 0.0 ||
           observation.estimatedPose().getX() > aprilTagLayout.getFieldLength() ||
           observation.estimatedPose().getY() < 0.0 ||
-          observation.estimatedPose().getY() > aprilTagLayout.getFieldWidth();
+          observation.estimatedPose().getY() > aprilTagLayout.getFieldWidth() ||
+          observation.averageTagDistance() > 3.0;
 
         if (rejectPose) {
           continue;
