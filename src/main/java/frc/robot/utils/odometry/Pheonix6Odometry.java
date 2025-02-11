@@ -4,8 +4,8 @@
 
 package frc.robot.utils.odometry;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Supplier;
@@ -14,7 +14,6 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.PerUnit;
 import edu.wpi.first.units.TimeUnit;
@@ -27,24 +26,32 @@ public class Pheonix6Odometry {
   // Maps signals the 
 
   // Contains signal, signal rate of change, and measurement
-  List<Pair<StatusSignal<Measure<Unit>>,Double>> signalValuePairList;
+  // List<Pair<StatusSignal<? extends Unit>,Double>> signalValuePairList;
 
   // Contains signal, signal rate of change, and measurement
-  List<SignalValue<? extends Unit, Double>> 
-    compensatedSignalValueGroup;
+  List<SignalValue<?,?,?,?>> 
+    compensatedSignalValueGroup = new ArrayList<>();
   Thread thread = new Thread(this::run);
   public AtomicBoolean isRunning;
   int failedUpdates;
   int vaildUpdates;
   public ReentrantReadWriteLock stateLock = new ReentrantReadWriteLock();
 
+
   public void run() {
     while(isRunning.get()){
 
       // Notes: waitForAll uses signals as an out param.
+      List<BaseStatusSignal> allSignals = new ArrayList<>();
+      for(SignalValue<?,?,?,?> signalValue : compensatedSignalValueGroup){
+        allSignals.add(signalValue.getStatusSignal());
+        StatusSignal<?> signal = signalValue.getStatusSignal();
+        if(signal!=null) allSignals.add(signal);
+
+      }
       StatusCode status = BaseStatusSignal.waitForAll(
         Constants.Pheonix6Odometry.updatesPerSecond,
-        compensatedSignalValueGroup.get(1).getStatusSignal()
+        (BaseStatusSignal[])allSignals.toArray()
       );
 
       if(status.isOK()) {
@@ -53,11 +60,12 @@ public class Pheonix6Odometry {
         failedUpdates++;
       }
 
-      for (SignalValue<? extends Unit, Double>
+      // Not sure how to resolve warning
+      for (SignalValue
         triplet : compensatedSignalValueGroup) { //<Unit, PerUnit<Unit, TimeUnit>, Measure<Unit>, Measure<PerUnit<Unit, TimeUnit>>>
         Double position = BaseStatusSignal.getLatencyCompensatedValue(
           triplet.getStatusSignal(), triplet.getstatusSignalRate()).magnitude();
-        triplet.setThird(position);
+        triplet.setValue(position);
       }
     }
   }
@@ -77,12 +85,14 @@ public class Pheonix6Odometry {
   */
 
 
-  public <U extends Unit> Supplier<Double> registerSignalWithLatencyCompensation(
-    StatusSignal<Measure<U>> statusSignal,
-    StatusSignal<Measure<PerUnit<U, TimeUnit>>> statusSignalRateOfChange) {
+  public 
+    <U extends Unit, U_PER_SEC extends PerUnit<U, TimeUnit>, MEAS extends Measure<U>, MEAS_PER_SEC extends Measure<U_PER_SEC>>
+  Supplier<Double> registerSignalWithLatencyCompensation(
+    StatusSignal<MEAS> statusSignal,
+    StatusSignal<MEAS_PER_SEC> statusSignalRateOfChange) {
     BaseStatusSignal.setUpdateFrequencyForAll(Constants.Pheonix6Odometry.updatesPerSecond, statusSignal);
 
-    SignalValue<U, Double> triplet = 
+    SignalValue<U, U_PER_SEC, MEAS, MEAS_PER_SEC> triplet = 
       new SignalValue<> (
         statusSignal, 
         statusSignalRateOfChange, 
@@ -91,6 +101,25 @@ public class Pheonix6Odometry {
 
     compensatedSignalValueGroup.add(triplet);
 
-    return triplet::getThird;
+    return triplet::getValue;
+  }
+
+  public 
+    <U extends Unit, U_PER_SEC extends PerUnit<U, TimeUnit>, MEAS extends Measure<U>, MEAS_PER_SEC extends Measure<U_PER_SEC>>
+  Supplier<Double> registerSignal(
+    StatusSignal<MEAS> statusSignal
+  ) {
+    BaseStatusSignal.setUpdateFrequencyForAll(Constants.Pheonix6Odometry.updatesPerSecond, statusSignal);
+
+    SignalValue<U, U_PER_SEC, MEAS, MEAS_PER_SEC> triplet = 
+      new SignalValue<> (
+        statusSignal, 
+        null, 
+        statusSignal.getValueAsDouble()
+      );
+
+    compensatedSignalValueGroup.add(triplet);
+
+    return triplet::getValue;
   }
 }
