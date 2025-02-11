@@ -20,7 +20,7 @@ import edu.wpi.first.units.PerUnit;
 import edu.wpi.first.units.TimeUnit;
 import edu.wpi.first.units.Unit;
 import frc.robot.constants.Constants;
-import frc.robot.utils.MutableTriplet;
+import frc.robot.utils.SignalValue;
 
 public class Pheonix6Odometry {
 
@@ -30,7 +30,7 @@ public class Pheonix6Odometry {
   List<Pair<StatusSignal<Measure<Unit>>,Double>> signalValuePairList;
 
   // Contains signal, signal rate of change, and measurement
-  List<MutableTriplet<StatusSignal<Measure<Unit>>,StatusSignal<Measure<PerUnit<Unit, TimeUnit>>>, Double>> 
+  List<SignalValue<? extends Unit, Double>> 
     compensatedSignalValueGroup;
   Thread thread = new Thread(this::run);
   public AtomicBoolean isRunning;
@@ -44,7 +44,7 @@ public class Pheonix6Odometry {
       // Notes: waitForAll uses signals as an out param.
       StatusCode status = BaseStatusSignal.waitForAll(
         Constants.Pheonix6Odometry.updatesPerSecond,
-        signals
+        compensatedSignalValueGroup.get(1).getStatusSignal()
       );
 
       if(status.isOK()) {
@@ -53,10 +53,10 @@ public class Pheonix6Odometry {
         failedUpdates++;
       }
 
-      for (MutableTriplet<StatusSignal<Measure<Unit>>,StatusSignal<Measure<PerUnit<Unit, TimeUnit>>>, Double>
-        triplet : compensatedSignalValueGroup) {
+      for (SignalValue<? extends Unit, Double>
+        triplet : compensatedSignalValueGroup) { //<Unit, PerUnit<Unit, TimeUnit>, Measure<Unit>, Measure<PerUnit<Unit, TimeUnit>>>
         Double position = BaseStatusSignal.getLatencyCompensatedValue(
-          triplet.getFirst(),  triplet.getSecond()).magnitude();
+          triplet.getStatusSignal(), triplet.getstatusSignalRate()).magnitude();
         triplet.setThird(position);
       }
     }
@@ -68,32 +68,29 @@ public class Pheonix6Odometry {
   // time as other signals). This funciton returns a supplier that autmatically
   // returns the most recent value. Critically, Getting the supplier value of other 
   // registered signals will always be sampled from the same position in time.
+  /*
   public Supplier<Double> registerSignal(StatusSignal<Measure<Unit>> statusSignal) {
     BaseStatusSignal.setUpdateFrequencyForAll(Constants.Pheonix6Odometry.updatesPerSecond, statusSignal);
     signalToPositionMap.put(statusSignal, statusSignal.getValueAsDouble());
     return () -> signalToPositionMap.get(statusSignal);
-  }
+  } 
+  */
 
 
-  public Supplier<Double> registerSignalWithLatencyCompensation(
-    StatusSignal<Measure<Unit>> statusSignal,
-    StatusSignal<Measure<PerUnit<Unit, TimeUnit>>> statusSignalRateOfChange) {
+  public <U extends Unit> Supplier<Double> registerSignalWithLatencyCompensation(
+    StatusSignal<Measure<U>> statusSignal,
+    StatusSignal<Measure<PerUnit<U, TimeUnit>>> statusSignalRateOfChange) {
     BaseStatusSignal.setUpdateFrequencyForAll(Constants.Pheonix6Odometry.updatesPerSecond, statusSignal);
 
-    MutableTriplet<
-        StatusSignal<Measure<Unit>>,
-        StatusSignal<Measure<PerUnit<Unit, TimeUnit>>>,
-        Double
-      > triplet = 
-      new MutableTriplet<> (
+    SignalValue<U, Double> triplet = 
+      new SignalValue<> (
         statusSignal, 
         statusSignalRateOfChange, 
         statusSignal.getValueAsDouble()
       );
-    compensatedSignalValueGroup.add(
-      triplet
-    );
 
-    return () -> triplet.getThird();
+    compensatedSignalValueGroup.add(triplet);
+
+    return triplet::getThird;
   }
 }

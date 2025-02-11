@@ -112,8 +112,11 @@ public class SwerveModule extends SubsystemBase {
 
     m_Velocity.Slot = 0;
     
-    driveMotorRawVelocity = pheonix6odometry.registerSignal(driveMotor.getVelocity().clone());
-    driveMotorRawPosition = pheonix6odometry.registerSignal(driveMotor.getPosition().clone());
+    driveMotorRawVelocity = pheonix6odometry.registerSignal<Angle>(
+      driveMotor.getPosition().clone(), 
+      driveMotor.getVelocity().clone()
+    );
+    // driveMotorRawPosition = pheonix6odometry.registerSignal(driveMotor.getPosition().clone());
   }
 
   @Override
