@@ -63,9 +63,14 @@ public class Pheonix6Odometry {
       // Not sure how to resolve warning
       for (SignalValue
         triplet : compensatedSignalValueGroup) { //<Unit, PerUnit<Unit, TimeUnit>, Measure<Unit>, Measure<PerUnit<Unit, TimeUnit>>>
-        Double position = BaseStatusSignal.getLatencyCompensatedValue(
+        if(triplet.getstatusSignalRate() == null){
+          Double position = triplet.getStatusSignal().getValueAsDouble();
+          triplet.setValue(position);
+        } else{ 
+          Double position = BaseStatusSignal.getLatencyCompensatedValue(
           triplet.getStatusSignal(), triplet.getstatusSignalRate()).magnitude();
-        triplet.setValue(position);
+          triplet.setValue(position);
+        }
       }
     }
   }
