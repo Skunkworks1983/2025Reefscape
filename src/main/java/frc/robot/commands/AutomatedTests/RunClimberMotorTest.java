@@ -16,7 +16,6 @@ public class RunClimberMotorTest extends Command {
   Climber climber;
   Consumer<TestResult> alert;
   double startingPos;
-  Command moveClimberCommand;
   public RunClimberMotorTest(
     Consumer<TestResult> alert,
     Climber climber
@@ -29,9 +28,8 @@ public class RunClimberMotorTest extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    startingPos = climber.getPosition();
-    moveClimberCommand = climber.moveInDirection(.1);
-    moveClimberCommand.schedule();
+    startingPos = climber.getHeight();
+    climber.setClimberSetPoint(startingPos + 0.05);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -44,17 +42,17 @@ public class RunClimberMotorTest extends Command {
     alert.accept(
           new TestResult(
             "Motor Did Not Run", 
-            climber.getPosition() != startingPos, 
+            climber.getHeight() != startingPos, 
             climber,
             "checks if motor ran"
           )
         );
-    climber.moveInDirection(-.1).schedule();
+    climber.setClimberSetPoint(startingPos);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return moveClimberCommand.isFinished();
+    return climber.isAtSetpoint();
   }
 }

@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import java.util.function.Consumer;
 
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -29,16 +30,12 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem{
   TalonFX climbMotor;
   StatusSignal<Angle> climbPos;
 
-  public enum direction {
-    UP,
-    STATIONARY,
-    DOWN
-  }
-
   private DigitalInput magnetSensor1;
   private DigitalInput magnetSensor2;
 
   private SmartPIDControllerTalonFX climberSmartPID;
+  private PositionVoltage positionVoltage = new PositionVoltage(0);
+  private double climberSetPoint = Constants.ClimberIDs.CLIMBER_MIN;
 
   public Climber() {
     climbMotor = new TalonFX(Constants.ClimberIDs.CLIMBER_KRAKEN_MOTOR);
@@ -56,10 +53,6 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem{
         Constants.ClimberIDs.CLIMBER_SMARTPID_ACTIVE,
         climbMotor
         );
-
-    direction up = direction.UP;
-    direction stationary = direction.STATIONARY;
-    direction down = direction.DOWN;
   }
 
   @Override
@@ -75,50 +68,43 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem{
     return !magnetSensor2.get();
   }
 
-  public double getPosition() {
-    return climbMotor.getPosition().getValueAsDouble();
+  //returns in meters
+  public double getHeight() {
+    return climbMotor.getPosition().getValueAsDouble() * Constants.ClimberIDs.CLIMBER_MOTOR_ROTATIONS_TO_CLIMBER_HEIGHT;
   }
 
   public boolean isMotorConnected(){
     return climbMotor.isConnected();
   }
 
-  public boolean didMotorRunWhenSensorIsTrue(){
-    boolean didItRun = false;
-    double startingPos = getPosition();
-    while(getMagnetSensor1() == false && getMagnetSensor2() == false)
-    {
-        if(getMagnetSensor1() == true && getMagnetSensor2() == true)
-      {
-        moveInDirection(0.1);
-      }
-    }
-    didItRun = (getPosition() != startingPos);
-    moveInDirection(-.1);
-    return didItRun;
+  public void setClimberSetPoint(double newSetPoint){
+    climberSetPoint = newSetPoint;
+    climbMotor.setControl(positionVoltage.withPosition(newSetPoint / Constants.ClimberIDs.CLIMBER_MOTOR_ROTATIONS_TO_CLIMBER_HEIGHT));
   }
 
-  public Command waitUntilMagnetSensorsAreTrueThenMove(direction myDirection) {
+  public double getSetPoint(){
+    return climberSetPoint;
+  }
 
-    return defer(
+  public boolean isAtSetpoint() {
+    return Math.abs(getHeight() - climberSetPoint) < 0.001;
+  }
+
+  public Command waitUntilMagnetSensorsAreTrueThenGoToPos(double position){
+    return Commands.startEnd(
       () -> {
-        switch (myDirection) {
-          // when I ask it to go up, it go up
-          case UP:
-            return waitUntilMagnetSensorsAreTrue().andThen(moveInDirection(Constants.ClimberIDs.CLIMBER_MAX));
-    
-          // when I ask it to stay, it stay
-          case STATIONARY:
-            return waitUntilMagnetSensorsAreTrue().andThen(moveInDirection(0.0));
-            
-    
-          // when I ask it to go down, it go down
-          case DOWN:
-            return waitUntilMagnetSensorsAreTrue().andThen(moveInDirection(Constants.ClimberIDs.CLIMBER_MIN));
+        waitUntilMagnetSensorsAreTrue().finallyDo(
+          () -> {
+            setClimberSetPoint(position);
+          }
+        ).schedule();
+        
+      }, () -> {
 
-          default:
-            throw new EnumConstantNotPresentException(null, null);
-        }
+      }
+    ).until(
+      () -> {
+        return isAtSetpoint();
       }
     );
   }
@@ -130,26 +116,11 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem{
         SmartDashboard.putBoolean("MagnetSensor1", getMagnetSensor1());
         SmartDashboard.putBoolean("MagnetSensor2", getMagnetSensor2());
       }
-      ).until(() -> {return getMagnetSensor1() && getMagnetSensor2();});
-  }
-
-  public Command moveInDirection(double setPoint)
-  {
-    VelocityVoltage VV = new VelocityVoltage(0).withSlot(0);
-    final double newSetPoint = setPoint + getPosition();
-    return Commands.runEnd(
+    ).until(
       () -> {
-        climberSmartPID.updatePID();
-
-        climbMotor.setControl(VV.withVelocity(Constants.ClimberIDs.CLIMBER_VELOCITY));
-
-        SmartDashboard.putNumber("position of climber motor", getPosition());
-        SmartDashboard.putNumber("set point of climb", newSetPoint);
-      },
-      () -> {
-        climbMotor.stopMotor();
+        return getMagnetSensor1() && getMagnetSensor2();
       }
-    ).until(() -> getPosition() > (newSetPoint + Constants.ClimberIDs.CLIMBER_RANGE));
+    );
   }
 
   public Command getCoponentsConections(Consumer<TestResult> alert) {
