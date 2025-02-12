@@ -7,6 +7,7 @@ package frc.robot.commands.AutomatedTests;
 import java.util.function.Consumer;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.Climber;
 import frc.robot.utils.error.TestResult;
 
@@ -29,7 +30,7 @@ public class RunClimberMotorTest extends Command {
   @Override
   public void initialize() {
     startingPos = climber.getHeight();
-    climber.setClimberSetPoint(startingPos + 0.05);
+    climber.setClimberSetPoint(startingPos + Constants.Testing.CLIMBER_HEIGHT_CHANGE);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

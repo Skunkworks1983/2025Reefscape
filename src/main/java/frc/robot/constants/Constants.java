@@ -20,6 +20,8 @@ public class Constants {
     public static final double NUMBER_OF_MOTOR_ROTATIONS_FOR_MODULE_TEST = 1.0;
     public static final double TURN_MOTOR_ROTATION_SPEED = 0.15;
     public static final double TURN_MOTOR_AND_ENCODER_TOLERANCE = 0.05;
+
+    public static final double CLIMBER_HEIGHT_CHANGE = 0.05;
   }
 
   public class Collector {
