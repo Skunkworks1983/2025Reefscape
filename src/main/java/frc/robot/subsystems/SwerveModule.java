@@ -22,6 +22,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -231,18 +232,26 @@ public class SwerveModule extends SubsystemBase {
     ErrorGroup errorGroupHandler
   ) {
     return Commands.sequence(
-      new TestModuleComponentsConnection(errorGroupHandler::addTestMapEntry, this),
+      new TestModuleComponentsConnection(
+        errorGroupHandler::addTestMapEntry,
+        errorGroupHandler::setTestStatusUsingTestResult,
+        this
+      ),
       // This Commands.either runs an empty command or a test command based on the result of the command above
       // It checks two different error status' before running the command
       Commands.either(
         Commands.race(
-          new TestTurnMotorAndEncoderOnModule(errorGroupHandler::addTestMapEntry, this),
+          new TestTurnMotorAndEncoderOnModule(
+            errorGroupHandler::addTestMapEntry,
+            errorGroupHandler::setTestStatusUsingTestResult,
+            this
+          ),
           // the command is also in a 5 second time out, because the command takes aprox 4.5
           Commands.waitSeconds(5)
         ),
         Commands.none(),
-        () -> !errorGroupHandler.getTestStatus("Turn Encoder Not Connected", this) && 
-              !errorGroupHandler.getTestStatus("Turn Motor Not Connected", this)
+        () -> errorGroupHandler.getTestStatus("Turn Encoder Not Connected", this) == AlertType.kInfo && 
+              errorGroupHandler.getTestStatus("Turn Motor Not Connected", this) == AlertType.kInfo
       )
     );
   }
