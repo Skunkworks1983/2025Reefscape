@@ -22,6 +22,7 @@ public class Constants {
     public static final double TURN_MOTOR_AND_ENCODER_TOLERANCE = 0.05;
 
     public static final double CLIMBER_HEIGHT_CHANGE = 0.05;
+    public static final double CLIMBER_CHANNEL_TOLERANCE = 10;
   }
 
   public class Collector {
@@ -139,8 +140,8 @@ public class Constants {
 
     public static final boolean CLIMBER_SMARTPID_ACTIVE = false;
 
-    public static final double CLIMBER_MAX = 2.0; // in motor rotations TODO figure out max rotations
-    public static final double CLIMBER_MIN = 0.0; // in motor rotations
+    public static final double CLIMBER_MAX = 2.0; // in meters TODO figure out max height
+    public static final double CLIMBER_MIN = 0.0; // in meters
 
     public static final double CLIMBER_TOLERANCE = 0.001;
 

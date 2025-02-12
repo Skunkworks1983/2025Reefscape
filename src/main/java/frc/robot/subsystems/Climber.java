@@ -26,7 +26,7 @@ import frc.robot.utils.error.DiagnosticSubsystem;
 import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.error.TestResult;
 
-public class Climber extends SubsystemBase implements DiagnosticSubsystem{
+public class Climber extends SubsystemBase implements DiagnosticSubsystem {
   TalonFX climbMotor;
   StatusSignal<Angle> climbPos;
 
@@ -51,8 +51,7 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem{
         Constants.ClimberIDs.CLIMBER_KF,
         "Climb Motor",
         Constants.ClimberIDs.CLIMBER_SMARTPID_ACTIVE,
-        climbMotor
-        );
+        climbMotor);
   }
 
   @Override
@@ -68,21 +67,22 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem{
     return !magnetSensor2.get();
   }
 
-  //returns in meters
+  // returns in meters
   public double getHeight() {
     return climbMotor.getPosition().getValueAsDouble() * Constants.ClimberIDs.CLIMBER_MOTOR_ROTATIONS_TO_CLIMBER_HEIGHT;
   }
 
-  public boolean isMotorConnected(){
+  public boolean isMotorConnected() {
     return climbMotor.isConnected();
   }
 
-  public void setClimberSetPoint(double newSetPoint){
+  public void setClimberSetPoint(double newSetPoint) {
     climberSetPoint = newSetPoint;
-    climbMotor.setControl(positionVoltage.withPosition(newSetPoint / Constants.ClimberIDs.CLIMBER_MOTOR_ROTATIONS_TO_CLIMBER_HEIGHT));
+    climbMotor.setControl(
+        positionVoltage.withPosition(newSetPoint / Constants.ClimberIDs.CLIMBER_MOTOR_ROTATIONS_TO_CLIMBER_HEIGHT));
   }
 
-  public double getSetPoint(){
+  public double getSetPoint() {
     return climberSetPoint;
   }
 
@@ -90,80 +90,71 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem{
     return Math.abs(getHeight() - climberSetPoint) < 0.001;
   }
 
-  public Command waitUntilMagnetSensorsAreTrueThenGoToPos(double position){
-    return Commands.startEnd(
-      () -> {
-        waitUntilMagnetSensorsAreTrue().finallyDo(
-          () -> {
-            setClimberSetPoint(position);
-          }
-        ).schedule();
-        
-      }, () -> {
+  public double getChannel() {
+    return climbMotor.getSupplyCurrent().getValueAsDouble();
+  }
 
-      }
-    ).until(
-      () -> {
-        return isAtSetpoint();
-      }
-    );
+  public Command waitUntilMagnetSensorsAreTrueThenGoToPos(double position) {
+    return Commands.startEnd(
+        () -> {
+          waitUntilMagnetSensorsAreTrue().finallyDo(
+              () -> {
+                setClimberSetPoint(position);
+              }).schedule();
+
+        }, () -> {
+
+        }).until(
+            () -> {
+              return isAtSetpoint();
+            });
   }
 
   public Command waitUntilMagnetSensorsAreTrue() {
 
     return Commands.run(
-      () -> {
-        SmartDashboard.putBoolean("MagnetSensor1", getMagnetSensor1());
-        SmartDashboard.putBoolean("MagnetSensor2", getMagnetSensor2());
-      }
-    ).until(
-      () -> {
-        return getMagnetSensor1() && getMagnetSensor2();
-      }
-    );
+        () -> {
+          SmartDashboard.putBoolean("MagnetSensor1", getMagnetSensor1());
+          SmartDashboard.putBoolean("MagnetSensor2", getMagnetSensor2());
+        }).until(
+            () -> {
+              return getMagnetSensor1() && getMagnetSensor2();
+            });
   }
 
   public Command getCoponentsConections(Consumer<TestResult> alert) {
     return Commands.startEnd(
-      () -> {
+        () -> {
 
-      },
-      () -> {
-        alert.accept(
-          new TestResult(
-            "Magnet Sensor 1 Reporting Tripped", 
-            !getMagnetSensor1(), 
-            this,
-            "Checks if the magnet sensor is true, does this when unplugged"
-          )
-        );
+        },
+        () -> {
+          alert.accept(
+              new TestResult(
+                  "Magnet Sensor 1 Reporting Tripped",
+                  !getMagnetSensor1(),
+                  this,
+                  "Checks if the magnet sensor is true, does this when unplugged"));
 
-        alert.accept(
-          new TestResult(
-            "Magnet Sensor 2 Reporting Tripped", 
-            !getMagnetSensor2(), 
-            this,
-            "Checks if the magnet sensor is true, does this when unplugged"
-          )
-        );
+          alert.accept(
+              new TestResult(
+                  "Magnet Sensor 2 Reporting Tripped",
+                  !getMagnetSensor2(),
+                  this,
+                  "Checks if the magnet sensor is true, does this when unplugged"));
 
-        alert.accept(
-          new TestResult(
-            "Climb Motor is not Connected", 
-            !isMotorConnected(), 
-            this,
-            "checks if motor is connected"
-          )
-        );
-      }
-    );
+          alert.accept(
+              new TestResult(
+                  "Climb Motor is not Connected",
+                  !isMotorConnected(),
+                  this,
+                  "checks if motor is connected"));
+        });
   }
 
   @Override
   public Command getErrorCommand(ErrorGroup errorGroupHandler) {
     return Commands.sequence(
-      getCoponentsConections(errorGroupHandler::addTestMapEntry),
-      new RunClimberMotorTest(errorGroupHandler::addTestMapEntry, this)
-    );
+        getCoponentsConections(errorGroupHandler::addTestMapEntry),
+        new RunClimberMotorTest(errorGroupHandler::addTestMapEntry, this));
   }
 }

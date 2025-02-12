@@ -6,6 +6,7 @@ package frc.robot.commands.AutomatedTests;
 
 import java.util.function.Consumer;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Climber;
@@ -17,6 +18,8 @@ public class RunClimberMotorTest extends Command {
   Climber climber;
   Consumer<TestResult> alert;
   double startingPos;
+  double maxChannel;
+  boolean channelExeeds;
   public RunClimberMotorTest(
     Consumer<TestResult> alert,
     Climber climber
@@ -30,12 +33,22 @@ public class RunClimberMotorTest extends Command {
   @Override
   public void initialize() {
     startingPos = climber.getHeight();
+    maxChannel = climber.getChannel();
+    channelExeeds = false;
     climber.setClimberSetPoint(startingPos + Constants.Testing.CLIMBER_HEIGHT_CHANGE);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    if(climber.getChannel() > maxChannel){
+      maxChannel = climber.getChannel();
+    }
+    if(maxChannel > 10)
+    {
+      channelExeeds = true;
+    }
+  }
 
   // Called once the command ends or is interrupted.
   @Override
@@ -49,6 +62,14 @@ public class RunClimberMotorTest extends Command {
           )
         );
     climber.setClimberSetPoint(startingPos);
+    alert.accept(
+          new TestResult(
+            "Channel Exeeds Tolerance", 
+            channelExeeds, 
+            climber,
+            "checks if Channel exeeds its tolerance"
+          )
+        );
   }
 
   // Returns true when the command should end.
