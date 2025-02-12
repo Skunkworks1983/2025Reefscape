@@ -186,6 +186,10 @@ public class Constants {
           public static final int COLLECT_CORAL = 11;
           public static final int SCORE_CORAL = 12;
         }
+
+        public class Climber{
+          public static final int GO_TO_MAX = 10;
+        }
       }
     }
   }

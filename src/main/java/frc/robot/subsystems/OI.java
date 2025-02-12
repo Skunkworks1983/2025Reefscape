@@ -37,7 +37,7 @@ public class OI {
     (axisInput) -> Math.abs(axisInput) < Constants.OI.AXIS_DEADBAND 
       ? 0.0 : axisInput;
 
-  public OI(Optional<Elevator> optionalElevator, Optional<Collector> optionalCollector) {
+  public OI(Optional<Elevator> optionalElevator, Optional<Collector> optionalCollector, Optional<Climber> optionalClimber) {
 
     if(optionalElevator.isPresent()) {
       Elevator elevator = optionalElevator.get();
@@ -61,6 +61,12 @@ public class OI {
         .whileTrue(collector.waitAfterCatchPieceCommand());
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.SCORE_CORAL)
         .whileTrue(collector.scorePieceCommand());
+    }
+
+    if(optionalClimber.isPresent()){
+      Climber climber = optionalClimber.get();
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Climber.GO_TO_MAX)
+        .whileTrue(climber.waitUntilMagnetSensorsAreTrueThenGoToPos(Constants.ClimberIDs.CLIMBER_MAX));
     }
   }
 
