@@ -16,8 +16,11 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -28,7 +31,10 @@ import frc.robot.utils.error.DiagnosticSubsystem;
 public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
   private SwerveModule swerveModules[] = new SwerveModule[Constants.Drivebase.MODULES.length];
-  private Pigeon2 gyro = new Pigeon2(0, Constants.Drivebase.CANIVORE_NAME);
+  private Pigeon2 gyro = new Pigeon2(26, Constants.Drivebase.CANIVORE_NAME);
+  private StructArrayPublisher<SwerveModuleState> publisher1 = NetworkTableInstance.getDefault().getStructArrayTopic("Desired swervestates", SwerveModuleState.struct).publish();
+  private StructArrayPublisher<SwerveModuleState> publisher2 = NetworkTableInstance.getDefault().getStructArrayTopic("Actual swervestates", SwerveModuleState.struct).publish();
+
 
   private SwerveDriveKinematics swerveDriveKinematics;
 
@@ -73,6 +79,9 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   }
 
   private void setModuleStates(SwerveModuleState[] moduleStates) {
+
+    publisher1.set(moduleStates);
+    publisher2.set(getSwerveModuleStates());
     for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
       swerveModules[i].setSwerveModulState(moduleStates[i]);
     }
@@ -101,6 +110,14 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     }
 
     return swerveDriveKinematics.toChassisSpeeds(moduleStates);
+  }
+
+  private SwerveModuleState[] getSwerveModuleStates() {
+    SwerveModuleState[] moduleStates = new SwerveModuleState[Constants.Drivebase.MODULES.length];
+    for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
+      moduleStates[i] = swerveModules[i].getSwerveModuleState();
+    }
+    return moduleStates;
   }
 
   public void setAllModulesTurnPidActive() {

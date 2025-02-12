@@ -45,15 +45,15 @@ public class Constants {
   }
 
   public class Drivebase {
-    public static final String CANIVORE_NAME = "Practice Swerve";
+    public static final String CANIVORE_NAME = "1983 Comp Drivebase";
 
-    public static final double MAX_METERS_PER_SECOND = 0.0;
-    public static final double MAX_DEGREES_PER_SECOND = 0.0;
+    public static final double MAX_METERS_PER_SECOND = 4.5;
+    public static final double MAX_DEGREES_PER_SECOND = 270;
 
       public class PIDs {
-        public static final double SWERVE_MODULE_TURN_kP = 0.013;
+        public static final double SWERVE_MODULE_TURN_kP = 0.0145;
         public static final double SWERVE_MODULE_TURN_kI = 0.0;
-        public static final double SWERVE_MODULE_TURN_kD = 0.00025;
+        public static final double SWERVE_MODULE_TURN_kD = 0.00017;
         public static final double SWERVE_MODULE_TURN_kF = 0.0;
         public static final double SWERVE_MODULE_DRIVE_kP = 0.125;
         public static final double SWERVE_MODULE_DRIVE_kI = 0.0;
@@ -70,13 +70,13 @@ public class Constants {
 
     public static SwerveModuleConstants MODULES[] = {
         new SwerveModuleConstants(
-            9, 3, 4, -0.212402, new Translation2d(0.28194, 0.28194), "Front Left"),
+          18, 16, 17, 0.311035, new Translation2d(0.28194, 0.28194), "Front Left"),
         new SwerveModuleConstants(
-            11, 7, 8, 0.120361, new Translation2d(0.28194, -0.28194), "Front Right"),
+          12, 10, 11, .495283, new Translation2d(0.28194, -0.28194), "Front Right"),
         new SwerveModuleConstants(
-            12, 1, 2, -0.377441, new Translation2d(-0.28194, 0.28194), "Back Left"),
+          23, 25, 24, -0.205566, new Translation2d(-0.28194, 0.28194), "Back Left"),
         new SwerveModuleConstants(
-            10, 5, 6, 0.096680, new Translation2d(-0.28194, -0.28194), "Back Right")
+          20, 22, 21, 0.308838, new Translation2d(-0.28194, -0.28194), "Back Right")
     };
 
     public class Info {
