@@ -149,8 +149,9 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
     SwerveModuleState[] swerveModuleStates = swerveDriveKinematics.toSwerveModuleStates(chassisSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(
-        swerveModuleStates,
-        Constants.Drivebase.Info.MAX_MODULE_SPEED);
+      swerveModuleStates,
+      Constants.Drivebase.Info.MAX_MODULE_SPEED
+    );
     setModuleStates(swerveModuleStates);
   }
 
@@ -179,10 +180,11 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
   private ChassisSpeeds getRobotRelativeSpeeds() {
     return swerveDriveKinematics.toChassisSpeeds(
-        swerveModules[0].getSwerveModuleState(),
-        swerveModules[1].getSwerveModuleState(),
-        swerveModules[2].getSwerveModuleState(),
-        swerveModules[3].getSwerveModuleState());
+      swerveModules[0].getSwerveModuleState(),
+      swerveModules[1].getSwerveModuleState(),
+      swerveModules[2].getSwerveModuleState(),
+      swerveModules[3].getSwerveModuleState()
+    );
   }
 
   public void setAllModulesTurnPidActive() {

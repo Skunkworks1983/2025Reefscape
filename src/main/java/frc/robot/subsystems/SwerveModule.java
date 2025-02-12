@@ -127,8 +127,11 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public void setModuleDriveVelocity(double metersPerSecond) {
-    driveMotor.setControl(m_Velocity.withVelocity(metersPerSecond * Constants.Drivebase.Info.REVS_PER_METER)
-      .withEnableFOC(true));
+    driveMotor.setControl(
+      m_Velocity.withVelocity(
+        metersPerSecond * Constants.Drivebase.Info.REVS_PER_METER
+      ).withEnableFOC(true)
+    );
   }
 
   // returns meters traveled
