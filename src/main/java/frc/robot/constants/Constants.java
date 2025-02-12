@@ -17,19 +17,26 @@ public class Constants {
     // must be constructed and assigned to the correct variable in Robot.java.
     // If some subsystems are not created and this value is true, an exeption
     // will be thrown.
-    public static boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = true;
+    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = true;
+
+    public static final double NUMBER_OF_MOTOR_ROTATIONS_FOR_MODULE_TEST = 1.0;
+    public static final double TURN_MOTOR_ROTATION_SPEED = 0.15;
+    public static final double TURN_MOTOR_AND_ENCODER_TOLERANCE = 0.05;
   }
 
   public class Collector {
-    public static int RIGHT_MOTOR = 42;
-    public static int LEFT_MOTOR = 11;
+    public static final int RIGHT_MOTOR = 42;
+    public static final int LEFT_MOTOR = 11;
 
-    public static double COLLECTOR_ROTATIONS_PER_METER = 0.0762 * Math.PI;
+    public static final double COLLECTOR_ROTATIONS_PER_METER = 0.0762 * Math.PI;
 
-    public static double COLLECOR_ROTATE_SLOW = 4.0;
-    public static double COLLECOR_ROTATE_FAST = 6.0;
+    public static final double COLLECOR_ROTATE_SLOW = 4.0;
+    public static final double COLLECOR_ROTATE_FAST = 6.0;
 
-    public class PIDS {
+    public static final double COLLECTOR_AMPS_BEFORE_CUTTOF = 3.0;
+    public static final double SECONDS_BEFORE_CUTTOF = 0.5;
+
+    public class PIDs {
       public static final double KP = 0.0;
       public static final double KI = 0.0;
       public static final double KD = 0.0;
@@ -66,6 +73,7 @@ public class Constants {
       public static final double DRIVE_MOTOR_GEAR_RATIO = 6.75;
       public static final double WHEEL_DIAMETER = 0.0991108;
       public static final double REVS_PER_METER = DRIVE_MOTOR_GEAR_RATIO / (WHEEL_DIAMETER * Math.PI);
+      public static final double TURN_MOTOR_GEAR_RATIO = 150.0 / 7.0;
 
       public static final double MAX_MODULE_SPEED = 4.498848;
     }
@@ -131,13 +139,34 @@ public class Constants {
     }
 
     public class Setpoints {
-      public static final double FLOOR_POSITION_METERS = 0.0;
-      public static final double L1_POSITION_METERS = 0.0;
-      public static final double L2_POSITION_METERS = 0.0;
-      public static final double L3_POSITION_METERS = 0.0;
-      public static final double L4_POSITION_METERS = 0.0;
-      public static final double NET_POSITION_METERS = 0.0;
+      // All positions are in meters
+      public static final double FLOOR_POSITION = 0.0;
+      public static final double L1_POSITION = 0.0;
+      public static final double L2_POSITION = 0.0;
+      public static final double L3_POSITION = 0.0;
+      public static final double L4_POSITION = 0.0;
+      public static final double NET_POSITION = 0.0;
     }
+  }
+
+  public class ClimberIDs {
+    public static final int CLIMBER_KRAKEN_MOTOR = 12;
+    public static final int CLIMBER_MAGNET_SENSOR_1 = 0;
+    public static final int CLIMBER_MAGNET_SENSOR_2 = 0;
+
+    public static final double CLIMBER_KP = 0.1;
+    public static final double CLIMBER_KD = 0.0;
+    public static final double CLIMBER_KI = 0.0;
+    public static final double CLIMBER_KF = 0.0;
+
+    public static final boolean CLIMBER_SMARTPID_ACTIVE = false;
+
+    public static final double CLIMBER_MAX = 2.0; // in motor rotations
+    public static final double CLIMBER_MIN = -2.0; // in motor rotations
+
+    public static final double CLIMBER_VELOCITY = 5; // TODO figure out velocity
+
+    public static final double CLIMBER_RANGE = .1; // TODO figure out range
   }
 
   public class OI {
@@ -174,6 +203,8 @@ public class Constants {
         public class Collector {
           public static final int ROTATE_CORAL = 23;
           public static final int INTAKE_CORAL = 14;
+          public static final int COLLECT_CORAL = 11;
+          public static final int SCORE_CORAL = 12;
         }
       }
     }

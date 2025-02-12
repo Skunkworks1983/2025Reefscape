@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.Matrix;
@@ -24,6 +25,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -31,8 +33,10 @@ import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.VisionConstants;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
+import frc.robot.utils.error.ErrorGroup;
+import frc.robot.utils.error.DiagnosticSubsystem;
 
-public class Drivebase extends SubsystemBase {
+public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
   private AHRS gyro = new AHRS(NavXComType.kUSB1);
   private SwerveModule swerveModules[] = new SwerveModule[Constants.Drivebase.MODULES.length];
@@ -126,8 +130,9 @@ public class Drivebase extends SubsystemBase {
   }
 
   // TODO: add docstring
-  private void drive(double xMetersPerSecond,
-      double yMetersPerSecond, double degreesPerSecond, boolean isFieldRelative) {
+  private void drive(double xMetersPerSecond, double yMetersPerSecond,
+    double degreesPerSecond, boolean isFieldRelative
+  ) {
     ChassisSpeeds chassisSpeeds;
     double radiansPerSecond = Units.degreesToRadians(degreesPerSecond);
     if (isFieldRelative) {
@@ -149,8 +154,8 @@ public class Drivebase extends SubsystemBase {
     setModuleStates(swerveModuleStates);
   }
 
-  public void setModuleStates(SwerveModuleState[] moduleStates) {
-    for (int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
+  private void setModuleStates(SwerveModuleState[] moduleStates) {
+    for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
       swerveModules[i].setSwerveModulState(moduleStates[i]);
     }
   }
@@ -172,12 +177,18 @@ public class Drivebase extends SubsystemBase {
     return Rotation2d.fromDegrees(angleDegrees);
   }
 
-  public ChassisSpeeds getRobotRelativeSpeeds() {
+  private ChassisSpeeds getRobotRelativeSpeeds() {
     return swerveDriveKinematics.toChassisSpeeds(
         swerveModules[0].getSwerveModuleState(),
         swerveModules[1].getSwerveModuleState(),
         swerveModules[2].getSwerveModuleState(),
         swerveModules[3].getSwerveModuleState());
+  }
+
+  public void setAllModulesTurnPidActive() {
+    for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
+      swerveModules[i].setTurnControllerActive(true);
+    }
   }
 
   public ChassisSpeeds getFieldRelativeSpeeds() {
@@ -191,26 +202,44 @@ public class Drivebase extends SubsystemBase {
       DoubleSupplier degreesPerSecond,
       boolean isFieldRelative) {
     int fieldOrientationMultiplier;
-    var alliance = DriverStation.getAlliance();
+    Optional<Alliance> alliance = DriverStation.getAlliance();
     if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Blue) {
       fieldOrientationMultiplier = 1;
     } else {
       fieldOrientationMultiplier = -1;
     }
-    return Commands.runEnd(
-        () -> {
-          drive(
-              xMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
-              yMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
-              degreesPerSecond.getAsDouble(),
-              isFieldRelative);
-        },
-        () -> {
-          drive(
-              0,
-              0,
-              0,
-              isFieldRelative);
-        });
+    return runEnd(
+      () -> {
+        drive(
+          xMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
+          yMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
+          degreesPerSecond.getAsDouble(),
+          isFieldRelative
+        );
+      },
+      () -> {
+        drive(
+          0,
+          0,
+          0,
+          isFieldRelative
+        );
+      }
+    ).beforeStarting(
+      () -> {
+        setAllModulesTurnPidActive();
+      }
+    );
+  }
+
+  @Override
+  public Command getErrorCommand(
+    ErrorGroup errorGroupHandler
+  ) {
+    Command[] swerveModuleCommandArray = new Command[Constants.Drivebase.MODULES.length];
+    for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
+      swerveModuleCommandArray[i] = swerveModules[i].TestConnectionThenModule(errorGroupHandler);
+    }
+    return Commands.parallel(swerveModuleCommandArray);
   }
 }
