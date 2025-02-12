@@ -60,10 +60,10 @@ public class Pheonix6Odometry {
         failedUpdates++;
       }
 
-      // Not sure how to resolve warning
+      // BUG: Not sure how to resolve warning. Neither do the mentors.
       for (SignalValue
-        triplet : compensatedSignalValueGroup) { //<Unit, PerUnit<Unit, TimeUnit>, Measure<Unit>, Measure<PerUnit<Unit, TimeUnit>>>
-        if(triplet.getstatusSignalRate() == null){
+        triplet : compensatedSignalValueGroup) {
+        if(triplet.getstatusSignalRate() == null) {
           Double position = triplet.getStatusSignal().getValueAsDouble();
           triplet.setValue(position);
         } else{ 
@@ -122,9 +122,7 @@ public class Pheonix6Odometry {
         null, 
         statusSignal.getValueAsDouble()
       );
-
     compensatedSignalValueGroup.add(triplet);
-
     return triplet::getValue;
   }
 }
