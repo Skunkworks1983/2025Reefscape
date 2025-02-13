@@ -115,6 +115,10 @@ public class Constants {
     public static final double MAX_AVERAGE_TAG_DISTANCE = 3.0; // Meters
   }
 
+  public class Funnel {
+    public static final int PIVOT_MOTOR_ID = 0;
+  }
+
   public class Elevator {
     public static final int MOTOR_ID = 0;
 
