@@ -26,12 +26,17 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.AutomatedTests.TestModuleComponentsConnection;
+import frc.robot.commands.AutomatedTests.TestTurnMotorAndEncoderOnModule;
 import frc.robot.constants.Constants;
 import frc.robot.constants.SwerveModuleConstants;
 import frc.robot.utils.PIDs.SmartPIDController;
 import frc.robot.utils.PIDs.SmartPIDControllerTalonFX;
 import frc.robot.utils.odometry.Pheonix6Odometry;
+import frc.robot.utils.error.ErrorGroup;
 
 public class SwerveModule extends SubsystemBase {
 
@@ -42,6 +47,7 @@ public class SwerveModule extends SubsystemBase {
   private SmartPIDController turnController;
   final private Supplier<Double> driveMotorRawVelocity;
   final private Supplier<Double> driveMotorRawPosition;
+  private boolean turnControllerActive;
 
   public String moduleName;
   public Translation2d moduleLocation;
@@ -123,9 +129,15 @@ public class SwerveModule extends SubsystemBase {
   @Override
   public void periodic() {
     driveController.updatePID();
-    if (!turnController.atSetpoint()) {
+    if (turnControllerActive && !turnController.atSetpoint()) {
       updateSpeedToSetpointTurn();
     }
+  }
+
+  // only used if we want to run a manual speed on the motor
+  // the turn controller would overwrite it if we dont turn it off first
+  public void setTurnControllerActive(boolean isControllerActive) {
+    turnControllerActive = isControllerActive;
   }
 
   public void setModuleTurnSetpoint(Rotation2d angle) {
@@ -142,6 +154,13 @@ public class SwerveModule extends SubsystemBase {
     return driveMotorRawPosition.get() / Constants.Drivebase.Info.REVS_PER_METER;
   }
 
+  // Almost nothing should be calling this exept tests, this gets position from the turn motor
+  // what should be used would be getTurnMotorAngle()
+  public double getTurnMotorEncoderPosition() {
+    // TODO find a way to check robot to see if we are in test mode then log an error if not
+    return turnMotor.getEncoder().getPosition() / Constants.Drivebase.Info.TURN_MOTOR_GEAR_RATIO; 
+  }
+
   // returns velocity in meters
   public double getDriveMotorVelocity() {
     return driveMotorRawVelocity.get() / Constants.Drivebase.Info.REVS_PER_METER;
@@ -151,7 +170,7 @@ public class SwerveModule extends SubsystemBase {
     turnMotor.set(speed);
   }
 
-  public void setBrakeMode(boolean brakeMode){
+  public void setBrakeMode(boolean brakeMode) {
     if(brakeMode) {
       driveMotor.setNeutralMode(NeutralModeValue.Brake);
     }
@@ -173,12 +192,20 @@ public class SwerveModule extends SubsystemBase {
     return turnMotorRotation;
   }
 
+  public double getTurnMotorVoltage() {
+    return turnMotor.getBusVoltage();
+  }
+
   public boolean isEncoderConnected() {
     return turnEncoder.isConnected();
   }
 
   public double getTurnError() {
     return turnController.getPositionError();
+  }
+
+  public double getRawEncoderValue() {
+    return turnEncoder.getPosition().getValueAsDouble();
   }
 
   public void setSwerveModulState(SwerveModuleState newState) {
@@ -210,5 +237,39 @@ public class SwerveModule extends SubsystemBase {
 
   public StatusSignal<Angle> getDriveVelocitySignal() {
     return driveMotor.getPosition().clone();
+  }
+
+  @Override
+  public String toString() {
+    return moduleName + " Module";
+  }
+
+  public boolean isTurnMotorConnected() {
+    return turnMotor.getFirmwareVersion() != 0;
+  }
+
+  public boolean isDriveMotorConnected() {
+    return driveMotor.isConnected();
+  }
+
+  // This runs a command to test the connection of each component, then runs another test if the relevent components are connected
+  public Command TestConnectionThenModule(
+    ErrorGroup errorGroupHandler
+  ) {
+    return Commands.sequence(
+      new TestModuleComponentsConnection(errorGroupHandler::addTestMapEntry, this),
+      // This Commands.either runs an empty command or a test command based on the result of the command above
+      // It checks two different error status' before running the command
+      Commands.either(
+        Commands.race(
+          new TestTurnMotorAndEncoderOnModule(errorGroupHandler::addTestMapEntry, this),
+          // the command is also in a 5 second time out, because the command takes aprox 4.5
+          Commands.waitSeconds(5)
+        ),
+        Commands.none(),
+        () -> !errorGroupHandler.getTestStatus("Turn Encoder Not Connected", this) && 
+              !errorGroupHandler.getTestStatus("Turn Motor Not Connected", this)
+      )
+    );
   }
 }

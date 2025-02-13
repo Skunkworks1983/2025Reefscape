@@ -14,17 +14,24 @@ public class Constants {
     // must be constructed and assigned to the correct variable in Robot.java.
     // If some subsystems are not created and this value is true, an exeption
     // will be thrown.
-    public static boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = true;
+    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = true;
+
+    public static final double NUMBER_OF_MOTOR_ROTATIONS_FOR_MODULE_TEST = 1.0;
+    public static final double TURN_MOTOR_ROTATION_SPEED = 0.15;
+    public static final double TURN_MOTOR_AND_ENCODER_TOLERANCE = 0.05;
   }
 
   public class Collector {
-    public static int RIGHT_MOTOR = 42;
-    public static int LEFT_MOTOR = 11;
+    public static final int RIGHT_MOTOR = 42;
+    public static final int LEFT_MOTOR = 11;
 
-    public static double COLLECTOR_ROTATIONS_PER_METER = 0.0762 * Math.PI;
+    public static final double COLLECTOR_ROTATIONS_PER_METER = 0.0762 * Math.PI;
 
-    public static double COLLECOR_ROTATE_SLOW = 4.0;
-    public static double COLLECOR_ROTATE_FAST = 6.0;
+    public static final double COLLECOR_ROTATE_SLOW = 4.0;
+    public static final double COLLECOR_ROTATE_FAST = 6.0;
+
+    public static final double COLLECTOR_AMPS_BEFORE_CUTTOF = 3.0;
+    public static final double SECONDS_BEFORE_CUTTOF = 0.5;
 
     public class PIDs {
       public static final double KP = 0.0;
@@ -43,19 +50,19 @@ public class Constants {
     public static final double MAX_METERS_PER_SECOND = 0.0;
     public static final double MAX_DEGREES_PER_SECOND = 0.0;
 
-    public class PIDs {
-      public static final double SWERVE_MODULE_TURN_kP = 0.0;
-      public static final double SWERVE_MODULE_TURN_kI = 0.0;
-      public static final double SWERVE_MODULE_TURN_kD = 0.0;
-      public static final double SWERVE_MODULE_TURN_kF = 0.0;
-      public static final double SWERVE_MODULE_DRIVE_kP = 0.0;
-      public static final double SWERVE_MODULE_DRIVE_kI = 0.0;
-      public static final double SWERVE_MODULE_DRIVE_kD = 0.0;
-      public static final double SWERVE_MODULE_DRIVE_kF = 0.0;
+      public class PIDs {
+        public static final double SWERVE_MODULE_TURN_kP = 0.013;
+        public static final double SWERVE_MODULE_TURN_kI = 0.0;
+        public static final double SWERVE_MODULE_TURN_kD = 0.00025;
+        public static final double SWERVE_MODULE_TURN_kF = 0.0;
+        public static final double SWERVE_MODULE_DRIVE_kP = 0.125;
+        public static final double SWERVE_MODULE_DRIVE_kI = 0.0;
+        public static final double SWERVE_MODULE_DRIVE_kD = 0.0;
+        public static final double SWERVE_MODULE_DRIVE_kF = 0.1075;
 
-      public static final boolean SMART_PID_ENABLED = true;
-      public static final boolean SMART_PID_TURN_ENABLED = true;
-      public static final boolean SMART_PID_DRIVE_ENABLED = true;
+        public static final boolean SMART_PID_ENABLED = false;
+        public static final boolean SMART_PID_TURN_ENABLED = true;
+        public static final boolean SMART_PID_DRIVE_ENABLED = true;
 
       public static final double PID_LOW_LIMIT = -0.8;
       public static final double PID_HIGH_LIMIT = 0.8;
@@ -76,6 +83,7 @@ public class Constants {
       public static final double DRIVE_MOTOR_GEAR_RATIO = 6.75;
       public static final double WHEEL_DIAMETER = 0.0991108;
       public static final double REVS_PER_METER = DRIVE_MOTOR_GEAR_RATIO / (WHEEL_DIAMETER * Math.PI);
+      public static final double TURN_MOTOR_GEAR_RATIO = 150.0 / 7.0;
 
       public static final double MAX_MODULE_SPEED = 4.498848;
     }
@@ -169,8 +177,8 @@ public class Constants {
 
         public class Collector {
           public static final int ROTATE_CORAL = 23;
-          public static final int INTAKE_CORAL = 14;
-
+          public static final int COLLECT_CORAL = 11;
+          public static final int SCORE_CORAL = 12;
         }
       }
     }

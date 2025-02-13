@@ -10,8 +10,8 @@ import java.util.function.DoubleFunction;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.constants.Constants.OI.LIMITS;
-import frc.robot.constants.Constants;
 import frc.robot.commands.elevator.*;
+import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.OI.IDs.Joysticks;
 
 public class OI {
@@ -57,8 +57,10 @@ public class OI {
       Collector collector = optionalCollector.get();
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.ROTATE_CORAL)
         .whileTrue(collector.rotateCoralCommand());
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.INTAKE_CORAL)
-        .whileTrue(collector.intakeCoralCommand());
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.COLLECT_CORAL)
+        .whileTrue(collector.waitAfterCatchPieceCommand());
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.SCORE_CORAL)
+        .whileTrue(collector.scorePieceCommand());
     }
   }
 

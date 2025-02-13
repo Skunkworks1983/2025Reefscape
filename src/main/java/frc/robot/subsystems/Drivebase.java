@@ -18,11 +18,14 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.utils.odometry.Pheonix6Odometry;
+import frc.robot.utils.error.ErrorGroup;
+import frc.robot.utils.error.DiagnosticSubsystem;
 
-public class Drivebase extends SubsystemBase {
+public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
   private SwerveModule swerveModules[] = new SwerveModule[Constants.Drivebase.MODULES.length];
   private AHRS gyro = new AHRS(NavXComType.kUSB1);
@@ -96,6 +99,12 @@ public class Drivebase extends SubsystemBase {
     );
   }
 
+  public void setAllModulesTurnPidActive() {
+    for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
+      swerveModules[i].setTurnControllerActive(true);
+    }
+  }
+
   public ChassisSpeeds getFieldRelativeSpeeds() {
     return ChassisSpeeds.fromRobotRelativeSpeeds(getRobotRelativeSpeeds(),
       getGyroAngle());
@@ -132,6 +141,21 @@ public class Drivebase extends SubsystemBase {
           isFieldRelative
         );
       }
+    ).beforeStarting(
+      () -> {
+        setAllModulesTurnPidActive();
+      }
     );
+  }
+
+  @Override
+  public Command getErrorCommand(
+    ErrorGroup errorGroupHandler
+  ) {
+    Command[] swerveModuleCommandArray = new Command[Constants.Drivebase.MODULES.length];
+    for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
+      swerveModuleCommandArray[i] = swerveModules[i].TestConnectionThenModule(errorGroupHandler);
+    }
+    return Commands.parallel(swerveModuleCommandArray);
   }
 }
