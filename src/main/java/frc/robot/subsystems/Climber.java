@@ -8,9 +8,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -42,18 +40,14 @@ public class Climber extends SubsystemBase {
     magnetSensor2 = new DigitalInput(Constants.ClimberIDs.CLIMBER_MAGNET_SENSOR_2);
 
     climberSmartPID = new SmartPIDControllerTalonFX(
-        Constants.ClimberIDs.CLIMBER_KP,
-        Constants.ClimberIDs.CLIMBER_KI,
-        Constants.ClimberIDs.CLIMBER_KD,
-        Constants.ClimberIDs.CLIMBER_KF,
-        "Climb Motor",
-        Constants.ClimberIDs.CLIMBER_SMARTPID_ACTIVE,
-        climbMotor
-        );
-
-    direction up = direction.UP;
-    direction stationary = direction.STATIONARY;
-    direction down = direction.DOWN;
+      Constants.ClimberIDs.CLIMBER_KP,
+      Constants.ClimberIDs.CLIMBER_KI,
+      Constants.ClimberIDs.CLIMBER_KD,
+      Constants.ClimberIDs.CLIMBER_KF,
+      "Climb Motor",
+      Constants.ClimberIDs.CLIMBER_SMARTPID_ACTIVE,
+      climbMotor
+    );
   }
 
   @Override
@@ -102,12 +96,11 @@ public class Climber extends SubsystemBase {
   }
 
   public Command waitUntilMagnetSensorsAreTrue() {
-
     return Commands.waitUntil(
       () -> {
         return getMagnetSensor1() && getMagnetSensor2();
-        }
-      );
+      }
+    );
   }
 
   public Command moveInDirection(double setPoint)
