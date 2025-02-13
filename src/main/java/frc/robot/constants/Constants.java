@@ -140,7 +140,7 @@ public class Constants {
 
     public static final boolean CLIMBER_SMARTPID_ACTIVE = false;
 
-    public static final double CLIMBER_MAX = 2.0; // in meters TODO figure out max height
+    public static final double CLIMBER_MAX = Units.inchesToMeters(12); // in meters TODO figure out max height
     public static final double CLIMBER_MIN = 0.0; // in meters
 
     public static final double CLIMBER_TOLERANCE = 0.001;

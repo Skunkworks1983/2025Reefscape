@@ -80,6 +80,7 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
     climberSetPoint = newSetPoint;
     climbMotor.setControl(
         positionVoltage.withPosition(newSetPoint / Constants.ClimberIDs.CLIMBER_MOTOR_ROTATIONS_TO_CLIMBER_HEIGHT));
+    SmartDashboard.putNumber("Motor position", getHeight());
   }
 
   public double getSetPoint() {
@@ -88,8 +89,8 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
   }
 
   public boolean isAtSetpoint() {
-    SmartDashboard.putBoolean("Is climber at set point", Math.abs(getHeight() - climberSetPoint) < 0.01);
-    return Math.abs(getHeight() - climberSetPoint) < 0.001;
+    SmartDashboard.putBoolean("Is climber at set point", Math.abs(getHeight() - climberSetPoint) < Constants.ClimberIDs.CLIMBER_TOLERANCE);
+    return Math.abs(getHeight() - climberSetPoint) < Constants.ClimberIDs.CLIMBER_TOLERANCE;
   }
 
   public double getCurrent() {

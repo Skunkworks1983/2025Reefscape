@@ -26,7 +26,6 @@ public class RunClimberMotorTest extends Command {
     this.alert = alert;
     this.climber = climber;
     addRequirements(climber);
-    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
