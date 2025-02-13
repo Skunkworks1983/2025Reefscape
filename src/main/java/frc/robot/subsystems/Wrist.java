@@ -16,18 +16,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
 import frc.robot.utils.SmartPIDControllerTalonFX;
 
 public class Wrist extends SubsystemBase {
   TalonFX wristMotor;
   StatusSignal<Angle> wristPos;
-
-  enum direction {
-    UP,
-    STATIONARY,
-    DOWN
-  }
 
   private DigitalInput magnetSensor1;
 
@@ -39,7 +34,7 @@ public class Wrist extends SubsystemBase {
 
     magnetSensor1 = new DigitalInput(Constants.WristIDs.WRIST_MAGNET_SENSOR_1);
     
-    /*wristSmartPID = new SmartPIDControllerTalonFX(
+    wristSmartPID = new SmartPIDControllerTalonFX(
         Constants.WristIDs.WRIST_KP,
         Constants.WristIDs.WRIST_KI,
         Constants.WristIDs.WRIST_KD,
@@ -48,30 +43,25 @@ public class Wrist extends SubsystemBase {
         Constants.WristIDs.WRIST_SMARTPID_ACTIVE,
         wristMotor
         );
-        */
- 
+    
+    Trigger wristMoveTrigger = new Trigger(() -> this.getMagnetSensor1());
+    
+    wristMoveTrigger.onFalse(this.MoveWrist());
+    
   }
 
   @Override
   public void periodic() {
     //System.out.println("running");
-    // This method will be called once per scheduler run
-    //getMagnetSensor1();
-    wristMotor.set(0.5);
+  }
 
-
-    if (getMagnetSensor1()) {
-      wristMotor.set(0.1);
-      System.out.println("setting speed 0.5");
-    }
-    else {
-      wristMotor.set(0);
-    }
-      
+  public Command MoveWrist() { //TODO add directions
+    System.out.println("Is running");
+    return moveInDirection(Constants.WristIDs.WRIST_MIDPOINT_ROTATIONS);
   }
 
   public boolean getMagnetSensor1() {
-    System.out.println(!magnetSensor1.get());
+    //System.out.println(!magnetSensor1.get());
     return !magnetSensor1.get();
     
   }
@@ -81,33 +71,34 @@ public class Wrist extends SubsystemBase {
   }
 
 
-  public Command waitUntilMagnetSensorsAreTrueThenMove(direction myDirection) {
-    return null;
-  }
-
-  public Command waitUntilMagnetSensorsAreTrue() {
-    return null;
-  }
   
 
   public Command moveInDirection(double setPoint)
   {
-    VelocityVoltage VV = new VelocityVoltage(0);
+    VelocityVoltage velocityVoltage = new VelocityVoltage(0);
     final double newSetPoint = setPoint + getPosition();
+    
     return Commands.runEnd(
       () -> {
         wristSmartPID.updatePID();
 
-        wristMotor.setControl(VV.withVelocity(Constants.WristIDs.WRIST_VELOCITY));
+        if (Math.abs(getPosition() - newSetPoint) < Constants.WristIDs.WRIST_RANGE) {
+          return;
+        }
+        
+          wristMotor.setControl(velocityVoltage.withVelocity(Constants.WristIDs.WRIST_VELOCITY));
+        
 
-        SmartDashboard.putNumber("position of wrist motor", getPosition());
-        SmartDashboard.putNumber("set point of wrist", newSetPoint);
+        SmartDashboard.putNumber("wrist motor position: ", getPosition());
+        SmartDashboard.putNumber("wrist motor set point: ", newSetPoint);
+        SmartDashboard.putNumber("stop condition", Math.abs(getPosition() - newSetPoint));
+
+        
       },
       () -> {
         wristMotor.stopMotor();
       }
-    ).until(() -> getPosition() > newSetPoint + Constants.WristIDs.WRIST_RANGE && 
-      getPosition() < newSetPoint - Constants.WristIDs.WRIST_RANGE);
+    ).until(() -> Math.abs(getPosition() - newSetPoint) < Constants.WristIDs.WRIST_RANGE || getMagnetSensor1());
   }
 
   
