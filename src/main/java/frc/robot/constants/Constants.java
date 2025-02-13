@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 
 // TODO: add all robot constant values when they have been decided
 public class Constants {
@@ -99,14 +100,51 @@ public class Constants {
 
   public class VisionConstants {
   
-    public static final String CAMERA_0_NAME = "Camera_0";
+
+    public static final String FRONT_CAMERA_NAME = "Camera_0";
+    public static final String SIDE_CAMERA_NAME = "Side";
     
-    // TODO: Get transforms for this year's robot
-    public static final Transform3d CAMERA_0_TRANSFORM = 
+    public static final Transform3d MOUNT_TO_FRONT_CAMERA_TRANSFORM = 
       new Transform3d(
-          new Translation3d(0,0,0),
-          new Rotation3d(0,0,0)
-        );
+        /**
+         * +x = forward
+         * +y = left
+         * +y = up
+         */
+        new Translation3d(
+          Units.inchesToMeters(1.351),
+          Units.inchesToMeters(-1.268),
+          Units.inchesToMeters(-0.81)
+        ),
+      
+        new Rotation3d(
+          Units.degreesToRadians(0),
+          Units.degreesToRadians(-19.27),
+          Units.degreesToRadians(-15.0)
+        )
+      );
+
+    public static final Transform3d MOUNT_TO_SIDE_CAMERA_TRANSFORM = 
+      new Transform3d(
+        /**
+         * +x = forward
+         * +y = left
+         * +y = up
+         */
+        new Translation3d(0,0,0),
+        new Rotation3d(0,0,0)
+      );
+
+    public static final Transform3d ROBOT_TO_MOUNT_TRANSFORM =
+      new Transform3d(
+        /**
+         * +x = forward
+         * +y = left
+         * +y = up
+         */
+        new Translation3d(0,0,0),
+        new Rotation3d(0,0,0)
+      );
 
     public static final double MAX_AMBIGUITY = 0.3;
     public static final double LINEAR_STD_DEV_BASELINE = 0.02;
