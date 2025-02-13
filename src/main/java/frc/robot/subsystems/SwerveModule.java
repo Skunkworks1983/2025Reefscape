@@ -25,6 +25,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.PerUnit;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -118,8 +120,8 @@ public class SwerveModule extends SubsystemBase {
 
     m_Velocity.Slot = 0;
     driveMotorRawPosition = pheonix6odometry.registerSignalWithLatencyCompensation(
-      driveMotor.getPosition().clone(), 
-      driveMotor.getVelocity().clone()
+      (Measure<Angle>)driveMotor.getPosition().clone(), 
+      (Measure<PerUnit<Angle,TimeUnit>>)driveMotor.getVelocity().clone()
     );
     driveMotorRawVelocity = pheonix6odometry.registerSignal(
       driveMotor.getPosition().clone()

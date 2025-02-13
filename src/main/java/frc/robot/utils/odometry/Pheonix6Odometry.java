@@ -6,6 +6,7 @@ package frc.robot.utils.odometry;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Supplier;
@@ -23,14 +24,9 @@ import frc.robot.utils.SignalValue;
 
 public class Pheonix6Odometry {
 
-  // Maps signals the 
-
-  // Contains signal, signal rate of change, and measurement
-  // List<Pair<StatusSignal<? extends Unit>,Double>> signalValuePairList;
-
-  // Contains signal, signal rate of change, and measurement
-  List<SignalValue<?,?,?,?>> 
-    compensatedSignalValueGroup = new ArrayList<>();
+  // For information on what a SignalValue is, see the comment in the SignalValue class.
+  List<SignalValue<? extends Unit>> 
+    SignalValueGroup = new ArrayList<>();
   Thread thread = new Thread(this::run);
   public AtomicBoolean isRunning;
   int failedUpdates;
@@ -38,20 +34,29 @@ public class Pheonix6Odometry {
   public ReentrantReadWriteLock stateLock = new ReentrantReadWriteLock();
 
 
+  // WARNNING: Due to Java generics issues, there must be at least one unchecked cast
+  // (from <? extends Unit> to <Unit>). Three different mentors have been unable to solve this.
+  // As long as we do not do anything crazy somewhere else, the unchecked cast /should/ never
+  // result in a crash (according to Thomas).
+  @SuppressWarnings("unchecked")
   public void run() {
     while(isRunning.get()){
 
       // Notes: waitForAll uses signals as an out param.
-      List<BaseStatusSignal> allSignals = new ArrayList<>();
-      for(SignalValue<?,?,?,?> signalValue : compensatedSignalValueGroup){
-        allSignals.add(signalValue.getStatusSignal());
-        StatusSignal<?> signal = signalValue.getStatusSignal();
-        if(signal!=null) allSignals.add(signal);
+      List<BaseStatusSignal> signalsGroup = new ArrayList<>();
+      for(SignalValue<? extends Unit> signalValue : SignalValueGroup){
+        signalsGroup.add(signalValue.getStatusSignal());
+        Optional<? extends StatusSignal<? extends Measure<? extends PerUnit<?, TimeUnit>>>> 
+          optionalSignalSlope = signalValue.getStatusSignalSlope();
+
+        if(optionalSignalSlope.isPresent()) {
+          signalsGroup.add(optionalSignalSlope.get());
+        }
 
       }
       StatusCode status = BaseStatusSignal.waitForAll(
         Constants.Pheonix6Odometry.updatesPerSecond,
-        (BaseStatusSignal[])allSignals.toArray()
+        (BaseStatusSignal[])signalsGroup.toArray()
       );
 
       if(status.isOK()) {
@@ -60,69 +65,60 @@ public class Pheonix6Odometry {
         failedUpdates++;
       }
 
-      // BUG: Not sure how to resolve warning. Neither do the mentors.
-      for (SignalValue
-        triplet : compensatedSignalValueGroup) {
-        if(triplet.getstatusSignalRate() == null) {
-          Double position = triplet.getStatusSignal().getValueAsDouble();
-          triplet.setValue(position);
-        } else{ 
-          Double position = BaseStatusSignal.getLatencyCompensatedValue(
-          triplet.getStatusSignal(), triplet.getstatusSignalRate()).magnitude();
-          triplet.setValue(position);
+      for (SignalValue<? extends Unit> signalValue : SignalValueGroup) {
+        // Note: This cast is unchecked! (This should never result in a crash)
+        SignalValue<Unit> uncheckedSignalValue = (SignalValue<Unit>)signalValue;
+
+        if(uncheckedSignalValue.getStatusSignalSlope().isPresent()) {
+          double position = BaseStatusSignal.getLatencyCompensatedValue(
+              uncheckedSignalValue.getStatusSignal(), uncheckedSignalValue.getStatusSignalSlope().get()
+          ).magnitude();
+          uncheckedSignalValue.setValue(position);
+        } else { 
+          double position = uncheckedSignalValue.getStatusSignal().getValueAsDouble();
+          uncheckedSignalValue.setValue(position);
         }
       }
     }
   }
 
-  public Pheonix6Odometry(){}
-
-  // This function registers the signal (ensuring it always updates at the same 
-  // time as other signals). This funciton returns a supplier that autmatically
-  // returns the most recent value. Critically, Getting the supplier value of other 
+  // This function registers the signal and the rate of change of the first signal
+  // (to predict the curent) position based on the change in time (ensuring it always
+  // updates at the same time as other signals). This funciton returns a supplier that autmatically
+  // returns the most recent sampled value. Importantly, getting the supplier value of other 
   // registered signals will always be sampled from the same position in time.
-  /*
-  public Supplier<Double> registerSignal(StatusSignal<Measure<Unit>> statusSignal) {
-    BaseStatusSignal.setUpdateFrequencyForAll(Constants.Pheonix6Odometry.updatesPerSecond, statusSignal);
-    signalToPositionMap.put(statusSignal, statusSignal.getValueAsDouble());
-    return () -> signalToPositionMap.get(statusSignal);
-  } 
-  */
-
-
-  public 
-    <U extends Unit, U_PER_SEC extends PerUnit<U, TimeUnit>, MEAS extends Measure<U>, MEAS_PER_SEC extends Measure<U_PER_SEC>>
-  Supplier<Double> registerSignalWithLatencyCompensation(
-    StatusSignal<MEAS> statusSignal,
-    StatusSignal<MEAS_PER_SEC> statusSignalRateOfChange) {
+  public <U extends Unit> Supplier<Double> registerSignalWithLatencyCompensation(
+    StatusSignal<Measure<U>> statusSignal,
+    StatusSignal<Measure<PerUnit<U,TimeUnit>>> statusSignalRateOfChange) {
     BaseStatusSignal.setUpdateFrequencyForAll(Constants.Pheonix6Odometry.updatesPerSecond, statusSignal);
 
-    SignalValue<U, U_PER_SEC, MEAS, MEAS_PER_SEC> triplet = 
+    SignalValue<U> triplet = 
       new SignalValue<> (
         statusSignal, 
-        statusSignalRateOfChange, 
+        Optional.of(statusSignalRateOfChange), 
         statusSignal.getValueAsDouble()
       );
 
-    compensatedSignalValueGroup.add(triplet);
+    SignalValueGroup.add(triplet);
 
     return triplet::getValue;
   }
 
-  public 
-    <U extends Unit, U_PER_SEC extends PerUnit<U, TimeUnit>, MEAS extends Measure<U>, MEAS_PER_SEC extends Measure<U_PER_SEC>>
-  Supplier<Double> registerSignal(
-    StatusSignal<MEAS> statusSignal
-  ) {
+  // This function registers the signal (ensuring it always updates at the same 
+  // time as other signals). This funciton returns a supplier that autmatically
+  // returns the most recent sampled value. Importantly, getting the supplier value of other 
+  // registered signals will always be sampled from the same position in time.
+  public <U extends Unit> Supplier<Double> registerSignal(StatusSignal<Measure<U>> statusSignal) {
     BaseStatusSignal.setUpdateFrequencyForAll(Constants.Pheonix6Odometry.updatesPerSecond, statusSignal);
 
-    SignalValue<U, U_PER_SEC, MEAS, MEAS_PER_SEC> triplet = 
+    SignalValue<U> triplet = 
       new SignalValue<> (
         statusSignal, 
-        null, 
+        Optional.empty(), 
         statusSignal.getValueAsDouble()
       );
-    compensatedSignalValueGroup.add(triplet);
+
+    SignalValueGroup.add(triplet);
     return triplet::getValue;
   }
 }

@@ -1,5 +1,7 @@
 package frc.robot.utils;
 
+import java.util.Optional;
+
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
@@ -11,44 +13,42 @@ import edu.wpi.first.units.PerUnit;
 import edu.wpi.first.units.TimeUnit;
 import edu.wpi.first.units.Unit;
 
+// Signal value represents a signal (essensially an advanced supplier for sensors), an optional 
+// derivative signal (to estimate where the most recent value is based on the change in time from the
+// most recent sample), and the most recent sampled value of the previous two values.
 public class SignalValue
-    <U extends Unit, U_PER_SEC extends PerUnit<U, TimeUnit>, MEAS extends Measure<U>, MEAS_PER_SEC extends Measure<U_PER_SEC>>
+    <U extends Unit>
  {
-  private StatusSignal<MEAS> m_statusSignal;
-  private StatusSignal<MEAS_PER_SEC> m_statusSignalRate;
-  private double m_value;
+  private StatusSignal<Measure<U>> statusSignal;
+  // This optional value represents the derivative of 
+  private Optional<StatusSignal<Measure<PerUnit<U,TimeUnit>>>> statusSignalSlope;
+
+  // This represents the most recent _cached_ result of the signals stored in this class.
+  private double value;
 
   public SignalValue(
-    StatusSignal<MEAS> statusSignal,
-    StatusSignal<MEAS_PER_SEC> statusSignalRate, 
+    StatusSignal<Measure<U>> statusSignal,
+    Optional<StatusSignal<Measure<PerUnit<U,TimeUnit>>>> statusSignalSlope, 
     double value
   ) {
-    m_statusSignal = statusSignal;
-    m_statusSignalRate = statusSignalRate;
-    m_value = value;
+    this.statusSignal = statusSignal;
+    this.statusSignalSlope = statusSignalSlope;
+    this.value = value;
   }
 
-  public StatusSignal<MEAS> getStatusSignal() {
-    return m_statusSignal;
+  public StatusSignal<Measure<U>> getStatusSignal() {
+    return statusSignal;
   }
 
-  public StatusSignal<MEAS_PER_SEC> getstatusSignalRate() {
-    return m_statusSignalRate;
+  public Optional<StatusSignal<Measure<PerUnit<U,TimeUnit>>>> getStatusSignalSlope() {
+    return statusSignalSlope;
   }
 
   public double getValue() {
-    return m_value;
-  }
-
-  public void setStatusSignal(StatusSignal<MEAS> statusSignal) {
-    m_statusSignal = statusSignal;
-  }
-
-  public void setstatusSignalRate(StatusSignal<MEAS_PER_SEC> second) {
-    m_statusSignalRate = second;
+    return value;
   }
 
   public void setValue(double value) {
-    m_value = value;
+    this.value = value;
   }
 }
