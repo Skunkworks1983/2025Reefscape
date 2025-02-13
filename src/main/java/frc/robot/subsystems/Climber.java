@@ -83,14 +83,16 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
   }
 
   public double getSetPoint() {
+    SmartDashboard.putNumber("climber set point", climberSetPoint);
     return climberSetPoint;
   }
 
   public boolean isAtSetpoint() {
+    SmartDashboard.putBoolean("Is climber at set point", Math.abs(getHeight() - climberSetPoint) < 0.01);
     return Math.abs(getHeight() - climberSetPoint) < 0.001;
   }
 
-  public double getChannel() {
+  public double getCurrent() {
     return climbMotor.getSupplyCurrent().getValueAsDouble();
   }
 
@@ -122,7 +124,7 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
             });
   }
 
-  public Command getCoponentsConections(Consumer<TestResult> alert) {
+  public Command hardwareConnectionTest(Consumer<TestResult> alert) {
     return Commands.startEnd(
         () -> {
 
@@ -154,7 +156,7 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
   @Override
   public Command getErrorCommand(ErrorGroup errorGroupHandler) {
     return Commands.sequence(
-        getCoponentsConections(errorGroupHandler::addTestMapEntry),
+        hardwareConnectionTest(errorGroupHandler::addTestMapEntry),
         new RunClimberMotorTest(errorGroupHandler::addTestMapEntry, this));
   }
 }

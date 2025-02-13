@@ -66,7 +66,7 @@ public class OI {
     if(optionalClimber.isPresent()){
       Climber climber = optionalClimber.get();
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Climber.GO_TO_MAX)
-        .whileTrue(climber.waitUntilMagnetSensorsAreTrueThenGoToPos(Constants.ClimberIDs.CLIMBER_MAX));
+        .onTrue(climber.waitUntilMagnetSensorsAreTrueThenGoToPos(Constants.ClimberIDs.CLIMBER_MAX));
     }
   }
 

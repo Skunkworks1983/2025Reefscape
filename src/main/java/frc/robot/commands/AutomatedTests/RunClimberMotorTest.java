@@ -12,20 +12,20 @@ import frc.robot.constants.Constants;
 import frc.robot.subsystems.Climber;
 import frc.robot.utils.error.TestResult;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class RunClimberMotorTest extends Command {
   /** Creates a new RunClimberMotorTest. */
   Climber climber;
   Consumer<TestResult> alert;
   double startingPos;
-  double maxChannel;
-  boolean channelExeeds;
+  double maxCurrent;
+  boolean currentExeeds;
   public RunClimberMotorTest(
     Consumer<TestResult> alert,
     Climber climber
   ) {
     this.alert = alert;
     this.climber = climber;
+    addRequirements(climber);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -33,20 +33,20 @@ public class RunClimberMotorTest extends Command {
   @Override
   public void initialize() {
     startingPos = climber.getHeight();
-    maxChannel = climber.getChannel();
-    channelExeeds = false;
+    maxCurrent = climber.getCurrent();
+    currentExeeds = false;
     climber.setClimberSetPoint(startingPos + Constants.Testing.CLIMBER_HEIGHT_CHANGE);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(climber.getChannel() > maxChannel){
-      maxChannel = climber.getChannel();
+    if(climber.getCurrent() > maxCurrent){
+      maxCurrent = climber.getCurrent();
     }
-    if(maxChannel > 10)
+    if(maxCurrent > Constants.Testing.CLIMBER_CURRENT_TOLERANCE) //makes sure that the climber current has not exeeded a pre-determained level
     {
-      channelExeeds = true;
+      currentExeeds = true;
     }
   }
 
@@ -55,7 +55,7 @@ public class RunClimberMotorTest extends Command {
   public void end(boolean interrupted) {
     alert.accept(
           new TestResult(
-            "Motor Did Not Run", 
+            "Climb Motor Did Not Run", 
             climber.getHeight() != startingPos, 
             climber,
             "checks if motor ran"
@@ -64,10 +64,10 @@ public class RunClimberMotorTest extends Command {
     climber.setClimberSetPoint(startingPos);
     alert.accept(
           new TestResult(
-            "Channel Exeeds Tolerance", 
-            channelExeeds, 
+            "Climber Current Exeeds Tolerance", 
+            currentExeeds, 
             climber,
-            "checks if Channel exeeds its tolerance"
+            "checks if Current exeeds its tolerance"
           )
         );
   }

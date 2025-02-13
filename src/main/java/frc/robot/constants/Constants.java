@@ -22,7 +22,7 @@ public class Constants {
     public static final double TURN_MOTOR_AND_ENCODER_TOLERANCE = 0.05;
 
     public static final double CLIMBER_HEIGHT_CHANGE = 0.05;
-    public static final double CLIMBER_CHANNEL_TOLERANCE = 10;
+    public static final double CLIMBER_CURRENT_TOLERANCE = 10; //TODO find tolerance
   }
 
   public class Collector {
@@ -145,7 +145,7 @@ public class Constants {
 
     public static final double CLIMBER_TOLERANCE = 0.001;
 
-    public static final double CLIMBER_GEAR_RATIO = 1.0 / 30.0; //TODO check with vince
+    public static final double CLIMBER_GEAR_RATIO = 1.0 / 20.0; //TODO check with vince (he said 20 to 1, i think i did the math right but idk)
     public static final double CLIMBER_ROTATIONS_TO_METERS = Units.inchesToMeters(0.25);
     public static final double CLIMBER_MOTOR_ROTATIONS_TO_CLIMBER_HEIGHT = CLIMBER_GEAR_RATIO * CLIMBER_ROTATIONS_TO_METERS;
   }
@@ -188,7 +188,7 @@ public class Constants {
         }
 
         public class Climber{
-          public static final int GO_TO_MAX = 10;
+          public static final int GO_TO_MAX = 22;
         }
       }
     }

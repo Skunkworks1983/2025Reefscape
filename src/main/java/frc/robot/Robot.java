@@ -36,7 +36,6 @@ public class Robot extends TimedRobot {
       assert drivebase.isPresent();
       assert collector.isPresent();
       assert elevator.isPresent();
-      
     }
   }
 
@@ -47,7 +46,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    
   }
 
   @Override
