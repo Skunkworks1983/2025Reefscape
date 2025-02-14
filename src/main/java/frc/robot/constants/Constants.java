@@ -47,7 +47,7 @@ public class Constants {
   }
 
   public class Drivebase {
-    //TODO public static final String CANIVORE_NAME = "1983 Comp Drivebase";
+    // TODO public static final String CANIVORE_NAME = "1983 Comp Drivebase";
 
     public static final double MAX_METERS_PER_SECOND = 4.5;
     public static final double MAX_DEGREES_PER_SECOND = 270;
@@ -66,7 +66,7 @@ public class Constants {
         new SwerveModuleConstants(
           16, 17, 18, 0.476318, new Translation2d(-0.28194, 0.28194), "Back Left"),
         new SwerveModuleConstants(
-          19, 20, 21, -0.353027, new Translation2d(-0.28194, -0.28194), "Back Right") //done
+          19, 20, 21, -0.353027, new Translation2d(-0.28194, -0.28194), "Back Right")
     };
 
     public class Info {

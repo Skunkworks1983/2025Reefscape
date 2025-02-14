@@ -172,10 +172,12 @@ public class SwerveModule extends SubsystemBase {
     return turnMotorRotation;
   }
 
+  // Returns Voltage
   public double getTurnMotorVoltage() {
     return turnMotor.getMotorVoltage().getValueAsDouble();
   }
 
+  // Returns Amps
   public double getTurnMotorCurrent() {
     return turnMotor.getSupplyCurrent().getValueAsDouble();
   }

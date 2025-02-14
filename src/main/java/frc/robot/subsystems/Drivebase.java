@@ -45,9 +45,9 @@ import frc.robot.utils.error.DiagnosticSubsystem;
 public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
   private SwerveModule swerveModules[] = new SwerveModule[Constants.Drivebase.MODULES.length];
-  //TODO private Pigeon2 gyro = new Pigeon2(26, Constants.Drivebase.CANIVORE_NAME);
-  private StructArrayPublisher<SwerveModuleState> publisher1 = NetworkTableInstance.getDefault().getStructArrayTopic("Desired swervestates", SwerveModuleState.struct).publish();
-  private StructArrayPublisher<SwerveModuleState> publisher2 = NetworkTableInstance.getDefault().getStructArrayTopic("Actual swervestates", SwerveModuleState.struct).publish();
+  // TODO private Pigeon2 gyro = new Pigeon2(26, Constants.Drivebase.CANIVORE_NAME);
+  private StructArrayPublisher<SwerveModuleState> desiredSwervestate = NetworkTableInstance.getDefault().getStructArrayTopic("Desired swervestate", SwerveModuleState.struct).publish();
+  private StructArrayPublisher<SwerveModuleState> actualSwervestate = NetworkTableInstance.getDefault().getStructArrayTopic("Actual swervestate", SwerveModuleState.struct).publish();
 
 
   private SwerveDriveKinematics swerveDriveKinematics;
@@ -64,8 +64,8 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
     Pigeon2Configuration gConfiguration = new Pigeon2Configuration();
     gConfiguration.MountPose.MountPoseYaw = 0; 
-    //TODO gyro.getConfigurator().apply(gConfiguration);
-    //TODO resetGyroHeading();
+    // TODO gyro.getConfigurator().apply(gConfiguration);
+    // TODO resetGyroHeading();
 
     swerveDriveKinematics = new SwerveDriveKinematics(moduleLocations);
 
@@ -160,8 +160,8 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
   private void setModuleStates(SwerveModuleState[] moduleStates) {
 
-    publisher1.set(moduleStates);
-    publisher2.set(getSwerveModuleStates());
+    desiredSwervestate.set(moduleStates);
+    actualSwervestate.set(getSwerveModuleStates());
     for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
       swerveModules[i].setSwerveModulState(moduleStates[i]);
     }
@@ -176,7 +176,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   }
 
   public void resetGyroHeading() {
-    //TODO gyro.setYaw(0);
+    // TODO gyro.setYaw(0);
   }
 
   public void setAllDriveMotorBreakMode(boolean breakMode) {
@@ -187,7 +187,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
   public Rotation2d getGyroAngle() {
     // Negated because gyro measurements are counterclockwise-positive.
-    double angleDegrees = 0.0; //TODO -gyro.getYaw().getValueAsDouble();
+    double angleDegrees = 0.0; // TODO -gyro.getYaw().getValueAsDouble();
     SmartDashboard.putNumber("Gyro", angleDegrees);
     return Rotation2d.fromDegrees(angleDegrees);
   }
