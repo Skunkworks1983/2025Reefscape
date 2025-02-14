@@ -61,9 +61,9 @@ public class SwerveModule extends SubsystemBase {
     Translation2d moduleLocation, 
     String moduleName
   ) {
-    this.driveMotor = new TalonFX(driveModuleId, Constants.Drivebase.CANIVORE_NAME);
-    this.turnMotor = new TalonFX(turnModuleId, Constants.Drivebase.CANIVORE_NAME);
-    this.turnEncoder = new CANcoder(turnEncoderId, Constants.Drivebase.CANIVORE_NAME);
+    this.driveMotor = new TalonFX(driveModuleId);//TODO, Constants.Drivebase.CANIVORE_NAME);
+    this.turnMotor = new TalonFX(turnModuleId);//TODO, Constants.Drivebase.CANIVORE_NAME);
+    this.turnEncoder = new CANcoder(turnEncoderId);//TODO, Constants.Drivebase.CANIVORE_NAME);
     this.moduleLocation = moduleLocation;
     this.moduleName = moduleName;
 

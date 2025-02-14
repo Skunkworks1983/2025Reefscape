@@ -66,19 +66,19 @@ public class OI {
 
   public double getInstructedXMetersPerSecond() {
     return joystickToMetersPerSecond.apply(
-      applyDeadband.apply(translationJoystick.getX())
+      applyDeadband.apply(translationJoystick.getY())
     );
   }
 
   public double getInstructedYMetersPerSecond() {
     return joystickToMetersPerSecond.apply(
-      applyDeadband.apply(translationJoystick.getY())
+      applyDeadband.apply(translationJoystick.getX())
     );
   }
 
   public double getInstructedDegreesPerSecond() {
     return joystickToDegreesPerSecond.apply( 
-      applyDeadband.apply(rotationJoystick.getX())
+      applyDeadband.apply(-rotationJoystick.getX())
     );
   }
 }

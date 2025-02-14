@@ -45,7 +45,7 @@ public class Constants {
   }
 
   public class Drivebase {
-    public static final String CANIVORE_NAME = "1983 Comp Drivebase";
+    //TODO public static final String CANIVORE_NAME = "1983 Comp Drivebase";
 
     public static final double MAX_METERS_PER_SECOND = 4.5;
     public static final double MAX_DEGREES_PER_SECOND = 270;
@@ -70,17 +70,17 @@ public class Constants {
 
     public static SwerveModuleConstants MODULES[] = {
         new SwerveModuleConstants(
-          18, 16, 17, 0.311035, new Translation2d(0.28194, 0.28194), "Front Left"),
+          10, 11, 12, -0.337158, new Translation2d(0.28194, 0.28194), "Front Left"),
         new SwerveModuleConstants(
-          12, 10, 11, .495283, new Translation2d(0.28194, -0.28194), "Front Right"),
+          13, 14, 15, -0.289795, new Translation2d(0.28194, -0.28194), "Front Right"),
         new SwerveModuleConstants(
-          23, 25, 24, -0.205566, new Translation2d(-0.28194, 0.28194), "Back Left"),
+          16, 17, 18, 0.476318, new Translation2d(-0.28194, 0.28194), "Back Left"),
         new SwerveModuleConstants(
-          20, 22, 21, 0.308838, new Translation2d(-0.28194, -0.28194), "Back Right")
+          19, 20, 21, -0.353027, new Translation2d(-0.28194, -0.28194), "Back Right") //done
     };
 
     public class Info {
-      public static final double DRIVE_MOTOR_GEAR_RATIO = 6.75;
+      public static final double DRIVE_MOTOR_GEAR_RATIO = 6.12;
       public static final double WHEEL_DIAMETER = 0.0991108;
       public static final double REVS_PER_METER = DRIVE_MOTOR_GEAR_RATIO / (WHEEL_DIAMETER * Math.PI);
       public static final double TURN_MOTOR_GEAR_RATIO = 150.0 / 7.0;
