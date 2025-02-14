@@ -45,7 +45,7 @@ public class SwerveModule extends SubsystemBase {
   public SwerveModule(SwerveModuleConstants swerveConstants) {
     this(
       swerveConstants.driveMotorId, 
-      swerveConstants.turnMotorId,  
+      swerveConstants.turnMotorId, 
       swerveConstants.turnEncoderId, 
       swerveConstants.turnEncoderOffset, 
       swerveConstants.moduleLocation, 

@@ -159,7 +159,6 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   }
 
   private void setModuleStates(SwerveModuleState[] moduleStates) {
-
     desiredSwervestate.set(moduleStates);
     actualSwervestate.set(getSwerveModuleStates());
     for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
