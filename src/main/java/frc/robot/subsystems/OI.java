@@ -74,7 +74,7 @@ public class OI extends SubsystemBase {
           this::getInstructedXMetersPerSecond, //Move location of this specification
           this::getInstructedYMetersPerSecond, //Move location of this specification
           new ReefHeadingController()::getDesiredRotation,
-          false // Move location of this logic. Put in constants?
+          true // Move location of this logic. Put in constants?
         )
       );
     }
