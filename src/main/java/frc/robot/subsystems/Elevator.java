@@ -31,8 +31,7 @@ public class Elevator extends SubsystemBase {
   PIDController positionController = new PIDController(
     Constants.Elevator.PIDs.ELEVATOR_kP,
     Constants.Elevator.PIDs.ELEVATOR_kI,
-    Constants.Elevator.PIDs.ELEVATOR_kD,
-    Constants.Elevator.PIDs.ELEVATOR_kF
+    Constants.Elevator.PIDs.ELEVATOR_kD
   );
 
   public PIDController getPositionController() {

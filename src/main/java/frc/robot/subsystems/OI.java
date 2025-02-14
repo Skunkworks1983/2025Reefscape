@@ -77,7 +77,7 @@ public class OI {
   }
 
   public double getInstructedDegreesPerSecond() {
-    return joystickToDegreesPerSecond.apply( 
+    return joystickToDegreesPerSecond.apply(
       applyDeadband.apply(-rotationJoystick.getX())
     );
   }
