@@ -17,8 +17,6 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import com.studica.frc.AHRS;
-import com.studica.frc.AHRS.NavXComType;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
@@ -74,12 +72,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(
       swerveDriveKinematics,
       getGyroAngle(),
-      new SwerveModulePosition[] {
-        swerveModules[0].getSwerveModulePosition(),
-        swerveModules[1].getSwerveModulePosition(),
-        swerveModules[2].getSwerveModulePosition(),
-        swerveModules[3].getSwerveModulePosition()
-      },
+      getSwerveModulePositions(),
       new Pose2d()
     );
 
@@ -122,12 +115,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   public void updateOdometry() {
     swerveDrivePoseEstimator.update(
       getGyroAngle(),
-      new SwerveModulePosition[] {
-        swerveModules[0].getSwerveModulePosition(),
-        swerveModules[1].getSwerveModulePosition(),
-        swerveModules[2].getSwerveModulePosition(),
-        swerveModules[3].getSwerveModulePosition()
-      }
+      getSwerveModulePositions()
     );
 
     swerveOdometryField2d.setRobotPose(swerveDrivePoseEstimator.getEstimatedPosition());
@@ -177,6 +165,14 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
       swerveModules[i].setSwerveModulState(moduleStates[i]);
     }
+  }
+
+  public SwerveModulePosition[] getSwerveModulePositions() {
+    SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[Constants.Drivebase.MODULES.length];
+    for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
+      swerveModulePositions[i] = swerveModules[i].getSwerveModulePosition();
+    }
+    return swerveModulePositions;
   }
 
   public void resetGyroHeading() {
