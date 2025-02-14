@@ -40,14 +40,14 @@ public class Climber extends SubsystemBase {
     magnetSensor2 = new DigitalInput(Constants.ClimberIDs.CLIMBER_MAGNET_SENSOR_2);
 
     climberSmartPID = new SmartPIDControllerTalonFX(
-        Constants.ClimberIDs.CLIMBER_KP,
-        Constants.ClimberIDs.CLIMBER_KI,
-        Constants.ClimberIDs.CLIMBER_KD,
-        Constants.ClimberIDs.CLIMBER_KF,
-        "Climb Motor",
-        Constants.ClimberIDs.CLIMBER_SMARTPID_ACTIVE,
-        climbMotor
-        );
+      Constants.ClimberIDs.CLIMBER_KP,
+      Constants.ClimberIDs.CLIMBER_KI,
+      Constants.ClimberIDs.CLIMBER_KD,
+      Constants.ClimberIDs.CLIMBER_KF,
+      "Climb Motor",
+      Constants.ClimberIDs.CLIMBER_SMARTPID_ACTIVE,
+      climbMotor
+    );
   }
 
   @Override
@@ -96,12 +96,11 @@ public class Climber extends SubsystemBase {
   }
 
   public Command waitUntilMagnetSensorsAreTrue() {
-
     return Commands.waitUntil(
       () -> {
         return getMagnetSensor1() && getMagnetSensor2();
-        }
-      );
+      }
+    );
   }
 
   public Command moveInDirection(double setPoint)

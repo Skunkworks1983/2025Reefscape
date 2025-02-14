@@ -19,16 +19,16 @@ import edu.wpi.first.units.Unit;
 public class SignalValue
     <U extends Unit>
  {
-  private StatusSignal<Measure<U>> statusSignal;
+  private StatusSignal<? extends Measure<U>> statusSignal;
   // This optional value represents the derivative of 
-  private Optional<StatusSignal<Measure<PerUnit<U,TimeUnit>>>> statusSignalSlope;
+  private Optional<StatusSignal<? extends Measure<PerUnit<U,TimeUnit>>>> statusSignalSlope;
 
   // This represents the most recent _cached_ result of the signals stored in this class.
   private double value;
 
   public SignalValue(
-    StatusSignal<Measure<U>> statusSignal,
-    Optional<StatusSignal<Measure<PerUnit<U,TimeUnit>>>> statusSignalSlope, 
+    StatusSignal<? extends Measure<U>> statusSignal,
+    Optional<StatusSignal<? extends Measure<PerUnit<U,TimeUnit>>>> statusSignalSlope, 
     double value
   ) {
     this.statusSignal = statusSignal;
@@ -36,11 +36,11 @@ public class SignalValue
     this.value = value;
   }
 
-  public StatusSignal<Measure<U>> getStatusSignal() {
+  public StatusSignal<? extends Measure<U>> getStatusSignal() {
     return statusSignal;
   }
 
-  public Optional<StatusSignal<Measure<PerUnit<U,TimeUnit>>>> getStatusSignalSlope() {
+  public Optional<StatusSignal<? extends Measure<PerUnit<U,TimeUnit>>>> getStatusSignalSlope() {
     return statusSignalSlope;
   }
 

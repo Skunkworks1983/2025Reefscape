@@ -108,10 +108,10 @@ public class Pheonix6Odometry {
   // time as other signals). This funciton returns a supplier that autmatically
   // returns the most recent sampled value. Importantly, getting the supplier value of other 
   // registered signals will always be sampled from the same position in time.
-  public <U extends Unit> Supplier<Double> registerSignal(StatusSignal<Measure<U>> statusSignal) {
+  public Supplier<Double> registerSignal(StatusSignal<? extends Measure<? extends Unit>> statusSignal) {
     BaseStatusSignal.setUpdateFrequencyForAll(Constants.Pheonix6Odometry.updatesPerSecond, statusSignal);
 
-    SignalValue<U> triplet = 
+    SignalValue<Unit> triplet = 
       new SignalValue<> (
         statusSignal, 
         Optional.empty(), 

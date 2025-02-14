@@ -25,8 +25,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.PerUnit;
+import edu.wpi.first.units.TimeUnit;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -118,13 +120,29 @@ public class SwerveModule extends SubsystemBase {
     encoder.MagnetSensor.MagnetOffset = -turnEncoderOffset;
     turnEncoder.getConfigurator().apply(encoder);
 
+    /*
+    Angle b;
+    Measure<AngleUnit> a = b; // This assignment works
+    StatusSignal<Angle> c;
+    StatusSignal<Measure<AngleUnit>> d = c; // This WILL NOT WORK
+    StatusSignal<? extends Measure<AngleUnit>> e = c; // This line works
+    */
+    //Angle
     m_Velocity.Slot = 0;
-    driveMotorRawPosition = pheonix6odometry.registerSignalWithLatencyCompensation(
-      (Measure<Angle>)driveMotor.getPosition().clone(), 
-      (Measure<PerUnit<Angle,TimeUnit>>)driveMotor.getVelocity().clone()
+    driveMotorRawPosition = pheonix6odometry.<Angle>registerSignalWithLatencyCompensation(
+      (StatusSignal<? extends Measure<AngleUnit>>) driveMotor.getPosition().clone(), 
+      (StatusSignal<? extends Measure<PerUnit<Unit,AngleUnit>>>) driveMotor.getVelocity().clone()
     );
+/*
+    driveMotorRawPosition = pheonix6odometry.registerSignalWithLatencyCompensation(
+      (StatusSignal<Measure<AngleUnit>>)driveMotor.getPosition().clone(), 
+      (StatusSignal<Measure<PerUnit<AngleUnit,TimeUnit>>>)driveMotor.getVelocity().clone()
+    );
+ */
+
+      StatusSignal<? extends Measure<AngleUnit>> a = driveMotor.getPosition().clone();
     driveMotorRawVelocity = pheonix6odometry.registerSignal(
-      driveMotor.getPosition().clone()
+      (StatusSignal<? extends Measure<AngleUnit>>) driveMotor.getPosition().clone() 
     );
   }
 
@@ -147,8 +165,11 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public void setModuleDriveVelocity(double metersPerSecond) {
-    driveMotor.setControl(m_Velocity.withVelocity(metersPerSecond * Constants.Drivebase.Info.REVS_PER_METER)
-      .withEnableFOC(true));
+    driveMotor.setControl(
+      m_Velocity.withVelocity(
+        metersPerSecond * Constants.Drivebase.Info.REVS_PER_METER
+      ).withEnableFOC(true)
+    );
   }
 
   // returns meters traveled

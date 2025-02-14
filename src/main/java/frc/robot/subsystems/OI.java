@@ -66,19 +66,21 @@ public class OI {
 
   public double getInstructedXMetersPerSecond() {
     return joystickToMetersPerSecond.apply(
-      applyDeadband.apply(translationJoystick.getX())
+      // X and Y are flipped because the joysticks' coordinate system is different from the field
+      applyDeadband.apply(-translationJoystick.getY())
     );
   }
 
   public double getInstructedYMetersPerSecond() {
     return joystickToMetersPerSecond.apply(
-      applyDeadband.apply(translationJoystick.getY())
+      // X and Y are flipped because the joysticks' coordinate system is different from the field
+      applyDeadband.apply(-translationJoystick.getX())
     );
   }
 
   public double getInstructedDegreesPerSecond() {
     return joystickToDegreesPerSecond.apply(
-      applyDeadband.apply(rotationJoystick.getY())
+      applyDeadband.apply(-rotationJoystick.getX())
     );
   }
 }

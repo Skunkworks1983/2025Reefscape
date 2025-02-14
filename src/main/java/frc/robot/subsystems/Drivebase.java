@@ -4,15 +4,24 @@
 
 package frc.robot.subsystems;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -22,48 +31,128 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.utils.odometry.Pheonix6Odometry;
+import frc.robot.constants.Constants.VisionConstants;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.error.DiagnosticSubsystem;
 
 public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
-  private SwerveModule swerveModules[] = new SwerveModule[Constants.Drivebase.MODULES.length];
   private AHRS gyro = new AHRS(NavXComType.kUSB1);
   Pheonix6Odometry pheonix6Odometry = new Pheonix6Odometry();
 
+  private SwerveModule swerveModules[] = new SwerveModule[Constants.Drivebase.MODULES.length];
   private SwerveDriveKinematics swerveDriveKinematics;
+  private SwerveDrivePoseEstimator swerveDrivePoseEstimator;
+  private final Field2d swerveOdometryField2d = new Field2d();
 
   public Drivebase() {
     for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
       swerveModules[i] = new SwerveModule(Constants.Drivebase.MODULES[i], pheonix6Odometry);
     }
+
     swerveDriveKinematics = new SwerveDriveKinematics(
       swerveModules[0].moduleLocation,
-      swerveModules[1].moduleLocation, 
-      swerveModules[2].moduleLocation, 
+      swerveModules[1].moduleLocation,
+      swerveModules[2].moduleLocation,
       swerveModules[3].moduleLocation
     );
+
+    swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(
+      swerveDriveKinematics,
+      getGyroAngle(),
+      new SwerveModulePosition[] {
+        swerveModules[0].getSwerveModulePosition(),
+        swerveModules[1].getSwerveModulePosition(),
+        swerveModules[2].getSwerveModulePosition(),
+        swerveModules[3].getSwerveModulePosition()
+      },
+      new Pose2d()
+    );
+
+    SmartDashboard.putData("Swerve Drive Odometry", swerveOdometryField2d);
+    swerveOdometryField2d.setRobotPose(new Pose2d());
+    
+    // Ensure robot code won't crash if the vision subsystem fails to initialize.
+    try {
+      new Vision(
+        this::addVisionMeasurement,
+        new VisionIOPhotonVision(VisionConstants.CAMERA_0_NAME, VisionConstants.CAMERA_0_TRANSFORM)
+      );
+    } catch(Exception exception) {
+      System.out.println("Vision subsystem failed to initialize. See the below stacktrace for more details: ");
+      exception.printStackTrace();
+    }
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    updateOdometry();
+  }
+
+  /**
+   * Called only in the vision class' periodic method.
+   */
+  public void addVisionMeasurement(
+    Pose2d estimatedPose,
+    double timestamp,
+    Matrix<N3, N1> stdDevs) {
+
+    swerveDrivePoseEstimator.addVisionMeasurement(estimatedPose, timestamp, stdDevs);
+    swerveOdometryField2d.setRobotPose(swerveDrivePoseEstimator.getEstimatedPosition());
+  }
+
+  /**
+   * Must be called every loop in <code>periodic()</code> to keep odometry up to
+   * date.
+   */
+  public void updateOdometry() {
+    swerveDrivePoseEstimator.update(
+      getGyroAngle(),
+      new SwerveModulePosition[] {
+        swerveModules[0].getSwerveModulePosition(),
+        swerveModules[1].getSwerveModulePosition(),
+        swerveModules[2].getSwerveModulePosition(),
+        swerveModules[3].getSwerveModulePosition()
+      }
+    );
+
+    swerveOdometryField2d.setRobotPose(swerveDrivePoseEstimator.getEstimatedPosition());
+  }
+
+  /** Reset the <code>SwerveDrivePoseEstimator</code> to the given pose. */
+  public void resetOdometry(Pose2d newPose) {
+    swerveDrivePoseEstimator.resetPosition(
+      getGyroAngle(),
+      Arrays.stream(swerveModules)
+        .map(swerveModule -> swerveModule.getSwerveModulePosition())
+        .toArray(SwerveModulePosition[]::new),
+      newPose
+    );
+  }
 
   // TODO: add docstring
   private void drive(double xMetersPerSecond, double yMetersPerSecond,
-    double degreesPerSecond, boolean isFieldRelative) {
+    double degreesPerSecond, boolean isFieldRelative
+  ) {
     ChassisSpeeds chassisSpeeds;
     double radiansPerSecond = Units.degreesToRadians(degreesPerSecond);
     if (isFieldRelative) {
-      chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xMetersPerSecond, yMetersPerSecond,
-        radiansPerSecond, getGyroAngle());
-    } 
-    else {
+      chassisSpeeds = 
+        ChassisSpeeds.fromFieldRelativeSpeeds(
+            xMetersPerSecond, 
+            yMetersPerSecond,
+            radiansPerSecond, 
+            getGyroAngle()
+          );
+    } else {
       chassisSpeeds = new ChassisSpeeds(xMetersPerSecond, yMetersPerSecond, radiansPerSecond);
     }
 
     SwerveModuleState[] swerveModuleStates = swerveDriveKinematics.toSwerveModuleStates(chassisSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(
-      swerveModuleStates, 
+      swerveModuleStates,
       Constants.Drivebase.Info.MAX_MODULE_SPEED
     );
     setModuleStates(swerveModuleStates);
@@ -80,21 +169,23 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   }
 
   public void setAllDriveMotorBreakMode(boolean breakMode) {
-    for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
+    for (int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
       swerveModules[i].setBrakeMode(breakMode);
     }
   }
 
-  // rotation from gyro is counterclockwise positive while we need clockwise positive
-  private Rotation2d getGyroAngle() {
-    return Rotation2d.fromDegrees(-gyro.getAngle());
+  public Rotation2d getGyroAngle() {
+    // Negated because gyro measurements are counterclockwise-positive.
+    double angleDegrees = -gyro.getAngle();
+    SmartDashboard.putNumber("Gyro", angleDegrees);
+    return Rotation2d.fromDegrees(angleDegrees);
   }
 
   private ChassisSpeeds getRobotRelativeSpeeds() {
     return swerveDriveKinematics.toChassisSpeeds(
       swerveModules[0].getSwerveModuleState(),
-      swerveModules[1].getSwerveModuleState(), 
-      swerveModules[2].getSwerveModuleState(), 
+      swerveModules[1].getSwerveModuleState(),
+      swerveModules[2].getSwerveModuleState(),
       swerveModules[3].getSwerveModuleState()
     );
   }
@@ -107,21 +198,19 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
   public ChassisSpeeds getFieldRelativeSpeeds() {
     return ChassisSpeeds.fromRobotRelativeSpeeds(getRobotRelativeSpeeds(),
-      getGyroAngle());
+        getGyroAngle());
   }
 
   public Command getSwerveTeleopCommand(
-    DoubleSupplier xMetersPerSecond,
-    DoubleSupplier yMetersPerSecond, 
-    DoubleSupplier degreesPerSecond,
-    boolean isFieldRelative
-  ) {
+      DoubleSupplier xMetersPerSecond,
+      DoubleSupplier yMetersPerSecond,
+      DoubleSupplier degreesPerSecond,
+      boolean isFieldRelative) {
     int fieldOrientationMultiplier;
     Optional<Alliance> alliance = DriverStation.getAlliance();
     if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Blue) {
       fieldOrientationMultiplier = 1;
-    }
-    else {
+    } else {
       fieldOrientationMultiplier = -1;
     }
     return runEnd(
