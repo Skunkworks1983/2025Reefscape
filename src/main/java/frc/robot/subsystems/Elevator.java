@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
@@ -21,7 +22,10 @@ public class Elevator extends SubsystemBase {
 
   private TalonFX motor = new TalonFX(Constants.Elevator.MOTOR_ID);
 
-  private double targetPosition = getElevatorPosition();
+  private DigitalInput bottomLimitSwitch = new DigitalInput(Constants.Elevator.BOTTOM_LIMIT_SWITCH_ID);
+  private DigitalInput topLimitSwitch = new DigitalInput(Constants.Elevator.TOP_LIMIT_SWITCH_ID);
+
+  private double targetPosition;
 
   SmartPIDController positionController = new SmartPIDController(
     Constants.Elevator.PIDs.ELEVATOR_kP,
@@ -42,19 +46,34 @@ public class Elevator extends SubsystemBase {
 
     motor.getConfigurator().apply(config);
     motor.setNeutralMode(NeutralModeValue.Brake);
+    targetPosition = getElevatorPosition();
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    if(getBottomLimitSwitch()) {
+      motor.setPosition(0.0);
+    } else if(getTopLimitSwitch()) {
+      motor.setPosition(Constants.Elevator.MAX_HEIGHT_CARRIAGE / Constants.Elevator.MOTOR_ROTATIONS_TO_METERS);
+    }
+  }
 
   // Reminder: all positions are measured in meters
   public double getElevatorPosition() {
-    return motor.getPosition().getValueAsDouble() * Constants.Elevator.ROTATIONS_TO_METERS;
+    return motor.getPosition().getValueAsDouble() * Constants.Elevator.MOTOR_ROTATIONS_TO_METERS;
   }
 
   // Reminder: all velocities are measured in meters/second
   public double getElevatorVelocity() {
-    return motor.getVelocity().getValueAsDouble() * Constants.Elevator.ROTATIONS_TO_METERS;
+    return motor.getVelocity().getValueAsDouble() * Constants.Elevator.MOTOR_ROTATIONS_TO_METERS;
+  }
+
+  public boolean getBottomLimitSwitch() {
+    return !bottomLimitSwitch.get();
+  }
+
+  public boolean getTopLimitSwitch() {
+    return !topLimitSwitch.get();
   }
 
   // Input is a percentage that ranges from -1 to 1.
