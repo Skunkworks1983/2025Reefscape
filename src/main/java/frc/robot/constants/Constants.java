@@ -154,7 +154,6 @@ public class Constants {
 
         public class HeadingControl {
           public static final int TARGET_REEF = 0;
-          
         }
       }
     }

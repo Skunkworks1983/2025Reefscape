@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import java.util.Optional;
 import java.util.function.DoubleFunction;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -69,17 +70,16 @@ public class OI extends SubsystemBase {
 
     if(optionalDrivebase.isPresent()) { 
       Drivebase drivebase = optionalDrivebase.get();
+      new PIDController(getInstructedDegreesPerSecond(), getInstructedYMetersPerSecond(), getInstructedXMetersPerSecond(), getInstructedDegreesPerSecond())
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.HeadingControl.TARGET_REEF)
         .whileTrue(drivebase.getSwerveTeleopCommand(
           this::getInstructedXMetersPerSecond, //Move location of this specification
           this::getInstructedYMetersPerSecond, //Move location of this specification
-          new ReefHeadingController()::getDesiredRotation,
+          (DoubleSupplier)() => 0.0,
           true // Move location of this logic. Put in constants?
         )
       );
     }
-
-
   }
 
   @Override

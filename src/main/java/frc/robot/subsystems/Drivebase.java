@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
@@ -27,55 +26,52 @@ import frc.robot.constants.Constants;
 public class Drivebase extends SubsystemBase {
 
   private SwerveModule swerveModules[] = new SwerveModule[Constants.Drivebase.MODULES.length];
-  private PIDController headingPIDController = 
-    new PIDController(
+
+  private PIDController headingController = new PIDController(
       Constants.Drivebase.PIDs.HEADING_kP,
       Constants.Drivebase.PIDs.HEADING_kI,
-      Constants.Drivebase.PIDs.HEADING_kD
-    );
+      Constants.Drivebase.PIDs.HEADING_kD);
 
   private AHRS gyro = new AHRS(NavXComType.kUSB1);
 
   private SwerveDriveKinematics swerveDriveKinematics;
 
   public Drivebase() {
-    for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
+    for (int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
       swerveModules[i] = new SwerveModule(Constants.Drivebase.MODULES[i]);
     }
     swerveDriveKinematics = new SwerveDriveKinematics(
-      swerveModules[0].moduleLocation,
-      swerveModules[1].moduleLocation, 
-      swerveModules[2].moduleLocation, 
-      swerveModules[3].moduleLocation
-    );
+        swerveModules[0].moduleLocation,
+        swerveModules[1].moduleLocation,
+        swerveModules[2].moduleLocation,
+        swerveModules[3].moduleLocation);
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+  }
 
   // TODO: add docstring
   private void drive(double xMetersPerSecond, double yMetersPerSecond,
-    double degreesPerSecond, boolean isFieldRelative) {
+      double degreesPerSecond, boolean isFieldRelative) {
     ChassisSpeeds chassisSpeeds;
     double radiansPerSecond = Units.degreesToRadians(degreesPerSecond);
     if (isFieldRelative) {
       chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xMetersPerSecond, yMetersPerSecond,
-        radiansPerSecond, getGyroAngle());
-    } 
-    else {
+          radiansPerSecond, getGyroAngle());
+    } else {
       chassisSpeeds = new ChassisSpeeds(xMetersPerSecond, yMetersPerSecond, radiansPerSecond);
     }
 
     SwerveModuleState[] swerveModuleStates = swerveDriveKinematics.toSwerveModuleStates(chassisSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(
-      swerveModuleStates, 
-      Constants.Drivebase.Info.MAX_MODULE_SPEED
-    );
+        swerveModuleStates,
+        Constants.Drivebase.Info.MAX_MODULE_SPEED);
     setModuleStates(swerveModuleStates);
   }
 
   private void setModuleStates(SwerveModuleState[] moduleStates) {
-    for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
+    for (int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
       swerveModules[i].setSwerveModulState(moduleStates[i]);
     }
   }
@@ -85,77 +81,77 @@ public class Drivebase extends SubsystemBase {
   }
 
   public void setAllDriveMotorBreakMode(boolean breakMode) {
-    for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
+    for (int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
       swerveModules[i].setBrakeMode(breakMode);
     }
   }
 
-  // rotation from gyro is counterclockwise positive while we need clockwise positive
+  // rotation from gyro is counterclockwise positive while we need clockwise
+  // positive
   private Rotation2d getGyroAngle() {
     return Rotation2d.fromDegrees(-gyro.getAngle());
   }
 
   private ChassisSpeeds getRobotRelativeSpeeds() {
     return swerveDriveKinematics.toChassisSpeeds(
-      swerveModules[0].getSwerveModuleState(),
-      swerveModules[1].getSwerveModuleState(), 
-      swerveModules[2].getSwerveModuleState(), 
-      swerveModules[3].getSwerveModuleState()
-    );
+        swerveModules[0].getSwerveModuleState(),
+        swerveModules[1].getSwerveModuleState(),
+        swerveModules[2].getSwerveModuleState(),
+        swerveModules[3].getSwerveModuleState());
   }
 
   public ChassisSpeeds getFieldRelativeSpeeds() {
     return ChassisSpeeds.fromRobotRelativeSpeeds(getRobotRelativeSpeeds(),
-      getGyroAngle());
+        getGyroAngle());
   }
 
-  public Command getSwerveTeleopCommand(
-    DoubleSupplier xMetersPerSecond,
-    DoubleSupplier yMetersPerSecond, 
-    Supplier<Rotation2d> desiredRotation,
-    boolean isFieldRelative
-  ) {
+  // Used by the heading controller
+  public Command getSwerveTeleopHeadingControlCommand(
+      DoubleSupplier xMetersPerSecond,
+      DoubleSupplier yMetersPerSecond,
+      DoubleSupplier rotationalSetpointDegrees,
+      boolean isFieldRelative) {
     return getSwerveTeleopCommand(
-      xMetersPerSecond, 
-      yMetersPerSecond, 
-      (DoubleSupplier)() ->
-        (desiredRotation.get().getDegrees() - getGyroAngle().getDegrees() + 180) % 360 - 180, 
-      isFieldRelative
-    );
+        xMetersPerSecond,
+        yMetersPerSecond,
+        (DoubleSupplier) () -> headingController.calculate(getGyroAngle().getDegrees(),
+            rotationalSetpointDegrees.getAsDouble()),
+        isFieldRelative);
   }
 
-
   public Command getSwerveTeleopCommand(
-    DoubleSupplier xMetersPerSecond,
-    DoubleSupplier yMetersPerSecond, 
-    DoubleSupplier degreesPerSecond,
-    boolean isFieldRelative
-  ) {
+      DoubleSupplier xMetersPerSecond,
+      DoubleSupplier yMetersPerSecond,
+      DoubleSupplier degreesPerSecond,
+      boolean isFieldRelative) {
     int fieldOrientationMultiplier;
     Optional<Alliance> alliance = DriverStation.getAlliance();
     if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Blue) {
       fieldOrientationMultiplier = 1;
-    }
-    else {
+    } else {
       fieldOrientationMultiplier = -1;
     }
     return Commands.runEnd(
-      () -> {
-        drive(
-          xMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
-          yMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
-          degreesPerSecond.getAsDouble(),
-          isFieldRelative
-        );
-      },
-      () -> {
-        drive(
-          0,
-          0,
-          0,
-          isFieldRelative
-        );
-      }
-    );
+        () -> {
+          drive(
+              xMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
+              yMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
+              degreesPerSecond.getAsDouble(),
+              isFieldRelative);
+        },
+        () -> {
+          drive(
+              0,
+              0,
+              0,
+              isFieldRelative);
+        });
+  }
+
+  public double getTargetingAngle() {
+
+
+      double angle = Math.atan(getTargetingAngle())
+      return 0;
   }
 }
