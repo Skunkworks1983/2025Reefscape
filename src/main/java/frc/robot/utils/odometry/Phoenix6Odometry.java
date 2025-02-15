@@ -14,6 +14,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.Unit;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -109,7 +110,7 @@ public class Phoenix6Odometry {
       }
 
     Phoenix6DrivebaseState currentPhoenix6DrivebaseState = new Phoenix6DrivebaseState(
-        gyroStatusSignal.getValueAsDouble(),
+        Rotation2d.fromRotations(gyroStatusSignal.getValueAsDouble()),
         currentSwerveModuleStates);
 
     phoenix6DrivebaseState = currentPhoenix6DrivebaseState;

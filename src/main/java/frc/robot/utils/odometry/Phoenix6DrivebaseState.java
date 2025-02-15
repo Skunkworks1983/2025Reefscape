@@ -4,17 +4,17 @@
 
 package frc.robot.utils.odometry;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+
 /** Add your docs here. */
 public class Phoenix6DrivebaseState {
-  final public double gyroAngle;
+  final public Rotation2d gyroAngle;
   final public Phoenix6SwerveModuleState[] swerveState;
 
   public Phoenix6DrivebaseState(
-    double gyroAngle, 
+    Rotation2d gyroAngle, 
     Phoenix6SwerveModuleState[] swerveState){
     this.swerveState = swerveState;
     this.gyroAngle = gyroAngle;
-    
-
   }
 }

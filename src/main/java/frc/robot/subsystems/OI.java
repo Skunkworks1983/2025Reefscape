@@ -67,14 +67,14 @@ public class OI {
   public double getInstructedXMetersPerSecond() {
     return joystickToMetersPerSecond.apply(
       // X and Y are flipped because the joysticks' coordinate system is different from the field
-      applyDeadband.apply(-translationJoystick.getY())
+      applyDeadband.apply(translationJoystick.getY())
     );
   }
 
   public double getInstructedYMetersPerSecond() {
     return joystickToMetersPerSecond.apply(
       // X and Y are flipped because the joysticks' coordinate system is different from the field
-      applyDeadband.apply(-translationJoystick.getX())
+      applyDeadband.apply(translationJoystick.getX())
     );
   }
 

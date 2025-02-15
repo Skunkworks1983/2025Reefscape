@@ -47,10 +47,10 @@ public class Constants {
   }
 
   public class Drivebase {
-    public static final String CANIVORE_NAME = "Practice Swerve";
+    public static final String CANIVORE_NAME = "1983 Comp Drivebase";
 
-    public static final double MAX_METERS_PER_SECOND = 1.0;
-    public static final double MAX_DEGREES_PER_SECOND = 90.0;
+    public static final double MAX_METERS_PER_SECOND = 4.5;
+    public static final double MAX_DEGREES_PER_SECOND = 270;
 
     public class IDS {
       public static int ROTATION_JOYSTICK_ID = 1;
@@ -60,17 +60,17 @@ public class Constants {
 
     public static SwerveModuleConstants MODULES[] = {
         new SwerveModuleConstants(
-            9, 3, 4, -0.212402, new Translation2d(0.28194, 0.28194), "Front Left"),
+          10, 11, 12, -0.337158, new Translation2d(0.288925, 0.288925), "Front Left"),
         new SwerveModuleConstants(
-            11, 7, 8, 0.120361, new Translation2d(0.28194, -0.28194), "Front Right"),
+          13, 14, 15, -0.289795, new Translation2d(0.288925, -0.288925), "Front Right"),
         new SwerveModuleConstants(
-            12, 1, 2, -0.377441, new Translation2d(-0.28194, 0.28194), "Back Left"),
+          16, 17, 18, 0.476318, new Translation2d(-0.288925, 0.288925), "Back Left"),
         new SwerveModuleConstants(
-            10, 5, 6, 0.096680, new Translation2d(-0.28194, -0.28194), "Back Right")
+          19, 20, 21, -0.353027, new Translation2d(-0.288925, -0.288925), "Back Right")
     };
 
     public class Info {
-      public static final double DRIVE_MOTOR_GEAR_RATIO = 6.75;
+      public static final double DRIVE_MOTOR_GEAR_RATIO = 6.12;
       public static final double WHEEL_DIAMETER = 0.0991108;
       public static final double REVS_PER_METER = DRIVE_MOTOR_GEAR_RATIO / (WHEEL_DIAMETER * Math.PI);
       public static final double TURN_MOTOR_GEAR_RATIO = 150.0 / 7.0;
@@ -79,14 +79,14 @@ public class Constants {
     }
 
     public class PIDs {
-      public static double SWERVE_MODULE_TURN_kP = .005;
-      public static double SWERVE_MODULE_TURN_kI = 0;
-      public static double SWERVE_MODULE_TURN_kD = 0;
-      public static double SWERVE_MODULE_TURN_kF = 0;
-      public static double SWERVE_MODULE_DRIVE_kP = .1;
-      public static double SWERVE_MODULE_DRIVE_kI = 0;
-      public static double SWERVE_MODULE_DRIVE_kD = 0;
-      public static double SWERVE_MODULE_DRIVE_kF = 0;
+      public static final double SWERVE_MODULE_TURN_kP = 0.0145;
+      public static final double SWERVE_MODULE_TURN_kI = 0.0;
+      public static final double SWERVE_MODULE_TURN_kD = 0.00017;
+      public static final double SWERVE_MODULE_TURN_kF = 0.0;
+      public static final double SWERVE_MODULE_DRIVE_kP = 0.125;
+      public static final double SWERVE_MODULE_DRIVE_kI = 0.0;
+      public static final double SWERVE_MODULE_DRIVE_kD = 0.0;
+      public static final double SWERVE_MODULE_DRIVE_kF = 0.1075;
 
       public static final boolean SMART_PID_ENABLED = true;
       public static final boolean SMART_PID_TURN_ENABLED = true;
@@ -131,6 +131,7 @@ public class Constants {
       public static final double ELEVATOR_kP = 0.0;
       public static final double ELEVATOR_kI = 0.0;
       public static final double ELEVATOR_kD = 0.0;
+      public static final boolean SMART_PID_ENABLED = false;
     }
 
     public class Profile {

@@ -12,20 +12,26 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import com.studica.frc.AHRS;
-import com.studica.frc.AHRS.NavXComType;
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
+import com.ctre.phoenix6.hardware.Pigeon2;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -40,15 +46,19 @@ import frc.robot.utils.error.DiagnosticSubsystem;
 
 public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
-  private AHRS gyro = new AHRS(NavXComType.kUSB1);
   Phoenix6Odometry phoenix6Odometry = new Phoenix6Odometry();
-
   private SwerveModule swerveModules[] = new SwerveModule[Constants.Drivebase.MODULES.length];
+  private Pigeon2 gyro = new Pigeon2(26, Constants.Drivebase.CANIVORE_NAME);
+  private StructArrayPublisher<SwerveModuleState> desiredSwervestate = NetworkTableInstance.getDefault().getStructArrayTopic("Desired swervestate", SwerveModuleState.struct).publish();
+  private StructArrayPublisher<SwerveModuleState> actualSwervestate = NetworkTableInstance.getDefault().getStructArrayTopic("Actual swervestate", SwerveModuleState.struct).publish();
+
+
   private SwerveDriveKinematics swerveDriveKinematics;
   private SwerveDrivePoseEstimator swerveDrivePoseEstimator;
   private final Field2d swerveOdometryField2d = new Field2d();
 
   public Drivebase() {
+    Translation2d[] moduleLocations = new Translation2d[Constants.Drivebase.MODULES.length];
     for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
       swerveModules[i] = new SwerveModule(
         Constants.Drivebase.MODULES[i]
@@ -60,25 +70,22 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
         swerveModules[i].driveMotorPositionSignal,
         swerveModules[i].driveMotorVelocitySignal
       );
-      phoenix6Odometry.startRunning();
+      moduleLocations[i] = swerveModules[i].moduleLocation;
     }
 
-    swerveDriveKinematics = new SwerveDriveKinematics(
-      swerveModules[0].moduleLocation,
-      swerveModules[1].moduleLocation,
-      swerveModules[2].moduleLocation,
-      swerveModules[3].moduleLocation
-    );
+    phoenix6Odometry.startRunning();
+
+    Pigeon2Configuration gConfiguration = new Pigeon2Configuration();
+    gConfiguration.MountPose.MountPoseYaw = 0; 
+    // TODO gyro.getConfigurator().apply(gConfiguration);
+    // TODO resetGyroHeading();
+
+    swerveDriveKinematics = new SwerveDriveKinematics(moduleLocations);
 
     swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(
       swerveDriveKinematics,
       getGyroAngle(),
-      new SwerveModulePosition[] {
-        swerveModules[0].getSwerveModulePosition(),
-        swerveModules[1].getSwerveModulePosition(),
-        swerveModules[2].getSwerveModulePosition(),
-        swerveModules[3].getSwerveModulePosition()
-      },
+      getSwerveModulePositions(),
       new Pose2d()
     );
 
@@ -121,7 +128,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   public void updateOdometry() {
     Phoenix6DrivebaseState currentState = phoenix6Odometry.getState();
     swerveDrivePoseEstimator.update(
-      getGyroAngle(),
+      currentState.gyroAngle,
       new SwerveModulePosition[] {
         currentState.swerveState[0].getSwerveModulePosition(),
         currentState.swerveState[1].getSwerveModulePosition(),
@@ -171,13 +178,24 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   }
 
   private void setModuleStates(SwerveModuleState[] moduleStates) {
+    desiredSwervestate.set(moduleStates);
+    actualSwervestate.set(getSwerveModuleStates());
     for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
       swerveModules[i].setSwerveModulState(moduleStates[i]);
     }
   }
 
-  public void setGyroHeading(Rotation2d newHeading) {
-    gyro.setAngleAdjustment(newHeading.getDegrees());
+  public SwerveModulePosition[] getSwerveModulePositions() {
+    Phoenix6DrivebaseState currentState = phoenix6Odometry.getState();
+    SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[Constants.Drivebase.MODULES.length];
+    for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
+      swerveModulePositions[i] = currentState.swerveState[i].getSwerveModulePosition();
+    }
+    return swerveModulePositions;
+  }
+
+  public void resetGyroHeading() {
+    // TODO gyro.setYaw(0);
   }
 
   public void setAllDriveMotorBreakMode(boolean breakMode) {
@@ -188,19 +206,27 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
   public Rotation2d getGyroAngle() {
     // Negated because gyro measurements are counterclockwise-positive.
-    double angleDegrees = -gyro.getAngle();
+    double angleDegrees = 0.0; // TODO -gyro.getYaw().getValueAsDouble();
     SmartDashboard.putNumber("Gyro", angleDegrees);
     return Rotation2d.fromDegrees(angleDegrees);
   }
 
   private ChassisSpeeds getRobotRelativeSpeeds() {
     Phoenix6DrivebaseState currentState = phoenix6Odometry.getState();
-    return swerveDriveKinematics.toChassisSpeeds(
-      currentState.swerveState[0].getSwerveModuleState(),
-      currentState.swerveState[1].getSwerveModuleState(),
-      currentState.swerveState[2].getSwerveModuleState(),
-      currentState.swerveState[0].getSwerveModuleState()
-    );
+    SwerveModuleState[] moduleStates = new SwerveModuleState[Constants.Drivebase.MODULES.length];
+    for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
+      moduleStates[i] = currentState.swerveState[i].getSwerveModuleState();
+    }
+    return swerveDriveKinematics.toChassisSpeeds(moduleStates);
+  }
+
+  private SwerveModuleState[] getSwerveModuleStates() {
+    Phoenix6DrivebaseState currentState = phoenix6Odometry.getState();
+    SwerveModuleState[] moduleStates = new SwerveModuleState[Constants.Drivebase.MODULES.length];
+    for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
+      moduleStates[i] = currentState.swerveState[i].getSwerveModuleState();
+    }
+    return moduleStates;
   }
 
   public void setAllModulesTurnPidActive() {
