@@ -26,6 +26,7 @@ public class Elevator extends SubsystemBase {
   private DigitalInput topLimitSwitch = new DigitalInput(Constants.Elevator.TOP_LIMIT_SWITCH_ID);
 
   private double targetPosition;
+  private double lastSpeed;
 
   SmartPIDController positionController = new SmartPIDController(
     Constants.Elevator.PIDs.ELEVATOR_kP,
@@ -53,9 +54,16 @@ public class Elevator extends SubsystemBase {
   public void periodic() {
     if(getBottomLimitSwitch()) {
       motor.setPosition(0.0);
+      if(lastSpeed < 0.0) {
+        setMotor(0.0);
+      }
     } else if(getTopLimitSwitch()) {
       motor.setPosition(Constants.Elevator.MAX_HEIGHT_CARRIAGE / Constants.Elevator.MOTOR_ROTATIONS_TO_METERS);
+      if(lastSpeed > 0.0) {
+        setMotor(0.0);
+      }
     }
+    System.out.println(getElevatorPosition());
   }
 
   // Reminder: all positions are measured in meters
@@ -78,7 +86,13 @@ public class Elevator extends SubsystemBase {
 
   // Input is a percentage that ranges from -1 to 1.
   public void setMotor(double speed) {
-    motor.set(speed);
+    if((getBottomLimitSwitch() && speed < 0.0) || (getTopLimitSwitch() && speed > 0.0)) {
+      lastSpeed = 0.0;
+    }
+    else {
+      lastSpeed = speed;
+    }
+    motor.set(lastSpeed);
   }
 
   public boolean isAtSetpoint(){
