@@ -8,30 +8,27 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
+import frc.robot.utils.SmartPIDController;
 
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 
 // All positions are stored in meters, all velocities are in meters/seconds, 
 // all accelerations are stored in meters/second/second.
 public class Elevator extends SubsystemBase {
 
-  private SparkMax motor = new SparkMax(
-    Constants.Elevator.MOTOR_ID, 
-    MotorType.kBrushless
-  );
+  private TalonFX motor = new TalonFX(Constants.Elevator.MOTOR_ID);
 
   private double targetPosition = getElevatorPosition();
 
-  PIDController positionController = new PIDController(
+  SmartPIDController positionController = new SmartPIDController(
     Constants.Elevator.PIDs.ELEVATOR_kP,
     Constants.Elevator.PIDs.ELEVATOR_kI,
-    Constants.Elevator.PIDs.ELEVATOR_kD
+    Constants.Elevator.PIDs.ELEVATOR_kD,
+    "Elevator",
+    Constants.Elevator.PIDs.SMART_PID_ENABLED
   );
 
   public PIDController getPositionController() {
@@ -41,12 +38,10 @@ public class Elevator extends SubsystemBase {
   public Elevator() {
     setDefaultCommand(retainTargetPositionCommand());
 
-    SparkMaxConfig config = new SparkMaxConfig();
-    config.idleMode(IdleMode.kBrake);
+    TalonFXConfiguration config = new TalonFXConfiguration();
 
-    motor.configure(config, 
-      ResetMode.kResetSafeParameters,
-      PersistMode.kPersistParameters);
+    motor.getConfigurator().apply(config);
+    motor.setNeutralMode(NeutralModeValue.Brake);
   }
 
   @Override
@@ -54,17 +49,17 @@ public class Elevator extends SubsystemBase {
 
   // Reminder: all positions are measured in meters
   public double getElevatorPosition() {
-    return motor.getEncoder().getPosition() * Constants.Elevator.ROTATIONS_TO_METERS;
+    return motor.getPosition().getValueAsDouble() * Constants.Elevator.ROTATIONS_TO_METERS;
   }
 
   // Reminder: all velocities are measured in meters/second
   public double getElevatorVelocity() {
-    return motor.getEncoder().getVelocity() * Constants.Elevator.ROTATIONS_TO_METERS;
+    return motor.getVelocity().getValueAsDouble() * Constants.Elevator.ROTATIONS_TO_METERS;
   }
 
   // Input is a percentage that ranges from -1 to 1.
-  public void setMotor(double power) {
-    motor.set(power);
+  public void setMotor(double speed) {
+    motor.set(speed);
   }
 
   public boolean isAtSetpoint(){
