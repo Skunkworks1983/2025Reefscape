@@ -30,6 +30,7 @@ import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.PerUnit;
 import edu.wpi.first.units.TimeUnit;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -39,7 +40,7 @@ import frc.robot.constants.Constants;
 import frc.robot.constants.SwerveModuleConstants;
 import frc.robot.utils.PIDs.SmartPIDController;
 import frc.robot.utils.PIDs.SmartPIDControllerTalonFX;
-import frc.robot.utils.odometry.Pheonix6Odometry;
+import frc.robot.utils.odometry.Phoenix6Odometry;
 import frc.robot.utils.error.ErrorGroup;
 
 public class SwerveModule extends SubsystemBase {
@@ -49,26 +50,26 @@ public class SwerveModule extends SubsystemBase {
   private CANcoder turnEncoder;
   private SmartPIDControllerTalonFX driveController;
   private SmartPIDController turnController;
-  final private Supplier<Double> driveMotorRawVelocity;
-  final private Supplier<Double> driveMotorRawPosition;
   private boolean turnControllerActive;
 
   public String moduleName;
   public Translation2d moduleLocation;
 
   final VelocityVoltage m_Velocity = new VelocityVoltage(0);
+  final public StatusSignal<Angle> turnMotorPositionSignal;
+  final public StatusSignal<AngularVelocity> turnMotorVelocitySignal;
+  final public StatusSignal<Angle> driveMotorPositionSignal;
+  final public StatusSignal<AngularVelocity> driveMotorVelocitySignal;
 
   public SwerveModule(
-    SwerveModuleConstants swerveConstants,
-    Pheonix6Odometry pheonix6Odometry) {
+    SwerveModuleConstants swerveConstants) {
     this(
       swerveConstants.driveMotorId, 
       swerveConstants.turnMotorId, 
       swerveConstants.turnEncoderId, 
       swerveConstants.turnEncoderOffset, 
       swerveConstants.moduleLocation, 
-      swerveConstants.moduleName,
-      pheonix6Odometry
+      swerveConstants.moduleName
     );
   }
   
@@ -78,8 +79,7 @@ public class SwerveModule extends SubsystemBase {
     int turnEncoderId,
     double turnEncoderOffset, 
     Translation2d moduleLocation, 
-    String moduleName,
-    Pheonix6Odometry pheonix6odometry
+    String moduleName
   ) {
     this.driveMotor = new TalonFX(driveModuleId, Constants.Drivebase.CANIVORE_NAME);
     this.turnMotor = new SparkMax(turnModuleId, MotorType.kBrushless);
@@ -120,30 +120,12 @@ public class SwerveModule extends SubsystemBase {
     encoder.MagnetSensor.MagnetOffset = -turnEncoderOffset;
     turnEncoder.getConfigurator().apply(encoder);
 
-    /*
-    Angle b;
-    Measure<AngleUnit> a = b; // This assignment works
-    StatusSignal<Angle> c;
-    StatusSignal<Measure<AngleUnit>> d = c; // This WILL NOT WORK
-    StatusSignal<? extends Measure<AngleUnit>> e = c; // This line works
-    */
-    //Angle
     m_Velocity.Slot = 0;
-    driveMotorRawPosition = pheonix6odometry.<Angle>registerSignalWithLatencyCompensation(
-      (StatusSignal<? extends Measure<AngleUnit>>) driveMotor.getPosition().clone(), 
-      (StatusSignal<? extends Measure<PerUnit<Unit,AngleUnit>>>) driveMotor.getVelocity().clone()
-    );
-/*
-    driveMotorRawPosition = pheonix6odometry.registerSignalWithLatencyCompensation(
-      (StatusSignal<Measure<AngleUnit>>)driveMotor.getPosition().clone(), 
-      (StatusSignal<Measure<PerUnit<AngleUnit,TimeUnit>>>)driveMotor.getVelocity().clone()
-    );
- */
-
-      StatusSignal<? extends Measure<AngleUnit>> a = driveMotor.getPosition().clone();
-    driveMotorRawVelocity = pheonix6odometry.registerSignal(
-      (StatusSignal<? extends Measure<AngleUnit>>) driveMotor.getPosition().clone() 
-    );
+    driveMotorVelocitySignal = driveMotor.getVelocity().clone();
+    driveMotorPositionSignal = driveMotor.getPosition().clone();
+    // TODO: change from null
+    turnMotorPositionSignal = null;
+    turnMotorVelocitySignal = null;
   }
 
   @Override
@@ -174,7 +156,7 @@ public class SwerveModule extends SubsystemBase {
 
   // returns meters traveled
   public double getDriveMotorEncoderPosition() {
-    return driveMotorRawPosition.get() / Constants.Drivebase.Info.REVS_PER_METER;
+    return driveMotor.getPosition().getValueAsDouble() / Constants.Drivebase.Info.REVS_PER_METER;
   }
 
   // Almost nothing should be calling this exept tests, this gets position from the turn motor
@@ -186,7 +168,7 @@ public class SwerveModule extends SubsystemBase {
 
   // returns velocity in meters
   public double getDriveMotorVelocity() {
-    return driveMotorRawVelocity.get() / Constants.Drivebase.Info.REVS_PER_METER;
+    return driveMotor.getVelocity().getValueAsDouble() / Constants.Drivebase.Info.REVS_PER_METER;
   }
 
   public void setTurnMotorSpeed(double speed) {
@@ -252,14 +234,6 @@ public class SwerveModule extends SubsystemBase {
   public SwerveModulePosition getSwerveModulePosition() {
     return new SwerveModulePosition(getDriveMotorEncoderPosition(),
       getTurnMotorAngle());
-  }
-
-  public StatusSignal<Angle> getDrivePositionSignal() {
-    return driveMotor.getPosition().clone();
-  }
-
-  public StatusSignal<Angle> getDriveVelocitySignal() {
-    return driveMotor.getPosition().clone();
   }
 
   @Override

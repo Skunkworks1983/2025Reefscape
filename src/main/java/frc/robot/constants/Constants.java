@@ -209,13 +209,8 @@ public class Constants {
       }
     }
   }
-<<<<<<< HEAD
 
-  public class Pheonix6Odometry {
+  public class Phoenix6Odometry {
     public static final double updatesPerSecond = 100.0;
-
   }
 }
-=======
-}
->>>>>>> main

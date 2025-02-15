@@ -30,7 +30,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
-import frc.robot.utils.odometry.Pheonix6Odometry;
+import frc.robot.utils.odometry.Phoenix6DrivebaseState;
+import frc.robot.utils.odometry.Phoenix6Odometry;
 import frc.robot.constants.Constants.VisionConstants;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
@@ -40,7 +41,7 @@ import frc.robot.utils.error.DiagnosticSubsystem;
 public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
   private AHRS gyro = new AHRS(NavXComType.kUSB1);
-  Pheonix6Odometry pheonix6Odometry = new Pheonix6Odometry();
+  Phoenix6Odometry phoenix6Odometry = new Phoenix6Odometry();
 
   private SwerveModule swerveModules[] = new SwerveModule[Constants.Drivebase.MODULES.length];
   private SwerveDriveKinematics swerveDriveKinematics;
@@ -49,7 +50,17 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
   public Drivebase() {
     for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
-      swerveModules[i] = new SwerveModule(Constants.Drivebase.MODULES[i], pheonix6Odometry);
+      swerveModules[i] = new SwerveModule(
+        Constants.Drivebase.MODULES[i]
+      );
+      phoenix6Odometry.registerSwerveModuleSignal(
+        i,
+        swerveModules[i].turnMotorPositionSignal,
+        swerveModules[i].turnMotorVelocitySignal,
+        swerveModules[i].driveMotorPositionSignal,
+        swerveModules[i].driveMotorVelocitySignal
+      );
+      phoenix6Odometry.startRunning();
     }
 
     swerveDriveKinematics = new SwerveDriveKinematics(
@@ -108,13 +119,14 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
    * date.
    */
   public void updateOdometry() {
+    Phoenix6DrivebaseState currentState = phoenix6Odometry.getState();
     swerveDrivePoseEstimator.update(
       getGyroAngle(),
       new SwerveModulePosition[] {
-        swerveModules[0].getSwerveModulePosition(),
-        swerveModules[1].getSwerveModulePosition(),
-        swerveModules[2].getSwerveModulePosition(),
-        swerveModules[3].getSwerveModulePosition()
+        currentState.swerveState[0].getSwerveModulePosition(),
+        currentState.swerveState[1].getSwerveModulePosition(),
+        currentState.swerveState[2].getSwerveModulePosition(),
+        currentState.swerveState[3].getSwerveModulePosition()
       }
     );
 
@@ -182,11 +194,12 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   }
 
   private ChassisSpeeds getRobotRelativeSpeeds() {
+    Phoenix6DrivebaseState currentState = phoenix6Odometry.getState();
     return swerveDriveKinematics.toChassisSpeeds(
-      swerveModules[0].getSwerveModuleState(),
-      swerveModules[1].getSwerveModuleState(),
-      swerveModules[2].getSwerveModuleState(),
-      swerveModules[3].getSwerveModuleState()
+      currentState.swerveState[0].getSwerveModuleState(),
+      currentState.swerveState[1].getSwerveModuleState(),
+      currentState.swerveState[2].getSwerveModuleState(),
+      currentState.swerveState[0].getSwerveModuleState()
     );
   }
 
