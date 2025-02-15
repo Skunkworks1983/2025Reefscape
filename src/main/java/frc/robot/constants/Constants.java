@@ -60,13 +60,13 @@ public class Constants {
 
     public static SwerveModuleConstants MODULES[] = {
         new SwerveModuleConstants(
-          10, 11, 12, -0.337158, new Translation2d(0.28194, 0.28194), "Front Left"),
+          10, 11, 12, -0.337158, new Translation2d(0.288925, 0.288925), "Front Left"),
         new SwerveModuleConstants(
-          13, 14, 15, -0.289795, new Translation2d(0.28194, -0.28194), "Front Right"),
+          13, 14, 15, -0.289795, new Translation2d(0.288925, -0.288925), "Front Right"),
         new SwerveModuleConstants(
-          16, 17, 18, 0.476318, new Translation2d(-0.28194, 0.28194), "Back Left"),
+          16, 17, 18, 0.476318, new Translation2d(-0.288925, 0.288925), "Back Left"),
         new SwerveModuleConstants(
-          19, 20, 21, -0.353027, new Translation2d(-0.28194, -0.28194), "Back Right")
+          19, 20, 21, -0.353027, new Translation2d(-0.288925, -0.288925), "Back Right")
     };
 
     public class Info {
