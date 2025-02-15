@@ -64,6 +64,7 @@ public class ErrorGroup {
 
   public void putTestToSmartdashboard(TestResult test) {
     SmartDashboard.putBoolean(test.name + " " + test.subsystem.toString(), test.errorStatus == AlertType.kInfo);
+    System.out.println(test.name + " " + test.subsystem.toString());
   }
 
   public void putAllErrors() {

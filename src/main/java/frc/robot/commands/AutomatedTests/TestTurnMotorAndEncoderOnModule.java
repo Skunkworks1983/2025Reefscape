@@ -39,7 +39,7 @@ public class TestTurnMotorAndEncoderOnModule extends Command {
     addRequirements(swerveModule);
 
     motorEncoderTest = new TestResult(
-      "Turn Motor/Encoder Misaligned", 
+      "Turn Motor or Encoder Misaligned", 
       AlertType.kWarning, 
       swerveModule,
       "The encoder and motor reported two rotations different enough to get detected by this Error"
