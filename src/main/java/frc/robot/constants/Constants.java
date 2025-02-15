@@ -102,7 +102,7 @@ public class Constants {
   
 
     public static final String FRONT_CAMERA_NAME = "Camera_0";
-    public static final String SIDE_CAMERA_NAME = "Side";
+    public static final String SIDE_CAMERA_NAME = "Camera_1";
     
     private static final Transform3d MOUNT_TO_FRONT_CAMERA = 
       new Transform3d(
