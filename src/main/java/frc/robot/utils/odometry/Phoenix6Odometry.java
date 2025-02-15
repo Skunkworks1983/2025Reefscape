@@ -58,6 +58,8 @@ public class Phoenix6Odometry {
   public void startRunning(){
     signalsGroup = new ArrayList<>();
     isRunning.set(true);
+    updateMotors();
+    updateDrivebaseState();
     signalsGroup.addAll(turnMotorPositionSignalGroup);
     signalsGroup.addAll(turnMotorVelocitySignalGroup);
     signalsGroup.addAll(driveMotorVelocitySignalGroup);
@@ -110,16 +112,19 @@ public class Phoenix6Odometry {
       }
 
     Phoenix6DrivebaseState currentPhoenix6DrivebaseState = new Phoenix6DrivebaseState(
-        Rotation2d.fromRotations(gyroStatusSignal.getValueAsDouble()),
-        currentSwerveModuleStates);
+      // Negated because gyro measurements are counterclockwise-positive.
+      Rotation2d.fromDegrees(-gyroStatusSignal.getValueAsDouble()),
+      currentSwerveModuleStates
+    );
 
     phoenix6DrivebaseState = currentPhoenix6DrivebaseState;
   }
 
-  public void registerGyroSignal (StatusSignal<Angle> gyroAngleSignal) throws Exception {
+  public void registerGyroSignal (StatusSignal<Angle> gyroAngleSignal) {
     if(isRunning.get()) {
-      throw new Exception("Can not add more signals while running!");
+      throw new RuntimeException("Can not add more signals while running!");
     }
+    gyroStatusSignal = gyroAngleSignal;
   }
 
   public void registerSwerveModuleSignal (

@@ -111,9 +111,8 @@ public class SwerveModule extends SubsystemBase {
     m_Velocity.Slot = 0;
     driveMotorVelocitySignal = driveMotor.getVelocity().clone();
     driveMotorPositionSignal = driveMotor.getPosition().clone();
-    // TODO: change from null
-    turnMotorPositionSignal = null;
-    turnMotorVelocitySignal = null;
+    turnMotorPositionSignal = turnMotor.getPosition().clone();
+    turnMotorVelocitySignal = turnMotor.getVelocity().clone();
   }
 
   @Override
@@ -207,7 +206,7 @@ public class SwerveModule extends SubsystemBase {
     return turnEncoder.getPosition().getValueAsDouble();
   }
 
-  public void setSwerveModulState(SwerveModuleState newState) {
+  public void setSwerveModuleState(SwerveModuleState newState) {
     // Makes sure we are turning the lowest ammount to get to the desired angle
     SwerveModuleState newStateOptimized = newState;
     newStateOptimized.optimize(getTurnMotorAngle());
