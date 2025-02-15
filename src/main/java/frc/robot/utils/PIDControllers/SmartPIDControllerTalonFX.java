@@ -10,76 +10,76 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.constants.Constants;
 
-/** Add your docs here. */
+/** Makes it super easy to tune, allows to change K values from smart dashboard*/
+/** Makes it super easy to tune controllers, allows programmers to change constants from smart dashboard */
+
 public class SmartPIDControllerTalonFX {
 
-    public String name;
-    public boolean smart;
-    public TalonFX motor;
-    public double lastKpValue;
-    public double lastKiValue;
-    public double lastKdValue;
-    public double lastKfValue;
+  public String name;
+  public boolean smart;
+  public TalonFX motor;
+  public double lastKpValue;
+  public double lastKiValue;
+  public double lastKdValue;
+  public double lastKfValue;
 
+  public SmartPIDControllerTalonFX(double kp, double ki, double kd, double kf, String name,
+    boolean smart, TalonFX motor) {
 
-    public SmartPIDControllerTalonFX(double kp, double ki, double kd, double kf, String name,
-            boolean smart, TalonFX motor) {
+    this.motor = motor;
+    this.name = name;
+    this.smart = smart;
 
-        this.motor = motor;
-        this.name = name;
-        this.smart = smart;
+    lastKpValue = kp;
+    lastKiValue = ki;
+    lastKdValue = kd;
+    lastKfValue = kf;
 
-        lastKpValue = kp;
-        lastKiValue = ki;
-        lastKdValue = kd;
-        lastKfValue = kf;
+    Slot0Configs slot0Configs = new Slot0Configs();
 
-        Slot0Configs slot0Configs = new Slot0Configs();
+    slot0Configs.kP = lastKpValue;
+    slot0Configs.kI = lastKiValue;
+    slot0Configs.kD = lastKdValue;
+    slot0Configs.kV = lastKfValue;
 
-        slot0Configs.kP = lastKpValue;
-        slot0Configs.kI = lastKiValue;
-        slot0Configs.kD = lastKdValue;
-        slot0Configs.kV = lastKfValue;
+    motor.getConfigurator().apply(slot0Configs);
 
-        motor.getConfigurator().apply(slot0Configs);
+    SmartDashboard.putNumber(name + " kp Value", kp);
+    SmartDashboard.putNumber(name + " ki Value", ki);
+    SmartDashboard.putNumber(name + " kd Value", kd);
+    SmartDashboard.putNumber(name + " kf Value", kf);
+  }
 
-        SmartDashboard.putNumber(name + " kp Value", kp);
-        SmartDashboard.putNumber(name + " ki Value", ki);
-        SmartDashboard.putNumber(name + " kd Value", kd);
-        SmartDashboard.putNumber(name + " kf Value", kf);
+  public void updatePID() {
+    // if we pass this test, we are smart, so we can save some bandwith by only
+    // grabing the k values once
+    if (!smart || !Constants.Drivebase.PIDs.SMART_PID_ENABLED) {
+      return;
     }
 
-    public void updatePID() {
-        // if we pass this test, we are smart, so we can save some bandwith by only grabing the k
-        // values once
-        if (!smart || !Constants.Drivebase.PIDs.SMART_PID_ENABLED) {
-            return;
-        }
+    double currentKpValue = SmartDashboard.getNumber(name + " kp Value", lastKpValue);
+    double currentKiValue = SmartDashboard.getNumber(name + " ki Value", lastKiValue);
+    double currentKdValue = SmartDashboard.getNumber(name + " kd Value", lastKdValue);
+    double currentKfValue = SmartDashboard.getNumber(name + " kf Value", lastKfValue);
 
-        double currentKpValue = SmartDashboard.getNumber(name + " kp Value", lastKpValue);
-        double currentKiValue = SmartDashboard.getNumber(name + " ki Value", lastKiValue);
-        double currentKdValue = SmartDashboard.getNumber(name + " kd Value", lastKdValue);
-        double currentKfValue = SmartDashboard.getNumber(name + " kf Value", lastKfValue);
+    if (currentKpValue != lastKpValue || currentKiValue != lastKiValue
+        || currentKdValue != lastKdValue || currentKfValue != lastKfValue) {
 
+      lastKpValue = currentKpValue;
+      lastKiValue = currentKiValue;
+      lastKdValue = currentKdValue;
+      lastKfValue = currentKfValue;
 
-        if (currentKpValue != lastKpValue || currentKiValue != lastKiValue
-                || currentKdValue != lastKdValue || currentKfValue != lastKfValue) {
+      Slot0Configs slot0Configs = new Slot0Configs();
 
-            lastKpValue = currentKpValue;
-            lastKiValue = currentKiValue;
-            lastKdValue = currentKdValue;
-            lastKfValue = currentKfValue;
+      slot0Configs.kP = lastKpValue;
+      slot0Configs.kI = lastKiValue;
+      slot0Configs.kD = lastKdValue;
+      slot0Configs.kV = lastKfValue;
 
-            Slot0Configs slot0Configs = new Slot0Configs();
-
-            slot0Configs.kP = lastKpValue;
-            slot0Configs.kI = lastKiValue;
-            slot0Configs.kD = lastKdValue;
-            slot0Configs.kV = lastKfValue;
-
-            motor.getConfigurator().apply(slot0Configs);
-        }
-
-        SmartDashboard.putNumber(name + " Error", motor.getClosedLoopError().getValueAsDouble());
+      motor.getConfigurator().apply(slot0Configs);
     }
+
+    SmartDashboard.putNumber(name + " Error", motor.getClosedLoopError().getValueAsDouble());
+  }
 }

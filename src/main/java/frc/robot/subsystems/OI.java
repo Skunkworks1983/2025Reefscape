@@ -6,18 +6,18 @@ package frc.robot.subsystems;
 
 import java.util.Optional;
 import java.util.function.DoubleFunction;
+import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.constants.Constants.OI.LIMITS;
-import frc.robot.utils.headingControllers.ReefHeadingController;
 import frc.robot.constants.Constants;
 import frc.robot.commands.elevator.*;
+import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.OI.IDs.Joysticks;
 
-public class OI extends SubsystemBase {
+public class OI {
   private Joystick rotationJoystick = new Joystick(Joysticks.ROTATION_JOYSTICK_ID);
   private Joystick translationJoystick = new Joystick(Joysticks.TRANSLATION_JOYSTICK_ID);
   private Joystick buttonJoystick = new Joystick(Joysticks.BUTTON_STICK_ID);
@@ -64,8 +64,10 @@ public class OI extends SubsystemBase {
       Collector collector = optionalCollector.get();
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.ROTATE_CORAL)
         .whileTrue(collector.rotateCoralCommand());
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.INTAKE_CORAL)
-        .whileTrue(collector.intakeCoralCommand());
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.COLLECT_CORAL)
+        .whileTrue(collector.waitAfterCatchPieceCommand());
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.SCORE_CORAL)
+        .whileTrue(collector.scorePieceCommand());
     }
 
     if(optionalDrivebase.isPresent()) { 
@@ -75,31 +77,30 @@ public class OI extends SubsystemBase {
         .whileTrue(drivebase.getSwerveTeleopCommand(
           this::getInstructedXMetersPerSecond, //Move location of this specification
           this::getInstructedYMetersPerSecond, //Move location of this specification
-          (DoubleSupplier)() => 0.0,
+          (DoubleSupplier) () -> 0.0,
           true // Move location of this logic. Put in constants?
         )
       );
     }
   }
 
-  @Override
-  public void periodic() {}
-
   public double getInstructedXMetersPerSecond() {
     return joystickToMetersPerSecond.apply(
-      applyDeadband.apply(translationJoystick.getX())
+      // X and Y are flipped because the joysticks' coordinate system is different from the field
+      applyDeadband.apply(translationJoystick.getY())
     );
   }
 
   public double getInstructedYMetersPerSecond() {
     return joystickToMetersPerSecond.apply(
-      applyDeadband.apply(translationJoystick.getY())
+      // X and Y are flipped because the joysticks' coordinate system is different from the field
+      applyDeadband.apply(translationJoystick.getX())
     );
   }
 
   public double getInstructedDegreesPerSecond() {
     return joystickToDegreesPerSecond.apply(
-      applyDeadband.apply(rotationJoystick.getY())
+      applyDeadband.apply(-rotationJoystick.getX())
     );
   }
 }

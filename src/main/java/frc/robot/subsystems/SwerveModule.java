@@ -11,30 +11,31 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.AutomatedTests.TestModuleComponentsConnection;
+import frc.robot.commands.AutomatedTests.TestTurnMotorAndEncoderOnModule;
 import frc.robot.constants.Constants;
 import frc.robot.constants.SwerveModuleConstants;
 import frc.robot.utils.PIDControllers.SmartPIDController;
 import frc.robot.utils.PIDControllers.SmartPIDControllerTalonFX;
+import frc.robot.utils.error.ErrorGroup;
 
 public class SwerveModule extends SubsystemBase {
 
-  private SparkMax turnMotor;
+  private TalonFX turnMotor;
   private TalonFX driveMotor;
   private CANcoder turnEncoder;
   private SmartPIDControllerTalonFX driveController;
   private SmartPIDController turnController;
+  private boolean turnControllerActive;
 
   public String moduleName;
   public Translation2d moduleLocation;
@@ -60,9 +61,9 @@ public class SwerveModule extends SubsystemBase {
     Translation2d moduleLocation, 
     String moduleName
   ) {
-    this.driveMotor = new TalonFX(driveModuleId, Constants.Drivebase.CANIVORE_NAME);
-    this.turnMotor = new SparkMax(turnModuleId, MotorType.kBrushless);
-    this.turnEncoder = new CANcoder(turnEncoderId, Constants.Drivebase.CANIVORE_NAME);
+    this.driveMotor = new TalonFX(driveModuleId); //TODO, Constants.Drivebase.CANIVORE_NAME);
+    this.turnMotor = new TalonFX(turnModuleId); //TODO, Constants.Drivebase.CANIVORE_NAME);
+    this.turnEncoder = new CANcoder(turnEncoderId); //TODO, Constants.Drivebase.CANIVORE_NAME);
     this.moduleLocation = moduleLocation;
     this.moduleName = moduleName;
 
@@ -90,9 +91,9 @@ public class SwerveModule extends SubsystemBase {
       driveMotor
     );
 
-    SparkMaxConfig config = new SparkMaxConfig();
-    config.inverted(true);
-    turnMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    TalonFXConfiguration turnConfig = new TalonFXConfiguration();
+    turnConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    turnMotor.getConfigurator().apply(turnConfig);
 
     CANcoderConfiguration encoder = new CANcoderConfiguration();
     encoder.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
@@ -105,9 +106,15 @@ public class SwerveModule extends SubsystemBase {
   @Override
   public void periodic() {
     driveController.updatePID();
-    if (!turnController.atSetpoint()) {
+    if (turnControllerActive && !turnController.atSetpoint()) {
       updateSpeedToSetpointTurn();
     }
+  }
+
+  // only used if we want to run a manual speed on the motor
+  // the turn controller would overwrite it if we dont turn it off first
+  public void setTurnControllerActive(boolean isControllerActive) {
+    turnControllerActive = isControllerActive;
   }
 
   public void setModuleTurnSetpoint(Rotation2d angle) {
@@ -115,13 +122,23 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public void setModuleDriveVelocity(double metersPerSecond) {
-    driveMotor.setControl(m_Velocity.withVelocity(metersPerSecond * Constants.Drivebase.Info.REVS_PER_METER)
-      .withEnableFOC(true));
+    driveMotor.setControl(
+      m_Velocity.withVelocity(
+        metersPerSecond * Constants.Drivebase.Info.REVS_PER_METER
+      ).withEnableFOC(true)
+    );
   }
 
   // returns meters traveled
   public double getDriveMotorEncoderPosition() {
     return driveMotor.getPosition().getValueAsDouble() / Constants.Drivebase.Info.REVS_PER_METER;
+  }
+
+  // Almost nothing should be calling this exept tests, this gets position from the turn motor
+  // what should be used would be getTurnMotorAngle()
+  public double getTurnMotorEncoderPosition() {
+    // TODO find a way to check robot to see if we are in test mode then log an error if not
+    return turnMotor.getPosition().getValueAsDouble() / Constants.Drivebase.Info.TURN_MOTOR_GEAR_RATIO; 
   }
 
   // returns velocity in meters
@@ -133,7 +150,7 @@ public class SwerveModule extends SubsystemBase {
     turnMotor.set(speed);
   }
 
-  public void setBrakeMode(boolean brakeMode){
+  public void setBrakeMode(boolean brakeMode) {
     if(brakeMode) {
       driveMotor.setNeutralMode(NeutralModeValue.Brake);
     }
@@ -155,12 +172,26 @@ public class SwerveModule extends SubsystemBase {
     return turnMotorRotation;
   }
 
+  // Returns Voltage
+  public double getTurnMotorVoltage() {
+    return turnMotor.getMotorVoltage().getValueAsDouble();
+  }
+
+  // Returns Amps
+  public double getTurnMotorCurrent() {
+    return turnMotor.getSupplyCurrent().getValueAsDouble();
+  }
+
   public boolean isEncoderConnected() {
     return turnEncoder.isConnected();
   }
 
   public double getTurnError() {
     return turnController.getPositionError();
+  }
+
+  public double getRawEncoderValue() {
+    return turnEncoder.getPosition().getValueAsDouble();
   }
 
   public void setSwerveModulState(SwerveModuleState newState) {
@@ -184,5 +215,39 @@ public class SwerveModule extends SubsystemBase {
   public SwerveModulePosition getSwerveModulePosition() {
     return new SwerveModulePosition(getDriveMotorEncoderPosition(),
       getTurnMotorAngle());
+  }
+
+  @Override
+  public String toString() {
+    return moduleName + " Module";
+  }
+
+  public boolean isTurnMotorConnected() {
+    return turnMotor.isConnected();
+  }
+
+  public boolean isDriveMotorConnected() {
+    return driveMotor.isConnected();
+  }
+
+  // This runs a command to test the connection of each component, then runs another test if the relevent components are connected
+  public Command TestConnectionThenModule(
+    ErrorGroup errorGroupHandler
+  ) {
+    return Commands.sequence(
+      new TestModuleComponentsConnection(errorGroupHandler::addTestMapEntry, this),
+      // This Commands.either runs an empty command or a test command based on the result of the command above
+      // It checks two different error status' before running the command
+      Commands.either(
+        Commands.race(
+          new TestTurnMotorAndEncoderOnModule(errorGroupHandler::addTestMapEntry, this),
+          // the command is also in a 5 second time out, because the command takes aprox 4.5
+          Commands.waitSeconds(5)
+        ),
+        Commands.none(),
+        () -> !errorGroupHandler.getTestStatus("Turn Encoder Not Connected", this) && 
+              !errorGroupHandler.getTestStatus("Turn Motor Not Connected", this)
+      )
+    );
   }
 }

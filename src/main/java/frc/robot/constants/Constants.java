@@ -4,7 +4,11 @@
 
 package frc.robot.constants;
 
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 
 // TODO: add all robot constant values when they have been decided
 public class Constants {
@@ -14,17 +18,24 @@ public class Constants {
     // must be constructed and assigned to the correct variable in Robot.java.
     // If some subsystems are not created and this value is true, an exeption
     // will be thrown.
-    public static boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = true;
+    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = true;
+
+    public static final double NUMBER_OF_MOTOR_ROTATIONS_FOR_MODULE_TEST = 1.0;
+    public static final double TURN_MOTOR_ROTATION_SPEED = 0.15;
+    public static final double TURN_MOTOR_AND_ENCODER_TOLERANCE = 0.05;
   }
 
   public class Collector {
-    public static int RIGHT_MOTOR = 42;
-    public static int LEFT_MOTOR = 11;
+    public static final int RIGHT_MOTOR = 42;
+    public static final int LEFT_MOTOR = 11;
 
-    public static double COLLECTOR_ROTATIONS_PER_METER = 0.0762 * Math.PI;
+    public static final double COLLECTOR_ROTATIONS_PER_METER = 0.0762 * Math.PI;
 
-    public static double COLLECOR_ROTATE_SLOW = 4.0;
-    public static double COLLECOR_ROTATE_FAST = 6.0;
+    public static final double COLLECOR_ROTATE_SLOW = 4.0;
+    public static final double COLLECOR_ROTATE_FAST = 6.0;
+
+    public static final double COLLECTOR_AMPS_BEFORE_CUTTOF = 3.0;
+    public static final double SECONDS_BEFORE_CUTTOF = 0.5;
 
     public class PIDs {
       public static final double KP = 0.0;
@@ -34,23 +45,52 @@ public class Constants {
       public static final boolean SMART_PID_ENABLED = true;
 
     }
-
   }
 
   public class Drivebase {
-    public static final String CANIVORE_NAME = "Practice Swerve";
+    // TODO public static final String CANIVORE_NAME = "1983 Comp Drivebase";
 
-    public static final double MAX_METERS_PER_SECOND = 0.0;
-    public static final double MAX_DEGREES_PER_SECOND = 0.0;
+    public static final double MAX_METERS_PER_SECOND = 4.5;
+    public static final double MAX_DEGREES_PER_SECOND = 270;
+
+    public class IDS {
+      public static int ROTATION_JOYSTICK_ID = 1;
+      public static int TRANSLATION_JOYSTICK_ID = 0;
+      public static int BUTTON_STICK_ID = 3;
+    }
+
+    public static SwerveModuleConstants MODULES[] = {
+        new SwerveModuleConstants(
+          10, 11, 12, -0.337158, new Translation2d(0.288925, 0.288925), "Front Left"),
+        new SwerveModuleConstants(
+          13, 14, 15, -0.289795, new Translation2d(0.288925, -0.288925), "Front Right"),
+        new SwerveModuleConstants(
+          16, 17, 18, 0.476318, new Translation2d(-0.288925, 0.288925), "Back Left"),
+        new SwerveModuleConstants(
+          19, 20, 21, -0.353027, new Translation2d(-0.288925, -0.288925), "Back Right")
+    };
+
+    public class Info {
+      public static final double DRIVE_MOTOR_GEAR_RATIO = 6.12;
+      public static final double WHEEL_DIAMETER = 0.0991108;
+      public static final double REVS_PER_METER = DRIVE_MOTOR_GEAR_RATIO / (WHEEL_DIAMETER * Math.PI);
+      public static final double TURN_MOTOR_GEAR_RATIO = 150.0 / 7.0;
+
+      public static final double MAX_MODULE_SPEED = 4.498848;
+    }
 
     public class PIDs {
-      public static final double SWERVE_MODULE_TURN_kP = 0.0;
+      public static final double SWERVE_MODULE_TURN_kP = 0.0145;
       public static final double SWERVE_MODULE_TURN_kI = 0.0;
-      public static final double SWERVE_MODULE_TURN_kD = 0.0;
+      public static final double SWERVE_MODULE_TURN_kD = 0.00017;
       public static final double SWERVE_MODULE_TURN_kF = 0.0;
       public static final double HEADING_kP = 0.0;
       public static final double HEADING_kI = 0.0;
       public static final double HEADING_kD = 0.0;
+      public static final double SWERVE_MODULE_DRIVE_kP = 0.125;
+      public static final double SWERVE_MODULE_DRIVE_kI = 0.0;
+      public static final double SWERVE_MODULE_DRIVE_kD = 0.0;
+      public static final double SWERVE_MODULE_DRIVE_kF = 0.1075;
 
       public static final boolean SMART_PID_ENABLED = true;
       public static final boolean SMART_PID_TURN_ENABLED = true;
@@ -59,25 +99,65 @@ public class Constants {
       public static final double PID_LOW_LIMIT = -0.8;
       public static final double PID_HIGH_LIMIT = 0.8;
     }
+  }
 
-    public static SwerveModuleConstants MODULES[] = {
-        new SwerveModuleConstants(
-            9, 3, 4, -0.212402, new Translation2d(0.28194, 0.28194), "Front Left"),
-        new SwerveModuleConstants(
-            11, 7, 8, 0.120361, new Translation2d(0.28194, -0.28194), "Front Right"),
-        new SwerveModuleConstants(
-            12, 1, 2, -0.377441, new Translation2d(-0.28194, 0.28194), "Back Left"),
-        new SwerveModuleConstants(
-            10, 5, 6, 0.096680, new Translation2d(-0.28194, -0.28194), "Back Right")
-    };
+  public class VisionConstants {
+  
 
-    public class Info {
-      public static final double DRIVE_MOTOR_GEAR_RATIO = 6.75;
-      public static final double WHEEL_DIAMETER = 0.0991108;
-      public static final double REVS_PER_METER = DRIVE_MOTOR_GEAR_RATIO / (WHEEL_DIAMETER * Math.PI);
+    public static final String FRONT_CAMERA_NAME = "Camera_0";
+    public static final String SIDE_CAMERA_NAME = "Camera_1";
+    
+    private static final Transform3d MOUNT_TO_FRONT_CAMERA = 
+      new Transform3d(
+        new Translation3d(
+          Units.inchesToMeters(1.351),
+          Units.inchesToMeters(-1.268),
+          Units.inchesToMeters(-0.81)
+        ),
+        new Rotation3d(
+          Units.degreesToRadians(0.0),
+          Units.degreesToRadians(-19.27),
+          Units.degreesToRadians(-15.0)
+        )
+      );
 
-      public static final double MAX_MODULE_SPEED = 4.498848;
-    }
+    private static final Transform3d MOUNT_TO_SIDE_CAMERA = 
+      new Transform3d(
+        new Translation3d(
+          Units.inchesToMeters(-1.050),
+          Units.inchesToMeters(1.365078),
+          Units.inchesToMeters(-0.762394)
+        ),
+        new Rotation3d(
+          Units.degreesToRadians(0.0),
+          Units.degreesToRadians(-27.225),
+          Units.degreesToRadians(97.0)
+        )
+      );
+
+    // TODO: Get the transformation that maps the robot's center to the origin of the camera mount.
+    private static final Transform3d ROBOT_TO_MOUNT =
+      new Transform3d(
+        new Translation3d(
+          0.0,
+          0.0,
+          0.0
+        ),
+        new Rotation3d(
+          0.0,
+          0.0,
+          0.0
+        )
+      );
+
+    public static final Transform3d ROBOT_TO_FRONT_CAMERA = ROBOT_TO_MOUNT.plus(MOUNT_TO_FRONT_CAMERA);
+    public static final Transform3d ROBOT_TO_SIDE_CAMERA = ROBOT_TO_MOUNT.plus(MOUNT_TO_SIDE_CAMERA);
+
+    public static final double MAX_AMBIGUITY = 0.3;
+    public static final double LINEAR_STD_DEV_BASELINE = 0.02;
+    public static final double ANGULAR_STD_DEV_BASELINE = 0.06;
+    public static final double MAX_Z_ERROR = 3.0;
+    public static final double MAX_AVERAGE_TAG_DISTANCE = 3.0; // Meters
   }
 
   public class Elevator {
@@ -96,7 +176,7 @@ public class Constants {
       public static final double ELEVATOR_kP = 0.0;
       public static final double ELEVATOR_kI = 0.0;
       public static final double ELEVATOR_kD = 0.0;
-      public static final double ELEVATOR_kF = 0.0;
+      public static final boolean SMART_PID_ENABLED = false;
     }
 
     public class Profile {
@@ -113,6 +193,26 @@ public class Constants {
       public static final double L4_POSITION = 0.0;
       public static final double NET_POSITION = 0.0;
     }
+  }
+
+  public class ClimberIDs {
+    public static final int CLIMBER_KRAKEN_MOTOR = 12;
+    public static final int CLIMBER_MAGNET_SENSOR_1 = 0;
+    public static final int CLIMBER_MAGNET_SENSOR_2 = 0;
+
+    public static final double CLIMBER_KP = 0.1;
+    public static final double CLIMBER_KD = 0.0;
+    public static final double CLIMBER_KI = 0.0;
+    public static final double CLIMBER_KF = 0.0;
+
+    public static final boolean CLIMBER_SMARTPID_ACTIVE = false;
+
+    public static final double CLIMBER_MAX = 2.0; // in motor rotations
+    public static final double CLIMBER_MIN = -2.0; // in motor rotations
+
+    public static final double CLIMBER_VELOCITY = 5; // TODO figure out velocity
+
+    public static final double CLIMBER_RANGE = .1; // TODO figure out range
   }
 
   public class OI {
@@ -132,8 +232,8 @@ public class Constants {
     public class IDs {
       public class Joysticks {
         public static final int ROTATION_JOYSTICK_ID = 1;
-        public static final int TRANSLATION_JOYSTICK_ID = 2;
-        public static final int BUTTON_STICK_ID = 0;
+        public static final int TRANSLATION_JOYSTICK_ID = 0;
+        public static final int BUTTON_STICK_ID = 2;
       }
 
       public class Buttons {
@@ -149,7 +249,8 @@ public class Constants {
         public class Collector {
           public static final int ROTATE_CORAL = 23;
           public static final int INTAKE_CORAL = 14;
-
+          public static final int COLLECT_CORAL = 11;
+          public static final int SCORE_CORAL = 12;
         }
 
         public class HeadingControl {

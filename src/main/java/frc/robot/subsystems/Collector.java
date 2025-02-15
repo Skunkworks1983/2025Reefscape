@@ -21,16 +21,19 @@ public class Collector extends SubsystemBase {
   private TalonFX rightMotor; 
   private TalonFX leftMotor; 
 
-   private final VelocityVoltage velocityVoltage = new VelocityVoltage(0);
-   private double lastRightSpeed;
-   private double lastLeftSpeed;
+  private final VelocityVoltage velocityVoltage = new VelocityVoltage(0);
+  private double lastRightSpeed;
+  private double lastLeftSpeed;
 
-   // BUG: these motor controllers are not used! Something is likely wrong
-   // with the collector.
-   private SmartPIDControllerTalonFX rightMotorController;
-   private SmartPIDControllerTalonFX leftMotorController;
+  // Neither of these smart PIDs are 'used' after they are constructed because the
+  // PID controller is built into the motor (we don't have to call .calculate like we
+  // do with the PIDController class).
+  @SuppressWarnings("unused")
+  private SmartPIDControllerTalonFX rightMotorController;
+  @SuppressWarnings("unused")
+  private SmartPIDControllerTalonFX leftMotorController;
 
-   private double getLeftMotorVelocity() {
+  private double getLeftMotorVelocity() {
     return leftMotor.getVelocity().getValueAsDouble();
   }
   private double getRightMotorVelocity() {
@@ -79,10 +82,13 @@ public class Collector extends SubsystemBase {
     lastLeftSpeed = leftSpeed;
   }
   @Override
-  public void periodic() { }
+  public void periodic() {
+    SmartDashboard.putNumber("Right motor current", rightMotor.getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Left motor current", leftMotor.getSupplyCurrent().getValueAsDouble());
+  }
   
   public Command rotateCoralCommand() {
-    return Commands.runEnd(
+    return runEnd(
       () -> {
         setCollectorSpeeds(Constants.Collector.COLLECOR_ROTATE_SLOW, 
         Constants.Collector.COLLECOR_ROTATE_FAST);
@@ -95,8 +101,31 @@ public class Collector extends SubsystemBase {
     );
   }
 
-  public Command intakeCoralCommand() {
-    return Commands.runEnd(
+  // true if you want it to stop the motor when the command ends
+  // it should almost always be true unless there will be a following command right after that will end it
+  public Command intakeCoralCommand(
+    boolean stopOnEnd
+  ) {
+    return runEnd(
+      () -> {
+        setCollectorSpeeds(-Constants.Collector.COLLECOR_ROTATE_FAST, 
+          Constants.Collector.COLLECOR_ROTATE_FAST);
+      },
+      () -> {
+        if(stopOnEnd) {
+          setCollectorSpeeds(0, 0);
+        }
+      }
+    ).until(
+      () -> {
+        return rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF &&
+        leftMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF;
+      }
+    );
+  }
+
+  public Command scorePieceCommand() {
+    return runEnd(
       () -> {
         setCollectorSpeeds(-Constants.Collector.COLLECOR_ROTATE_FAST, 
           Constants.Collector.COLLECOR_ROTATE_FAST);
@@ -107,4 +136,13 @@ public class Collector extends SubsystemBase {
     );
   }
 
+  public Command waitAfterCatchPieceCommand() {
+    return Commands.sequence(
+      intakeCoralCommand(false),
+      Commands.race(
+        scorePieceCommand(),
+        Commands.waitSeconds(Constants.Collector.SECONDS_BEFORE_CUTTOF)
+      )
+    );
+  }
 }
