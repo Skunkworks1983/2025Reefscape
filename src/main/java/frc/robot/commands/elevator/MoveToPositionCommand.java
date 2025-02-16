@@ -10,7 +10,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
-import frc.robot.constants.Constants.Elevator.Profile;
 import frc.robot.subsystems.Elevator;
 
 // This command moves to the elevator from its current position to the argument
@@ -26,13 +25,14 @@ public class MoveToPositionCommand extends Command {
 
   private final static TrapezoidProfile motionProfile = new TrapezoidProfile(
     new Constraints(
-      Profile.MAX_VELOCITY,
-      Profile.MAX_ACCELERATION
+      Constants.Elevator.Profile.MAX_VELOCITY,
+      Constants.Elevator.Profile.MAX_ACCELERATION
     )
   );
 
   public MoveToPositionCommand(Elevator elevator, double targetHeight) {
-    this.targetState = new State(targetHeight, 0.0);
+    this.targetState = new State(targetHeight * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS, 0.0);
+    startState = new State();
     this.elevator = elevator;
     timeElapsed = new Timer();
     timeElapsed.stop();
@@ -46,18 +46,14 @@ public class MoveToPositionCommand extends Command {
 
   @Override
   public void execute() {
-    State motionProfileResult = motionProfile.calculate(
+
+    startState = motionProfile.calculate(
       timeElapsed.get(), // Time is the only variable that changes throughout each run
       startState, 
       targetState
     );
 
-    elevator.setMotorSafe(
-      elevator.getPositionController().calculate(
-        elevator.getElevatorPosition(),
-        motionProfileResult.position
-      )
-    );
+    elevator.setMotorTrapezoidProfileSafe(startState.position, startState.velocity);
   }
 
   @Override
