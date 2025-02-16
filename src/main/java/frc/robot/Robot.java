@@ -40,10 +40,10 @@ public class Robot extends TimedRobot {
     }
     if(drivebase.isPresent()) {
       drivebase.get().setDefaultCommand(
-        drivebase.get().getSwerveHeadingCorrected(
+        drivebase.get().getSwerveCommand(
           oi::getInstructedXMetersPerSecond,
           oi::getInstructedYMetersPerSecond,
-          (Supplier<Rotation2d>)() -> new Rotation2d(),
+          oi::getInstructedDegreesPerSecond,
           true
         )
       ); // add a set translation controls function. Create a curried function that creates
@@ -65,10 +65,10 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() { 
     if(drivebase.isPresent()) {
-      drivebase.get().getSwerveHeadingCorrected(
+      drivebase.get().getSwerveCommand(
         oi::getInstructedXMetersPerSecond,
         oi::getInstructedYMetersPerSecond,
-        (Supplier<Rotation2d>)() -> new Rotation2d(),
+        oi::getInstructedDegreesPerSecond,
         true
       ).schedule();
     }

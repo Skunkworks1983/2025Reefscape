@@ -107,6 +107,10 @@ public class OI {
   }
 
   public double getInstructedDegreesPerSecond() {
+
+    SmartDashboard.putNumber("Instructed Rot", joystickToDegreesPerSecond.apply(
+      applyDeadband.apply(-rotationJoystick.getX())));
+      
     return joystickToDegreesPerSecond.apply(
         applyDeadband.apply(-rotationJoystick.getX()));
   }

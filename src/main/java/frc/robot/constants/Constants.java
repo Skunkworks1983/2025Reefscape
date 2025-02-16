@@ -118,7 +118,7 @@ public class Constants {
       public static final Translation2d REEF = new Translation2d();
     }
 
-    public static final double SECONDS_UNTIL_HEADING_CONTROL = 1.0;
+    public static final double SECONDS_UNTIL_HEADING_CONTROL = 0.0;
   }
 
   public class VisionConstants {

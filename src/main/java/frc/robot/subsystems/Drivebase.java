@@ -282,21 +282,35 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     // Workaround, this counts as effectively final
     Rotation2d[] lastRecordedHeading = {getGyroAngle()};
 
-    return Commands.either(
-      getBaseSwerveCommand(getXMetersPerSecond, getYMetersPerSecond, getOmegaDegreesPerSecond, fieldRelative),
-      Commands.sequence(
-        new WaitCommand(Constants.Drivebase.SECONDS_UNTIL_HEADING_CONTROL),
-        getSwerveHeadingCorrected(
-          getXMetersPerSecond,
-          getYMetersPerSecond,
-          (Supplier<Rotation2d>)() -> lastRecordedHeading[0],
-          true
-        ).beforeStarting(
-          () -> lastRecordedHeading[0] = getGyroAngle()
-        )
-      ),
-      (BooleanSupplier) () -> (getOmegaDegreesPerSecond.getAsDouble() > 0.0)
-    );
+    return Commands.sequence(
+        getBaseSwerveCommand(
+          getXMetersPerSecond, 
+          getYMetersPerSecond, 
+          getOmegaDegreesPerSecond, 
+          fieldRelative
+        ).until(
+          (BooleanSupplier)() -> Math.abs(getOmegaDegreesPerSecond.getAsDouble()) == 0.0
+        ),
+        // Commands.sequence(
+        //   Commands.race(
+        //     new WaitCommand(Constants.Drivebase.SECONDS_UNTIL_HEADING_CONTROL),
+        //     getBaseSwerveCommand(
+        //       getXMetersPerSecond, 
+        //       getYMetersPerSecond, 
+        //       getOmegaDegreesPerSecond, 
+        //       fieldRelative
+        //     )
+        //   ),
+          getSwerveHeadingCorrected(
+            getXMetersPerSecond,
+            getYMetersPerSecond,
+            (Supplier<Rotation2d>)() -> lastRecordedHeading[0],
+            true
+          ).beforeStarting(
+            () -> lastRecordedHeading[0] = getGyroAngle()
+          )
+        .until((BooleanSupplier)() -> Math.abs(getOmegaDegreesPerSecond.getAsDouble()) > 0.0)
+    ).repeatedly();
   }
 
   /**
@@ -341,14 +355,16 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
           yMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
           degreesPerSecond.getAsDouble(),
           isFieldRelative);
-      },
+      }
+      ,
       () -> {
-        drive(
-          0,
-          0,
-          0,
-          isFieldRelative);
-      }).beforeStarting(
+        // drive(
+        //   0,
+        //   0,
+        //   0,
+        //   isFieldRelative);
+      }
+      ).beforeStarting(
         () -> {
           setAllModulesTurnPidActive();
         });
