@@ -16,6 +16,7 @@ import com.ctre.phoenix6.StatusSignal;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.constants.Constants;
 
 public class Phoenix6Odometry {
@@ -56,6 +57,7 @@ public class Phoenix6Odometry {
     signalsGroup.addAll(turnMotorPositionSignalGroup);
     signalsGroup.addAll(turnMotorVelocitySignalGroup);
     signalsGroup.addAll(driveMotorVelocitySignalGroup);
+    signalsGroup.addAll(driveMotorPositionSignalGroup);
     signalsGroup.add(gyroStatusSignal);
 
     // Using toArray(new BaseStatusSignal[0]) to specify type to be used.
@@ -92,19 +94,21 @@ public class Phoenix6Odometry {
     return phoenix6DrivebaseState;
   }
 
-
   private void updateDrivebaseState() {
-
     Phoenix6SwerveModuleState currentSwerveModuleStates[] 
       = new Phoenix6SwerveModuleState[Constants.Drivebase.MODULES.length];
 
     assert driveMotorVelocitySignalGroup.size() == turnMotorPositionSignalGroup.size();
     assert turnMotorVelocitySignalGroup.size() == turnMotorPositionSignalGroup.size();
+    BaseStatusSignal.refreshAll(
+      signalsGroup.toArray(new BaseStatusSignal[0])
+    );
+
     for (int i = 0; i < driveMotorVelocitySignalGroup.size(); i++) {
       currentSwerveModuleStates[i] = new Phoenix6SwerveModuleState(
-        driveMotorPositionSignalGroup.get(i).getValueAsDouble(),
-        driveMotorVelocitySignalGroup.get(i).getValueAsDouble(),
-        turnMotorPositionSignalGroup.get(i).getValueAsDouble()
+          driveMotorPositionSignalGroup.get(i).getValueAsDouble(),
+          driveMotorVelocitySignalGroup.get(i).getValueAsDouble(),
+          turnMotorPositionSignalGroup.get(i).getValueAsDouble()
       );
     }
 

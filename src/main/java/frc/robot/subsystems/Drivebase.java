@@ -146,7 +146,6 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       }
     );
 
-    SmartDashboard.putNumber("Gyro", currentState.gyroAngle.getDegrees());
     swerveOdometryField2d.setRobotPose(swerveDrivePoseEstimator.getEstimatedPosition());
   }
 
