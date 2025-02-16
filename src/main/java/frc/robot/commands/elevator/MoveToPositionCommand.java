@@ -52,7 +52,7 @@ public class MoveToPositionCommand extends Command {
       targetState
     );
 
-    elevator.setMotor(
+    elevator.setMotorSafe(
       elevator.getPositionController().calculate(
         elevator.getElevatorPosition(),
         motionProfileResult.position

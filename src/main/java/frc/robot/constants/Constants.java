@@ -176,6 +176,7 @@ public class Constants {
     public static final double GEAR_RATIO = 1.0/5.0;
     public static final double ROTATIONS_TO_METERS = 0.1016 * STAGE_ONE_TO_CARRIAGE_HEIGHT;
     public static final double MOTOR_ROTATIONS_TO_METERS = GEAR_RATIO * ROTATIONS_TO_METERS;
+    public static final double METERS_TO_MOTOR_ROTATIONS = 1 / MOTOR_ROTATIONS_TO_METERS;
 
 
     public class PIDs {
