@@ -55,7 +55,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       Constants.Drivebase.PIDs.HEADING_CONTROL_kD);
 
   // private AHRS gyro = new AHRS(NavXComType.kUSB1);
-  private Pigeon2 gyro = new Pigeon2(26, Constants.Drivebase.CANIVORE_NAME);
+  private Pigeon2 gyro = new Pigeon2(Constants.Drivebase.PIGEON_ID, Constants.Drivebase.CANIVORE_NAME);
   private StructArrayPublisher<SwerveModuleState> desiredSwervestate = NetworkTableInstance.getDefault()
       .getStructArrayTopic("Desired swervestate", SwerveModuleState.struct).publish();
   private StructArrayPublisher<SwerveModuleState> actualSwervestate = NetworkTableInstance.getDefault()
@@ -109,6 +109,14 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   public void periodic() {
     updateOdometry();
     SmartDashboard.putNumber("Pigeon Gyro", getGyroAngle().getDegrees());
+    SmartDashboard.putNumber("Heading Control Error", headingController.getError());
+    SmartDashboard.putNumber("Heading Controller Setpoint", headingController.getSetpoint());
+    SmartDashboard.putNumber("Gyro Measurement in degrees", getGyroAngle().getDegrees());
+    SmartDashboard.putNumber("Heading Controller Output", headingController.calculate(
+      getGyroAngle().getDegrees(),
+      0.0
+    ));
+
   }
 
   /**
@@ -204,7 +212,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
   public Rotation2d getGyroAngle() {
     // Negated because gyro measurements are counterclockwise-positive.
-    double angleDegrees = -gyro.getYaw().getValueAsDouble();
+    double angleDegrees = gyro.getYaw().getValueAsDouble();
     SmartDashboard.putNumber("Gyro", angleDegrees);
     return Rotation2d.fromDegrees(angleDegrees);
   }
@@ -299,14 +307,6 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       DoubleSupplier getYMetersPerSecond,
       Supplier<Rotation2d> getDesiredHeading,
       boolean isFieldRelative) {
-
-    SmartDashboard.putNumber("Heading Control Error", headingController.getError());
-    SmartDashboard.putNumber("Heading Controller Setpoint", headingController.getSetpoint());
-    SmartDashboard.putNumber("Gyro Measurement in degrees", getGyroAngle().getDegrees());
-    SmartDashboard.putNumber("Heading Controller Output", headingController.calculate(
-      getGyroAngle().getDegrees(),
-      getDesiredHeading.get().getDegrees()
-    ));
 
     return getBaseSwerveCommand(
         getXMetersPerSecond,

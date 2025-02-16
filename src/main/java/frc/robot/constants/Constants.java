@@ -18,7 +18,7 @@ public class Constants {
     // must be constructed and assigned to the correct variable in Robot.java.
     // If some subsystems are not created and this value is true, an exeption
     // will be thrown.
-    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = true;
+    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = false;
 
     public static final double NUMBER_OF_MOTOR_ROTATIONS_FOR_MODULE_TEST = 1.0;
     public static final double TURN_MOTOR_ROTATION_SPEED = 0.15;
@@ -59,19 +59,34 @@ public class Constants {
       public static int BUTTON_STICK_ID = 3;
     }
 
+    public static final double TRANSLATION_X = 0.925;
+    public static final double TRANSLATION_Y = 0.8041666;
+
+    public static final double T_X = TRANSLATION_X;
+    public static final double T_Y = TRANSLATION_Y;
+
+    public static final int PIGEON_ID = 26;
+
     public static SwerveModuleConstants MODULES[] = {
-        new SwerveModuleConstants(
-            10, 11, 12, -0.337158, new Translation2d(0.288925, 0.288925), "Front Left"),
-        new SwerveModuleConstants(
-            13, 14, 15, -0.289795, new Translation2d(0.288925, -0.288925), "Front Right"),
-        new SwerveModuleConstants(
-            16, 17, 18, 0.476318, new Translation2d(-0.288925, 0.288925), "Back Left"),
-        new SwerveModuleConstants(
-            19, 20, 21, -0.353027, new Translation2d(-0.288925, -0.288925), "Back Right")
+          new SwerveModuleConstants(18, 16, 17, 0.311035, new Translation2d(T_X, T_Y), "Front Left"),
+          new SwerveModuleConstants(12, 10, 11, -0.415283, new Translation2d(T_X, -T_Y), "Front Right"),
+          new SwerveModuleConstants(23, 25, 24, -0.205566, new Translation2d(-T_X, T_Y), "Back Left"),
+          new SwerveModuleConstants(20, 22, 21, 0.308838, new Translation2d(-T_X, -T_Y), "Back Right")
     };
 
+    // public static SwerveModuleConstants MODULES[] = {
+    //     new SwerveModuleConstants(
+    //         10, 11, 12, -0.337158, new Translation2d(0.288925, 0.288925), "Front Left"),
+    //     new SwerveModuleConstants(
+    //         13, 14, 15, -0.289795, new Translation2d(0.288925, -0.288925), "Front Right"),
+    //     new SwerveModuleConstants(
+    //         16, 17, 18, 0.476318, new Translation2d(-0.288925, 0.288925), "Back Left"),
+    //     new SwerveModuleConstants(
+    //         19, 20, 21, -0.353027, new Translation2d(-0.288925, -0.288925), "Back Right")
+    // };
+
     public class Info {
-      public static final double DRIVE_MOTOR_GEAR_RATIO = 6.12;
+      public static final double DRIVE_MOTOR_GEAR_RATIO = 6.75; // 6.12;
       public static final double WHEEL_DIAMETER = 0.0991108;
       public static final double REVS_PER_METER = DRIVE_MOTOR_GEAR_RATIO / (WHEEL_DIAMETER * Math.PI);
       public static final double TURN_MOTOR_GEAR_RATIO = 150.0 / 7.0;
@@ -88,7 +103,7 @@ public class Constants {
       public static final double SWERVE_MODULE_DRIVE_kI = 0.0;
       public static final double SWERVE_MODULE_DRIVE_kD = 0.0;
       public static final double SWERVE_MODULE_DRIVE_kF = 0.1075;
-      public static final double HEADING_CONTROL_kP = 0.00001;
+      public static final double HEADING_CONTROL_kP = 1.50;
       public static final double HEADING_CONTROL_kI = 0.0;
       public static final double HEADING_CONTROL_kD = 0.0;
       public static final double PID_LOW_LIMIT = -0.8;

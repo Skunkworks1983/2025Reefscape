@@ -9,6 +9,7 @@ import java.util.function.DoubleFunction;
 import java.util.function.Supplier;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.constants.Constants.OI.LIMITS;
 import frc.robot.constants.Constants;
@@ -69,18 +70,23 @@ public class OI {
     if(optionalDrivebase.isPresent()) { 
       Drivebase drivebase = optionalDrivebase.get();
 
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.TARGET_REEF)
-        .whileTrue(drivebase.getSwerveHeadingCorrected(
-          this::getInstructedXMetersPerSecond,
-          this::getInstructedYMetersPerSecond,
-          (Supplier<Rotation2d>)() -> drivebase.getTargetingAngle(Constants.Drivebase.FieldTarget.REEF),
-          true
-        )
-      );
+      // new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.TARGET_REEF)
+      //   .whileTrue(drivebase.getSwerveHeadingCorrected(
+      //     this::getInstructedXMetersPerSecond,
+      //     this::getInstructedYMetersPerSecond,
+      //     (Supplier<Rotation2d>)() -> drivebase.getTargetingAngle(Constants.Drivebase.FieldTarget.REEF),
+      //     true
+      //   )
+      // );
     }
   }
 
   public double getInstructedXMetersPerSecond() {
+    SmartDashboard.putNumber("Instructed X", joystickToMetersPerSecond.apply(
+      // X and Y are flipped because the joysticks' coordinate system is different
+      // from the field
+      applyDeadband.apply(translationJoystick.getY())));
+
     return joystickToMetersPerSecond.apply(
         // X and Y are flipped because the joysticks' coordinate system is different
         // from the field
@@ -88,6 +94,12 @@ public class OI {
   }
 
   public double getInstructedYMetersPerSecond() {
+
+    SmartDashboard.putNumber("Instructed Y", joystickToMetersPerSecond.apply(
+      // X and Y are flipped because the joysticks' coordinate system is different
+      // from the field
+      applyDeadband.apply(translationJoystick.getX())));
+
     return joystickToMetersPerSecond.apply(
         // X and Y are flipped because the joysticks' coordinate system is different
         // from the field

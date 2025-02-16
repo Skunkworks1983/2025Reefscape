@@ -5,7 +5,9 @@
 package frc.robot;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.utils.error.ErrorCommandGenerator;
@@ -18,8 +20,8 @@ public class Robot extends TimedRobot {
 
   // replace subsystem with Optional.empty() for testing
   // ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
-  Optional<Elevator> elevator = Optional.empty(); // Optional.of(new Elevator());
-  Optional<Collector> collector = Optional.empty();// Optional.of(new Collector());
+  Optional<Elevator> elevator = Optional.empty();
+  Optional<Collector> collector = Optional.empty();
   Optional<Drivebase> drivebase = Optional.of(new Drivebase());
 
   OI oi = new OI( 
@@ -38,10 +40,10 @@ public class Robot extends TimedRobot {
     }
     if(drivebase.isPresent()) {
       drivebase.get().setDefaultCommand(
-        drivebase.get().getBaseSwerveCommand(
+        drivebase.get().getSwerveHeadingCorrected(
           oi::getInstructedXMetersPerSecond,
           oi::getInstructedYMetersPerSecond,
-          oi::getInstructedDegreesPerSecond,
+          (Supplier<Rotation2d>)() -> new Rotation2d(),
           true
         )
       ); // add a set translation controls function. Create a curried function that creates
@@ -63,10 +65,10 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() { 
     if(drivebase.isPresent()) {
-      drivebase.get().getBaseSwerveCommand(
+      drivebase.get().getSwerveHeadingCorrected(
         oi::getInstructedXMetersPerSecond,
         oi::getInstructedYMetersPerSecond,
-        oi::getInstructedDegreesPerSecond,
+        (Supplier<Rotation2d>)() -> new Rotation2d(),
         true
       ).schedule();
     }
