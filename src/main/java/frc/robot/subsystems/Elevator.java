@@ -41,13 +41,14 @@ public class Elevator extends SubsystemBase {
   }
 
   public Elevator() {
-    setDefaultCommand(retainTargetPositionCommand());
-
     TalonFXConfiguration config = new TalonFXConfiguration();
-
     motor.getConfigurator().apply(config);
     motor.setNeutralMode(NeutralModeValue.Brake);
+
     targetPosition = getElevatorPosition();
+    setDefaultCommand(retainTargetPositionCommand(
+      targetPosition
+    ));
   }
 
   @Override
@@ -103,7 +104,10 @@ public class Elevator extends SubsystemBase {
   // This command does not use a motion profile. It is only for maintaing
   // positions and moving very small distances after 
   // MoveToPositionCommand has done almost all of the work.
-  public Command retainTargetPositionCommand() {
+  public Command retainTargetPositionCommand(
+    double targetPosition
+  ) {
+    this.targetPosition = targetPosition;
     return run(
       () -> {
         double velocity = positionController
