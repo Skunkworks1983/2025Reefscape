@@ -9,6 +9,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -52,16 +53,9 @@ public class Elevator extends SubsystemBase {
   public void periodic() {
     if(getBottomLimitSwitch()) {
       motor.setPosition(0.0);
-      if(lastSpeed < 0.0) {
-        setMotorTrapezoidProfileSafe(0.0, 0.0);
-      }
     } else if(getTopLimitSwitch()) {
       motor.setPosition(Constants.Elevator.MAX_HEIGHT_CARRIAGE * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
-      if(lastSpeed > 0.0) {
-        setMotorTrapezoidProfileSafe(Constants.Elevator.MAX_HEIGHT_CARRIAGE * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS, 0.0);
-      }
     }
-    System.out.println(getElevatorPosition());
   }
 
   // Reminder: all positions are measured in meters
@@ -87,20 +81,17 @@ public class Elevator extends SubsystemBase {
   public void setMotorTrapezoidProfileSafe(double position, double velocity) {
     PositionVoltage positionVoltage = new PositionVoltage(0).withSlot(0);
     positionVoltage.Position = position;
+    positionVoltage.Velocity = velocity;
 
-    if(
-      (getBottomLimitSwitch() && position < 0.0) || 
-      (getTopLimitSwitch() && position > Constants.Elevator.MAX_HEIGHT_CARRIAGE * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS)
-    ) {
+    SmartDashboard.putNumber("desired velocity", velocity);
+    SmartDashboard.putNumber("desired position", position);
+    SmartDashboard.putNumber("actual velocity", motor.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("actual position", motor.getPosition().getValueAsDouble());
 
-      lastSpeed = 0.0;
-    }
-    else {
-      lastSpeed = velocity;
-    }
-
-    positionVoltage.Velocity = lastSpeed;
-    motor.setControl(positionVoltage);
+    motor.setControl(positionVoltage
+      .withLimitForwardMotion(getTopLimitSwitch())
+      .withLimitReverseMotion(getBottomLimitSwitch())
+    );
   }
 
   public boolean isAtSetpoint() {

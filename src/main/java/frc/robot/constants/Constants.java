@@ -158,9 +158,9 @@ public class Constants {
   }
 
   public class Elevator {
-    public static final int MOTOR_ID = 0;
-    public static final int BOTTOM_LIMIT_SWITCH_ID = 0;
-    public static final int TOP_LIMIT_SWITCH_ID = 0;
+    public static final int MOTOR_ID = 12;
+    public static final int BOTTOM_LIMIT_SWITCH_ID = 4;
+    public static final int TOP_LIMIT_SWITCH_ID = 5;
 
     // This tolerance value will be used for deciding if the elevator
     // should target to its setpoint or if the setpoint is too far
@@ -180,17 +180,17 @@ public class Constants {
 
 
     public class PIDs {
-      public static final double ELEVATOR_kP = 0.0;
+      public static final double ELEVATOR_kP = 1.25;
       public static final double ELEVATOR_kI = 0.0;
-      public static final double ELEVATOR_kD = 0.0;
+      public static final double ELEVATOR_kD = 0.15;
       public static final double ELEVATOR_kV = 0.0;
       public static final double ELEVATOR_kS = 0.0;
       public static final boolean SMART_PID_ENABLED = false;
     }
 
     public class Profile {
-      public static final double MAX_VELOCITY = 0.0;
-      public static final double MAX_ACCELERATION = 0.0;
+      public static final double MAX_VELOCITY = 60.0;
+      public static final double MAX_ACCELERATION = 80.0;
     }
 
     public class Setpoints {

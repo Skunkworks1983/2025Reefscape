@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.utils.error.ErrorCommandGenerator;
 import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.error.DiagnosticSubsystem;
+import frc.robot.commands.elevator.MoveToPositionCommand;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.*;
 
@@ -18,9 +19,9 @@ public class Robot extends TimedRobot {
 
   // replace subsystem with Optional.empty() for testing
   // ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
-  Optional<Drivebase> drivebase = Optional.of(new Drivebase());
+  Optional<Drivebase> drivebase = Optional.ofNullable(null);
   Optional<Elevator> elevator = Optional.of(new Elevator());
-  Optional<Collector> collector = Optional.of(new Collector());
+  Optional<Collector> collector = Optional.ofNullable(null);
 
   OI oi = new OI( 
     elevator,
@@ -57,6 +58,7 @@ public class Robot extends TimedRobot {
         true
       ).schedule();
     }
+    new MoveToPositionCommand(elevator.get(), Constants.Elevator.Setpoints.L4_POSITION).schedule();
   }
   
   @Override

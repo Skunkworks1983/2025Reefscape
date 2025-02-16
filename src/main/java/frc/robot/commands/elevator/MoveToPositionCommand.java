@@ -18,7 +18,6 @@ import frc.robot.subsystems.Elevator;
 // This command is long and requires a fair amount of state so it is not defined within the
 // Elevator subsystem.
 public class MoveToPositionCommand extends Command {
-  Timer timeElapsed;
   State startState;
   State targetState;
   Elevator elevator;
@@ -32,27 +31,23 @@ public class MoveToPositionCommand extends Command {
 
   public MoveToPositionCommand(Elevator elevator, double targetHeight) {
     this.targetState = new State(targetHeight * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS, 0.0);
-    startState = new State();
+    startState = new State(elevator.getElevatorPosition() * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS, 0.0);
     this.elevator = elevator;
-    timeElapsed = new Timer();
-    timeElapsed.stop();
     addRequirements(elevator);
   }
 
   @Override
-  public void initialize() {
-    timeElapsed.start();
-  }
+  public void initialize() {}
 
   @Override
   public void execute() {
 
     startState = motionProfile.calculate(
-      timeElapsed.get(), // Time is the only variable that changes throughout each run
+      0.020,
       startState, 
       targetState
     );
-
+    
     elevator.setMotorTrapezoidProfileSafe(startState.position, startState.velocity);
   }
 
