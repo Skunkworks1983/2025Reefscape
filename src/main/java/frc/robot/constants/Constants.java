@@ -86,7 +86,7 @@ public class Constants {
 
 
     public class Info {
-      public static final double DRIVE_MOTOR_GEAR_RATIO = 6.12;
+      public static final double DRIVE_MOTOR_GEAR_RATIO = 6.75;
       public static final double WHEEL_DIAMETER = 0.0991108;
       public static final double REVS_PER_METER = DRIVE_MOTOR_GEAR_RATIO / (WHEEL_DIAMETER * Math.PI);
       public static final double TURN_MOTOR_GEAR_RATIO = 150.0 / 7.0;

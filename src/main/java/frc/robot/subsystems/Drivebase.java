@@ -54,6 +54,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   private final Field2d swerveOdometryField2d = new Field2d();
 
   public Drivebase() {
+    gyro.setYaw(0.0);
     Translation2d[] moduleLocations = new Translation2d[Constants.Drivebase.MODULES.length];
     for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
       swerveModules[i] = new SwerveModule(
@@ -68,7 +69,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       );
       moduleLocations[i] = swerveModules[i].moduleLocation;
     }
-    phoenix6Odometry.registerGyroSignal(gyro.getYaw().clone());
+    phoenix6Odometry.registerGyroSignal(gyro.getYaw());
 
     phoenix6Odometry.startRunning();
 
@@ -128,6 +129,13 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
    */
   public void updateOdometry() {
     Phoenix6DrivebaseState currentState = phoenix6Odometry.getState();
+    for(int i =0; i < 4; i++){
+      // logs as velocity
+      SmartDashboard.putNumber(
+        "modulePosition" + i,
+        currentState.swerveState[i].getSwerveModulePosition().distanceMeters);
+    }
+
     swerveDrivePoseEstimator.update(
       currentState.gyroAngle,
       new SwerveModulePosition[] {
@@ -190,7 +198,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   }
 
   public void resetGyroHeading() {
-    // TODO gyro.setYaw(0);
+    gyro.setYaw(0);
   }
 
   public void setAllDriveMotorBreakMode(boolean breakMode) {

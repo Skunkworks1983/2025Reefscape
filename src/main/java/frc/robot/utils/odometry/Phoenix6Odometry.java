@@ -8,29 +8,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.units.Unit;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.constants.Constants;
-import frc.robot.utils.SignalValue;
 
 public class Phoenix6Odometry {
 
-  // For information on what a SignalValue is, see the comment in the SignalValue class.
-  List<SignalValue<? extends Unit>> 
-    SignalValueGroup = new ArrayList<>();
   Thread thread = new Thread(this::run);
   public AtomicBoolean isRunning = new AtomicBoolean(false);
   int failedUpdates;
   int vaildUpdates;
-  public ReentrantReadWriteLock stateLock = new ReentrantReadWriteLock();
 
   volatile private Phoenix6DrivebaseState phoenix6DrivebaseState;
 
@@ -57,12 +50,18 @@ public class Phoenix6Odometry {
 
   public void startRunning(){
     signalsGroup = new ArrayList<>();
-    isRunning.set(true);
+    isRunning.set(true); //Signals can no longer be added
     updateMotors();
     updateDrivebaseState();
     signalsGroup.addAll(turnMotorPositionSignalGroup);
     signalsGroup.addAll(turnMotorVelocitySignalGroup);
     signalsGroup.addAll(driveMotorVelocitySignalGroup);
+    signalsGroup.add(gyroStatusSignal);
+
+    BaseStatusSignal.setUpdateFrequencyForAll(
+      Constants.Phoenix6Odometry.updatesPerSecond,
+      signalsGroup.toArray(new BaseStatusSignal[0])
+    );
     thread.start();
   }
 
@@ -76,7 +75,7 @@ public class Phoenix6Odometry {
   public void updateMotors(){
     // Notes: waitForAll uses signals as an out param.
     StatusCode status = BaseStatusSignal.waitForAll(
-      Constants.Phoenix6Odometry.updatesPerSecond,
+      1.0 / Constants.Phoenix6Odometry.updatesPerSecond,
       signalsGroup.toArray(new BaseStatusSignal[0])
     );
 
@@ -112,8 +111,7 @@ public class Phoenix6Odometry {
       }
 
     Phoenix6DrivebaseState currentPhoenix6DrivebaseState = new Phoenix6DrivebaseState(
-      // Negated because gyro measurements are counterclockwise-positive.
-      Rotation2d.fromDegrees(-gyroStatusSignal.getValueAsDouble()),
+      Rotation2d.fromDegrees(gyroStatusSignal.getValueAsDouble()),
       currentSwerveModuleStates
     );
 

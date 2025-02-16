@@ -20,6 +20,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -109,10 +110,10 @@ public class SwerveModule extends SubsystemBase {
     turnEncoder.getConfigurator().apply(encoder);
 
     m_Velocity.Slot = 0;
-    driveMotorVelocitySignal = driveMotor.getVelocity().clone();
-    driveMotorPositionSignal = driveMotor.getPosition().clone();
-    turnMotorPositionSignal = turnMotor.getPosition().clone();
-    turnMotorVelocitySignal = turnMotor.getVelocity().clone();
+    driveMotorVelocitySignal = driveMotor.getVelocity();
+    driveMotorPositionSignal = driveMotor.getPosition();
+    turnMotorPositionSignal = turnEncoder.getPosition();
+    turnMotorVelocitySignal = turnEncoder.getVelocity();
   }
 
   @Override
