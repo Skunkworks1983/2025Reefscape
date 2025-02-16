@@ -48,7 +48,7 @@ public class Constants {
   }
 
   public class Drivebase {
-    // TODO public static final String CANIVORE_NAME = "1983 Comp Drivebase";
+    public static final String CANIVORE_NAME = "1983 Comp Drivebase";
 
     public static final double MAX_METERS_PER_SECOND = 4.5;
     public static final double MAX_DEGREES_PER_SECOND = 270;

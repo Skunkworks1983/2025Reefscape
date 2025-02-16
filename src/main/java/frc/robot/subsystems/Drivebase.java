@@ -20,6 +20,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
@@ -53,9 +54,8 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       Constants.Drivebase.PIDs.HEADING_CONTROL_kI,
       Constants.Drivebase.PIDs.HEADING_CONTROL_kD);
 
-  private AHRS gyro = new AHRS(NavXComType.kUSB1);
-  // TODO private Pigeon2 gyro = new Pigeon2(26,
-  // Constants.Drivebase.CANIVORE_NAME);
+  // private AHRS gyro = new AHRS(NavXComType.kUSB1);
+  private Pigeon2 gyro = new Pigeon2(26, Constants.Drivebase.CANIVORE_NAME);
   private StructArrayPublisher<SwerveModuleState> desiredSwervestate = NetworkTableInstance.getDefault()
       .getStructArrayTopic("Desired swervestate", SwerveModuleState.struct).publish();
   private StructArrayPublisher<SwerveModuleState> actualSwervestate = NetworkTableInstance.getDefault()
@@ -75,8 +75,8 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
     Pigeon2Configuration gConfiguration = new Pigeon2Configuration();
     gConfiguration.MountPose.MountPoseYaw = 0;
-    // TODO gyro.getConfigurator().apply(gConfiguration);
-    // TODO resetGyroHeading();
+    gyro.getConfigurator().apply(gConfiguration);
+    resetGyroHeading();
 
     swerveDriveKinematics = new SwerveDriveKinematics(moduleLocations);
 
@@ -108,6 +108,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   @Override
   public void periodic() {
     updateOdometry();
+    SmartDashboard.putNumber("Pigeon Gyro", getGyroAngle().getDegrees());
   }
 
   /**
@@ -192,7 +193,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   }
 
   public void resetGyroHeading() {
-    // TODO gyro.setYaw(0);
+    gyro.setYaw(0);
   }
 
   public void setAllDriveMotorBreakMode(boolean breakMode) {
@@ -203,7 +204,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
   public Rotation2d getGyroAngle() {
     // Negated because gyro measurements are counterclockwise-positive.
-    double angleDegrees = -gyro.getAngle();
+    double angleDegrees = -gyro.getYaw().getValueAsDouble();
     SmartDashboard.putNumber("Gyro", angleDegrees);
     return Rotation2d.fromDegrees(angleDegrees);
   }
