@@ -31,6 +31,7 @@ public class Phoenix6SwerveModuleState {
       Rotation2d.fromRotations(turnMotorAngle)
     );
   }
+
   public SwerveModuleState getSwerveModuleState(){
     return new SwerveModuleState(
       driveMotorVelocity / Constants.Drivebase.Info.REVS_PER_METER,

@@ -77,7 +77,7 @@ public class Phoenix6Odometry {
     // Notes: waitForAll uses signals as an out param.
     StatusCode status = BaseStatusSignal.waitForAll(
       Constants.Phoenix6Odometry.updatesPerSecond,
-      (BaseStatusSignal[])signalsGroup.toArray()
+      signalsGroup.toArray(new BaseStatusSignal[0])
     );
 
     if(status.isOK()) {
@@ -144,6 +144,7 @@ public class Phoenix6Odometry {
 
     turnMotorPositionSignalGroup.set(moduleNumber, turnMotorPositionSignal);
     turnMotorVelocitySignalGroup.set(moduleNumber, turnMotorVelocitySignal);
+    driveMotorPositionSignalGroup.set(moduleNumber, driveMotorPosition);
     driveMotorVelocitySignalGroup.set(moduleNumber, driveMotorVelocity);
   }
 }

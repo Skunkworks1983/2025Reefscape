@@ -17,7 +17,7 @@ public class Constants {
     // must be constructed and assigned to the correct variable in Robot.java.
     // If some subsystems are not created and this value is true, an exeption
     // will be thrown.
-    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = true;
+    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = false;
 
     public static final double NUMBER_OF_MOTOR_ROTATIONS_FOR_MODULE_TEST = 1.0;
     public static final double TURN_MOTOR_ROTATION_SPEED = 0.15;
@@ -63,6 +63,8 @@ public class Constants {
 
     public static final double T_X = TRANSLATION_X;
     public static final double T_Y = TRANSLATION_Y;
+
+    public static final int PIGEON_ID = 26;
 
     public static SwerveModuleConstants MODULES[] = {
           new SwerveModuleConstants(18, 16, 17, 0.311035, new Translation2d(T_X, T_Y), "Front Left"),
