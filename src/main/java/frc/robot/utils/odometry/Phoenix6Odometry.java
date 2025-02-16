@@ -50,7 +50,7 @@ public class Phoenix6Odometry {
 
   public void startRunning(){
     signalsGroup = new ArrayList<>();
-    isRunning.set(true); //Signals can no longer be added
+    isRunning.set(true); //isRunning means that signals can no longer be added
     updateMotors();
     updateDrivebaseState();
     signalsGroup.addAll(turnMotorPositionSignalGroup);
@@ -58,6 +58,7 @@ public class Phoenix6Odometry {
     signalsGroup.addAll(driveMotorVelocitySignalGroup);
     signalsGroup.add(gyroStatusSignal);
 
+    // Using toArray(new BaseStatusSignal[0]) to specify type to be used.
     BaseStatusSignal.setUpdateFrequencyForAll(
       Constants.Phoenix6Odometry.updatesPerSecond,
       signalsGroup.toArray(new BaseStatusSignal[0])
@@ -73,7 +74,8 @@ public class Phoenix6Odometry {
   }
 
   public void updateMotors(){
-    // Notes: waitForAll uses signals as an out param.
+    // waitForAll uses signals as an out param.
+    // Using toArray(new BaseStatusSignal[0]) to specify type to be used.
     StatusCode status = BaseStatusSignal.waitForAll(
       1.0 / Constants.Phoenix6Odometry.updatesPerSecond,
       signalsGroup.toArray(new BaseStatusSignal[0])
@@ -93,22 +95,18 @@ public class Phoenix6Odometry {
 
   private void updateDrivebaseState() {
 
-    Phoenix6SwerveModuleState currentSwerveModuleStates[] = new Phoenix6SwerveModuleState[Constants.Drivebase.MODULES.length];
+    Phoenix6SwerveModuleState currentSwerveModuleStates[] 
+      = new Phoenix6SwerveModuleState[Constants.Drivebase.MODULES.length];
 
     assert driveMotorVelocitySignalGroup.size() == turnMotorPositionSignalGroup.size();
     assert turnMotorVelocitySignalGroup.size() == turnMotorPositionSignalGroup.size();
     for (int i = 0; i < driveMotorVelocitySignalGroup.size(); i++) {
       currentSwerveModuleStates[i] = new Phoenix6SwerveModuleState(
-        BaseStatusSignal.getLatencyCompensatedValueAsDouble(
-          driveMotorPositionSignalGroup.get(i),
-          driveMotorVelocitySignalGroup.get(i)
-        ),
+        driveMotorPositionSignalGroup.get(i).getValueAsDouble(),
         driveMotorVelocitySignalGroup.get(i).getValueAsDouble(),
-        BaseStatusSignal.getLatencyCompensatedValueAsDouble(
-          turnMotorPositionSignalGroup.get(i),
-          turnMotorVelocitySignalGroup.get(i))
-        );
-      }
+        turnMotorPositionSignalGroup.get(i).getValueAsDouble()
+      );
+    }
 
     Phoenix6DrivebaseState currentPhoenix6DrivebaseState = new Phoenix6DrivebaseState(
       Rotation2d.fromDegrees(gyroStatusSignal.getValueAsDouble()),

@@ -16,11 +16,9 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -142,21 +140,11 @@ public class SwerveModule extends SubsystemBase {
     );
   }
 
-  // returns meters traveled
-  public double getDriveMotorEncoderPosition() {
-    return driveMotor.getPosition().getValueAsDouble() / Constants.Drivebase.Info.REVS_PER_METER;
-  }
-
   // Almost nothing should be calling this exept tests, this gets position from the turn motor
   // what should be used would be getTurnMotorAngle()
   public double getTurnMotorEncoderPosition() {
     // TODO find a way to check robot to see if we are in test mode then log an error if not
     return turnMotor.getPosition().getValueAsDouble() / Constants.Drivebase.Info.TURN_MOTOR_GEAR_RATIO; 
-  }
-
-  // returns velocity in meters
-  public double getDriveMotorVelocity() {
-    return driveMotor.getVelocity().getValueAsDouble() / Constants.Drivebase.Info.REVS_PER_METER;
   }
 
   public void setTurnMotorSpeed(double speed) {
@@ -219,15 +207,6 @@ public class SwerveModule extends SubsystemBase {
     // sets the desired turn motor angle to the new angle
     Rotation2d turnMotorAngleOptimized = new Rotation2d(newStateOptimized.angle.getRadians());
     setModuleTurnSetpoint(turnMotorAngleOptimized);
-  }
-
-  public SwerveModuleState getSwerveModuleState() {
-    return new SwerveModuleState(getDriveMotorVelocity(), getTurnMotorAngle());
-  }
-
-  public SwerveModulePosition getSwerveModulePosition() {
-    return new SwerveModulePosition(getDriveMotorEncoderPosition(),
-      getTurnMotorAngle());
   }
 
   @Override
