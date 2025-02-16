@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -35,7 +36,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.SwerveWaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.VisionConstants;
 import frc.robot.subsystems.vision.Vision;
@@ -144,7 +145,8 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   }
 
   /**
-   * @return the estimated pose of the robot from the SwerveDrivePoseEstimator's
+   * @return the estimated pose of the robot from the
+   *         {@link SwerveDrivePoseEstimator}'s
    *         odometry
    */
   public Pose2d getEstimatedRobotPose() {
@@ -152,7 +154,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   }
 
   // TODO: add docstring
-  public void drive(double xMetersPerSecond, double yMetersPerSecond,
+  private void drive(double xMetersPerSecond, double yMetersPerSecond,
       double degreesPerSecond, boolean isFieldRelative) {
     ChassisSpeeds chassisSpeeds;
     double radiansPerSecond = Units.degreesToRadians(degreesPerSecond);
@@ -201,7 +203,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
   public Rotation2d getGyroAngle() {
     // Negated because gyro measurements are counterclockwise-positive.
-    double angleDegrees = 0.0; // TODO -gyro.getYaw().getValueAsDouble();
+    double angleDegrees = -gyro.getAngle();
     SmartDashboard.putNumber("Gyro", angleDegrees);
     return Rotation2d.fromDegrees(angleDegrees);
   }
@@ -235,42 +237,87 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
         getGyroAngle());
   }
 
-  public double calculateHeadingController(double measurement, double setpoint) {
-    return headingController.calculate(measurement, setpoint);
-  }
-
-  public Command getSwerveFullFunction(
-      DoubleSupplier xMetersPerSecond,
-      DoubleSupplier yMetersPerSecond,
-      DoubleSupplier degreesPerSecond,
-      boolean isFieldRelative) {
-
-    if (degreesPerSecond.getAsDouble() >= .1) {
-      return getSwerveCommand(xMetersPerSecond, yMetersPerSecond, degreesPerSecond, true);
-    } else {
-      return new SwerveWaitCommand(
-        this, 
-        (Supplier<Rotation2d>) () -> getGyroAngle(), 
-        xMetersPerSecond, 
-        yMetersPerSecond);
+  @Override
+  public Command getErrorCommand(
+      ErrorGroup errorGroupHandler) {
+    Command[] swerveModuleCommandArray = new Command[Constants.Drivebase.MODULES.length];
+    for (int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
+      swerveModuleCommandArray[i] = swerveModules[i].TestConnectionThenModule(errorGroupHandler);
     }
+    return Commands.parallel(swerveModuleCommandArray);
   }
 
-  // Used by the heading controller
+  /**
+   * Bound in OI.
+   * 
+   * @param target the field location to point at.
+   * @return the heading needed for the robot to point at the target.
+   */
+  public Rotation2d getTargetingAngle(Translation2d target) {
+    Pose2d robotPose = getEstimatedRobotPose();
+    Rotation2d angle = new Rotation2d(target.getX() - robotPose.getX(), target.getY() - robotPose.getY());
+    return angle;
+  }
+
+  /**
+   * @return The swerve drive command to be used in Teleop. Heading is corrected
+   *         with
+   *         PID.
+   */
+  public Command getSwerveCommand(
+      DoubleSupplier getXMetersPerSecond,
+      DoubleSupplier getYMetersPerSecond,
+      DoubleSupplier getOmegaDegreesPerSecond,
+      boolean fieldRelative) {
+
+    return Commands.either(
+        getBaseSwerveCommand(getXMetersPerSecond, getYMetersPerSecond, getOmegaDegreesPerSecond, fieldRelative),
+        getSwerveWaitCommand(getXMetersPerSecond, getYMetersPerSecond, this::getGyroAngle, fieldRelative),
+        (BooleanSupplier) () -> (getOmegaDegreesPerSecond.getAsDouble() > 0.0));
+  }
+
+  /**
+   * Intented to be used for position targeting exclusively.
+   */
   public Command getSwerveHeadingCorrected(
-      DoubleSupplier xMetersPerSecond,
-      DoubleSupplier yMetersPerSecond,
-      Supplier<Rotation2d> rotationalSetpoint,
+      DoubleSupplier getXMetersPerSecond,
+      DoubleSupplier getYMetersPerSecond,
+      Supplier<Rotation2d> getDesiredHeading,
       boolean isFieldRelative) {
-    return getSwerveCommand(
-        xMetersPerSecond,
-        yMetersPerSecond,
-        (DoubleSupplier) () -> headingController.calculate(getGyroAngle().getDegrees(),
-            rotationalSetpoint.get().getDegrees()),
+
+    return getBaseSwerveCommand(
+        getXMetersPerSecond,
+        getYMetersPerSecond,
+        (DoubleSupplier) () -> headingController.calculate(
+            getGyroAngle().getDegrees(),
+            getDesiredHeading.get().getDegrees()),
         isFieldRelative);
   }
 
-  public Command getSwerveCommand(
+  private Command getSwerveWaitCommand(
+      DoubleSupplier getXMetersPerSecond,
+      DoubleSupplier getYMetersPerSecond,
+      Supplier<Rotation2d> getHeading,
+      boolean fieldRelative) {
+
+    Rotation2d[] lastRecordedHeading = {};
+
+    return Commands.sequence(
+        new WaitCommand(Constants.Drivebase.SECONDS_UNTIL_HEADING_CONTROL),
+        getSwerveHeadingCorrected(
+            getXMetersPerSecond,
+            getYMetersPerSecond,
+            (Supplier<Rotation2d>) () -> lastRecordedHeading[0],
+            true).beforeStarting(
+                () -> lastRecordedHeading[0] = getHeading.get()));
+  }
+
+  /**
+   * A basic swerve drive command. Intended to be used exclusively within other
+   * commands in drivebase.
+   * {@link #getSwerveCommand()}
+   */
+  private Command getBaseSwerveCommand(
       DoubleSupplier xMetersPerSecond,
       DoubleSupplier yMetersPerSecond,
       DoubleSupplier degreesPerSecond,
@@ -300,24 +347,5 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
             () -> {
               setAllModulesTurnPidActive();
             });
-  }
-
-  /** 
-   * @param target the field location to point at.
-   * @return the heading needed for the robot to point at {@code target} */
-  public Rotation2d getTargetingAngle(Translation2d target) {
-    Pose2d robotPose = getEstimatedRobotPose();
-    Rotation2d angle = new Rotation2d(target.getX() - robotPose.getX(), target.getY() - robotPose.getY());
-    return angle;
-  }
-
-  @Override
-  public Command getErrorCommand(
-      ErrorGroup errorGroupHandler) {
-    Command[] swerveModuleCommandArray = new Command[Constants.Drivebase.MODULES.length];
-    for (int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
-      swerveModuleCommandArray[i] = swerveModules[i].TestConnectionThenModule(errorGroupHandler);
-    }
-    return Commands.parallel(swerveModuleCommandArray);
   }
 }

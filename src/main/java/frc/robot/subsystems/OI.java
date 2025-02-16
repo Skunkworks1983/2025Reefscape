@@ -6,8 +6,8 @@ package frc.robot.subsystems;
 
 import java.util.Optional;
 import java.util.function.DoubleFunction;
-import java.util.function.DoubleSupplier;
-
+import java.util.function.Supplier;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.constants.Constants.OI.LIMITS;
@@ -69,15 +69,12 @@ public class OI {
     if(optionalDrivebase.isPresent()) { 
       Drivebase drivebase = optionalDrivebase.get();
 
-      // If any targeting buttons are being pressed
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.TARGET_REEF)
-        .whileTrue(drivebase.getSwerveCommand(
-          this::getInstructedXMetersPerSecond, // Move location of this specification
-          this::getInstructedYMetersPerSecond, // Move location of this specification
-          (DoubleSupplier) () -> {
-            return drivebase.getTargetingAngle(Constants.Drivebase.FieldTarget.REEF).getDegrees();
-          },
-          true // Move location of this logic. Put in constants?
+        .whileTrue(drivebase.getSwerveHeadingCorrected(
+          this::getInstructedXMetersPerSecond,
+          this::getInstructedYMetersPerSecond,
+          (Supplier<Rotation2d>)() -> drivebase.getTargetingAngle(Constants.Drivebase.FieldTarget.REEF),
+          true
         )
       );
     }

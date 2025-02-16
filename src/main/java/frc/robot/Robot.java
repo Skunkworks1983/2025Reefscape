@@ -36,7 +36,7 @@ public class Robot extends TimedRobot {
     }
     if(drivebase.isPresent()) {
       drivebase.get().setDefaultCommand(
-        drivebase.get().getSwerveFullFunction(
+        drivebase.get().getSwerveCommand(
           oi::getInstructedXMetersPerSecond,
           oi::getInstructedYMetersPerSecond,
           oi::getInstructedDegreesPerSecond,
@@ -61,7 +61,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() { 
     if(drivebase.isPresent()) {
-      drivebase.get().getSwerveFullFunction(
+      drivebase.get().getSwerveCommand(
         oi::getInstructedXMetersPerSecond,
         oi::getInstructedYMetersPerSecond,
         oi::getInstructedDegreesPerSecond,
