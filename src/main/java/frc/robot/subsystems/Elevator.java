@@ -5,7 +5,9 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.utils.SmartPIDController;
@@ -21,7 +23,11 @@ public class Elevator extends SubsystemBase {
 
   private TalonFX motor = new TalonFX(Constants.Elevator.MOTOR_ID);
 
-  private double targetPosition = getElevatorPosition();
+  private DigitalInput bottomLimitSwitch = new DigitalInput(Constants.Elevator.BOTTOM_LIMIT_SWITCH_ID);
+  private DigitalInput topLimitSwitch = new DigitalInput(Constants.Elevator.TOP_LIMIT_SWITCH_ID);
+
+  private double targetPosition;
+  private double lastSpeed;
 
   SmartPIDController positionController = new SmartPIDController(
     Constants.Elevator.PIDs.ELEVATOR_kP,
@@ -36,49 +42,85 @@ public class Elevator extends SubsystemBase {
   }
 
   public Elevator() {
-    setDefaultCommand(retainTargetPositionCommand());
-
     TalonFXConfiguration config = new TalonFXConfiguration();
-
     motor.getConfigurator().apply(config);
     motor.setNeutralMode(NeutralModeValue.Brake);
+
+    targetPosition = getElevatorPosition();
+    setDefaultCommand(retainTargetPositionCommand());
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    if(getBottomLimitSwitch()) {
+      motor.setPosition(0.0);
+      if(lastSpeed < 0.0) {
+        setMotorSafe(0.0);
+      }
+    } else if(getTopLimitSwitch()) {
+      motor.setPosition(Constants.Elevator.MAX_HEIGHT_CARRIAGE * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
+      if(lastSpeed > 0.0) {
+        setMotorSafe(0.0);
+      }
+    }
+    System.out.println(getElevatorPosition());
+  }
 
   // Reminder: all positions are measured in meters
   public double getElevatorPosition() {
-    return motor.getPosition().getValueAsDouble() * Constants.Elevator.ROTATIONS_TO_METERS;
+    return motor.getPosition().getValueAsDouble() * Constants.Elevator.MOTOR_ROTATIONS_TO_METERS;
   }
 
   // Reminder: all velocities are measured in meters/second
   public double getElevatorVelocity() {
-    return motor.getVelocity().getValueAsDouble() * Constants.Elevator.ROTATIONS_TO_METERS;
+    return motor.getVelocity().getValueAsDouble() * Constants.Elevator.MOTOR_ROTATIONS_TO_METERS;
+  }
+
+  // Inverted because limit switches return true until tripped
+  public boolean getBottomLimitSwitch() {
+    return !bottomLimitSwitch.get();
+  }
+
+  // Inverted because limit switches return true until tripped
+  public boolean getTopLimitSwitch() {
+    return !topLimitSwitch.get();
   }
 
   // Input is a percentage that ranges from -1 to 1.
-  public void setMotor(double speed) {
-    motor.set(speed);
+  public void setMotorSafe(double speed) {
+    if((getBottomLimitSwitch() && speed < 0.0) || (getTopLimitSwitch() && speed > 0.0)) {
+      lastSpeed = 0.0;
+    }
+    else {
+      lastSpeed = speed;
+    }
+    motor.set(lastSpeed);
   }
 
-  public boolean isAtSetpoint(){
+  public boolean isAtSetpoint() {
     return Math.abs(getElevatorPosition() - targetPosition) 
       < Constants.Elevator.TOLORENCE_METERS_FOR_SETPOINT;
+  }
+
+  public void setTargetPosition(double newTargetPosition) {
+    targetPosition = newTargetPosition;
   }
 
   // This command does not use a motion profile. It is only for maintaing
   // positions and moving very small distances after 
   // MoveToPositionCommand has done almost all of the work.
   public Command retainTargetPositionCommand() {
-    return run(
+    return Commands.startRun(
+      () -> {
+        setTargetPosition(getElevatorPosition());
+      },
       () -> {
         double velocity = positionController
           .calculate(
             getElevatorPosition(),
             targetPosition
           );
-        setMotor(velocity);
+        setMotorSafe(velocity);
       }
     );
   }
