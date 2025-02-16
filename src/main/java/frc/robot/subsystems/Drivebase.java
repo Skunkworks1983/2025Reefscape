@@ -299,6 +299,14 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       Supplier<Rotation2d> getDesiredHeading,
       boolean isFieldRelative) {
 
+    SmartDashboard.putNumber("Heading Control Error", headingController.getError());
+    SmartDashboard.putNumber("Heading Controller Setpoint", headingController.getSetpoint());
+    SmartDashboard.putNumber("Gyro Measurement in degrees", getGyroAngle().getDegrees());
+    SmartDashboard.putNumber("Heading Controller Output", headingController.calculate(
+      getGyroAngle().getDegrees(),
+      getDesiredHeading.get().getDegrees()
+    ));
+
     return getBaseSwerveCommand(
         getXMetersPerSecond,
         getYMetersPerSecond,
@@ -313,7 +321,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
    * A basic swerve drive command. Intended to be used exclusively within other
    * commands in drivebase.
    */
-  private Command getBaseSwerveCommand(
+  public Command getBaseSwerveCommand(
       DoubleSupplier xMetersPerSecond,
       DoubleSupplier yMetersPerSecond,
       DoubleSupplier degreesPerSecond,

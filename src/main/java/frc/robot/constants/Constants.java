@@ -88,7 +88,7 @@ public class Constants {
       public static final double SWERVE_MODULE_DRIVE_kI = 0.0;
       public static final double SWERVE_MODULE_DRIVE_kD = 0.0;
       public static final double SWERVE_MODULE_DRIVE_kF = 0.1075;
-      public static final double HEADING_CONTROL_kP = 0.0;
+      public static final double HEADING_CONTROL_kP = 0.00001;
       public static final double HEADING_CONTROL_kI = 0.0;
       public static final double HEADING_CONTROL_kD = 0.0;
       public static final double PID_LOW_LIMIT = -0.8;
