@@ -48,52 +48,20 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   private StructArrayPublisher<SwerveModuleState> desiredSwervestate = NetworkTableInstance.getDefault().getStructArrayTopic("Desired swervestate", SwerveModuleState.struct).publish();
   private StructArrayPublisher<SwerveModuleState> actualSwervestate = NetworkTableInstance.getDefault().getStructArrayTopic("Actual swervestate", SwerveModuleState.struct).publish();
 
-
-  private SwerveDriveKinematics swerveDriveKinematics;
-  private SwerveDrivePoseEstimator swerveDrivePoseEstimator;
-  private final Field2d swerveOdometryField2d = new Field2d();
-
   public Drivebase() {
     gyro.setYaw(0.0);
-    Translation2d[] moduleLocations = new Translation2d[Constants.Drivebase.MODULES.length];
-    for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
-      swerveModules[i] = new SwerveModule(
-        Constants.Drivebase.MODULES[i]
-      );
-      phoenix6Odometry.registerSwerveModuleSignal(
-        i,
-        swerveModules[i].turnMotorPositionSignal,
-        swerveModules[i].turnMotorVelocitySignal,
-        swerveModules[i].driveMotorPositionSignal,
-        swerveModules[i].driveMotorVelocitySignal
-      );
-      moduleLocations[i] = swerveModules[i].moduleLocation;
-    }
     phoenix6Odometry.registerGyroSignal(gyro.getYaw());
 
     phoenix6Odometry.startRunning();
-
     Phoenix6DrivebaseState startingState = phoenix6Odometry.getState();
 
+    phoenix6Odometry.stateLock.readLock().lock();
     Pigeon2Configuration gConfiguration = new Pigeon2Configuration();
     gConfiguration.MountPose.MountPoseYaw = 0; 
     gyro.getConfigurator().apply(gConfiguration);
     resetGyroHeading();
 
-    swerveDriveKinematics = new SwerveDriveKinematics(moduleLocations);
-
-    swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(
-      swerveDriveKinematics,
-      startingState.gyroAngle,
-      Arrays.stream(startingState.swerveState)
-        .map(swerveModule -> swerveModule.getSwerveModulePosition())
-        .toArray(SwerveModulePosition[]::new),
-      new Pose2d()
-    );
-
-    SmartDashboard.putData("Swerve Drive Odometry", swerveOdometryField2d);
-    swerveOdometryField2d.setRobotPose(new Pose2d());
-    
+    phoenix6Odometry.stateLock.readLock().unlock();
     // Ensure robot code won't crash if the vision subsystem fails to initialize.
     try {
       new Vision(
@@ -107,9 +75,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   }
 
   @Override
-  public void periodic() {
-    updateOdometry();
-  }
+  public void periodic() { }
 
   /**
    * Called only in the vision class' periodic method.
@@ -119,52 +85,35 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     double timestamp,
     Matrix<N3, N1> stdDevs) {
 
-    swerveDrivePoseEstimator.addVisionMeasurement(estimatedPose, timestamp, stdDevs);
-    swerveOdometryField2d.setRobotPose(swerveDrivePoseEstimator.getEstimatedPosition());
-  }
-
-  /**
-   * Must be called every loop in <code>periodic()</code> to keep odometry up to
-   * date.
-   */
-  public void updateOdometry() {
-    Phoenix6DrivebaseState currentState = phoenix6Odometry.getState();
-    for(int i =0; i < 4; i++){
-      // logs as velocity
-      SmartDashboard.putNumber(
-        "modulePosition" + i,
-        currentState.swerveState[i].getSwerveModulePosition().distanceMeters);
-    }
-
-    swerveDrivePoseEstimator.update(
-      currentState.gyroAngle,
-      new SwerveModulePosition[] {
-        currentState.swerveState[0].getSwerveModulePosition(),
-        currentState.swerveState[1].getSwerveModulePosition(),
-        currentState.swerveState[2].getSwerveModulePosition(),
-        currentState.swerveState[3].getSwerveModulePosition()
-      }
+    phoenix6Odometry.stateLock.writeLock().lock();
+    phoenix6Odometry.swerveDrivePoseEstimator.addVisionMeasurement(
+      estimatedPose, timestamp, stdDevs
     );
-
-    swerveOdometryField2d.setRobotPose(swerveDrivePoseEstimator.getEstimatedPosition());
+    phoenix6Odometry.swerveOdometryField2d.setRobotPose(
+      phoenix6Odometry.swerveDrivePoseEstimator.getEstimatedPosition()
+    );
+    phoenix6Odometry.stateLock.writeLock().unlock();
   }
 
   /** Reset the <code>SwerveDrivePoseEstimator</code> to the given pose. */
   public void resetOdometry(Pose2d newPose) {
+    phoenix6Odometry.stateLock.readLock().lock();
     Phoenix6DrivebaseState currentState = phoenix6Odometry.getState();
-    swerveDrivePoseEstimator.resetPosition(
+    phoenix6Odometry.swerveDrivePoseEstimator.resetPosition(
       currentState.gyroAngle,
       Arrays.stream(currentState.swerveState)
         .map(swerveModule -> swerveModule.getSwerveModulePosition())
         .toArray(SwerveModulePosition[]::new),
       newPose
     );
+    phoenix6Odometry.stateLock.readLock().unlock();
   }
 
   // TODO: add docstring
   private void drive(double xMetersPerSecond, double yMetersPerSecond,
     double degreesPerSecond, boolean isFieldRelative
   ) {
+    phoenix6Odometry.stateLock.readLock().lock();
     Phoenix6DrivebaseState currentState = phoenix6Odometry.getState();
     ChassisSpeeds chassisSpeeds;
     double radiansPerSecond = Units.degreesToRadians(degreesPerSecond);
@@ -176,11 +125,12 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
             radiansPerSecond, 
             currentState.gyroAngle
           );
+    phoenix6Odometry.stateLock.readLock().unlock();
     } else {
       chassisSpeeds = new ChassisSpeeds(xMetersPerSecond, yMetersPerSecond, radiansPerSecond);
     }
 
-    SwerveModuleState[] swerveModuleStates = swerveDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+    SwerveModuleState[] swerveModuleStates = phoenix6Odometry.swerveDriveKinematics.toSwerveModuleStates(chassisSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(
       swerveModuleStates,
       Constants.Drivebase.Info.MAX_MODULE_SPEED
@@ -206,21 +156,27 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     }
   }
 
+  @SuppressWarnings("unused")
   private ChassisSpeeds getRobotRelativeSpeeds() {
     Phoenix6DrivebaseState currentState = phoenix6Odometry.getState();
+    phoenix6Odometry.stateLock.readLock().lock();
     SwerveModuleState[] moduleStates = new SwerveModuleState[Constants.Drivebase.MODULES.length];
     for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
       moduleStates[i] = currentState.swerveState[i].getSwerveModuleState();
     }
-    return swerveDriveKinematics.toChassisSpeeds(moduleStates);
+    ChassisSpeeds chassisSpeeds = phoenix6Odometry.swerveDriveKinematics.toChassisSpeeds(moduleStates);
+    phoenix6Odometry.stateLock.readLock().unlock();
+    return chassisSpeeds;
   }
 
   private SwerveModuleState[] getSwerveModuleStates() {
+    phoenix6Odometry.stateLock.readLock().lock();
     Phoenix6DrivebaseState currentState = phoenix6Odometry.getState();
     SwerveModuleState[] moduleStates = new SwerveModuleState[Constants.Drivebase.MODULES.length];
     for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
       moduleStates[i] = currentState.swerveState[i].getSwerveModuleState();
     }
+    phoenix6Odometry.stateLock.readLock().unlock();
     return moduleStates;
   }
 

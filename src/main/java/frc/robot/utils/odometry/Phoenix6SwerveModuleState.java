@@ -11,7 +11,7 @@ import frc.robot.constants.Constants;
 
 /** Add your docs here. */
 public class Phoenix6SwerveModuleState {
-  // All of these are in rotatoins
+  // All of these are in rotations
   public final double driveMotorPosition;
   public final double driveMotorVelocity;
   public final double turnMotorAngle;
