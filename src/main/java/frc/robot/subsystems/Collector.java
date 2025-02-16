@@ -90,7 +90,7 @@ public class Collector extends SubsystemBase {
   public Command rotateCoralCommand() {
     return runEnd(
       () -> {
-        setCollectorSpeeds(Constants.Collector.COLLECOR_ROTATE_SLOW, 
+        setCollectorSpeeds(-Constants.Collector.COLLECOR_ROTATE_SLOW, 
         Constants.Collector.COLLECOR_ROTATE_FAST);
         SmartDashboard.putNumber("right collector current speed", getRightMotorVelocity());
         SmartDashboard.putNumber("left collector current speed", getLeftMotorVelocity());
@@ -101,6 +101,7 @@ public class Collector extends SubsystemBase {
     );
   }
 
+  int endCount [] = {0};
   // true if you want it to stop the motor when the command ends
   // it should almost always be true unless there will be a following command right after that will end it
   public Command intakeCoralCommand(
@@ -109,7 +110,7 @@ public class Collector extends SubsystemBase {
     return runEnd(
       () -> {
         setCollectorSpeeds(-Constants.Collector.COLLECOR_ROTATE_FAST, 
-          Constants.Collector.COLLECOR_ROTATE_FAST);
+          Constants.Collector.COLLECOR_ROTATE_FAST* Constants.Collector.COLLECTOR_OFFSET);
       },
       () -> {
         if(stopOnEnd) {
@@ -118,8 +119,16 @@ public class Collector extends SubsystemBase {
       }
     ).until(
       () -> {
-        return rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF &&
-        leftMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF;
+        if (rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF &&
+        leftMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF) 
+        {
+          endCount[0]++;
+        }
+        else
+        {
+          endCount[0] = 0;
+        }
+        return endCount[0] > 3;
       }
     );
   }

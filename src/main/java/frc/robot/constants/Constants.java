@@ -31,8 +31,9 @@ public class Constants {
 
     public static final double COLLECTOR_ROTATIONS_PER_METER = 0.0762 * Math.PI;
 
-    public static final double COLLECOR_ROTATE_SLOW = 4.0;
-    public static final double COLLECOR_ROTATE_FAST = 6.0;
+    public static final double COLLECOR_ROTATE_SLOW = 8.0;
+    public static final double COLLECOR_ROTATE_FAST = 24.0;
+    public static final double COLLECTOR_OFFSET = 0.75;
 
     public static final double COLLECTOR_AMPS_BEFORE_CUTTOF = 3.0;
     public static final double SECONDS_BEFORE_CUTTOF = 0.5;
@@ -245,7 +246,7 @@ public class Constants {
 
         public class Collector {
           public static final int ROTATE_CORAL = 23;
-          public static final int INTAKE_CORAL = 14;
+          public static final int INTAKE_CORAL = 22;
           public static final int COLLECT_CORAL = 11;
           public static final int SCORE_CORAL = 12;
         }
