@@ -304,7 +304,8 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
         getYMetersPerSecond,
         (DoubleSupplier) () -> headingController.calculate(
             getGyroAngle().getDegrees(),
-            getDesiredHeading.get().getDegrees()),
+            getDesiredHeading.get().getDegrees()
+        ),
         isFieldRelative);
   }
 
