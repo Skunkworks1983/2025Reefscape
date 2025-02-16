@@ -61,13 +61,13 @@ public class Constants {
 
     public static SwerveModuleConstants MODULES[] = {
         new SwerveModuleConstants(
-          10, 11, 12, -0.337158, new Translation2d(0.288925, 0.288925), "Front Left"),
+            10, 11, 12, -0.337158, new Translation2d(0.288925, 0.288925), "Front Left"),
         new SwerveModuleConstants(
-          13, 14, 15, -0.289795, new Translation2d(0.288925, -0.288925), "Front Right"),
+            13, 14, 15, -0.289795, new Translation2d(0.288925, -0.288925), "Front Right"),
         new SwerveModuleConstants(
-          16, 17, 18, 0.476318, new Translation2d(-0.288925, 0.288925), "Back Left"),
+            16, 17, 18, 0.476318, new Translation2d(-0.288925, 0.288925), "Back Left"),
         new SwerveModuleConstants(
-          19, 20, 21, -0.353027, new Translation2d(-0.288925, -0.288925), "Back Right")
+            19, 20, 21, -0.353027, new Translation2d(-0.288925, -0.288925), "Back Right")
     };
 
     public class Info {
@@ -84,71 +84,64 @@ public class Constants {
       public static final double SWERVE_MODULE_TURN_kI = 0.0;
       public static final double SWERVE_MODULE_TURN_kD = 0.00017;
       public static final double SWERVE_MODULE_TURN_kF = 0.0;
-      public static final double HEADING_kP = 0.0;
-      public static final double HEADING_kI = 0.0;
-      public static final double HEADING_kD = 0.0;
       public static final double SWERVE_MODULE_DRIVE_kP = 0.125;
       public static final double SWERVE_MODULE_DRIVE_kI = 0.0;
       public static final double SWERVE_MODULE_DRIVE_kD = 0.0;
       public static final double SWERVE_MODULE_DRIVE_kF = 0.1075;
+      public static final double HEADING_CONTROL_kP = 0.0;
+      public static final double HEADING_CONTROL_kI = 0.0;
+      public static final double HEADING_CONTROL_kD = 0.0;
+      public static final double PID_LOW_LIMIT = -0.8;
+      public static final double PID_HIGH_LIMIT = 0.8;
 
       public static final boolean SMART_PID_ENABLED = true;
       public static final boolean SMART_PID_TURN_ENABLED = true;
       public static final boolean SMART_PID_DRIVE_ENABLED = true;
-
-      public static final double PID_LOW_LIMIT = -0.8;
-      public static final double PID_HIGH_LIMIT = 0.8;
     }
+
+    public class FieldTarget {
+      public static final Translation2d REEF = new Translation2d();
+    }
+
+    public static final double SECONDS_UNTIL_HEADING_CONTROL = 1.0;
   }
 
   public class VisionConstants {
-  
 
     public static final String FRONT_CAMERA_NAME = "Camera_0";
     public static final String SIDE_CAMERA_NAME = "Camera_1";
-    
-    private static final Transform3d MOUNT_TO_FRONT_CAMERA = 
-      new Transform3d(
-        new Translation3d(
-          Units.inchesToMeters(1.351),
-          Units.inchesToMeters(-1.268),
-          Units.inchesToMeters(-0.81)
-        ),
-        new Rotation3d(
-          Units.degreesToRadians(0.0),
-          Units.degreesToRadians(-19.27),
-          Units.degreesToRadians(-15.0)
-        )
-      );
 
-    private static final Transform3d MOUNT_TO_SIDE_CAMERA = 
-      new Transform3d(
+    private static final Transform3d MOUNT_TO_FRONT_CAMERA = new Transform3d(
         new Translation3d(
-          Units.inchesToMeters(-1.050),
-          Units.inchesToMeters(1.365078),
-          Units.inchesToMeters(-0.762394)
-        ),
+            Units.inchesToMeters(1.351),
+            Units.inchesToMeters(-1.268),
+            Units.inchesToMeters(-0.81)),
         new Rotation3d(
-          Units.degreesToRadians(0.0),
-          Units.degreesToRadians(-27.225),
-          Units.degreesToRadians(97.0)
-        )
-      );
+            Units.degreesToRadians(0.0),
+            Units.degreesToRadians(-19.27),
+            Units.degreesToRadians(-15.0)));
 
-    // TODO: Get the transformation that maps the robot's center to the origin of the camera mount.
-    private static final Transform3d ROBOT_TO_MOUNT =
-      new Transform3d(
+    private static final Transform3d MOUNT_TO_SIDE_CAMERA = new Transform3d(
         new Translation3d(
-          0.0,
-          0.0,
-          0.0
-        ),
+            Units.inchesToMeters(-1.050),
+            Units.inchesToMeters(1.365078),
+            Units.inchesToMeters(-0.762394)),
         new Rotation3d(
-          0.0,
-          0.0,
-          0.0
-        )
-      );
+            Units.degreesToRadians(0.0),
+            Units.degreesToRadians(-27.225),
+            Units.degreesToRadians(97.0)));
+
+    // TODO: Get the transformation that maps the robot's center to the origin of
+    // the camera mount.
+    private static final Transform3d ROBOT_TO_MOUNT = new Transform3d(
+        new Translation3d(
+            0.0,
+            0.0,
+            0.0),
+        new Rotation3d(
+            0.0,
+            0.0,
+            0.0));
 
     public static final Transform3d ROBOT_TO_FRONT_CAMERA = ROBOT_TO_MOUNT.plus(MOUNT_TO_FRONT_CAMERA);
     public static final Transform3d ROBOT_TO_SIDE_CAMERA = ROBOT_TO_MOUNT.plus(MOUNT_TO_SIDE_CAMERA);
@@ -253,9 +246,7 @@ public class Constants {
           public static final int SCORE_CORAL = 12;
         }
 
-        public class HeadingControl {
-          public static final int TARGET_REEF = 0;
-        }
+        public static final int TARGET_REEF = 0;
       }
     }
   }
