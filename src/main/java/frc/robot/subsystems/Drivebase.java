@@ -270,10 +270,24 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       DoubleSupplier getOmegaDegreesPerSecond,
       boolean fieldRelative) {
 
+    // Workaround, this counts as effectively final
+    Rotation2d[] lastRecordedHeading = {getGyroAngle()};
+
     return Commands.either(
-        getBaseSwerveCommand(getXMetersPerSecond, getYMetersPerSecond, getOmegaDegreesPerSecond, fieldRelative),
-        getSwerveWaitCommand(getXMetersPerSecond, getYMetersPerSecond, this::getGyroAngle, fieldRelative),
-        (BooleanSupplier) () -> (getOmegaDegreesPerSecond.getAsDouble() > 0.0));
+      getBaseSwerveCommand(getXMetersPerSecond, getYMetersPerSecond, getOmegaDegreesPerSecond, fieldRelative),
+      Commands.sequence(
+        new WaitCommand(Constants.Drivebase.SECONDS_UNTIL_HEADING_CONTROL),
+        getSwerveHeadingCorrected(
+          getXMetersPerSecond,
+          getYMetersPerSecond,
+          (Supplier<Rotation2d>)() -> lastRecordedHeading[0],
+          true
+        ).beforeStarting(
+          () -> lastRecordedHeading[0] = getGyroAngle()
+        )
+      ),
+      (BooleanSupplier) () -> (getOmegaDegreesPerSecond.getAsDouble() > 0.0)
+    );
   }
 
   /**
@@ -294,28 +308,9 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
         isFieldRelative);
   }
 
-  private Command getSwerveWaitCommand(
-      DoubleSupplier getXMetersPerSecond,
-      DoubleSupplier getYMetersPerSecond,
-      Supplier<Rotation2d> getHeading,
-      boolean fieldRelative) {
-
-    Rotation2d[] lastRecordedHeading = {};
-
-    return Commands.sequence(
-        new WaitCommand(Constants.Drivebase.SECONDS_UNTIL_HEADING_CONTROL),
-        getSwerveHeadingCorrected(
-            getXMetersPerSecond,
-            getYMetersPerSecond,
-            (Supplier<Rotation2d>) () -> lastRecordedHeading[0],
-            true).beforeStarting(
-                () -> lastRecordedHeading[0] = getHeading.get()));
-  }
-
   /**
    * A basic swerve drive command. Intended to be used exclusively within other
    * commands in drivebase.
-   * {@link #getSwerveCommand()}
    */
   private Command getBaseSwerveCommand(
       DoubleSupplier xMetersPerSecond,
@@ -330,22 +325,22 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       fieldOrientationMultiplier = -1;
     }
     return runEnd(
+      () -> {
+        drive(
+          xMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
+          yMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
+          degreesPerSecond.getAsDouble(),
+          isFieldRelative);
+      },
+      () -> {
+        drive(
+          0,
+          0,
+          0,
+          isFieldRelative);
+      }).beforeStarting(
         () -> {
-          drive(
-              xMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
-              yMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
-              degreesPerSecond.getAsDouble(),
-              isFieldRelative);
-        },
-        () -> {
-          drive(
-              0,
-              0,
-              0,
-              isFieldRelative);
-        }).beforeStarting(
-            () -> {
-              setAllModulesTurnPidActive();
-            });
+          setAllModulesTurnPidActive();
+        });
   }
 }
