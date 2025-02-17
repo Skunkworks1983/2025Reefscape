@@ -87,18 +87,20 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
         new Pose2d());
 
     SmartDashboard.putData("Swerve Drive Odometry", swerveOdometryField2d);
-    swerveOdometryField2d.setRobotPose(new Pose2d());
+    swerveOdometryField2d.setRobotPose(new Pose2d(0.0,0.0, new Rotation2d()));
 
     // Ensure robot code won't crash if the vision subsystem fails to initialize.
     try {
       new Vision(
-          this::addVisionMeasurement,
-          new VisionIOPhotonVision(
-              VisionConstants.FRONT_CAMERA_NAME,
-              VisionConstants.ROBOT_TO_FRONT_CAMERA),
-          new VisionIOPhotonVision(
-              VisionConstants.SIDE_CAMERA_NAME,
-              VisionConstants.ROBOT_TO_SIDE_CAMERA));
+        this::addVisionMeasurement,
+        new VisionIOPhotonVision(
+          VisionConstants.FRONT_CAMERA_NAME,
+          VisionConstants.ROBOT_TO_FRONT_CAMERA),
+        new VisionIOPhotonVision(
+          VisionConstants.SIDE_CAMERA_NAME,
+          VisionConstants.ROBOT_TO_SIDE_CAMERA
+        )
+      );
     } catch (Exception exception) {
       System.out.println("Vision subsystem failed to initialize. See the below stacktrace for more details: ");
       exception.printStackTrace();
@@ -138,7 +140,8 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   public void updateOdometry() {
     swerveDrivePoseEstimator.update(
         getGyroAngle(),
-        getSwerveModulePositions());
+        getSwerveModulePositions()
+    );
 
     swerveOdometryField2d.setRobotPose(swerveDrivePoseEstimator.getEstimatedPosition());
   }
@@ -283,33 +286,24 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     Rotation2d[] lastRecordedHeading = {getGyroAngle()};
 
     return Commands.sequence(
-        getBaseSwerveCommand(
-          getXMetersPerSecond, 
-          getYMetersPerSecond, 
-          getOmegaDegreesPerSecond, 
-          fieldRelative
-        ).until(
-          (BooleanSupplier)() -> Math.abs(getOmegaDegreesPerSecond.getAsDouble()) == 0.0
-        ),
-        // Commands.sequence(
-        //   Commands.race(
-        //     new WaitCommand(Constants.Drivebase.SECONDS_UNTIL_HEADING_CONTROL),
-        //     getBaseSwerveCommand(
-        //       getXMetersPerSecond, 
-        //       getYMetersPerSecond, 
-        //       getOmegaDegreesPerSecond, 
-        //       fieldRelative
-        //     )
-        //   ),
-          getSwerveHeadingCorrected(
-            getXMetersPerSecond,
-            getYMetersPerSecond,
-            (Supplier<Rotation2d>)() -> lastRecordedHeading[0],
-            true
-          ).beforeStarting(
-            () -> lastRecordedHeading[0] = getGyroAngle()
-          )
-        .until((BooleanSupplier)() -> Math.abs(getOmegaDegreesPerSecond.getAsDouble()) > 0.0)
+      getBaseSwerveCommand(
+        getXMetersPerSecond, 
+        getYMetersPerSecond, 
+        getOmegaDegreesPerSecond, 
+        fieldRelative
+      ).until(
+        (BooleanSupplier)() -> Math.abs(getOmegaDegreesPerSecond.getAsDouble()) == 0.0
+      ),
+      getSwerveHeadingCorrected(
+        getXMetersPerSecond,
+        getYMetersPerSecond,
+        (Supplier<Rotation2d>)() -> lastRecordedHeading[0],
+        true
+      ).beforeStarting(
+        () -> lastRecordedHeading[0] = getGyroAngle()
+      ).until(
+        (BooleanSupplier)() -> Math.abs(getOmegaDegreesPerSecond.getAsDouble()) > 0.0
+      )
     ).repeatedly();
   }
 

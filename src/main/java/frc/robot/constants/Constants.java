@@ -118,6 +118,9 @@ public class Constants {
       public static final Translation2d REEF = new Translation2d();
     }
 
+    public static final double FIELD_X_LENGTH = 17.55; // Meters
+    public static final double FIELD_Y_LENGTH = 8.05; // Meters
+
     public static final double SECONDS_UNTIL_HEADING_CONTROL = 0.0;
   }
 
@@ -261,7 +264,7 @@ public class Constants {
           public static final int SCORE_CORAL = 12;
         }
 
-        public static final int TARGET_REEF = 0;
+        public static final int TARGET_REEF = 1;
       }
     }
   }

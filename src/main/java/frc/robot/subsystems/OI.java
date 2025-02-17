@@ -8,8 +8,10 @@ import java.util.Optional;
 import java.util.function.DoubleFunction;
 import java.util.function.Supplier;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.constants.Constants.OI.LIMITS;
 import frc.robot.constants.Constants;
@@ -38,54 +40,55 @@ public class OI {
       : axisInput;
 
   public OI(
-    Optional<Elevator> optionalElevator, 
-    Optional<Collector> optionalCollector,
-    Optional<Drivebase> optionalDrivebase
-  ) {
+      Optional<Elevator> optionalElevator,
+      Optional<Collector> optionalCollector,
+      Optional<Drivebase> optionalDrivebase) {
 
-    if(optionalElevator.isPresent()) {
+    if (optionalElevator.isPresent()) {
       Elevator elevator = optionalElevator.get();
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_FLOOR_POSITION)
-        .onTrue(new MoveToPositionCommand(elevator, Constants.Elevator.Setpoints.FLOOR_POSITION));
+          .onTrue(new MoveToPositionCommand(elevator, Constants.Elevator.Setpoints.FLOOR_POSITION));
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L1)
-        .onTrue(new MoveToPositionCommand(elevator, Constants.Elevator.Setpoints.L1_POSITION));
+          .onTrue(new MoveToPositionCommand(elevator, Constants.Elevator.Setpoints.L1_POSITION));
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L2)
-        .onTrue(new MoveToPositionCommand(elevator, Constants.Elevator.Setpoints.L2_POSITION));
+          .onTrue(new MoveToPositionCommand(elevator, Constants.Elevator.Setpoints.L2_POSITION));
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L3)
-        .onTrue(new MoveToPositionCommand(elevator, Constants.Elevator.Setpoints.L3_POSITION));
+          .onTrue(new MoveToPositionCommand(elevator, Constants.Elevator.Setpoints.L3_POSITION));
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L4)
-        .onTrue(new MoveToPositionCommand(elevator, Constants.Elevator.Setpoints.L4_POSITION));
+          .onTrue(new MoveToPositionCommand(elevator, Constants.Elevator.Setpoints.L4_POSITION));
     }
 
-    if(optionalCollector.isPresent()) {
+    if (optionalCollector.isPresent()) {
       Collector collector = optionalCollector.get();
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.ROTATE_CORAL)
-        .whileTrue(collector.rotateCoralCommand());
+          .whileTrue(collector.rotateCoralCommand());
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.COLLECT_CORAL)
-        .whileTrue(collector.waitAfterCatchPieceCommand());
+          .whileTrue(collector.waitAfterCatchPieceCommand());
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.SCORE_CORAL)
-        .whileTrue(collector.scorePieceCommand());
+          .whileTrue(collector.scorePieceCommand());
     }
 
-    if(optionalDrivebase.isPresent()) { 
+    if (optionalDrivebase.isPresent()) {
       Drivebase drivebase = optionalDrivebase.get();
 
-      // new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.TARGET_REEF)
-      //   .whileTrue(drivebase.getSwerveHeadingCorrected(
-      //     this::getInstructedXMetersPerSecond,
-      //     this::getInstructedYMetersPerSecond,
-      //     (Supplier<Rotation2d>)() -> drivebase.getTargetingAngle(Constants.Drivebase.FieldTarget.REEF),
-      //     true
-      //   )
-      // );
+      Command c = drivebase.getSwerveHeadingCorrected(
+          this::getInstructedXMetersPerSecond,
+          this::getInstructedYMetersPerSecond,
+          (Supplier<Rotation2d>) () -> drivebase.getTargetingAngle(new Translation2d(0.0, 0.0)),
+          true);
+
+      c.addRequirements(drivebase);
+
+      new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_REEF)
+          .whileTrue(c);
     }
   }
 
   public double getInstructedXMetersPerSecond() {
     SmartDashboard.putNumber("Instructed X", joystickToMetersPerSecond.apply(
-      // X and Y are flipped because the joysticks' coordinate system is different
-      // from the field
-      applyDeadband.apply(translationJoystick.getY())));
+        // X and Y are flipped because the joysticks' coordinate system is different
+        // from the field
+        applyDeadband.apply(translationJoystick.getY())));
 
     return joystickToMetersPerSecond.apply(
         // X and Y are flipped because the joysticks' coordinate system is different
@@ -96,9 +99,9 @@ public class OI {
   public double getInstructedYMetersPerSecond() {
 
     SmartDashboard.putNumber("Instructed Y", joystickToMetersPerSecond.apply(
-      // X and Y are flipped because the joysticks' coordinate system is different
-      // from the field
-      applyDeadband.apply(translationJoystick.getX())));
+        // X and Y are flipped because the joysticks' coordinate system is different
+        // from the field
+        applyDeadband.apply(translationJoystick.getX())));
 
     return joystickToMetersPerSecond.apply(
         // X and Y are flipped because the joysticks' coordinate system is different
@@ -109,8 +112,8 @@ public class OI {
   public double getInstructedDegreesPerSecond() {
 
     SmartDashboard.putNumber("Instructed Rot", joystickToDegreesPerSecond.apply(
-      applyDeadband.apply(-rotationJoystick.getX())));
-      
+        applyDeadband.apply(-rotationJoystick.getX())));
+
     return joystickToDegreesPerSecond.apply(
         applyDeadband.apply(-rotationJoystick.getX()));
   }
