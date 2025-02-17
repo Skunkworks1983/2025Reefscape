@@ -11,6 +11,7 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -32,8 +33,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
-import frc.robot.utils.odometry.Phoenix6DrivebaseState;
 import frc.robot.utils.odometry.Phoenix6Odometry;
+import frc.robot.utils.odometry.subsystemSignals.Phoenix6DrivebaseSignal;
+import frc.robot.utils.odometry.subsystemSignals.Phoenix6DrivebaseSignal.Field;
+import frc.robot.utils.odometry.subsystemState.Phoenix6DrivebaseState;
 import frc.robot.constants.Constants.VisionConstants;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
@@ -52,8 +55,9 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     gyro.setYaw(0.0);
     phoenix6Odometry.registerGyroSignal(gyro.getYaw());
 
+    Arrays.stream(swerveModules)
+      .forEach(module -> phoenix6Odometry.registerSwerveModule(module));
     phoenix6Odometry.startRunning();
-    Phoenix6DrivebaseState startingState = phoenix6Odometry.getState();
 
     phoenix6Odometry.stateLock.readLock().lock();
     Pigeon2Configuration gConfiguration = new Pigeon2Configuration();
@@ -98,10 +102,10 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   /** Reset the <code>SwerveDrivePoseEstimator</code> to the given pose. */
   public void resetOdometry(Pose2d newPose) {
     phoenix6Odometry.stateLock.readLock().lock();
-    Phoenix6DrivebaseState currentState = phoenix6Odometry.getState();
+    Phoenix6DrivebaseSignal currentState = phoenix6Odometry.getState();
     phoenix6Odometry.swerveDrivePoseEstimator.resetPosition(
-      currentState.gyroAngle,
-      Arrays.stream(currentState.swerveState)
+      currentState.getValue(Field.GYRO),
+      Arrays.stream(currentState.modules)
         .map(swerveModule -> swerveModule.getSwerveModulePosition())
         .toArray(SwerveModulePosition[]::new),
       newPose
@@ -114,7 +118,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     double degreesPerSecond, boolean isFieldRelative
   ) {
     phoenix6Odometry.stateLock.readLock().lock();
-    Phoenix6DrivebaseState currentState = phoenix6Odometry.getState();
+    Phoenix6DrivebaseSignal currentState = phoenix6Odometry.getState();
     ChassisSpeeds chassisSpeeds;
     double radiansPerSecond = Units.degreesToRadians(degreesPerSecond);
     if (isFieldRelative) {
@@ -123,7 +127,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
             xMetersPerSecond, 
             yMetersPerSecond,
             radiansPerSecond, 
-            currentState.gyroAngle
+            currentState.getGyroAngle()
           );
     phoenix6Odometry.stateLock.readLock().unlock();
     } else {

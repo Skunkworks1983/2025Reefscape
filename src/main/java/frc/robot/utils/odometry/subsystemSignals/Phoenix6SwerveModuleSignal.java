@@ -4,7 +4,33 @@
 
 package frc.robot.utils.odometry.subsystemSignals;
 
-/** Add your docs here. */
-public class Phoenix6SwerveModuleSignal {
+import frc.robot.utils.odometry.SignalValue;
+import frc.robot.utils.odometry.subsystemState.Phoenix6SwerveModuleState;
 
+public class Phoenix6SwerveModuleSignal extends SubsystemSignal
+  <frc.robot.utils.odometry.subsystemSignals.Phoenix6SwerveModuleSignal.Field> {
+
+  public Phoenix6SwerveModuleSignal(
+    SignalValue drivePosition,
+    SignalValue driveVelocity,
+    SignalValue turnPosition,
+    SignalValue turnVelocity
+  ) {
+    super.signalValueMap.put(Field.DRIVE_POSITION, drivePosition);
+    super.signalValueMap.put(Field.DRIVE_VELOCITY, driveVelocity);
+    super.signalValueMap.put(Field.TURN_POSITION, turnPosition);
+    super.signalValueMap.put(Field.TURN_VELOCITY, turnVelocity);
+  }
+
+  public static enum Field {
+    DRIVE_POSITION,
+    DRIVE_VELOCITY, 
+    TURN_POSITION,
+    TURN_VELOCITY, 
+  }
+
+  @Override
+  public Phoenix6SwerveModuleState getState() {
+    return new Phoenix6SwerveModuleState(this);
+  }
 }

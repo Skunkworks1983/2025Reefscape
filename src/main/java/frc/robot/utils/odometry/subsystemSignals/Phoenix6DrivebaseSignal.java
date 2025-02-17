@@ -4,13 +4,33 @@
 
 package frc.robot.utils.odometry.subsystemSignals;
 
-import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.BaseStatusSignal;
 
 import frc.robot.constants.Constants;
+import frc.robot.utils.odometry.subsystemState.Phoenix6DrivebaseState;
+  
+public class Phoenix6DrivebaseSignal extends SubsystemSignal
+  <frc.robot.utils.odometry.subsystemSignals.Phoenix6DrivebaseSignal.Field> {
 
-/** Add your docs here. */
-public class Phoenix6DrivebaseSignal {
-  private Phoenix6DrivebaseSignal[] swerveModules = 
-    new Phoenix6DrivebaseSignal[Constants.Drivebase.MODULES.length];
-    private StatusSignal<Angle> gyroStatusSignal;
+  public Phoenix6SwerveModuleSignal[] modules 
+    = new Phoenix6SwerveModuleSignal[Constants.Drivebase.MODULES.length];
+
+  public Phoenix6DrivebaseSignal(BaseStatusSignal gyroSignal) {
+
+  }
+
+  @Override public void updateCachedValues() {
+    super.updateCachedValues();
+    for(Phoenix6SwerveModuleSignal module : modules){
+      module.updateCachedValues();
+    }
+  };
+  public static enum Field {
+    GYRO
+  }
+
+  @Override
+  public Phoenix6DrivebaseState getState() {
+    return new Phoenix6DrivebaseState(this);
+  }
 }
