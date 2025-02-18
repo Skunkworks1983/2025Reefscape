@@ -18,9 +18,11 @@ import frc.robot.subsystems.Elevator;
 // This command is long and requires a fair amount of state so it is not defined within the
 // Elevator subsystem.
 public class MoveToPositionCommand extends Command {
+  Timer timeElapsed;
   State startState;
   State targetState;
   Elevator elevator;
+  boolean isGoingUp;
 
   private final static TrapezoidProfile motionProfile = new TrapezoidProfile(
     new Constraints(
@@ -30,33 +32,50 @@ public class MoveToPositionCommand extends Command {
   );
 
   public MoveToPositionCommand(Elevator elevator, double targetHeight) {
-    this.targetState = new State(targetHeight * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS, 0.0);
-    startState = new State(elevator.getElevatorPosition() * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS, 0.0);
+    targetState = new State(targetHeight * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS, 0.0);
     this.elevator = elevator;
+    timeElapsed = new Timer();
+    timeElapsed.stop();
     addRequirements(elevator);
   }
 
   @Override
-  public void initialize() {}
+  public void initialize() {
+    startState = new State(elevator.getElevatorPosition() * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS, 0.0);
+    isGoingUp = targetState.position > elevator.getElevatorPosition() * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS;
+
+    timeElapsed.start();
+  }
 
   @Override
   public void execute() {
 
-    startState = motionProfile.calculate(
-      0.020,
+    State newState = motionProfile.calculate(
+      timeElapsed.get(), // Time is the only variable that changes throughout each run
       startState, 
       targetState
     );
-    
-    elevator.setMotorTrapezoidProfileSafe(startState.position, startState.velocity);
+
+    elevator.setMotorTrapezoidProfileSafe(newState.position, newState.velocity);
   }
 
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    if(elevator.getBottomLimitSwitch() && !isGoingUp) {
+      elevator.setMotorTrapezoidProfileSafe(0.0, 0.0);
+    }
+    else if(elevator.getTopLimitSwitch() && isGoingUp) {
+      elevator.setMotorTrapezoidProfileSafe(Constants.Elevator.Setpoints.L4_POSITION, 0.0);
+    }
+  }
 
   @Override
   public boolean isFinished() {
-    return Constants.Elevator.TOLERENCE_METERS_FOR_MOVE_TO_POSITION > 
-      Math.abs(targetState.position - elevator.getElevatorPosition());
+    return (Constants.Elevator.TOLERENCE_METERS_FOR_MOVE_TO_POSITION > 
+      Math.abs(targetState.position - elevator.getElevatorPosition())) ||
+      (
+        (elevator.getBottomLimitSwitch() && !isGoingUp) ||
+        (elevator.getTopLimitSwitch() && isGoingUp)
+      );
   }
 }
