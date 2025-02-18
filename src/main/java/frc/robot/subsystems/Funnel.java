@@ -19,7 +19,7 @@ public class Funnel extends SubsystemBase {
   }
 
   public void maintainPosition(Rotation2d position) {
-    
+
   }
 
   @Override
