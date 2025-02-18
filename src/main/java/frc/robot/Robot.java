@@ -13,6 +13,7 @@ import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.error.DiagnosticSubsystem;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.drivebase.Drivebase;
 
 public class Robot extends TimedRobot {
 

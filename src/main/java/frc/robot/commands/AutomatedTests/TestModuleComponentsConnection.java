@@ -7,7 +7,7 @@ package frc.robot.commands.AutomatedTests;
 import java.util.function.Consumer;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.SwerveModule;
+import frc.robot.subsystems.drivebase.SwerveModule;
 import frc.robot.utils.error.TestResult;
 
 public class TestModuleComponentsConnection extends Command {
