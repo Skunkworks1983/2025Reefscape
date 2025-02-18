@@ -239,6 +239,29 @@ public class Constants {
     public static final double AXIS_INPUT_EXPONENT = 3.0;
 
     public class IDs {
+      
+      public class OpperatorButtons {
+        ///// LEFT HAND /////
+        // switch being on coresponds to coral
+        public static final int ALGAE_CORAL_TOGGLE = 0;
+
+        // The position will depend on the ALGAE_CORAL_TOGGLE
+        public static final int GOTO_POSITION_1 = 0;
+        public static final int GOTO_POSITION_2 = 0;
+        public static final int GOTO_POSITION_3 = 0;
+        public static final int GOTO_POSITION_4 = 0;
+
+
+        ///// RIGHT HAND /////
+        public static final int STOW = 0;
+        public static final int INTAKE = 0;
+        public static final int EXPELL = 0;
+
+
+        ///// CLIMBER /////
+        public static final int RAISE_FUNNEL = 0;
+      }
+
       public class Joysticks {
         public static final int ROTATION_JOYSTICK_ID = 1;
         public static final int TRANSLATION_JOYSTICK_ID = 0;

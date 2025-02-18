@@ -39,6 +39,8 @@ public class OI {
 
   public OI(Optional<Elevator> optionalElevator, Optional<Collector> optionalCollector) {
 
+    JoystickButton algaeCoralToggle = new JoystickButton(buttonJoystick, Constants.OI.IDs.OpperatorButtons.ALGAE_CORAL_TOGGLE);
+
     if(optionalElevator.isPresent()) {
       Elevator elevator = optionalElevator.get();
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_FLOOR_POSITION)
