@@ -48,8 +48,8 @@ public class Constants {
   }
 
   public class Drivebase {
-    // TODO public static final String CANIVORE_NAME = "1983 Comp Drivebase";
-
+    public static final String CANIVORE_NAME = "Evil Canivore";
+    public static final int PIGEON_ID = 22;
     public static final double MAX_METERS_PER_SECOND = 4.5;
     public static final double MAX_DEGREES_PER_SECOND = 270;
 
@@ -136,9 +136,9 @@ public class Constants {
     private static final Transform3d ROBOT_TO_MOUNT =
       new Transform3d(
         new Translation3d(
-          0.0,
-          0.0,
-          0.0
+          .305, // TODO: check these transformation estimations
+          .305,
+          Units.inchesToMeters(8.25)
         ),
         new Rotation3d(
           0.0,
