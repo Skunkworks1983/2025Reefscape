@@ -69,7 +69,7 @@ public class Constants {
       new SwerveModuleConstants(
         19, 20, 21, -0.353027 + .75, new Translation2d(0.288925, -0.288925), "Front Right")
     };
-      
+
     public class Info {
       public static final double DRIVE_MOTOR_GEAR_RATIO = 6.12;
       public static final double WHEEL_DIAMETER = 0.0991108;
@@ -135,8 +135,8 @@ public class Constants {
     // TODO: Get the transformation that maps the robot's center to the origin of the camera mount.
     private static final Transform3d ROBOT_TO_MOUNT =
       new Transform3d(
-        new Translation3d(
-          .305, // TODO: check these transformation estimations
+        new Translation3d( // TODO: check these transformation estimations
+          .305,
           .305,
           Units.inchesToMeters(8.25)
         ),
