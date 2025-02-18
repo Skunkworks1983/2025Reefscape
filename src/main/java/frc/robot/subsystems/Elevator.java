@@ -30,14 +30,20 @@ public class Elevator extends SubsystemBase {
 
   public Elevator() {
     TalonFXConfiguration config = new TalonFXConfiguration();
-    motor.getConfigurator().apply(config);
-    Slot0Configs slot0Configs = new Slot0Configs();
+    
+    var slot0Configs = config.Slot0;
     slot0Configs.kP = Constants.Elevator.PIDs.ELEVATOR_kP;
     slot0Configs.kI = Constants.Elevator.PIDs.ELEVATOR_kI;
     slot0Configs.kD = Constants.Elevator.PIDs.ELEVATOR_kD;
     slot0Configs.kV = Constants.Elevator.PIDs.ELEVATOR_kV;
     slot0Configs.kS = Constants.Elevator.PIDs.ELEVATOR_kS;
-    motor.getConfigurator().apply(slot0Configs);
+    
+    var motionMagicConfigs = config.MotionMagic;
+    motionMagicConfigs.MotionMagicCruiseVelocity = Constants.Elevator.Profile.MAX_VELOCITY;
+    motionMagicConfigs.MotionMagicAcceleration = Constants.Elevator.Profile.MAX_ACCELERATION;
+    motionMagicConfigs.MotionMagicJerk = 1600;
+
+    motor.getConfigurator().apply(config);
     motor.setNeutralMode(NeutralModeValue.Brake);
     targetPosition = getElevatorPosition();
   }
