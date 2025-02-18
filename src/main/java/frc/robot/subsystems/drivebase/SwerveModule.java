@@ -72,12 +72,6 @@ public class SwerveModule extends SubsystemBase implements Pheonix6OdometrySubsy
     Phoenix6Odometry phoenix6Odometry
   ) {
 
-    state = phoenix6Odometry.registerSwerveModule(
-      driveMotor.getPosition(),
-      driveMotor.getVelocity(),
-      turnEncoder.getPosition(),
-      turnEncoder.getVelocity()
-    );
     this.driveMotor = new TalonFX(driveModuleId, Constants.Drivebase.CANIVORE_NAME);
     this.turnMotor = new TalonFX(turnModuleId, Constants.Drivebase.CANIVORE_NAME);
     this.turnEncoder = new CANcoder(turnEncoderId, Constants.Drivebase.CANIVORE_NAME);
@@ -118,6 +112,13 @@ public class SwerveModule extends SubsystemBase implements Pheonix6OdometrySubsy
     turnEncoder.getConfigurator().apply(encoder);
 
     m_Velocity.Slot = 0;
+
+    state = phoenix6Odometry.registerSwerveModule(
+      driveMotor.getPosition(),
+      driveMotor.getVelocity(),
+      turnEncoder.getPosition(),
+      turnEncoder.getVelocity()
+    );
   }
 
   @Override

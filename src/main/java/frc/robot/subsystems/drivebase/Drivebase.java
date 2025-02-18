@@ -8,16 +8,12 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -57,17 +53,21 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem, Phe
     gyro.setYaw(0.0);
     state = phoenix6Odometry.registerDrivebase(gyro);
 
+    Translation2d[] moduleLocations = new Translation2d[Constants.Drivebase.MODULES.length];
+
     for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
       swerveModules[i] = new SwerveModule(Constants.Drivebase.MODULES[i], phoenix6Odometry);
+      moduleLocations[i] = swerveModules[i].moduleLocation;
     }
-
     // Constructs a pose estimator with this state, and the state of the swerve modules.
     positionEstimator = new PositionEstimator(
       this.getState(), 
       Arrays.stream(swerveModules)
         .map(module -> module.getState())
-        .toArray(Phoenix6SwerveModuleState[]::new)
-      );
+        .toArray(Phoenix6SwerveModuleState[]::new),
+      phoenix6Odometry::setReadLock,
+      moduleLocations
+    );
 
 
     odometryThread = new OdometryThread(phoenix6Odometry, positionEstimator);
@@ -81,7 +81,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem, Phe
     // Ensure robot code won't crash if the vision subsystem fails to initialize.
     try {
       new Vision(
-        this::addVisionMeasurement,
+        positionEstimator::addVisionMeasurement,
         new VisionIOPhotonVision(VisionConstants.CAMERA_0_NAME, VisionConstants.CAMERA_0_TRANSFORM)
       );
     } catch(Exception exception) {
@@ -93,37 +93,6 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem, Phe
   @Override
   public void periodic() { }
 
-  /**
-   * Called only in the vision class' periodic method.
-   */
-  public void addVisionMeasurement(
-    Pose2d estimatedPose,
-    double timestamp,
-    Matrix<N3, N1> stdDevs) {
-
-    positionEstimator.stateLock.writeLock().lock();
-    positionEstimator.swerveDrivePoseEstimator.addVisionMeasurement(
-      estimatedPose, timestamp, stdDevs
-    );
-    positionEstimator.swerveOdometryField2d.setRobotPose(
-      positionEstimator.swerveDrivePoseEstimator.getEstimatedPosition()
-    );
-    positionEstimator.stateLock.writeLock().unlock();
-  }
-
-  /** Reset the <code>SwerveDrivePoseEstimator</code> to the given pose. */
-  public void resetOdometry(Pose2d newPose) {
-    phoenix6Odometry.setReadLockAll(true);
-    positionEstimator.swerveDrivePoseEstimator.resetPosition(
-      state.getGyroAngle(),
-      Arrays.stream(swerveModules)
-        .map(swerveModule -> swerveModule.getState().getSwerveModulePosition())
-        .toArray(SwerveModulePosition[]::new),
-      newPose
-    );
-    phoenix6Odometry.setReadLockAll(false);
-  }
-
   // TODO: add docstring
   private void drive(double xMetersPerSecond, double yMetersPerSecond,
     double degreesPerSecond, boolean isFieldRelative
@@ -134,11 +103,11 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem, Phe
     if (isFieldRelative) {
       chassisSpeeds = 
         ChassisSpeeds.fromFieldRelativeSpeeds(
-            xMetersPerSecond, 
-            yMetersPerSecond,
-            radiansPerSecond, 
-            state.getGyroAngle()
-          );
+          xMetersPerSecond, 
+          yMetersPerSecond,
+          radiansPerSecond, 
+          state.getGyroAngle()
+        );
     getState().getReadLock().unlock();
     } else {
       chassisSpeeds = new ChassisSpeeds(xMetersPerSecond, yMetersPerSecond, radiansPerSecond);
@@ -183,12 +152,12 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem, Phe
   }
 
   private SwerveModuleState[] getSwerveModuleStates() {
-    phoenix6Odometry.setReadLockAll(true);
+    phoenix6Odometry.setReadLock(true);
     SwerveModuleState[] moduleStates = new SwerveModuleState[Constants.Drivebase.MODULES.length];
     for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
       moduleStates[i] = swerveModules[i].getState().getSwerveModuleState();
     }
-    phoenix6Odometry.setReadLockAll(false);
+    phoenix6Odometry.setReadLock(false);
     return moduleStates;
   }
 

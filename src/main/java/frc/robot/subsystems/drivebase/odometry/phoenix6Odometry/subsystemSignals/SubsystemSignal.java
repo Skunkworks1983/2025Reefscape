@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Stream;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 
@@ -16,7 +17,7 @@ import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.S
 
 /** Add your docs here. */
 public abstract class SubsystemSignal<FIELD> {
-  public ReentrantReadWriteLock stateLock;
+  public ReentrantReadWriteLock stateLock = new ReentrantReadWriteLock();
 
   public Map<FIELD, SignalValue> signalValueMap = new HashMap<>();
 
@@ -26,14 +27,14 @@ public abstract class SubsystemSignal<FIELD> {
       .map(signalValue -> signalValue.getSignal())
       .toList();
 
-    baseStatusSignals.addAll(signalValueMap.values()
+    List<BaseStatusSignal> baseStatusSignalRates = signalValueMap.values()
       .stream()
       .filter(signalValue -> signalValue.getSignalSlope().isPresent())
       .map(signalValue -> signalValue.getSignalSlope().get())
-      .toList()
-    );
+      .toList();
 
-    return baseStatusSignals;
+    return Stream.concat(baseStatusSignals.stream(), baseStatusSignalRates.stream())
+      .toList();
   }
 
   public void updateCachedValues() {

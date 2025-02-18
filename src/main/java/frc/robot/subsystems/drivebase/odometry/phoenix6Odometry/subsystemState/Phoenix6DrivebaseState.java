@@ -15,6 +15,6 @@ public class Phoenix6DrivebaseState extends SubsystemState<Field> {
   }
 
   public Rotation2d getGyroAngle() {
-    return Rotation2d.fromRotations(super.getValue(Field.GYRO));
+    return Rotation2d.fromDegrees(super.getValue(Field.GYRO));
   }
 }

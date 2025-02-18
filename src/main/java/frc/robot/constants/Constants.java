@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 
 // TODO: add all robot constant values when they have been decided
 public class Constants {
@@ -58,8 +59,8 @@ public class Constants {
       public static int BUTTON_STICK_ID = 3;
     }
 
-    public static final double TRANSLATION_X = 0.925;
-    public static final double TRANSLATION_Y = 0.8041666;
+    public static final double TRANSLATION_X = Units.feetToMeters(0.925);
+    public static final double TRANSLATION_Y = Units.feetToMeters(0.8041666);
 
     public static final double T_X = TRANSLATION_X;
     public static final double T_Y = TRANSLATION_Y;
@@ -89,6 +90,7 @@ public class Constants {
       public static final double DRIVE_MOTOR_GEAR_RATIO = 6.75;
       public static final double WHEEL_DIAMETER = 0.0991108;
       public static final double REVS_PER_METER = DRIVE_MOTOR_GEAR_RATIO / (WHEEL_DIAMETER * Math.PI);
+      public static final double METERS_PER_REV = 1.0 / REVS_PER_METER;
       public static final double TURN_MOTOR_GEAR_RATIO = 150.0 / 7.0;
 
       public static final double MAX_MODULE_SPEED = 4.498848;

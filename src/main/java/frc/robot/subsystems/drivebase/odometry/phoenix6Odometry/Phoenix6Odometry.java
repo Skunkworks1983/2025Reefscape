@@ -7,7 +7,6 @@ package frc.robot.subsystems.drivebase.odometry.phoenix6Odometry;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
@@ -35,12 +34,13 @@ public class Phoenix6Odometry {
 
   private List<BaseStatusSignal> getAllSignals() {
     List<BaseStatusSignal> allSignals = new ArrayList<>();
-    subsystemSignals.stream()
-      .map(subsystem -> subsystem.getSignals())
-      .forEach(
-        subsystemSignals -> allSignals.addAll(subsystemSignals)
-      );
-      return allSignals;
+
+    for(SubsystemSignal<?> subsystem : subsystemSignals) {
+      List<BaseStatusSignal> signals = subsystem.getSignals();
+      allSignals.addAll(signals);
+    }
+
+    return allSignals;
   }
 
   // called on a thread
@@ -65,20 +65,20 @@ public class Phoenix6Odometry {
   }
 
   private void updateState() {
-    setWriteLockAll(true);
+    setWriteLock(true);
 
     BaseStatusSignal.refreshAll(
       getAllSignals().toArray(new BaseStatusSignal[0])
     );
 
     subsystemSignals.forEach(subsystemSignal -> subsystemSignal.updateCachedValues());
-    setWriteLockAll(false);
+    setWriteLock(false);
   }
 
   public Phoenix6DrivebaseState registerDrivebase(Pigeon2 gyro) {
     Phoenix6DrivebaseSignal drivebaseSignal = 
       new Phoenix6DrivebaseSignal(
-        gyro.getYaw() 
+        new SignalValue(gyro.getYaw(), 1.0)
       );
     subsystemSignals.add(drivebaseSignal);
     resetUpdateFrequency();
@@ -93,10 +93,10 @@ public class Phoenix6Odometry {
     // TODO: check if drive motor acceleration exists
   ) {
     Phoenix6SwerveModuleSignal moduleSignal = new Phoenix6SwerveModuleSignal(
-      new SignalValue(turnMotorPositionSignal), 
-      new SignalValue(turnMotorPositionSignal),
-      new SignalValue(turnMotorPositionSignal), 
-      new SignalValue(turnMotorPositionSignal)
+      new SignalValue(driveMotorPositionSignal, driveMotorVelocitySignal, Constants.Drivebase.Info.METERS_PER_REV), 
+      new SignalValue(driveMotorVelocitySignal, Constants.Drivebase.Info.METERS_PER_REV),
+      new SignalValue(turnMotorPositionSignal, turnMotorVelocitySignal, 1.0), // Value already stored in rotations
+      new SignalValue(turnMotorVelocitySignal, 1.0) // Value already stored in rotations
     );
 
     subsystemSignals.add(moduleSignal);
@@ -112,29 +112,25 @@ public class Phoenix6Odometry {
     );
   }
 
-  private void setWriteLockAll(boolean locked) {
+  private void setWriteLock(boolean locked) {
     subsystemSignals.forEach(
       subsystemSignal -> {
-        ReentrantReadWriteLock.WriteLock lock 
-          = subsystemSignal.getLock().writeLock();
         if(locked) {
-          lock.lock();
+          subsystemSignal.getLock().writeLock().lock();
         } else {
-          lock.unlock();
+          subsystemSignal.getLock().writeLock().unlock();
         }
       }
     );
   }
 
-  public void setReadLockAll(boolean locked) {
+  public void setReadLock(boolean locked) {
     subsystemSignals.forEach(
       subsystemSignal -> {
-        ReentrantReadWriteLock.ReadLock lock 
-          = subsystemSignal.getLock().readLock();
         if(locked) {
-          lock.lock();
+          subsystemSignal.getLock().readLock().lock();
         } else {
-          lock.unlock();
+          subsystemSignal.getLock().readLock().unlock();
         }
       }
     );

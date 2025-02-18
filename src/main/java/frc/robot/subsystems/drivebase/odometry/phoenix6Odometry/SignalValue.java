@@ -15,32 +15,35 @@ public class SignalValue {
   final BaseStatusSignal signal;
   final Optional<BaseStatusSignal> signalSlope;
   double cachedValue;
+  double conversionFactor; //cachedValue * conversionFactor = the output value
 
-  public SignalValue(BaseStatusSignal signal) {
+  public SignalValue(BaseStatusSignal signal, double conversionFactor) {
     this.signal = signal;
     this.signalSlope = Optional.empty();
+    this.conversionFactor = conversionFactor;
   }
-  public SignalValue( BaseStatusSignal signal, BaseStatusSignal signalSlope) {
+  public SignalValue( BaseStatusSignal signal, BaseStatusSignal signalSlope, double conversionFactor) {
     this.signal = signal;
     this.signalSlope = Optional.of(signalSlope);
+    this.conversionFactor = conversionFactor;
   }
 
   // Updates cached value based on the StatusSignals. Also returns the cached value.
   // Cached value can also be retreived using .get().
   public double updateCachedValue() {
     if(signalSlope.isPresent()){
-      cachedValue = signal.getValueAsDouble();
-    } else {
       cachedValue = BaseStatusSignal.getLatencyCompensatedValueAsDouble(
         signal, 
         signalSlope.get()
       );
+    } else {
+      cachedValue = signal.getValueAsDouble();
     }
     return cachedValue;
   }
 
   public double get() {
-    return cachedValue;
+    return cachedValue * conversionFactor;
   }
 
   public BaseStatusSignal getSignal() {

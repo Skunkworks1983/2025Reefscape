@@ -20,13 +20,15 @@ private PositionEstimator positionEstimator;
   }
 
   public void startThread() {
-    update(); // update once so that states can never be null.
+    System.out.println("starting thread");
+    update(); // update once so that states can't be null after startThread.
     thread.start();
   }
 
-  Thread thread = new Thread(() -> { while(true) { update(); } });
+  Thread thread = new Thread(() -> { while(true) update(); });
 
   private void update() {
+
     pheonix6Odometry.update();
     positionEstimator.update();
   }

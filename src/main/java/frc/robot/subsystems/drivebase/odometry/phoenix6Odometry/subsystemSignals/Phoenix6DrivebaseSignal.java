@@ -6,13 +6,14 @@ package frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemSignal
 
 import com.ctre.phoenix6.BaseStatusSignal;
 
+import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.SignalValue;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.Phoenix6DrivebaseState;
   
 public class Phoenix6DrivebaseSignal extends SubsystemSignal
   <frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemSignals.Phoenix6DrivebaseSignal.Field> {
 
-  public Phoenix6DrivebaseSignal(BaseStatusSignal gyroSignal) {
-
+  public Phoenix6DrivebaseSignal(SignalValue gyroSignal) {
+    super.signalValueMap.put(Field.GYRO, gyroSignal);
   }
 
   public static enum Field {
