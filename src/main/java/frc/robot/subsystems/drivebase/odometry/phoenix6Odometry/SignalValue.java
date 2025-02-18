@@ -22,7 +22,7 @@ public class SignalValue {
     this.signalSlope = Optional.empty();
     this.conversionFactor = conversionFactor;
   }
-  public SignalValue( BaseStatusSignal signal, BaseStatusSignal signalSlope, double conversionFactor) {
+  public SignalValue(BaseStatusSignal signal, BaseStatusSignal signalSlope, double conversionFactor) {
     this.signal = signal;
     this.signalSlope = Optional.of(signalSlope);
     this.conversionFactor = conversionFactor;

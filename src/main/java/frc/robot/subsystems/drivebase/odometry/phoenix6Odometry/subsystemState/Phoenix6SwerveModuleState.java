@@ -7,7 +7,6 @@ package frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemSignals.SubsystemSignal;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemSignals.Phoenix6SwerveModuleSignal.Field;
 
@@ -19,16 +18,15 @@ public class Phoenix6SwerveModuleState extends SubsystemState<Field> {
 
   public SwerveModulePosition getSwerveModulePosition(){
     return new SwerveModulePosition(
-      super.getValue(Field.DRIVE_POSITION) / Constants.Drivebase.Info.REVS_PER_METER,
+      super.getValue(Field.DRIVE_POSITION),
       Rotation2d.fromRotations(super.getValue(Field.TURN_POSITION))
     );
   }
 
   public SwerveModuleState getSwerveModuleState(){
     return new SwerveModuleState(
-      super.getValue(Field.DRIVE_VELOCITY) / Constants.Drivebase.Info.REVS_PER_METER,
+      super.getValue(Field.DRIVE_VELOCITY),
       Rotation2d.fromRotations(super.getValue(Field.TURN_POSITION))
     );
   }
-
 }

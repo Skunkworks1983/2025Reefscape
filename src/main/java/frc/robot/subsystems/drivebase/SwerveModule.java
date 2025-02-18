@@ -114,10 +114,10 @@ public class SwerveModule extends SubsystemBase implements Pheonix6OdometrySubsy
     m_Velocity.Slot = 0;
 
     state = phoenix6Odometry.registerSwerveModule(
-      driveMotor.getPosition(),
-      driveMotor.getVelocity(),
       turnEncoder.getPosition(),
-      turnEncoder.getVelocity()
+      turnEncoder.getVelocity(),
+      driveMotor.getPosition(),
+      driveMotor.getVelocity()
     );
   }
 

@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemSignals;
 
-import com.ctre.phoenix6.BaseStatusSignal;
-
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.SignalValue;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.Phoenix6DrivebaseState;
   
