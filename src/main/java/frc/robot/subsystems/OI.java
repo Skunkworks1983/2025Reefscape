@@ -10,6 +10,7 @@ import java.util.function.DoubleFunction;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.constants.Constants.OI.LIMITS;
+import frc.robot.commands.Wrist.MoveInDirection;
 import frc.robot.commands.elevator.*;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.OI.IDs.Joysticks;
@@ -37,7 +38,7 @@ public class OI {
     (axisInput) -> Math.abs(axisInput) < Constants.OI.AXIS_DEADBAND 
       ? 0.0 : axisInput;
 
-  public OI(Optional<Elevator> optionalElevator, Optional<Collector> optionalCollector) {
+  public OI(Optional<Elevator> optionalElevator, Optional<Collector> optionalCollector, Optional<Wrist> optionalWrist) {
 
     if(optionalElevator.isPresent()) {
       Elevator elevator = optionalElevator.get();
@@ -62,6 +63,14 @@ public class OI {
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.SCORE_CORAL)
         .whileTrue(collector.scorePieceCommand());
     }
+
+    if (optionalWrist.isPresent())  {
+      Wrist wrist = optionalWrist.get();
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Wrist.WRIST_UP)
+        .onTrue(new MoveInDirection(wrist, Constants.WristIDs.WRIST_MAX_ROTATIONS));
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Wrist.WRIST_DOWN)
+        .onTrue(new MoveInDirection(wrist, Constants.WristIDs.WRIST_MIN_ROTATIONS));
+    }
   }
 
   public double getInstructedXMetersPerSecond() {
@@ -81,4 +90,6 @@ public class OI {
       applyDeadband.apply(rotationJoystick.getY())
     );
   }
+
+
 }

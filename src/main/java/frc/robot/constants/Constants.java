@@ -128,8 +128,10 @@ public class Constants {
     public static final int WRIST_KRAKEN_MOTOR_ID = 12; // ID 12 is for the test board
     public static final int WRIST_MAGNET_SENSOR_1 = 0;
     
-    public static final double WRIST_KP = 0.3;
-    public static final double WRIST_KD = 0.0;
+    public static final double WRIST_KS = 0.0;
+    public static final double WRIST_KV = 0.12;
+    public static final double WRIST_KP = 3.0;
+    public static final double WRIST_KD = 0.1;
     public static final double WRIST_KI = 0.0;
     public static final double WRIST_KF = 0.0;
 
@@ -137,9 +139,11 @@ public class Constants {
 
     public static final double WRIST_VELOCITY = 1; 
 
-    public static final double WRIST_RANGE = 0.1;
+    public static final double WRIST_RANGE = 0.03;
 
-    public static final double WRIST_MIDPOINT_ROTATIONS = 5;
+    public static final double WRIST_MIDPOINT_ROTATIONS = 0; //TODO figure out postitions
+    public static final double WRIST_MIN_ROTATIONS = -5;
+    public static final double WRIST_MAX_ROTATIONS = 5;
   }
 
   public class ClimberIDs {
@@ -197,6 +201,11 @@ public class Constants {
           public static final int ROTATE_CORAL = 23;
           public static final int COLLECT_CORAL = 11;
           public static final int SCORE_CORAL = 12;
+        }
+
+        public class Wrist {
+          public static final int WRIST_UP = 18;
+          public static final int WRIST_DOWN = 13;
         }
       }
     }

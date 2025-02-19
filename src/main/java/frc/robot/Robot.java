@@ -27,7 +27,8 @@ public class Robot extends TimedRobot {
 
   OI oi = new OI( 
     elevator,
-    collector
+    collector,
+    wrist
   );
   ErrorGroup errorGroup = new ErrorGroup();
 
