@@ -52,11 +52,7 @@ public class Constants {
 
   public class Drivebase {
     public static final String CANIVORE_NAME = "Evil Canivore";
-<<<<<<< HEAD
-
-=======
     public static final int PIGEON_ID = 22;
->>>>>>> main
     public static final double MAX_METERS_PER_SECOND = 4.5;
     public static final double MAX_DEGREES_PER_SECOND = 270;
 
@@ -66,13 +62,9 @@ public class Constants {
       public static int BUTTON_STICK_ID = 3;
     }
 
-<<<<<<< HEAD
-    public static final int PIGEON_ID = 22;
-
-=======
     // All modules are at the position (+-MODULE_TO_OFFSET, +-MODULE_TO_OFFSET)
     private static double MODULE_OFFSET = 0.288925;
->>>>>>> main
+
     public static SwerveModuleConstants MODULES[] = {
       new SwerveModuleConstants(
         10, 11, 12, -0.337158 + .75, new Translation2d(-MODULE_OFFSET, MODULE_OFFSET), "Back Left"
