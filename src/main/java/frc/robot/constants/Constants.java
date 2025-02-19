@@ -117,6 +117,7 @@ public class Constants {
 
   public class Funnel {
     public static final int PIVOT_MOTOR_ID = 0;
+    public static final double PIVOT_MOTOR_GEAR_RATIO = 0.0;
   }
 
   public class Elevator {

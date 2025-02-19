@@ -9,13 +9,18 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.Constants;
+import frc.robot.utils.SmartPIDControllerCANSparkMax;
 
 public class Funnel extends SubsystemBase {
 
-  private SparkMax pivotMotor;
+  SparkMax pivotMotor;
 
-  public Funnel(int pivotMotorId) {
-    this.pivotMotor = new SparkMax(pivotMotorId, MotorType.kBrushless);
+  private SmartPIDControllerCANSparkMax pivotMotorSpeedController;
+
+  public Funnel(/*dont put a peram, not needed  */) {
+    //this.pivotMotor = new SparkMax(pivotMotorId, MotorType.kBrushless);
+    pivotMotor = new SparkMax(Constants.Funnel.PIVOT_MOTOR_ID,  MotorType.kBrushless);
   }
 
   public void maintainPosition(Rotation2d position) {
