@@ -18,7 +18,7 @@ public class RunClimberMotorTest extends Command {
   Consumer<TestResult> alert;
   double startingPos;
   double maxCurrent;
-  boolean currentExeeds;
+  boolean currentExeedsEveryWhere;
   public RunClimberMotorTest(
     Consumer<TestResult> alert,
     Climber climber
@@ -33,7 +33,7 @@ public class RunClimberMotorTest extends Command {
   public void initialize() {
     startingPos = climber.getHeight();
     maxCurrent = climber.getCurrent();
-    currentExeeds = false;
+    currentExeedsEveryWhere = false;
     climber.setClimberSetPoint(startingPos + Constants.Testing.CLIMBER_HEIGHT_CHANGE);
   }
 
@@ -45,7 +45,7 @@ public class RunClimberMotorTest extends Command {
     }
     if(maxCurrent > Constants.Testing.CLIMBER_CURRENT_TOLERANCE) //makes sure that the climber current has not exeeded a pre-determained level
     {
-      currentExeeds = true;
+      currentExeedsEveryWhere = true;
     }
   }
 
@@ -64,7 +64,7 @@ public class RunClimberMotorTest extends Command {
     alert.accept(
           new TestResult(
             "Climber Current Exeeds Tolerance", 
-            currentExeeds, 
+            currentExeedsEveryWhere, 
             climber,
             "checks if Current exeeds its tolerance"
           )

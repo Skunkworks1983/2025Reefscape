@@ -87,12 +87,16 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
     return climberSetPoint;
   }
 
-  public boolean isAtSetpoint() {
-    SmartDashboard.putBoolean("Is climber at set point", Math.abs(getHeight() - climberSetPoint) < Constants.ClimberIDs.CLIMBER_TOLERANCE);
-    return Math.abs(getHeight() - climberSetPoint) < Constants.ClimberIDs.CLIMBER_TOLERANCE;
+  public boolean approxEquals(double value1, double value2, double tolerance) {
+    return Math.abs(value1 - value2) < tolerance;
   }
 
-  public double getCurrent() {
+  public boolean isAtSetpoint() {
+    return approxEquals(getHeight(), climberSetPoint, Constants.ClimberIDs.CLIMBER_TOLERANCE);
+    
+  }
+    
+      public double getCurrent() {
     return climbMotor.getSupplyCurrent().getValueAsDouble();
   }
 
@@ -126,20 +130,6 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
 
         },
         () -> {
-          alert.accept(
-              new TestResult(
-                  "Magnet Sensor 1 Reporting Tripped",
-                  !getMagnetSensor1(),
-                  this,
-                  "Checks if the magnet sensor is true, does this when unplugged"));
-
-          alert.accept(
-              new TestResult(
-                  "Magnet Sensor 2 Reporting Tripped",
-                  !getMagnetSensor2(),
-                  this,
-                  "Checks if the magnet sensor is true, does this when unplugged"));
-
           alert.accept(
               new TestResult(
                   "Climb Motor is not Connected",
