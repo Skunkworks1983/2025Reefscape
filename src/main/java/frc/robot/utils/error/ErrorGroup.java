@@ -35,7 +35,7 @@ public class ErrorGroup {
 
   public void setTestStatus(String entryName, Subsystem subsystem, AlertType error) {
     for(TestResult testResult : testList) {
-      if(testResult.name.equals(entryName)) {
+      if(testResult.name.equals(entryName) && testResult.subsystem.equals(subsystem)) {
         testResult.errorStatus = error;
         putTestToSmartdashboard(testResult);
         return;
@@ -63,7 +63,7 @@ public class ErrorGroup {
   }
 
   public void putTestToSmartdashboard(TestResult test) {
-    SmartDashboard.putBoolean(test.name + " " + test.subsystem.toString(), test.errorStatus == AlertType.kInfo);
+    SmartDashboard.putBoolean("Tests/" + test.name + " " + test.subsystem.toString(), test.errorStatus == AlertType.kInfo);
     System.out.println(test.name + " " + test.subsystem.toString());
   }
 

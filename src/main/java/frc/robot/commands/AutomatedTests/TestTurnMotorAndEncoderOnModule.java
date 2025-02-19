@@ -64,6 +64,8 @@ public class TestTurnMotorAndEncoderOnModule extends Command {
     addTest.accept(motorDidNotMoveTest);
     
     addTest.accept(encoderZeroTest);
+
+
   }
 
   @Override
@@ -114,6 +116,8 @@ public class TestTurnMotorAndEncoderOnModule extends Command {
       encoderZeroTest.errorStatus = AlertType.kInfo;
     }
     setTest.accept(encoderZeroTest);
+
+    System.out.println(encoderZeroTest.name + " " + encoderZeroTest.subsystem.toString());
 
     swerveModule.setTurnControllerActive(true);
   }
