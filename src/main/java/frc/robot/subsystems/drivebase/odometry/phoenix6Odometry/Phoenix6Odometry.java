@@ -10,12 +10,10 @@ import java.util.List;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
-import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularAcceleration;
-import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemSignals.Phoenix6DrivebaseSignal;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemSignals.Phoenix6SwerveModuleSignal;
@@ -91,30 +89,26 @@ public class Phoenix6Odometry {
 
   // turnMotorAccelerationSignal does not exist for current encoders 
   public Phoenix6SwerveModuleState registerSwerveModule (
-    StatusSignal<Angle> turnMotorPositionSignal, 
-    StatusSignal<AngularVelocity> turnMotorVelocitySignal, 
-    StatusSignal<Angle> driveMotorPositionSignal, 
-    StatusSignal<AngularVelocity> driveMotorVelocitySignal,
-    StatusSignal<AngularAcceleration> driveMotorAccelerationSignal
+    CANcoder turnEncoder, TalonFX driveMotor
   ) {
     Phoenix6SwerveModuleSignal moduleSignal = new Phoenix6SwerveModuleSignal(
       new SignalValue(
-        turnMotorPositionSignal, 
-        turnMotorVelocitySignal,
+        turnEncoder.getPosition(), 
+        turnEncoder.getVelocity(),
         1.0
       ),
       new SignalValue(
-        turnMotorVelocitySignal,
+        turnEncoder.getVelocity(),
         1.0
       ),
       new SignalValue(
-        driveMotorPositionSignal, 
-        driveMotorVelocitySignal, 
+        driveMotor.getPosition(), 
+        driveMotor.getVelocity(), 
         Constants.Drivebase.Info.METERS_PER_REV
       ), 
       new SignalValue(
-        driveMotorVelocitySignal, 
-        driveMotorAccelerationSignal, 
+        driveMotor.getVelocity(), 
+        driveMotor.getAcceleration(), 
         Constants.Drivebase.Info.METERS_PER_REV
       )
     );

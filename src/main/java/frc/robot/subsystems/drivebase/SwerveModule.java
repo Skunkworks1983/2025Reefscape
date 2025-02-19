@@ -23,15 +23,13 @@ import frc.robot.commands.AutomatedTests.TestModuleComponentsConnection;
 import frc.robot.commands.AutomatedTests.TestTurnMotorAndEncoderOnModule;
 import frc.robot.constants.Constants;
 import frc.robot.constants.SwerveModuleConstants;
-import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.Pheonix6OdometrySubsystem;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.Phoenix6Odometry;
-import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemSignals.Phoenix6SwerveModuleSignal.SwerveField;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.Phoenix6SwerveModuleState;
 import frc.robot.utils.PIDs.SmartPIDController;
 import frc.robot.utils.PIDs.SmartPIDControllerTalonFX;
 import frc.robot.utils.error.ErrorGroup;
 
-public class SwerveModule extends SubsystemBase implements Pheonix6OdometrySubsystem<SwerveField> {
+public class SwerveModule extends SubsystemBase {
 
   private TalonFX turnMotor;
   private TalonFX driveMotor;
@@ -114,11 +112,8 @@ public class SwerveModule extends SubsystemBase implements Pheonix6OdometrySubsy
     m_Velocity.Slot = 0;
 
     state = phoenix6Odometry.registerSwerveModule(
-      turnEncoder.getPosition(),
-      turnEncoder.getVelocity(),
-      driveMotor.getPosition(),
-      driveMotor.getVelocity(),
-      driveMotor.getAcceleration()
+      turnEncoder,
+      driveMotor
     );
   }
 
@@ -247,7 +242,6 @@ public class SwerveModule extends SubsystemBase implements Pheonix6OdometrySubsy
     );
   }
 
-  @Override
   public Phoenix6SwerveModuleState getState() {
     return state;
   }

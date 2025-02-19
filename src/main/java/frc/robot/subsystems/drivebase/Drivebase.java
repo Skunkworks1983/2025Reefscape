@@ -26,9 +26,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.VisionConstants;
 import frc.robot.subsystems.drivebase.odometry.OdometryThread;
-import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.Pheonix6OdometrySubsystem;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.Phoenix6Odometry;
-import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemSignals.Phoenix6DrivebaseSignal.DriveField;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.Phoenix6DrivebaseState;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.Phoenix6SwerveModuleState;
 import frc.robot.subsystems.drivebase.odometry.positionEstimation.PositionEstimator;
@@ -37,7 +35,7 @@ import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.error.DiagnosticSubsystem;
 
-public class Drivebase extends SubsystemBase implements DiagnosticSubsystem, Pheonix6OdometrySubsystem<DriveField> {
+public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
   private OdometryThread odometryThread;
   private Phoenix6Odometry phoenix6Odometry = new Phoenix6Odometry();
@@ -50,7 +48,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem, Phe
   private StructArrayPublisher<SwerveModuleState> actualSwervestate = NetworkTableInstance.getDefault().getStructArrayTopic("Actual swervestate", SwerveModuleState.struct).publish();
 
   public Drivebase() {
-    gyro.setYaw(0.0);
+    resetGyroHeading();
     state = phoenix6Odometry.registerDrivebase(gyro);
 
     Translation2d[] moduleLocations = new Translation2d[Constants.Drivebase.MODULES.length];
@@ -99,7 +97,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem, Phe
   }
 
   @Override
-  public void periodic() { }
+  public void periodic() {}
 
   // TODO: add docstring
   private void drive(double xMetersPerSecond, double yMetersPerSecond,
@@ -219,7 +217,6 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem, Phe
     return Commands.parallel(swerveModuleCommandArray);
   }
 
-  @Override
   public Phoenix6DrivebaseState getState() {
     return state;
   }
