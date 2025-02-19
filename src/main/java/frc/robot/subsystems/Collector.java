@@ -154,4 +154,32 @@ public class Collector extends SubsystemBase {
       )
     );
   }
+  public Command shotPieceOut(boolean stopOnEnd)
+  {
+    return runEnd(
+      () -> {
+        setCollectorSpeeds(Constants.Collector.COLLECTOR_REVERSE, 
+          -Constants.Collector.COLLECTOR_REVERSE);
+      },
+      () -> {
+        if(stopOnEnd) {
+          setCollectorSpeeds(0, 0);
+        }
+      }
+    ).until(
+      () -> {
+        if (rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF &&
+        leftMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF) 
+        {
+          endCount[0]++;
+        }
+        else
+        {
+          endCount[0] = 0;
+        }
+        return endCount[0] > 3;
+      }
+    );
+
+  }
 }
