@@ -169,20 +169,29 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     return swerveDrivePoseEstimator.getEstimatedPosition();
   }
 
+  /** 
+   * Mitigate the skew resulting from rotating and driving simaltaneously. 
+   * @param speeds The chassis speeds inputs. This function modifies those speeds.
+  */
+  public void mitigateSkew(ChassisSpeeds speeds) {
+    double cX = speeds.vxMetersPerSecond;
+    double cY = speeds.vyMetersPerSecond;
+    double cRot = speeds.omegaRadiansPerSecond;
+    double magnitudeSpeed = Math.sqrt(Math.pow(cX, 2) + Math.pow(cY, 2));
+    double k = Constants.Drivebase.SKEW_PROPORTIONAL;
+
+    speeds.vxMetersPerSecond =
+        cX + k * cRot * Math.sin(-Math.atan2(cX, cY) + Math.PI / 2) * magnitudeSpeed;
+    speeds.vyMetersPerSecond =
+        cY - k * cRot * Math.cos(-Math.atan2(cX, cY) + Math.PI / 2) * magnitudeSpeed;
+  }
+
   // TODO: add docstring
   private void drive(double xMetersPerSecond, double yMetersPerSecond,
       double degreesPerSecond, boolean isFieldRelative) {
     ChassisSpeeds chassisSpeeds;
     double radiansPerSecond = Units.degreesToRadians(degreesPerSecond);
     if (isFieldRelative) {
-
-      // double cX = xMetersPerSecond;
-      // double cY = yMetersPerSecond;
-      // double cRot = radiansPerSecond;
-      // double k = Constants.Drivebase.SKEW_PROPORTIONAL;
-      // double outX = cX + Math.sin(((Math.PI * .5) - (Math.atan2(cX,cY)))) * (k * cRot);
-      // double outY = cY - Math.cos(((Math.PI * .5) - (Math.atan2(cX,cY)))) * (k * cRot);
-
       chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
           xMetersPerSecond,
           yMetersPerSecond,
@@ -192,16 +201,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       chassisSpeeds = new ChassisSpeeds(xMetersPerSecond, yMetersPerSecond, radiansPerSecond);
     }
 
-    double cX = chassisSpeeds.vxMetersPerSecond;
-    double cY = chassisSpeeds.vyMetersPerSecond;
-    double omega = chassisSpeeds.omegaRadiansPerSecond;
-    double magnitudeSpeed = Math.sqrt(Math.pow(cX, 2) + Math.pow(cY, 2));
-    double k = Constants.Drivebase.SKEW_PROPORTIONAL;
-
-    chassisSpeeds.vxMetersPerSecond =
-        cX + k * omega * Math.sin(-Math.atan2(cX, cY) + Math.PI / 2) * magnitudeSpeed;
-    chassisSpeeds.vyMetersPerSecond =
-        cY - k * omega * Math.cos(-Math.atan2(cX, cY) + Math.PI / 2) * magnitudeSpeed;
+    mitigateSkew(chassisSpeeds);
 
     SwerveModuleState[] swerveModuleStates = swerveDriveKinematics.toSwerveModuleStates(chassisSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(
