@@ -103,7 +103,7 @@ public class Constants {
       public static final double SWERVE_MODULE_DRIVE_kI = 0.0;
       public static final double SWERVE_MODULE_DRIVE_kD = 0.0;
       public static final double SWERVE_MODULE_DRIVE_kF = 0.1075;
-      public static final double HEADING_CONTROL_kP = 1.50;
+      public static final double HEADING_CONTROL_kP = 3.00;
       public static final double HEADING_CONTROL_kI = 0.0;
       public static final double HEADING_CONTROL_kD = 0.0;
       public static final double PID_LOW_LIMIT = -0.8;
@@ -122,6 +122,8 @@ public class Constants {
     public static final double FIELD_Y_LENGTH = 8.05; // Meters
 
     public static final double SECONDS_UNTIL_HEADING_CONTROL = 0.0;
+
+    public static final double SKEW_PROPORTIONAL = .01;
   }
 
   public class VisionConstants {
@@ -153,9 +155,9 @@ public class Constants {
     // the camera mount.
     private static final Transform3d ROBOT_TO_MOUNT = new Transform3d(
         new Translation3d(
-            0.0,
-            0.0,
-            0.0),
+            Drivebase.TRANSLATION_X,
+            Drivebase.TRANSLATION_Y,
+            Units.inchesToMeters(6.0)),
         new Rotation3d(
             0.0,
             0.0,

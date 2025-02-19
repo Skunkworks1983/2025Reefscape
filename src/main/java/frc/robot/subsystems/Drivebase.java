@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.fasterxml.jackson.core.io.CharTypes;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
@@ -44,6 +45,7 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.error.DiagnosticSubsystem;
+import frc.robot.constants.Constants;
 
 public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
@@ -105,6 +107,8 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       System.out.println("Vision subsystem failed to initialize. See the below stacktrace for more details: ");
       exception.printStackTrace();
     }
+
+    headingController.enableContinuousInput(0, 360);
   }
 
   @Override
@@ -171,6 +175,14 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     ChassisSpeeds chassisSpeeds;
     double radiansPerSecond = Units.degreesToRadians(degreesPerSecond);
     if (isFieldRelative) {
+
+      // double cX = xMetersPerSecond;
+      // double cY = yMetersPerSecond;
+      // double cRot = radiansPerSecond;
+      // double k = Constants.Drivebase.SKEW_PROPORTIONAL;
+      // double outX = cX + Math.sin(((Math.PI * .5) - (Math.atan2(cX,cY)))) * (k * cRot);
+      // double outY = cY - Math.cos(((Math.PI * .5) - (Math.atan2(cX,cY)))) * (k * cRot);
+
       chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
           xMetersPerSecond,
           yMetersPerSecond,
@@ -179,6 +191,17 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     } else {
       chassisSpeeds = new ChassisSpeeds(xMetersPerSecond, yMetersPerSecond, radiansPerSecond);
     }
+
+    double cX = chassisSpeeds.vxMetersPerSecond;
+    double cY = chassisSpeeds.vyMetersPerSecond;
+    double omega = chassisSpeeds.omegaRadiansPerSecond;
+    double magnitudeSpeed = Math.sqrt(Math.pow(cX, 2) + Math.pow(cY, 2));
+    double k = Constants.Drivebase.SKEW_PROPORTIONAL;
+
+    chassisSpeeds.vxMetersPerSecond =
+        cX + k * omega * Math.sin(-Math.atan2(cX, cY) + Math.PI / 2) * magnitudeSpeed;
+    chassisSpeeds.vyMetersPerSecond =
+        cY - k * omega * Math.cos(-Math.atan2(cX, cY) + Math.PI / 2) * magnitudeSpeed;
 
     SwerveModuleState[] swerveModuleStates = swerveDriveKinematics.toSwerveModuleStates(chassisSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(
