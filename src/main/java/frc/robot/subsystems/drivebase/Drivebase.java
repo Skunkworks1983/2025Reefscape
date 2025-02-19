@@ -103,10 +103,10 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   private void drive(double xMetersPerSecond, double yMetersPerSecond,
     double degreesPerSecond, boolean isFieldRelative
   ) {
-    getState().getReadLock().lock();
     ChassisSpeeds chassisSpeeds;
     double radiansPerSecond = Units.degreesToRadians(degreesPerSecond);
     if (isFieldRelative) {
+      state.getReadLock().lock();
       chassisSpeeds = 
         ChassisSpeeds.fromFieldRelativeSpeeds(
           xMetersPerSecond, 
@@ -114,10 +114,11 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
           radiansPerSecond, 
           state.getGyroAngle()
         );
-    getState().getReadLock().unlock();
+    state.getReadLock().unlock();
     } else {
       chassisSpeeds = new ChassisSpeeds(xMetersPerSecond, yMetersPerSecond, radiansPerSecond);
     }
+
     positionEstimator.getReadLock().lock();
     SwerveModuleState[] swerveModuleStates = 
       positionEstimator.swerveDriveKinematics.toSwerveModuleStates(chassisSpeeds);
