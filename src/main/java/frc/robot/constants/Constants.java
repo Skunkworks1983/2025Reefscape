@@ -59,22 +59,9 @@ public class Constants {
       public static int BUTTON_STICK_ID = 3;
     }
 
-    public static final double TRANSLATION_X = Units.feetToMeters(0.925);
-    public static final double TRANSLATION_Y = Units.feetToMeters(0.8041666);
-
-    public static final double T_X = TRANSLATION_X;
-    public static final double T_Y = TRANSLATION_Y;
-
     public static final int PIGEON_ID = 22;
 
     public static SwerveModuleConstants MODULES[] = {
-          new SwerveModuleConstants(18, 16, 17, 0.311035, new Translation2d(T_X, T_Y), "Front Left"),
-          new SwerveModuleConstants(12, 10, 11, -0.415283, new Translation2d(T_X, -T_Y), "Front Right"),
-          new SwerveModuleConstants(23, 25, 24, -0.205566, new Translation2d(-T_X, T_Y), "Back Left"),
-          new SwerveModuleConstants(20, 22, 21, 0.308838, new Translation2d(-T_X, -T_Y), "Back Right")
-
-    };
-    /*
         new SwerveModuleConstants(
           10, 11, 12, -0.337158, new Translation2d(0.288925, 0.288925), "Front Left"),
         new SwerveModuleConstants(
@@ -83,8 +70,7 @@ public class Constants {
           16, 17, 18, 0.476318, new Translation2d(-0.288925, 0.288925), "Back Left"),
         new SwerveModuleConstants(
           19, 20, 21, -0.353027, new Translation2d(-0.288925, -0.288925), "Back Right")
-  */
-
+    };
 
     public class Info {
       public static final double DRIVE_MOTOR_GEAR_RATIO = 6.12;

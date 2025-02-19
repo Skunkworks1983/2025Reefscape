@@ -29,19 +29,15 @@ public abstract class SubsystemSignal<FIELD> {
   public Map<FIELD, SignalValue> signalValueMap = new HashMap<>();
 
   public List<BaseStatusSignal> getSignals() {
-    List<BaseStatusSignal> baseStatusSignals = signalValueMap.values()
-      .stream()
-      .map(signalValue -> signalValue.getSignal())
-      .toList();
-
-    List<BaseStatusSignal> baseStatusSignalRates = signalValueMap.values()
-      .stream()
-      .filter(signalValue -> signalValue.getSignalSlope().isPresent())
-      .map(signalValue -> signalValue.getSignalSlope().get())
-      .toList();
-
-    return Stream.concat(baseStatusSignals.stream(), baseStatusSignalRates.stream())
-      .toList();
+    return Stream.concat(
+      signalValueMap.values()
+        .stream()
+        .map(signalValue -> signalValue.getSignal()),
+      signalValueMap.values()
+        .stream()
+        .filter(signalValue -> signalValue.getSignalSlope().isPresent())
+        .map(signalValue -> signalValue.getSignalSlope().get())
+    ).toList();
   }
 
   public void updateCachedValues() {

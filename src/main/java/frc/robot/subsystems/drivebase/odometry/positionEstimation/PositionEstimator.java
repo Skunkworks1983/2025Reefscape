@@ -96,7 +96,7 @@ public class PositionEstimator {
     );
   }
 
-  public ReentrantReadWriteLock.ReadLock setReadLock() {
+  public ReentrantReadWriteLock.ReadLock getReadLock() {
     return stateLock.readLock();
   }
 

@@ -120,8 +120,10 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem, Phe
     } else {
       chassisSpeeds = new ChassisSpeeds(xMetersPerSecond, yMetersPerSecond, radiansPerSecond);
     }
-
-    SwerveModuleState[] swerveModuleStates = positionEstimator.swerveDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+    positionEstimator.getReadLock().lock();
+    SwerveModuleState[] swerveModuleStates = 
+      positionEstimator.swerveDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+    positionEstimator.getReadLock().unlock();
     SwerveDriveKinematics.desaturateWheelSpeeds(
       swerveModuleStates,
       Constants.Drivebase.Info.MAX_MODULE_SPEED
