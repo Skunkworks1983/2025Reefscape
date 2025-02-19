@@ -69,8 +69,10 @@ public class ErrorGroup {
 
   public void putAllErrors() {
     for(TestResult testResult : testList) {
-      Alert alert = new Alert(testResult.name + " " + testResult.subsystem.toString(), testResult.errorStatus);
-      alert.set(true);
+      if(testResult.errorStatus != AlertType.kInfo) {
+        Alert alert = new Alert(testResult.name + " " + testResult.subsystem.toString(), testResult.errorStatus);
+        alert.set(true);
+      }
     }
   }
 }

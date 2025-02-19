@@ -25,4 +25,8 @@ public class TestResult implements Comparable<TestResult> {
   public int compareTo(TestResult testResult) {
     return name.compareTo(testResult.name + subsystem.toString());
   }
+
+  public void setErrorStatus(AlertType alertType) {
+    this.errorStatus = alertType;
+  }
 }

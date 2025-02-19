@@ -72,28 +72,28 @@ public class TestModuleComponentsConnection extends Command {
 
     // Testing the Modules Encoder connection status
     if(swerveModule.isEncoderConnected()) {
-      encoderConnectedTest.errorStatus = AlertType.kInfo;
+      encoderConnectedTest.setErrorStatus(AlertType.kInfo);
     }
     else {
-      encoderConnectedTest.errorStatus = AlertType.kError;
+      encoderConnectedTest.setErrorStatus(AlertType.kError);
     }
     setTest.accept(encoderConnectedTest);
 
     // Testing the Modules Turn Motor connection status
     if(swerveModule.isTurnMotorConnected()) {
-      turnMotorConnectedTest.errorStatus = AlertType.kInfo;
+      turnMotorConnectedTest.setErrorStatus(AlertType.kInfo);
     }
     else {
-      turnMotorConnectedTest.errorStatus = AlertType.kError;
+      turnMotorConnectedTest.setErrorStatus(AlertType.kError);
     }
     setTest.accept(turnMotorConnectedTest);
 
     // Testing the Modules Drive Motor connection status
     if(swerveModule.isDriveMotorConnected()) {
-      driveMotorConnectedTest.errorStatus = AlertType.kInfo;
+      driveMotorConnectedTest.setErrorStatus(AlertType.kInfo);
     }
     else {
-      driveMotorConnectedTest.errorStatus = AlertType.kError;
+      driveMotorConnectedTest.setErrorStatus(AlertType.kError);
     }
     setTest.accept(driveMotorConnectedTest);
   }

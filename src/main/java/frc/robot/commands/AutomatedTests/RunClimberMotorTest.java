@@ -6,26 +6,51 @@ package frc.robot.commands.AutomatedTests;
 
 import java.util.function.Consumer;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Climber;
 import frc.robot.utils.error.TestResult;
 
 public class RunClimberMotorTest extends Command {
-  /** Creates a new RunClimberMotorTest. */
+
   Climber climber;
-  Consumer<TestResult> alert;
+  Consumer<TestResult> addTest;
+  Consumer<TestResult> setTest;
   double startingPos;
   double maxCurrent;
   boolean currentExceeds;
+
+  TestResult motorDidNotRunTest;
+
+  TestResult climberCurrentToHigh;
+
   public RunClimberMotorTest(
-    Consumer<TestResult> alert,
+    Consumer<TestResult> addTest,
+    Consumer<TestResult> setTest,
     Climber climber
   ) {
-    this.alert = alert;
+    this.addTest = addTest;
+    this.setTest = setTest;
     this.climber = climber;
     addRequirements(climber);
+
+    motorDidNotRunTest = new TestResult(
+      "Climb Motor Did Not Run", 
+      AlertType.kWarning, 
+      climber,
+      "checks if motor ran"
+    );
+
+    climberCurrentToHigh = new TestResult(
+      "Climber Current Exeeds Tolerance", 
+      AlertType.kWarning,  
+      climber,
+      "checks if Current exeeds its tolerance"
+    );
+
+    addTest.accept(motorDidNotRunTest);
+    addTest.accept(climberCurrentToHigh);
   }
 
   // Called when the command is initially scheduled.
@@ -52,23 +77,23 @@ public class RunClimberMotorTest extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    alert.accept(
-          new TestResult(
-            "Climb Motor Did Not Run", 
-            climber.getHeight() != startingPos, 
-            climber,
-            "checks if motor ran"
-          )
-        );
+    if(climber.getHeight() == startingPos) {
+      motorDidNotRunTest.setErrorStatus(AlertType.kError);
+    }
+    else {
+      motorDidNotRunTest.setErrorStatus(AlertType.kInfo);
+    }
+    setTest.accept(motorDidNotRunTest);
+
+    if(currentExceeds) {
+      climberCurrentToHigh.setErrorStatus(AlertType.kError);
+    }
+    else {
+      climberCurrentToHigh.setErrorStatus(AlertType.kInfo);
+    }
+    setTest.accept(climberCurrentToHigh);
+
     climber.setClimberSetPoint(startingPos);
-    alert.accept(
-          new TestResult(
-            "Climber Current Exeeds Tolerance", 
-            currentExceeds, 
-            climber,
-            "checks if Current exeeds its tolerance"
-          )
-        );
   }
 
   // Returns true when the command should end.

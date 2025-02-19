@@ -91,33 +91,31 @@ public class TestTurnMotorAndEncoderOnModule extends Command {
     // An error is logged if the encoder and turn motor on a module report different values
     // this has a tolerance of 0.05 rotations
     if(Math.abs(Math.abs(encoderDifference) - Constants.Testing.NUMBER_OF_MOTOR_ROTATIONS_FOR_MODULE_TEST) > Constants.Testing.TURN_MOTOR_AND_ENCODER_TOLERANCE) {
-      motorEncoderTest.errorStatus = AlertType.kError;
+      motorEncoderTest.setErrorStatus(AlertType.kError);
     }
     else {
-      motorEncoderTest.errorStatus = AlertType.kInfo;
+      motorEncoderTest.setErrorStatus(AlertType.kInfo);
     }
     setTest.accept(motorEncoderTest);
 
     // An error is logged if the turn motor did not move when Instructed to
     if(swerveModule.getTurnMotorEncoderPosition() == startPos) {
-      motorDidNotMoveTest.errorStatus = AlertType.kError;
+      motorDidNotMoveTest.setErrorStatus(AlertType.kError);
     }
     else {
-      motorDidNotMoveTest.errorStatus = AlertType.kInfo;
+      motorDidNotMoveTest.setErrorStatus(AlertType.kInfo);
     }
     setTest.accept(motorDidNotMoveTest);
 
     // An error is logged if the encoder reports 0 in its start and end position. 
     // This happens when the encoder is unplugged or has other mechanical errors
     if(encoderStartPos == 0.0 && swerveModule.getRawEncoderValue() == 0.0) {
-      encoderZeroTest.errorStatus = AlertType.kError;
+      encoderZeroTest.setErrorStatus(AlertType.kError);
     }
     else {
-      encoderZeroTest.errorStatus = AlertType.kInfo;
+      encoderZeroTest.setErrorStatus(AlertType.kInfo);
     }
     setTest.accept(encoderZeroTest);
-
-    System.out.println(encoderZeroTest.name + " " + encoderZeroTest.subsystem.toString());
 
     swerveModule.setTurnControllerActive(true);
   }
