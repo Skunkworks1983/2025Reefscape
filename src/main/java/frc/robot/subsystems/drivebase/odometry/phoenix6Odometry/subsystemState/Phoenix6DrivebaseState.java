@@ -6,15 +6,15 @@ package frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemSignals.Phoenix6DrivebaseSignal;
-import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemSignals.Phoenix6DrivebaseSignal.Field;
+import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemSignals.Phoenix6DrivebaseSignal.DriveField;
 
-public class Phoenix6DrivebaseState extends SubsystemState<Field> {
+public class Phoenix6DrivebaseState extends PhoenixSubsystemState<DriveField> {
 
   public Phoenix6DrivebaseState(Phoenix6DrivebaseSignal subsystem) {
     super(subsystem);
   }
 
   public Rotation2d getGyroAngle() {
-    return Rotation2d.fromDegrees(super.getValue(Field.GYRO));
+    return Rotation2d.fromDegrees(super.getValue(DriveField.GYRO));
   }
 }

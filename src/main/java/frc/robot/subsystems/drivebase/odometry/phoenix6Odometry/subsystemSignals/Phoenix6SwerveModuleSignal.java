@@ -8,7 +8,7 @@ import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.SignalValue;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.Phoenix6SwerveModuleState;
 
 public class Phoenix6SwerveModuleSignal extends SubsystemSignal
-  <frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemSignals.Phoenix6SwerveModuleSignal.Field> {
+  <frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemSignals.Phoenix6SwerveModuleSignal.SwerveField> {
 
   public Phoenix6SwerveModuleSignal(
     SignalValue drivePosition,
@@ -16,13 +16,14 @@ public class Phoenix6SwerveModuleSignal extends SubsystemSignal
     SignalValue turnPosition,
     SignalValue turnVelocity
   ) {
-    super.signalValueMap.put(Field.DRIVE_POSITION, drivePosition);
-    super.signalValueMap.put(Field.DRIVE_VELOCITY, driveVelocity);
-    super.signalValueMap.put(Field.TURN_POSITION, turnPosition);
-    super.signalValueMap.put(Field.TURN_VELOCITY, turnVelocity);
+    super.signalValueMap.put(SwerveField.DRIVE_POSITION, drivePosition);
+    super.signalValueMap.put(SwerveField.DRIVE_VELOCITY, driveVelocity);
+    super.signalValueMap.put(SwerveField.TURN_POSITION, turnPosition);
+    super.signalValueMap.put(SwerveField.TURN_VELOCITY, turnVelocity);
   }
 
-  public static enum Field {
+  // The datatype that should be used for hashing SignalValues
+  public static enum SwerveField {
     DRIVE_POSITION,
     DRIVE_VELOCITY, 
     TURN_POSITION,

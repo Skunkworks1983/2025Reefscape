@@ -8,13 +8,14 @@ import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.SignalValue;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.Phoenix6DrivebaseState;
   
 public class Phoenix6DrivebaseSignal extends SubsystemSignal
-  <frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemSignals.Phoenix6DrivebaseSignal.Field> {
+  <frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemSignals.Phoenix6DrivebaseSignal.DriveField> {
 
   public Phoenix6DrivebaseSignal(SignalValue gyroSignal) {
-    super.signalValueMap.put(Field.GYRO, gyroSignal);
+    super.signalValueMap.put(DriveField.GYRO, gyroSignal);
   }
 
-  public static enum Field {
+  // The datatype that should be used for hashing SignalValues
+  public static enum DriveField {
     GYRO
   }
 

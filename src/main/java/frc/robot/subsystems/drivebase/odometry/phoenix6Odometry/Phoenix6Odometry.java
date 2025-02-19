@@ -14,6 +14,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemSignals.Phoenix6DrivebaseSignal;
@@ -22,6 +23,9 @@ import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemSignals
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.Phoenix6DrivebaseState;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.Phoenix6SwerveModuleState;
 
+/*
+ * Phoenix6Odometry calculates
+ */
 public class Phoenix6Odometry {
 
   List<SubsystemSignal<?>> subsystemSignals = new LinkedList<>();
@@ -43,15 +47,15 @@ public class Phoenix6Odometry {
     return allSignals;
   }
 
-  // called on a thread
+  // Called on a thread
   public void update() {
-    updateSignals(); // Get most recent data on StatusSignals
-    updateState(); // Record/calculate values recived from previous step.
+    updateSignals(); // Force motors to record sensor values
+    updateState(); // Record/calculate values recived from previous step
   }
 
   public void updateSignals() {
     // Note: waitForAll uses signals as an out param.
-    // Using toArray(new BaseStatusSignal[0]) to specify type to be used.
+    // Using toArray(new BaseStatusSignal[0]) to specify type to be used
     StatusCode status = BaseStatusSignal.waitForAll(
       1.0 / Constants.Phoenix6Odometry.updatesPerSecond,
       getAllSignals().toArray(new BaseStatusSignal[0])
@@ -77,26 +81,42 @@ public class Phoenix6Odometry {
 
   public Phoenix6DrivebaseState registerDrivebase(Pigeon2 gyro) {
     Phoenix6DrivebaseSignal drivebaseSignal = 
-      new Phoenix6DrivebaseSignal(
-        new SignalValue(gyro.getYaw(), 1.0)
+      new Phoenix6DrivebaseSignal( //TODO: check if this is correct
+        new SignalValue(gyro.getYaw(), gyro.getAngularVelocityZDevice(), 1.0)
       );
     subsystemSignals.add(drivebaseSignal);
     resetUpdateFrequency();
     return drivebaseSignal.getState();
   }
 
+  // turnMotorAccelerationSignal does not exist for current encoders 
   public Phoenix6SwerveModuleState registerSwerveModule (
     StatusSignal<Angle> turnMotorPositionSignal, 
     StatusSignal<AngularVelocity> turnMotorVelocitySignal, 
     StatusSignal<Angle> driveMotorPositionSignal, 
-    StatusSignal<AngularVelocity> driveMotorVelocitySignal
-    // TODO: check if drive motor acceleration exists
+    StatusSignal<AngularVelocity> driveMotorVelocitySignal,
+    StatusSignal<AngularAcceleration> driveMotorAccelerationSignal
   ) {
     Phoenix6SwerveModuleSignal moduleSignal = new Phoenix6SwerveModuleSignal(
-      new SignalValue(driveMotorPositionSignal, driveMotorVelocitySignal, Constants.Drivebase.Info.METERS_PER_REV), 
-      new SignalValue(driveMotorVelocitySignal, Constants.Drivebase.Info.METERS_PER_REV),
-      new SignalValue(turnMotorPositionSignal, turnMotorVelocitySignal, 1.0), // Value already stored in rotations
-      new SignalValue(turnMotorVelocitySignal, 1.0) // Value already stored in rotations
+      new SignalValue(
+        turnMotorPositionSignal, 
+        turnMotorVelocitySignal,
+        1.0
+      ),
+      new SignalValue(
+        turnMotorVelocitySignal,
+        1.0
+      ),
+      new SignalValue(
+        driveMotorPositionSignal, 
+        driveMotorVelocitySignal, 
+        Constants.Drivebase.Info.METERS_PER_REV
+      ), 
+      new SignalValue(
+        driveMotorVelocitySignal, 
+        driveMotorAccelerationSignal, 
+        Constants.Drivebase.Info.METERS_PER_REV
+      )
     );
 
     subsystemSignals.add(moduleSignal);

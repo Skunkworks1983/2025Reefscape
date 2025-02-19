@@ -4,9 +4,13 @@
 
 package frc.robot.subsystems.drivebase.odometry.phoenix6Odometry;
 
-import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.SubsystemState;
+import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.PhoenixSubsystemState;
 
-/** Add your docs here. */
+/** 
+ * This interface is used to provide a consistent way to get the state of a subsystem
+ * that uses phoenix 6 odometry because all the state of the subsystem is stored in a
+ * PhoenixSubsystemState object. 
+ */
 public interface Pheonix6OdometrySubsystem<FIELD> {
-  public SubsystemState<FIELD> getState();
+  public PhoenixSubsystemState<FIELD> getState();
 }

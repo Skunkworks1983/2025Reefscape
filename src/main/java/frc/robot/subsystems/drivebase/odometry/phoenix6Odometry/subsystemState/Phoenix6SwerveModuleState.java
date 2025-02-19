@@ -8,25 +8,25 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemSignals.SubsystemSignal;
-import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemSignals.Phoenix6SwerveModuleSignal.Field;
+import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemSignals.Phoenix6SwerveModuleSignal.SwerveField;
 
-public class Phoenix6SwerveModuleState extends SubsystemState<Field> {
+public class Phoenix6SwerveModuleState extends PhoenixSubsystemState<SwerveField> {
 
-  public Phoenix6SwerveModuleState(SubsystemSignal<Field> signalSubsystem) {
+  public Phoenix6SwerveModuleState(SubsystemSignal<SwerveField> signalSubsystem) {
     super(signalSubsystem);
   }
 
   public SwerveModulePosition getSwerveModulePosition(){
     return new SwerveModulePosition(
-      super.getValue(Field.DRIVE_POSITION),
-      Rotation2d.fromRotations(super.getValue(Field.TURN_POSITION))
+      super.getValue(SwerveField.DRIVE_POSITION),
+      Rotation2d.fromRotations(super.getValue(SwerveField.TURN_POSITION))
     );
   }
 
   public SwerveModuleState getSwerveModuleState(){
     return new SwerveModuleState(
-      super.getValue(Field.DRIVE_VELOCITY),
-      Rotation2d.fromRotations(super.getValue(Field.TURN_POSITION))
+      super.getValue(SwerveField.DRIVE_VELOCITY),
+      Rotation2d.fromRotations(super.getValue(SwerveField.TURN_POSITION))
     );
   }
 }

@@ -28,7 +28,7 @@ import frc.robot.constants.Constants.VisionConstants;
 import frc.robot.subsystems.drivebase.odometry.OdometryThread;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.Pheonix6OdometrySubsystem;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.Phoenix6Odometry;
-import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemSignals.Phoenix6DrivebaseSignal.Field;
+import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemSignals.Phoenix6DrivebaseSignal.DriveField;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.Phoenix6DrivebaseState;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.Phoenix6SwerveModuleState;
 import frc.robot.subsystems.drivebase.odometry.positionEstimation.PositionEstimator;
@@ -37,7 +37,7 @@ import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.error.DiagnosticSubsystem;
 
-public class Drivebase extends SubsystemBase implements DiagnosticSubsystem, Pheonix6OdometrySubsystem<Field> {
+public class Drivebase extends SubsystemBase implements DiagnosticSubsystem, Pheonix6OdometrySubsystem<DriveField> {
 
   private OdometryThread odometryThread;
   private Phoenix6Odometry phoenix6Odometry = new Phoenix6Odometry();
@@ -59,6 +59,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem, Phe
       swerveModules[i] = new SwerveModule(Constants.Drivebase.MODULES[i], phoenix6Odometry);
       moduleLocations[i] = swerveModules[i].moduleLocation;
     }
+
     // Constructs a pose estimator with this state, and the state of the swerve modules.
     positionEstimator = new PositionEstimator(
       this.getState(), 

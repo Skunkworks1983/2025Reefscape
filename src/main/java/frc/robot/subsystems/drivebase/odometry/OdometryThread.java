@@ -20,7 +20,6 @@ private PositionEstimator positionEstimator;
   }
 
   public void startThread() {
-    System.out.println("starting thread");
     update(); // update once so that states can't be null after startThread.
     thread.start();
   }

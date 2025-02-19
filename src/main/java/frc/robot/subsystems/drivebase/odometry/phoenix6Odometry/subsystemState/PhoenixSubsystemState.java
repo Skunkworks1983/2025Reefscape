@@ -9,10 +9,10 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemSignals.SubsystemSignal;
 
 /** Add your docs here. */
-public abstract class SubsystemState<FIELD> {
+public abstract class PhoenixSubsystemState<FIELD> {
 
   SubsystemSignal<FIELD> signalSubsystem;
-  public SubsystemState(SubsystemSignal<FIELD> signalSubsystem) {
+  public PhoenixSubsystemState(SubsystemSignal<FIELD> signalSubsystem) {
     this.signalSubsystem = signalSubsystem;
   }
 

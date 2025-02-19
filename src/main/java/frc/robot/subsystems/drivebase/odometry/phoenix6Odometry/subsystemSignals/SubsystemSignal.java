@@ -13,9 +13,16 @@ import java.util.stream.Stream;
 import com.ctre.phoenix6.BaseStatusSignal;
 
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.SignalValue;
-import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.SubsystemState;
+import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.PhoenixSubsystemState;
 
-/** Add your docs here. */
+/** 
+ * This class represents all the SignalValues of a subsystem. This class contains methods
+ * to add SignalValues (mapped to the FIELD datatype), view the BaseStatusSignals, update
+ * values stored within the SignalValues (<code>updateCachedValues<code>), and functions
+ * to lock and unlock resources connected to this class. On construction, this class
+ * takes a FIELD, a type to use for hashing of the signalValues. The FIELD will generally be
+ * an enum with names like TURN_MOTOR_POSITION, DRIVE_MOTOR_VELOCITY. 
+ */
 public abstract class SubsystemSignal<FIELD> {
   public ReentrantReadWriteLock stateLock = new ReentrantReadWriteLock();
 
@@ -52,5 +59,5 @@ public abstract class SubsystemSignal<FIELD> {
   }
 
 
-  public abstract SubsystemState<FIELD> getState();
+  public abstract PhoenixSubsystemState<FIELD> getState();
 }

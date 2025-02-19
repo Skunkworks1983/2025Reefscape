@@ -18,7 +18,7 @@ public class Constants {
     // must be constructed and assigned to the correct variable in Robot.java.
     // If some subsystems are not created and this value is true, an exeption
     // will be thrown.
-    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = false;
+    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = true;
 
     public static final double NUMBER_OF_MOTOR_ROTATIONS_FOR_MODULE_TEST = 1.0;
     public static final double TURN_MOTOR_ROTATION_SPEED = 0.15;
@@ -48,7 +48,7 @@ public class Constants {
   }
 
   public class Drivebase {
-    public static final String CANIVORE_NAME = "1983 Comp Drivebase";
+    public static final String CANIVORE_NAME = "Evil Canivore";
 
     public static final double MAX_METERS_PER_SECOND = 4.5;
     public static final double MAX_DEGREES_PER_SECOND = 270;
@@ -65,7 +65,7 @@ public class Constants {
     public static final double T_X = TRANSLATION_X;
     public static final double T_Y = TRANSLATION_Y;
 
-    public static final int PIGEON_ID = 26;
+    public static final int PIGEON_ID = 22;
 
     public static SwerveModuleConstants MODULES[] = {
           new SwerveModuleConstants(18, 16, 17, 0.311035, new Translation2d(T_X, T_Y), "Front Left"),
@@ -87,7 +87,7 @@ public class Constants {
 
 
     public class Info {
-      public static final double DRIVE_MOTOR_GEAR_RATIO = 6.75;
+      public static final double DRIVE_MOTOR_GEAR_RATIO = 6.12;
       public static final double WHEEL_DIAMETER = 0.0991108;
       public static final double REVS_PER_METER = DRIVE_MOTOR_GEAR_RATIO / (WHEEL_DIAMETER * Math.PI);
       public static final double METERS_PER_REV = 1.0 / REVS_PER_METER;
