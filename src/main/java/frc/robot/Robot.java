@@ -42,12 +42,10 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousInit() {
-  }
+  public void autonomousInit() {}
 
   @Override
-  public void autonomousPeriodic() {
-  }
+  public void autonomousPeriodic() {}
 
   @Override
   public void teleopInit() { 
@@ -60,19 +58,21 @@ public class Robot extends TimedRobot {
       ).schedule();
     }
   }
-
+  
   @Override
-  public void teleopPeriodic() {}
-
-  @Override
-  public void disabledInit() {
-    errorGroup.putAllErrors();
+  public void teleopPeriodic() {
   }
 
   @Override
   public void disabledPeriodic() {}
 
+  public void disabledInit() {
+    errorGroup.putAllErrors();
+  }
+
   @Override
+  public void testPeriodic() {}
+
   public void testInit() {
     errorGroup.clearAllTest();
 
@@ -84,9 +84,6 @@ public class Robot extends TimedRobot {
       ).schedule();
     }
   }
-
-  @Override
-  public void testPeriodic() {}
 
   @Override
   public void simulationInit() {}
