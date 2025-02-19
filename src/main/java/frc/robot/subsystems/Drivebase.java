@@ -344,7 +344,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
    * A basic swerve drive command. Intended to be used exclusively within other
    * commands in drivebase.
    */
-  public Command getBaseSwerveCommand(
+  private Command getBaseSwerveCommand(
       DoubleSupplier xMetersPerSecond,
       DoubleSupplier yMetersPerSecond,
       DoubleSupplier degreesPerSecond,
