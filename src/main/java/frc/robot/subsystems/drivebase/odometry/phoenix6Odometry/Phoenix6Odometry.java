@@ -7,6 +7,7 @@ package frc.robot.subsystems.drivebase.odometry.phoenix6Odometry;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
@@ -29,6 +30,7 @@ import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.P
 public class Phoenix6Odometry {
 
   List<SubsystemSignal<?>> subsystemSignals = new LinkedList<>();
+  ReentrantLock subsystemSignalsLock = new ReentrantLock();
 
   Phoenix6DrivebaseState drivebaseState;
   List<Phoenix6SwerveModuleState> swerveModuleState = new LinkedList<>();
@@ -56,10 +58,12 @@ public class Phoenix6Odometry {
   public void updateSignals() {
     // Note: waitForAll uses signals as an out param.
     // Using toArray(new BaseStatusSignal[0]) to specify type to be used
+    subsystemSignalsLock.lock();
     StatusCode status = BaseStatusSignal.waitForAll(
       1.0 / Constants.Phoenix6Odometry.updatesPerSecond,
       getAllSignals().toArray(new BaseStatusSignal[0])
     );
+    subsystemSignalsLock.unlock();
 
     if(status.isOK()) {
       vaildUpdates++;
@@ -75,7 +79,9 @@ public class Phoenix6Odometry {
       getAllSignals().toArray(new BaseStatusSignal[0])
     );
 
+    subsystemSignalsLock.lock();
     subsystemSignals.forEach(subsystemSignal -> subsystemSignal.updateCachedValues());
+    subsystemSignalsLock.unlock();
     setWriteLock(false);
   }
 
@@ -84,7 +90,11 @@ public class Phoenix6Odometry {
       new Phoenix6DrivebaseSignal(
         new SignalValue(gyro.getYaw(), gyro.getAngularVelocityZDevice(), 1.0)
       );
+
+    subsystemSignalsLock.lock();
     subsystemSignals.add(drivebaseSignal);
+    subsystemSignalsLock.unlock();
+
     resetUpdateFrequency();
     return drivebaseSignal.getState();
   }
@@ -115,7 +125,9 @@ public class Phoenix6Odometry {
       )
     );
 
+    subsystemSignalsLock.lock();
     subsystemSignals.add(moduleSignal);
+    subsystemSignalsLock.unlock();
     resetUpdateFrequency();
 
     return moduleSignal.getState();
@@ -129,6 +141,7 @@ public class Phoenix6Odometry {
   }
 
   private void setWriteLock(boolean locked) {
+    subsystemSignalsLock.lock();
     subsystemSignals.forEach(
       subsystemSignal -> {
         if(locked) {
@@ -138,9 +151,11 @@ public class Phoenix6Odometry {
         }
       }
     );
+    subsystemSignalsLock.unlock();
   }
 
   public void setReadLock(boolean locked) {
+    subsystemSignalsLock.lock();
     subsystemSignals.forEach(
       subsystemSignal -> {
         if(locked) {
@@ -150,5 +165,6 @@ public class Phoenix6Odometry {
         }
       }
     );
+    subsystemSignalsLock.unlock();
   }
 }
