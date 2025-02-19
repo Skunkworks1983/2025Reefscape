@@ -209,8 +209,8 @@ public class Constants {
 
   public class ClimberIDs {
     public static final int CLIMBER_KRAKEN_MOTOR = 12;
-    public static final int CLIMBER_MAGNET_SENSOR_1 = 0;
-    public static final int CLIMBER_MAGNET_SENSOR_2 = 0;
+    public static final int CLIMBER_MAGNET_SENSOR_1 = 4;
+    public static final int CLIMBER_MAGNET_SENSOR_2 = 5;
 
     public static final double CLIMBER_KP = 0.1; //TODO tune constants
     public static final double CLIMBER_KD = 0.0;
@@ -268,7 +268,7 @@ public class Constants {
         }
 
         public class Climber{
-          public static final int GO_TO_MAX = 22;
+          public static final int GO_TO_MAX = 10;
         }
       }
     }
