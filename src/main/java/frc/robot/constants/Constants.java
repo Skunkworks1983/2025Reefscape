@@ -59,15 +59,22 @@ public class Constants {
       public static int BUTTON_STICK_ID = 3;
     }
 
+    // All modules are at the position (+-MODULE_TO_OFFSET, +-MODULE_TO_OFFSET)
+    private static double MODULE_OFFSET = 0.288925;
+    private static double M_O = MODULE_OFFSET; 
     public static SwerveModuleConstants MODULES[] = {
       new SwerveModuleConstants(
-        10, 11, 12, -0.337158 + .75, new Translation2d(-0.288925, 0.288925), "Back Left"),
+        10, 11, 12, -0.337158 + .75, new Translation2d(-M_O, M_O), "Back Left"
+      ),
       new SwerveModuleConstants(
-        13, 14, 15, -0.289795 + .25, new Translation2d(-0.288925, -0.288925), "Back Right"),
+        13, 14, 15, -0.289795 + .25, new Translation2d(-M_O, -M_O), "Back Right"
+      ),
       new SwerveModuleConstants(
-        16, 17, 18, 0.476318 - .75, new Translation2d(0.288925, 0.288925), "Front Left"),
+        16, 17, 18, 0.476318 - .75, new Translation2d(M_O, M_O), "Front Left"
+      ),
       new SwerveModuleConstants(
-        19, 20, 21, -0.353027 + .75, new Translation2d(0.288925, -0.288925), "Front Right")
+        19, 20, 21, -0.353027 + .75, new Translation2d(M_O, -M_O), "Front Right"
+      )
     };
 
     public class Info {
