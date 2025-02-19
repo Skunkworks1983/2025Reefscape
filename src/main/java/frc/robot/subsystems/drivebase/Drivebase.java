@@ -109,9 +109,9 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   public void periodic() {}
 
   /**
-   * This function causes the drivebase to drive based on a translation,
-   * rotation, and isFieldReletave boolean. This function must be called
-   * once every tick.
+   * This function calls the <code>setModuleStates</code> function based on
+   * the a desired translation, a desired rotation, and isFieldReletave boolean.
+   * This function should be excecuted once every tick for smooth movement.
    */
   private void drive(double xMetersPerSecond, double yMetersPerSecond,
     double degreesPerSecond, boolean isFieldRelative
@@ -152,7 +152,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   }
 
   public void resetGyroHeading() {
-    gyro.setYaw(0);
+    gyro.reset();
   }
 
   public void setAllDriveMotorBreakMode(boolean breakMode) {
