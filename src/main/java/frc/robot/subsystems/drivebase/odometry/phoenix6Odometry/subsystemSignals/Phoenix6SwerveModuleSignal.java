@@ -11,10 +11,10 @@ public class Phoenix6SwerveModuleSignal extends SubsystemSignal
   <frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemSignals.Phoenix6SwerveModuleSignal.SwerveField> {
 
   public Phoenix6SwerveModuleSignal(
-    SignalValue drivePosition,
-    SignalValue driveVelocity,
     SignalValue turnPosition,
-    SignalValue turnVelocity
+    SignalValue turnVelocity,
+    SignalValue drivePosition,
+    SignalValue driveVelocity
   ) {
     super.signalValueMap.put(SwerveField.DRIVE_POSITION, drivePosition);
     super.signalValueMap.put(SwerveField.DRIVE_VELOCITY, driveVelocity);

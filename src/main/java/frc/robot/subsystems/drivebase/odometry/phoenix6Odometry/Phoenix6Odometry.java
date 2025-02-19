@@ -81,7 +81,7 @@ public class Phoenix6Odometry {
 
   public Phoenix6DrivebaseState registerDrivebase(Pigeon2 gyro) {
     Phoenix6DrivebaseSignal drivebaseSignal = 
-      new Phoenix6DrivebaseSignal( //TODO: check if this is correct
+      new Phoenix6DrivebaseSignal(
         new SignalValue(gyro.getYaw(), gyro.getAngularVelocityZDevice(), 1.0)
       );
     subsystemSignals.add(drivebaseSignal);
