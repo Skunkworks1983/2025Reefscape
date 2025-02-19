@@ -87,6 +87,7 @@ public class PositionEstimator {
   }
 
   public void reset(Pose2d newPose) {
+    stateLock.writeLock().lock();
     swerveDrivePoseEstimator.resetPosition(
       drivebaseState.getGyroAngle(),
       Arrays.stream(swerveStates)
@@ -94,6 +95,7 @@ public class PositionEstimator {
         .toArray(SwerveModulePosition[]::new),
       newPose
     );
+    stateLock.writeLock().unlock();
   }
 
   public ReentrantReadWriteLock.ReadLock getReadLock() {

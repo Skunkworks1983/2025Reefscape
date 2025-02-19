@@ -8,7 +8,11 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemSignals.SubsystemSignal;
 
-/** Add your docs here. */
+/** 
+ * PhoenixSubsystemState is a readonly class used to store all of a subsystem's
+ * phoenix state. This class only has a <code>getValue</code> and 
+ * <code>getReadLock</code> function.
+ */
 public abstract class PhoenixSubsystemState<FIELD> {
 
   SubsystemSignal<FIELD> signalSubsystem;

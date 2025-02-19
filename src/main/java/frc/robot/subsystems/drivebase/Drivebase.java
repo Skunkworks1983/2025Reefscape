@@ -48,7 +48,9 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   private StructArrayPublisher<SwerveModuleState> actualSwervestate = NetworkTableInstance.getDefault().getStructArrayTopic("Actual swervestate", SwerveModuleState.struct).publish();
 
   public Drivebase() {
-    resetGyroHeading();
+    // Creates a pheonix 6 pro state based on the gyro -- the only sensor owned 
+    // directly by the drivebase. A pheonix 6 pro state is a class to store all
+    // of a subsystems pheonix 6 pro sensor inputs
     state = phoenix6Odometry.registerDrivebase(gyro);
 
     Translation2d[] moduleLocations = new Translation2d[Constants.Drivebase.MODULES.length];
@@ -58,7 +60,9 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       moduleLocations[i] = swerveModules[i].moduleLocation;
     }
 
-    // Constructs a pose estimator with this state, and the state of the swerve modules.
+    // Constructs a pose estimator with the pheonix 6 pro state, the state of
+    // the swerve modules, and a lock. A pheonix 6 pro state is a class
+    // to store all of a subsystems pheonix 6 pro sensor inputs
     positionEstimator = new PositionEstimator(
       this.getState(), 
       Arrays.stream(swerveModules)
@@ -70,7 +74,6 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
 
     odometryThread = new OdometryThread(phoenix6Odometry, positionEstimator);
-    odometryThread.startThread();
 
     Pigeon2Configuration gConfiguration = new Pigeon2Configuration();
     gConfiguration.MountPose.MountPoseYaw = 0; 
@@ -94,12 +97,18 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       System.out.println("Vision subsystem failed to initialize. See the below stacktrace for more details: ");
       exception.printStackTrace();
     }
+
+    odometryThread.startThread();
   }
 
   @Override
   public void periodic() {}
 
-  // TODO: add docstring
+  /**
+   * This function causes the drivebase to drive based on a translation,
+   * rotation, and isFieldReletave boolean. This function must be called
+   * once every tick.
+   */
   private void drive(double xMetersPerSecond, double yMetersPerSecond,
     double degreesPerSecond, boolean isFieldRelative
   ) {
@@ -148,7 +157,6 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     }
   }
 
-  @SuppressWarnings("unused")
   private ChassisSpeeds getRobotRelativeSpeeds() {
     positionEstimator.stateLock.readLock().lock();
     SwerveModuleState[] moduleStates = new SwerveModuleState[Constants.Drivebase.MODULES.length];
