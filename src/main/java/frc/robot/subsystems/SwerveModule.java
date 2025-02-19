@@ -11,11 +11,6 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -35,7 +30,7 @@ import frc.robot.utils.error.ErrorGroup;
 
 public class SwerveModule extends SubsystemBase {
 
-  private SparkMax turnMotor;
+  private TalonFX turnMotor;
   private TalonFX driveMotor;
   private CANcoder turnEncoder;
   private SmartPIDControllerTalonFX driveController;
@@ -66,9 +61,9 @@ public class SwerveModule extends SubsystemBase {
     Translation2d moduleLocation, 
     String moduleName
   ) {
-    this.driveMotor = new TalonFX(driveModuleId, Constants.Drivebase.CANIVORE_NAME);
-    this.turnMotor = new SparkMax(turnModuleId, MotorType.kBrushless);
-    this.turnEncoder = new CANcoder(turnEncoderId, Constants.Drivebase.CANIVORE_NAME);
+    this.driveMotor = new TalonFX(driveModuleId); //TODO, Constants.Drivebase.CANIVORE_NAME);
+    this.turnMotor = new TalonFX(turnModuleId); //TODO, Constants.Drivebase.CANIVORE_NAME);
+    this.turnEncoder = new CANcoder(turnEncoderId); //TODO, Constants.Drivebase.CANIVORE_NAME);
     this.moduleLocation = moduleLocation;
     this.moduleName = moduleName;
 
@@ -96,9 +91,9 @@ public class SwerveModule extends SubsystemBase {
       driveMotor
     );
 
-    SparkMaxConfig config = new SparkMaxConfig();
-    config.inverted(true);
-    turnMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    TalonFXConfiguration turnConfig = new TalonFXConfiguration();
+    turnConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    turnMotor.getConfigurator().apply(turnConfig);
 
     CANcoderConfiguration encoder = new CANcoderConfiguration();
     encoder.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
@@ -127,8 +122,11 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public void setModuleDriveVelocity(double metersPerSecond) {
-    driveMotor.setControl(m_Velocity.withVelocity(metersPerSecond * Constants.Drivebase.Info.REVS_PER_METER)
-      .withEnableFOC(true));
+    driveMotor.setControl(
+      m_Velocity.withVelocity(
+        metersPerSecond * Constants.Drivebase.Info.REVS_PER_METER
+      ).withEnableFOC(true)
+    );
   }
 
   // returns meters traveled
@@ -140,7 +138,7 @@ public class SwerveModule extends SubsystemBase {
   // what should be used would be getTurnMotorAngle()
   public double getTurnMotorEncoderPosition() {
     // TODO find a way to check robot to see if we are in test mode then log an error if not
-    return turnMotor.getEncoder().getPosition() / Constants.Drivebase.Info.TURN_MOTOR_GEAR_RATIO; 
+    return turnMotor.getPosition().getValueAsDouble() / Constants.Drivebase.Info.TURN_MOTOR_GEAR_RATIO; 
   }
 
   // returns velocity in meters
@@ -174,8 +172,14 @@ public class SwerveModule extends SubsystemBase {
     return turnMotorRotation;
   }
 
+  // Returns Voltage
   public double getTurnMotorVoltage() {
-    return turnMotor.getBusVoltage();
+    return turnMotor.getMotorVoltage().getValueAsDouble();
+  }
+
+  // Returns Amps
+  public double getTurnMotorCurrent() {
+    return turnMotor.getSupplyCurrent().getValueAsDouble();
   }
 
   public boolean isEncoderConnected() {
@@ -219,7 +223,7 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public boolean isTurnMotorConnected() {
-    return turnMotor.getFirmwareVersion() != 0;
+    return turnMotor.isConnected();
   }
 
   public boolean isDriveMotorConnected() {
