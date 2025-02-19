@@ -72,6 +72,10 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       moduleLocations
     );
 
+    Pigeon2Configuration gyroConfiguration = new Pigeon2Configuration();
+    gyroConfiguration.MountPose.MountPoseYaw = 0; 
+    gyro.getConfigurator().apply(gyroConfiguration);
+    resetGyroHeading();
 
     odometryThread = new OdometryThread(phoenix6Odometry, positionEstimator);
 

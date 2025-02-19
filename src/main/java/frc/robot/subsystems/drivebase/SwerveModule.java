@@ -69,7 +69,6 @@ public class SwerveModule extends SubsystemBase {
     String moduleName,
     Phoenix6Odometry phoenix6Odometry
   ) {
-
     this.driveMotor = new TalonFX(driveModuleId, Constants.Drivebase.CANIVORE_NAME);
     this.turnMotor = new TalonFX(turnModuleId, Constants.Drivebase.CANIVORE_NAME);
     this.turnEncoder = new CANcoder(turnEncoderId, Constants.Drivebase.CANIVORE_NAME);

@@ -22,10 +22,13 @@ public class Robot extends TimedRobot {
   Optional<Drivebase> drivebase = Optional.of(new Drivebase());
   Optional<Elevator> elevator = Optional.of(new Elevator());
   Optional<Collector> collector = Optional.of(new Collector());
+  Optional<Climber> climber = Optional.of(new Climber());
+  
 
   OI oi = new OI( 
     elevator,
-    collector
+    collector,
+    climber
   );
   ErrorGroup errorGroup = new ErrorGroup();
 
@@ -34,6 +37,7 @@ public class Robot extends TimedRobot {
       assert drivebase.isPresent();
       assert collector.isPresent();
       assert elevator.isPresent();
+      assert climber.isPresent();
     }
   }
 
