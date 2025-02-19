@@ -22,7 +22,9 @@ import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.P
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.Phoenix6SwerveModuleState;
 
 /*
- * Phoenix6Odometry calculates
+ * Phoenix6Odometry is used to manage the many StatusSignals in the robot.
+ * It can be used to register subsystems that contain Pheonix devices, update
+ * the signals, set read locks, and update the state the values.
  */
 public class Phoenix6Odometry {
 
@@ -119,7 +121,7 @@ public class Phoenix6Odometry {
     return moduleSignal.getState();
   }
 
-  public void resetUpdateFrequency() {
+  private void resetUpdateFrequency() {
     BaseStatusSignal.setUpdateFrequencyForAll(
       Constants.Phoenix6Odometry.updatesPerSecond,
       getAllSignals().toArray(new BaseStatusSignal[0])
