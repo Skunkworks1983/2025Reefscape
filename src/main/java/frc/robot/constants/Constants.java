@@ -174,7 +174,9 @@ public class Constants {
   }
 
   public class Elevator {
-    public static final int MOTOR_ID = 0;
+    public static final int MOTOR_ID = 12;
+    public static final int BOTTOM_LIMIT_SWITCH_ID = 4;
+    public static final int TOP_LIMIT_SWITCH_ID = 5;
 
     // This tolerance value will be used for deciding if the elevator
     // should target to its setpoint or if the setpoint is too far
@@ -183,18 +185,28 @@ public class Constants {
     // This tolerance value will be used for moving to a setpoint
     // using the MoveToPositionCommand.
     public static final double TOLERENCE_METERS_FOR_MOVE_TO_POSITION = 0.0;
-    public static final double ROTATIONS_TO_METERS = 0.0;
+    // In meters
+    public static final double MAX_HEIGHT_CARRIAGE = 1.527175;
+    public static final double MAX_HEIGHT_STAGE_ONE = 0.7366;
+    public static final double STAGE_ONE_TO_CARRIAGE_HEIGHT = MAX_HEIGHT_CARRIAGE / MAX_HEIGHT_STAGE_ONE;
+    public static final double GEAR_RATIO = 1.0/5.0;
+    public static final double ROTATIONS_TO_METERS = 0.1016 * STAGE_ONE_TO_CARRIAGE_HEIGHT;
+    public static final double MOTOR_ROTATIONS_TO_METERS = GEAR_RATIO * ROTATIONS_TO_METERS;
+    public static final double METERS_TO_MOTOR_ROTATIONS = 1 / MOTOR_ROTATIONS_TO_METERS;
+
 
     public class PIDs {
-      public static final double ELEVATOR_kP = 0.0;
+      public static final double ELEVATOR_kP = 1.25;
       public static final double ELEVATOR_kI = 0.0;
-      public static final double ELEVATOR_kD = 0.0;
+      public static final double ELEVATOR_kD = 0.15;
+      public static final double ELEVATOR_kV = 0.0;
+      public static final double ELEVATOR_kS = 0.0;
       public static final boolean SMART_PID_ENABLED = false;
     }
 
     public class Profile {
-      public static final double MAX_VELOCITY = 0.0;
-      public static final double MAX_ACCELERATION = 0.0;
+      public static final double MAX_VELOCITY = 60.0;
+      public static final double MAX_ACCELERATION = 80.0;
     }
 
     public class Setpoints {
@@ -203,7 +215,7 @@ public class Constants {
       public static final double L1_POSITION = 0.0;
       public static final double L2_POSITION = 0.0;
       public static final double L3_POSITION = 0.0;
-      public static final double L4_POSITION = 0.0;
+      public static final double L4_POSITION = MAX_HEIGHT_CARRIAGE;
       public static final double NET_POSITION = 0.0;
     }
   }
