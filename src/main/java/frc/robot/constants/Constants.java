@@ -23,6 +23,9 @@ public class Constants {
     public static final double NUMBER_OF_MOTOR_ROTATIONS_FOR_MODULE_TEST = 1.0;
     public static final double TURN_MOTOR_ROTATION_SPEED = 0.15;
     public static final double TURN_MOTOR_AND_ENCODER_TOLERANCE = 0.05;
+
+    public static final double CLIMBER_HEIGHT_CHANGE = 0.05;
+    public static final double CLIMBER_CURRENT_TOLERANCE = 10; //TODO find tolerance
   }
 
   public class Collector {
@@ -206,22 +209,24 @@ public class Constants {
 
   public class ClimberIDs {
     public static final int CLIMBER_KRAKEN_MOTOR = 12;
-    public static final int CLIMBER_MAGNET_SENSOR_1 = 0;
-    public static final int CLIMBER_MAGNET_SENSOR_2 = 0;
+    public static final int CLIMBER_MAGNET_SENSOR_1 = 4;
+    public static final int CLIMBER_MAGNET_SENSOR_2 = 5;
 
-    public static final double CLIMBER_KP = 0.1;
+    public static final double CLIMBER_KP = 0.1; //TODO tune constants
     public static final double CLIMBER_KD = 0.0;
     public static final double CLIMBER_KI = 0.0;
     public static final double CLIMBER_KF = 0.0;
 
     public static final boolean CLIMBER_SMARTPID_ACTIVE = false;
 
-    public static final double CLIMBER_MAX = 2.0; // in motor rotations
-    public static final double CLIMBER_MIN = -2.0; // in motor rotations
+    public static final double CLIMBER_MAX = Units.inchesToMeters(12); // in meters TODO figure out max height
+    public static final double CLIMBER_MIN = 0.0; // in meters
 
-    public static final double CLIMBER_VELOCITY = 5; // TODO figure out velocity
+    public static final double CLIMBER_TOLERANCE = 0.001;
 
-    public static final double CLIMBER_RANGE = .1; // TODO figure out range
+    public static final double CLIMBER_GEAR_RATIO = 1.0 / 20.0; //TODO check with vince (he said 20 to 1, i think i did the math right but idk)
+    public static final double CLIMBER_ROTATIONS_TO_METERS = Units.inchesToMeters(0.25);
+    public static final double CLIMBER_MOTOR_ROTATIONS_TO_CLIMBER_HEIGHT = CLIMBER_GEAR_RATIO * CLIMBER_ROTATIONS_TO_METERS;
   }
 
   public class OI {
@@ -260,6 +265,10 @@ public class Constants {
           public static final int INTAKE_CORAL = 14;
           public static final int COLLECT_CORAL = 11;
           public static final int SCORE_CORAL = 12;
+        }
+
+        public class Climber{
+          public static final int GO_TO_MAX = 10;
         }
       }
     }
