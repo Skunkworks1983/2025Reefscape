@@ -76,7 +76,7 @@ public class SwerveModule extends SubsystemBase {
       Constants.Drivebase.PIDs.SMART_PID_TURN_ENABLED
     );
     turnController.enableContinuousInput(-180, 180);
-    turnController.setTolerance(0.005);
+    turnController.setTolerance(0.0);
 
     TalonFXConfiguration driveConfig = new TalonFXConfiguration();
     driveConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
