@@ -114,15 +114,6 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   @Override
   public void periodic() {
     updateOdometry();
-    SmartDashboard.putNumber("Pigeon Gyro", getGyroAngle().getDegrees());
-    SmartDashboard.putNumber("Heading Control Error", headingController.getError());
-    SmartDashboard.putNumber("Heading Controller Setpoint", headingController.getSetpoint());
-    SmartDashboard.putNumber("Gyro Measurement in degrees", getGyroAngle().getDegrees());
-    SmartDashboard.putNumber("Heading Controller Output", headingController.calculate(
-      getGyroAngle().getDegrees(),
-      0.0
-    ));
-
   }
 
   /**
