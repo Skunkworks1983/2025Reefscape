@@ -64,18 +64,20 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   private final Field2d swerveOdometryField2d = new Field2d();
 
   private Pigeon2 gyro = new Pigeon2(Constants.Drivebase.PIGEON_ID, Constants.Drivebase.CANIVORE_NAME);
-  private StructArrayPublisher<SwerveModuleState> desiredSwervestate = NetworkTableInstance.getDefault().getStructArrayTopic("Desired swervestate", SwerveModuleState.struct).publish();
-  private StructArrayPublisher<SwerveModuleState> actualSwervestate = NetworkTableInstance.getDefault().getStructArrayTopic("Actual swervestate", SwerveModuleState.struct).publish();
+  private StructArrayPublisher<SwerveModuleState> desiredSwervestate = NetworkTableInstance.getDefault()
+      .getStructArrayTopic("Desired swervestate", SwerveModuleState.struct).publish();
+  private StructArrayPublisher<SwerveModuleState> actualSwervestate = NetworkTableInstance.getDefault()
+      .getStructArrayTopic("Actual swervestate", SwerveModuleState.struct).publish();
 
   public Drivebase() {
-    // Creates a pheonix 6 pro state based on the gyro -- the only sensor owned 
+    // Creates a pheonix 6 pro state based on the gyro -- the only sensor owned
     // directly by the drivebase. A pheonix 6 pro state is a class to store all
     // of a subsystems pheonix 6 pro sensor inputs
     state = phoenix6Odometry.registerDrivebase(gyro);
 
     Translation2d[] moduleLocations = new Translation2d[Constants.Drivebase.MODULES.length];
 
-    for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
+    for (int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
       swerveModules[i] = new SwerveModule(Constants.Drivebase.MODULES[i], phoenix6Odometry);
       moduleLocations[i] = swerveModules[i].moduleLocation;
     }
@@ -84,38 +86,35 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     // the swerve modules, and a lock. A pheonix 6 pro state is a class
     // to store all of a subsystems pheonix 6 pro sensor inputs
     positionEstimator = new PositionEstimator(
-      this.getState(), 
-      Arrays.stream(swerveModules)
-        .map(module -> module.getState())
-        .toArray(Phoenix6SwerveModuleState[]::new),
-      phoenix6Odometry::setReadLock,
-      moduleLocations
-    );
+        this.getState(),
+        Arrays.stream(swerveModules)
+            .map(module -> module.getState())
+            .toArray(Phoenix6SwerveModuleState[]::new),
+        phoenix6Odometry::setReadLock,
+        moduleLocations);
 
     Pigeon2Configuration gyroConfiguration = new Pigeon2Configuration();
-    gyroConfiguration.MountPose.MountPoseYaw = 0; 
+    gyroConfiguration.MountPose.MountPoseYaw = 0;
     gyro.getConfigurator().apply(gyroConfiguration);
     resetGyroHeading();
 
     odometryThread = new OdometryThread(phoenix6Odometry, positionEstimator);
 
     Pigeon2Configuration gConfiguration = new Pigeon2Configuration();
-    gConfiguration.MountPose.MountPoseYaw = 0; 
+    gConfiguration.MountPose.MountPoseYaw = 0;
     gyro.getConfigurator().apply(gConfiguration);
     resetGyroHeading();
 
     // Ensure robot code won't crash if the vision subsystem fails to initialize.
     try {
       new Vision(
-        positionEstimator::addVisionMeasurement,
-        new VisionIOPhotonVision(
-          VisionConstants.FRONT_CAMERA_NAME,
-          VisionConstants.ROBOT_TO_FRONT_CAMERA),
-        new VisionIOPhotonVision(
-          VisionConstants.SIDE_CAMERA_NAME,
-          VisionConstants.ROBOT_TO_SIDE_CAMERA
-        )
-      );
+          positionEstimator::addVisionMeasurement,
+          new VisionIOPhotonVision(
+              VisionConstants.FRONT_CAMERA_NAME,
+              VisionConstants.ROBOT_TO_FRONT_CAMERA),
+          new VisionIOPhotonVision(
+              VisionConstants.SIDE_CAMERA_NAME,
+              VisionConstants.ROBOT_TO_SIDE_CAMERA));
     } catch (Exception exception) {
       System.out.println("Vision subsystem failed to initialize. See the below stacktrace for more details: ");
       exception.printStackTrace();
@@ -126,10 +125,11 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+  }
 
   /**
-   * This function calls the <code>setModuleStates</code> function based on
+   * This function calls the {@code setModuleStates} function based on
    * the a desired translation, a desired rotation, and isFieldReletave boolean.
    * This function should be excecuted once every tick for smooth movement.
    */
@@ -151,10 +151,11 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     return swerveDrivePoseEstimator.getEstimatedPosition();
   }
 
-  /** 
-   * Mitigate the skew resulting from rotating and driving simaltaneously. 
+  /**
+   * Mitigate the skew resulting from rotating and driving simaltaneously.
+   * 
    * @param speeds The chassis speeds inputs. This function modifies those speeds.
-  */
+   */
   public void mitigateSkew(ChassisSpeeds speeds) {
     double cX = speeds.vxMetersPerSecond;
     double cY = speeds.vyMetersPerSecond;
@@ -162,10 +163,8 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     double magnitudeSpeed = Math.sqrt(Math.pow(cX, 2) + Math.pow(cY, 2));
     double k = Constants.Drivebase.SKEW_PROPORTIONAL;
 
-    speeds.vxMetersPerSecond =
-        cX + k * cRot * Math.sin(-Math.atan2(cX, cY) + Math.PI / 2) * magnitudeSpeed;
-    speeds.vyMetersPerSecond =
-        cY - k * cRot * Math.cos(-Math.atan2(cX, cY) + Math.PI / 2) * magnitudeSpeed;
+    speeds.vxMetersPerSecond = cX + k * cRot * Math.sin(-Math.atan2(cX, cY) + Math.PI / 2) * magnitudeSpeed;
+    speeds.vyMetersPerSecond = cY - k * cRot * Math.cos(-Math.atan2(cX, cY) + Math.PI / 2) * magnitudeSpeed;
   }
 
   // TODO: add docstring
@@ -175,22 +174,20 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     double radiansPerSecond = Units.degreesToRadians(degreesPerSecond);
     if (isFieldRelative) {
       state.getReadLock().lock();
-      chassisSpeeds = 
-        ChassisSpeeds.fromFieldRelativeSpeeds(
-          xMetersPerSecond, 
+      chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+          xMetersPerSecond,
           yMetersPerSecond,
-          radiansPerSecond, 
-          state.getGyroAngle()
-        );
-    state.getReadLock().unlock();
+          radiansPerSecond,
+          state.getGyroAngle());
+      state.getReadLock().unlock();
     } else {
       chassisSpeeds = new ChassisSpeeds(xMetersPerSecond, yMetersPerSecond, radiansPerSecond);
     }
 
     mitigateSkew(chassisSpeeds);
     positionEstimator.getReadLock().lock();
-    SwerveModuleState[] swerveModuleStates = 
-      positionEstimator.swerveDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+    SwerveModuleState[] swerveModuleStates = positionEstimator.swerveDriveKinematics
+        .toSwerveModuleStates(chassisSpeeds);
     positionEstimator.getReadLock().unlock();
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates,
@@ -201,7 +198,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   private void setModuleStates(SwerveModuleState[] moduleStates) {
     desiredSwervestate.set(moduleStates);
     actualSwervestate.set(getSwerveModuleStates());
-    for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
+    for (int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
       swerveModules[i].setSwerveModuleState(moduleStates[i]);
     }
   }
@@ -219,7 +216,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   private ChassisSpeeds getRobotRelativeSpeeds() {
     positionEstimator.stateLock.readLock().lock();
     SwerveModuleState[] moduleStates = new SwerveModuleState[Constants.Drivebase.MODULES.length];
-    for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
+    for (int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
       moduleStates[i] = swerveModules[i].getState().getSwerveModuleState();
     }
     ChassisSpeeds chassisSpeeds = positionEstimator.swerveDriveKinematics.toChassisSpeeds(moduleStates);
@@ -230,7 +227,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   private SwerveModuleState[] getSwerveModuleStates() {
     phoenix6Odometry.setReadLock(true);
     SwerveModuleState[] moduleStates = new SwerveModuleState[Constants.Drivebase.MODULES.length];
-    for(int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
+    for (int i = 0; i < Constants.Drivebase.MODULES.length; i++) {
       moduleStates[i] = swerveModules[i].getState().getSwerveModuleState();
     }
     phoenix6Odometry.setReadLock(false);
@@ -277,28 +274,24 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       boolean fieldRelative) {
 
     // Workaround, this counts as effectively final
-    Rotation2d[] lastRecordedHeading = {state.getGyroAngle()};
+    Rotation2d[] lastRecordedHeading = { state.getGyroAngle() };
 
     return Commands.sequence(
-      getBaseSwerveCommand(
-        getXMetersPerSecond, 
-        getYMetersPerSecond, 
-        getOmegaDegreesPerSecond, 
-        fieldRelative
-      ).until(
-        (BooleanSupplier)() -> Math.abs(getOmegaDegreesPerSecond.getAsDouble()) == 0.0
-      ),
-      getSwerveHeadingCorrected(
-        getXMetersPerSecond,
-        getYMetersPerSecond,
-        (Supplier<Rotation2d>)() -> lastRecordedHeading[0],
-        true
-      ).beforeStarting(
-        () -> lastRecordedHeading[0] = state.getGyroAngle()
-      ).until(
-        (BooleanSupplier)() -> Math.abs(getOmegaDegreesPerSecond.getAsDouble()) > 0.0
-      )
-    ).repeatedly();
+        getBaseSwerveCommand(
+            getXMetersPerSecond,
+            getYMetersPerSecond,
+            getOmegaDegreesPerSecond,
+            fieldRelative).until(
+                (BooleanSupplier) () -> Math.abs(getOmegaDegreesPerSecond.getAsDouble()) == 0.0),
+        getSwerveHeadingCorrected(
+            getXMetersPerSecond,
+            getYMetersPerSecond,
+            (Supplier<Rotation2d>) () -> lastRecordedHeading[0],
+            true).beforeStarting(
+                () -> lastRecordedHeading[0] = state.getGyroAngle())
+            .until(
+                (BooleanSupplier) () -> Math.abs(getOmegaDegreesPerSecond.getAsDouble()) > 0.0))
+        .repeatedly();
   }
 
   /**
@@ -315,8 +308,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
         getYMetersPerSecond,
         (DoubleSupplier) () -> headingController.calculate(
             state.getGyroAngle().getDegrees(),
-            getDesiredHeading.get().getDegrees()
-        ),
+            getDesiredHeading.get().getDegrees()),
         isFieldRelative);
   }
 
@@ -337,19 +329,18 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       fieldOrientationMultiplier = -1;
     }
     return runEnd(
-      () -> {
-        drive(
-          xMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
-          yMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
-          degreesPerSecond.getAsDouble(),
-          isFieldRelative);
-      }
-      ,
-      () -> {}
-      ).beforeStarting(
         () -> {
-          setAllModulesTurnPidActive();
-        });
+          drive(
+              xMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
+              yMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
+              degreesPerSecond.getAsDouble(),
+              isFieldRelative);
+        },
+        () -> {
+        }).beforeStarting(
+            () -> {
+              setAllModulesTurnPidActive();
+            });
   }
 
   public Phoenix6DrivebaseState getState() {
