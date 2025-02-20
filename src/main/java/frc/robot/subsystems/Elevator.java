@@ -26,7 +26,6 @@ public class Elevator extends SubsystemBase {
   private DigitalInput topLimitSwitch = new DigitalInput(Constants.Elevator.TOP_LIMIT_SWITCH_ID);
 
   private double targetPosition;
-  private double lastSpeed;
 
   public Elevator() {
     TalonFXConfiguration config = new TalonFXConfiguration();
