@@ -51,8 +51,8 @@ public class Constants {
   }
 
   public class Drivebase {
-    // TODO public static final String CANIVORE_NAME = "1983 Comp Drivebase";
-
+    public static final String CANIVORE_NAME = "Evil Canivore";
+    public static final int PIGEON_ID = 22;
     public static final double MAX_METERS_PER_SECOND = 4.5;
     public static final double MAX_DEGREES_PER_SECOND = 270;
 
@@ -62,21 +62,29 @@ public class Constants {
       public static int BUTTON_STICK_ID = 3;
     }
 
+    // All modules are at the position (+-MODULE_TO_OFFSET, +-MODULE_TO_OFFSET)
+    private static double MODULE_OFFSET = 0.288925;
+
     public static SwerveModuleConstants MODULES[] = {
-        new SwerveModuleConstants(
-          10, 11, 12, -0.337158, new Translation2d(0.288925, 0.288925), "Front Left"),
-        new SwerveModuleConstants(
-          13, 14, 15, -0.289795, new Translation2d(0.288925, -0.288925), "Front Right"),
-        new SwerveModuleConstants(
-          16, 17, 18, 0.476318, new Translation2d(-0.288925, 0.288925), "Back Left"),
-        new SwerveModuleConstants(
-          19, 20, 21, -0.353027, new Translation2d(-0.288925, -0.288925), "Back Right")
+      new SwerveModuleConstants(
+        10, 11, 12, -0.337158 + .75, new Translation2d(-MODULE_OFFSET, MODULE_OFFSET), "Back Left"
+      ),
+      new SwerveModuleConstants(
+        13, 14, 15, -0.289795 + .25, new Translation2d(-MODULE_OFFSET, -MODULE_OFFSET), "Back Right"
+      ),
+      new SwerveModuleConstants(
+        16, 17, 18, 0.476318 - .75, new Translation2d(MODULE_OFFSET, MODULE_OFFSET), "Front Left"
+      ),
+      new SwerveModuleConstants(
+        19, 20, 21, -0.353027 + .75, new Translation2d(MODULE_OFFSET, -MODULE_OFFSET), "Front Right"
+      )
     };
 
     public class Info {
       public static final double DRIVE_MOTOR_GEAR_RATIO = 6.12;
       public static final double WHEEL_DIAMETER = 0.0991108;
       public static final double REVS_PER_METER = DRIVE_MOTOR_GEAR_RATIO / (WHEEL_DIAMETER * Math.PI);
+      public static final double METERS_PER_REV = 1.0 / REVS_PER_METER;
       public static final double TURN_MOTOR_GEAR_RATIO = 150.0 / 7.0;
 
       public static final double MAX_MODULE_SPEED = 4.498848;
@@ -138,10 +146,10 @@ public class Constants {
     // TODO: Get the transformation that maps the robot's center to the origin of the camera mount.
     private static final Transform3d ROBOT_TO_MOUNT =
       new Transform3d(
-        new Translation3d(
-          0.0,
-          0.0,
-          0.0
+        new Translation3d( // TODO: check these transformation estimations
+          .305,
+          .305,
+          Units.inchesToMeters(8.25)
         ),
         new Rotation3d(
           0.0,
@@ -284,5 +292,9 @@ public class Constants {
         }
       }
     }
+  }
+
+  public class Phoenix6Odometry {
+    public static final double updatesPerSecond = 100.0;
   }
 }
