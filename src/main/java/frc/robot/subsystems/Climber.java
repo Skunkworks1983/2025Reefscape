@@ -155,7 +155,7 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
   @Override
   public Command getErrorCommand(ErrorGroup errorGroupHandler) {
     return Commands.sequence(
-        hardwareConnectionTest(errorGroupHandler::addTestMapEntry, errorGroupHandler::setTestStatusUsingTestResult),
-        new RunClimberMotorTest(errorGroupHandler::addTestMapEntry, errorGroupHandler::setTestStatusUsingTestResult, this));
+        hardwareConnectionTest(errorGroupHandler::addTestSetEntry, errorGroupHandler::setTestStatusUsingTestResult),
+        new RunClimberMotorTest(errorGroupHandler::addTestSetEntry, errorGroupHandler::setTestStatusUsingTestResult, this));
   }
 }

@@ -18,7 +18,7 @@ public class ErrorGroup {
 
   public ErrorGroup() {}
 
-  public void addTestMapEntry(TestResult test) {
+  public void addTestSetEntry(TestResult test) {
     // checks the list to see if there is a duplicate, and if either is an error, the final becomes an error
     for(TestResult testResult : testList) {
       if(testResult.name.equals(test.name) && testResult.subsystem == test.subsystem) {

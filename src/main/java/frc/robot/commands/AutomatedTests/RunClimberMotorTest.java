@@ -23,7 +23,7 @@ public class RunClimberMotorTest extends Command {
 
   TestResult motorDidNotRunTest;
 
-  TestResult climberCurrentToHigh;
+  TestResult climberCurrentTooHigh;
 
   public RunClimberMotorTest(
     Consumer<TestResult> addTest,
@@ -42,7 +42,7 @@ public class RunClimberMotorTest extends Command {
       "checks if motor ran"
     );
 
-    climberCurrentToHigh = new TestResult(
+    climberCurrentTooHigh = new TestResult(
       "Climber Current Exeeds Tolerance", 
       AlertType.kWarning,  
       climber,
@@ -50,7 +50,7 @@ public class RunClimberMotorTest extends Command {
     );
 
     addTest.accept(motorDidNotRunTest);
-    addTest.accept(climberCurrentToHigh);
+    addTest.accept(climberCurrentTooHigh);
   }
 
   // Called when the command is initially scheduled.
@@ -86,12 +86,12 @@ public class RunClimberMotorTest extends Command {
     setTest.accept(motorDidNotRunTest);
 
     if(currentExceeds) {
-      climberCurrentToHigh.setErrorStatus(AlertType.kError);
+      climberCurrentTooHigh.setErrorStatus(AlertType.kError);
     }
     else {
-      climberCurrentToHigh.setErrorStatus(AlertType.kInfo);
+      climberCurrentTooHigh.setErrorStatus(AlertType.kInfo);
     }
-    setTest.accept(climberCurrentToHigh);
+    setTest.accept(climberCurrentTooHigh);
 
     climber.setClimberSetPoint(startingPos);
   }

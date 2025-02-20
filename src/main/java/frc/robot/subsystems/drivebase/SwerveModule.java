@@ -227,7 +227,7 @@ public class SwerveModule extends SubsystemBase {
   ) {
     return Commands.sequence(
       new TestModuleComponentsConnection(
-        errorGroupHandler::addTestMapEntry,
+        errorGroupHandler::addTestSetEntry,
         errorGroupHandler::setTestStatusUsingTestResult,
         this
       ),
@@ -236,7 +236,7 @@ public class SwerveModule extends SubsystemBase {
       Commands.either(
         Commands.race(
           new TestTurnMotorAndEncoderOnModule(
-            errorGroupHandler::addTestMapEntry,
+            errorGroupHandler::addTestSetEntry,
             errorGroupHandler::setTestStatusUsingTestResult,
             this
           ),

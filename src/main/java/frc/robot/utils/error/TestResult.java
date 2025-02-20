@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class TestResult implements Comparable<TestResult> {
   public String name;
-  // true if the test failed, false if the test passed
+  // kInfo if the test passed, kWarning if the test hasn't run, and kWarning if the test failed
   public AlertType errorStatus;
   public SubsystemBase subsystem;
   // tell someone what your test did
@@ -23,7 +23,7 @@ public class TestResult implements Comparable<TestResult> {
 
   @Override
   public int compareTo(TestResult testResult) {
-    return name.compareTo(testResult.name + subsystem.toString());
+    return name.compareTo(testResult.name);
   }
 
   public void setErrorStatus(AlertType alertType) {
