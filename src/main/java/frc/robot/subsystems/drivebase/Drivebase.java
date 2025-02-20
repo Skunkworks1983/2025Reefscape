@@ -245,7 +245,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       boolean fieldRelative) {
 
     // Workaround, this counts as effectively final
-    Rotation2d[] lastRecordedHeading = {};
+    Rotation2d[] lastRecordedHeading = {new Rotation2d()};
 
     return Commands.sequence(
         getBaseSwerveCommand(
