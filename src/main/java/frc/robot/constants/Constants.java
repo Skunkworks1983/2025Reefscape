@@ -41,10 +41,10 @@ public class Constants {
     public static final double ROBOT_MASS = 67.1317; //kilograms
     public static final double MOI = 1.0/12.0 * (ROBOT_MASS)*(Math.sqrt(ROBOT_WIDTH) + Math.sqrt(ROBOT_LENGTH));
 
-    public static final double PATHPLANNER_MAX_METERS_PER_SECOND = .0;
+    public static final double PATHPLANNER_MAX_METERS_PER_SECOND = .0; //TODO give real number
 
     // distance from center to wheel
-    public static final double PATHPLANNER_DRIVEBASE_RADIUS_METERS = 0.;
+    public static final double PATHPLANNER_DRIVEBASE_RADIUS_METERS = 0.; //TODO give real number
 
     public static final double PERIOD = .02; //seconds
   }

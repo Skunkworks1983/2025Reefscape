@@ -45,6 +45,7 @@ import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.error.DiagnosticSubsystem;
 
+import org.ejml.equation.Variable;
 import org.json.simple.parser.ParseException;
 
 public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
@@ -116,7 +117,6 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
     odometryThread.startThread();
 
-    //configurePathPlanner();
     RobotConfig config = new RobotConfig(
       Constants.PathPlanner.ROBOT_MASS, 
       Constants.PathPlanner.MOI, 
