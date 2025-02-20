@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.drivebase;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
@@ -11,10 +12,12 @@ import java.util.function.DoubleSupplier;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -24,6 +27,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.util.struct.parser.ParseException;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -123,9 +127,10 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
         4
         ),
       Constants.PathPlanner.MODULE_OFFSETS);
+      positionEstimator.stateLock.readLock().lock();
     AutoBuilder.configure(
-      this::getRobotPose, this::resetOdometry,
-      this::getRobotRelativeSpeeds, this::setDriveChassisSpeed, 
+      positionEstimator::getPose,positionEstimator::reset,
+      this::getRobotRelativeSpeeds, (speeds, feedforwards) -> driveRobotRelative(speeds), 
       new PPHolonomicDriveController( 
         new PIDConstants(
           Constants.PathPlanner.PATHPLANNER_DRIVE_KP, 
@@ -151,11 +156,11 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       },
       this
     );
+    positionEstimator.stateLock.readLock().unlock();
   }
 
   @Override
   public void periodic() {}
-
   /**
    * This function calls the <code>setModuleStates</code> function based on
    * the a desired translation, a desired rotation, and isFieldReletave boolean.
@@ -180,6 +185,10 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       chassisSpeeds = new ChassisSpeeds(xMetersPerSecond, yMetersPerSecond, radiansPerSecond);
     }
 
+    driveRobotRelative(chassisSpeeds);
+  }
+
+  private void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
     positionEstimator.getReadLock().lock();
     SwerveModuleState[] swerveModuleStates = 
       positionEstimator.swerveDriveKinematics.toSwerveModuleStates(chassisSpeeds);
@@ -190,7 +199,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     );
     setModuleStates(swerveModuleStates);
   }
-
+  
   private void setModuleStates(SwerveModuleState[] moduleStates) {
     desiredSwervestate.set(moduleStates);
     actualSwervestate.set(getSwerveModuleStates());
@@ -280,5 +289,25 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
   public Phoenix6DrivebaseState getState() {
     return state;
+  }
+
+    public Command followPathCommand(String pathName) {
+    try 
+    {
+    PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+    return AutoBuilder.followPath(path);
+    }
+    catch (IOException e){
+      System.out.println("pathplanner threw ioexception while parsing " + pathName);
+    }
+    catch (ParseException p){
+      System.out.println("pathplanner threw parseexception while parsing " + pathName);
+    }
+    return new Command(){};
+   
+  }
+
+  public Command followAutoTrajectory(String autoName) {
+    return new PathPlannerAuto(autoName);
   }
 }

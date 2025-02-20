@@ -6,11 +6,16 @@ package frc.robot.constants;
 
 import java.io.IOException;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
+
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.struct.parser.ParseException;
 import edu.wpi.first.wpilibj2.command.Command;
 
 // TODO: add all robot constant values when they have been decided
@@ -315,25 +320,5 @@ public class Constants {
 
   public class Phoenix6Odometry {
     public static final double updatesPerSecond = 100.0;
-  }
-
-  public Command followPathCommand(String pathName) {
-    try 
-    {
-    PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
-    return AutoBuilder.followPath(path);
-    }
-    catch (IOException e){
-      System.out.println("pathplanner threw ioexception while parsing " + pathName);
-    }
-    catch (ParseException p){
-      System.out.println("pathplanner threw parseexception while parsing " + pathName);
-    }
-    return new Command(){};
-   
-  }
-
-  public Command followAutoTrajectory(String autoName) {
-    return new PathPlannerAuto(autoName);
   }
 }
