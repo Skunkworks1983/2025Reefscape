@@ -7,8 +7,6 @@ package frc.robot;
 import java.util.Optional;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.utils.error.ErrorCommandGenerator;
 import frc.robot.utils.error.ErrorGroup;
@@ -20,10 +18,10 @@ public class Robot extends TimedRobot {
 
   // replace subsystem with Optional.empty() for testing
   // ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
-  Optional<Drivebase> drivebase = Optional.empty(); //Optional.of(new Drivebase());
-  Optional<Elevator> elevator = Optional.empty(); //Optional.of(new Elevator());
-  Optional<Collector> collector = Optional.empty();//Optional.of(new Collector());
-  Optional<Wrist> wrist = Optional.of(new Wrist());
+  Optional<Drivebase> drivebase = Optional.of(new Drivebase()); //Optional.of(new Drivebase());
+  Optional<Elevator> elevator = Optional.of(new Elevator()); //Optional.of(new Elevator());
+  Optional<Collector> collector = Optional.of(new Collector());//Optional.of(new Collector());
+  Optional<Wrist> wrist = Optional.of(new Wrist()); //Optional.of(new Wrist());
 
   OI oi = new OI( 
     elevator,

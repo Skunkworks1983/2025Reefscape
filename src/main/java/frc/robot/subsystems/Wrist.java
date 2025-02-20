@@ -48,7 +48,7 @@ public class Wrist extends SubsystemBase {
     }
   }
 
-  public boolean getMagnetSensor1() {
+  public boolean getMagnetSensor1() { //TODO find which is top and bottom magnet
     return !magnetSensor1.get();
   }
 
@@ -66,43 +66,5 @@ public class Wrist extends SubsystemBase {
   
   public void setWristMotorSpeed(double setWristMotorSpeed) {
     wristMotor.set(setWristMotorSpeed);
-  }
-
-/* 
-  public Command moveInDirection(double setPoint)
-  {
-    PositionVoltage positionVoltage = new PositionVoltage(0);
-    
-    final double newSetPoint = setPoint + getPosition();
-    final TrapezoidProfile m_profile = new TrapezoidProfile(
-      new TrapezoidProfile.Constraints(1, 1));
-    
-    TrapezoidProfile.State m_goal = new TrapezoidProfile.State(newSetPoint,0);
-    TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
-
-     return Commands.runEnd(
-      () -> {
-        m_setpoint = m_profile.calculate(0.020, m_setpoint, m_goal);
-
-        positionVoltage.Position = m_setpoint.position;
-        positionVoltage.Velocity = m_setpoint.velocity;
-        wristMotor.setControl(positionVoltage);  
-
-        if (Math.abs(getPosition() - newSetPoint) < Constants.WristIDs.WRIST_RANGE) {
-          return;
-        }
-
-        SmartDashboard.putNumber("wrist motor position ", getPosition());
-        SmartDashboard.putNumber("wrist motor set point ", newSetPoint);
-        SmartDashboard.putNumber("stop condition", Math.abs(getPosition() - newSetPoint));
-
-      },
-      () -> {
-        wristMotor.stopMotor();
-      },
-      this
-    ).until(() -> Math.abs(getPosition() - newSetPoint) < Constants.WristIDs.WRIST_RANGE || getMagnetSensor1()); */
-  
-
-  
+  } 
 }

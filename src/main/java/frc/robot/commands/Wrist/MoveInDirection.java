@@ -69,9 +69,6 @@ public class MoveInDirection extends Command {
   
   @Override
   public boolean isFinished() {
-    if (Math.abs(wrist.getPosition() - setPoint) < Constants.WristIDs.WRIST_RANGE || wrist.getMagnetSensor1()) {
-      return true;
-    }
-    return false;
+    return Math.abs(wrist.getPosition() - setPoint) < Constants.WristIDs.WRIST_RANGE || wrist.getMagnetSensor1();
   }
 }
