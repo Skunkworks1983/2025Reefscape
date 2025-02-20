@@ -4,14 +4,45 @@
 
 package frc.robot.constants;
 
+import java.io.IOException;
+
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.Command;
 
 // TODO: add all robot constant values when they have been decided
 public class Constants {
+
+  public class PathPlanner
+  {
+    public static final double PATHPLANNER_DRIVE_KP = .0;
+    public static final double PATHPLANNER_DRIVE_KD = .0;
+    public static final double PATHPLANNER_DRIVE_KI = .0;
+    public static final double PATHPLANNER_DRIVE_KF = .0;
+
+    public static final double PATHPLANNER_TURN_KP = .0;
+    public static final double PATHPLANNER_TURN_KD = .0;
+    public static final double PATHPLANNER_TURN_KI = .0;
+    public static final double PATHPLANNER_TURN_KF = .0;
+
+    public static final double ROBOT_LENGTH = 0.864; //in meters with bumpers
+    public static final double ROBOT_WIDTH = 0.864; // in meters with bumpers
+
+    public static final double MODULE_OFFSETS = Constants.Drivebase.MODULE_OFFSET;
+
+    public static final double ROBOT_MASS = 67.1317; //kilograms
+    public static final double MOI = 1.0/12.0 * (ROBOT_MASS)*(Math.sqrt(ROBOT_WIDTH) + Math.sqrt(ROBOT_LENGTH));
+
+    public static final double PATHPLANNER_MAX_METERS_PER_SECOND = .0;
+
+    // distance from center to wheel
+    public static final double PATHPLANNER_DRIVEBASE_RADIUS_METERS = 0.;
+
+    public static final double PERIOD = .02; //seconds
+  }
 
   public class Testing {
     // if ENSURE_COMPETITION_READY_SUBSYSTEMS is true, all subystems
@@ -284,5 +315,25 @@ public class Constants {
 
   public class Phoenix6Odometry {
     public static final double updatesPerSecond = 100.0;
+  }
+
+  public Command followPathCommand(String pathName) {
+    try 
+    {
+    PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+    return AutoBuilder.followPath(path);
+    }
+    catch (IOException e){
+      System.out.println("pathplanner threw ioexception while parsing " + pathName);
+    }
+    catch (ParseException p){
+      System.out.println("pathplanner threw parseexception while parsing " + pathName);
+    }
+    return new Command(){};
+   
+  }
+
+  public Command followAutoTrajectory(String autoName) {
+    return new PathPlannerAuto(autoName);
   }
 }

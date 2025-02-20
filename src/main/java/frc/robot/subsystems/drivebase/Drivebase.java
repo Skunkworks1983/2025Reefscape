@@ -10,11 +10,17 @@ import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
@@ -103,6 +109,48 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     }
 
     odometryThread.startThread();
+
+    //configurePathPlanner();
+    RobotConfig config = new RobotConfig(
+      Constants.PathPlanner.ROBOT_MASS, 
+      Constants.PathPlanner.MOI, 
+      new ModuleConfig(
+        Constants.Drivebase.Info.WHEEL_DIAMETER / 2, 
+        Constants.Drivebase.Info.MAX_MODULE_SPEED, 
+        1, 
+        DCMotor.getKrakenX60(1).withReduction(Constants.Drivebase.Info.DRIVE_MOTOR_GEAR_RATIO), 
+        100, 
+        4
+        ),
+      Constants.PathPlanner.MODULE_OFFSETS);
+    AutoBuilder.configure(
+      this::getRobotPose, this::resetOdometry,
+      this::getRobotRelativeSpeeds, this::setDriveChassisSpeed, 
+      new PPHolonomicDriveController( 
+        new PIDConstants(
+          Constants.PathPlanner.PATHPLANNER_DRIVE_KP, 
+          Constants.PathPlanner.PATHPLANNER_DRIVE_KI, 
+          Constants.PathPlanner.PATHPLANNER_DRIVE_KD),
+        new PIDConstants(
+          Constants.PathPlanner.PATHPLANNER_TURN_KP, 
+          Constants.PathPlanner.PATHPLANNER_TURN_KI, 
+          Constants.PathPlanner.PATHPLANNER_TURN_KD),
+          Constants.PathPlanner.PERIOD
+      ),
+      config,
+      () -> {
+          // Boolean supplier that controls when the path will be mirrored for the red alliance
+          // This will flip the path being followed to the red side of the field.
+          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+  
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+              return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+      },
+      this
+    );
   }
 
   @Override
