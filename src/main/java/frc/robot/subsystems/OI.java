@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.constants.Constants.Drivebase.FieldTarget;
 import frc.robot.constants.Constants.OI.LIMITS;
 import frc.robot.subsystems.drivebase.Drivebase;
 import frc.robot.constants.Constants;
@@ -72,7 +73,7 @@ public class OI {
           this::getInstructedXMetersPerSecond,
           this::getInstructedYMetersPerSecond,
           // TODO: define an actual target point
-          (Supplier<Rotation2d>) () -> drivebase.getTargetingAngle(new Translation2d(0.0, 0.0)),
+          (Supplier<Rotation2d>) () -> drivebase.getTargetingAngle(FieldTarget.REEF),
           true);
 
       targetCommand.addRequirements(drivebase);
