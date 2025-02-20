@@ -27,7 +27,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
-import edu.wpi.first.util.struct.parser.ParseException;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -44,6 +44,8 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.error.DiagnosticSubsystem;
+
+import org.json.simple.parser.ParseException;
 
 public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
@@ -292,16 +294,15 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   }
 
     public Command followPathCommand(String pathName) {
-    try 
-    {
-    PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
-    return AutoBuilder.followPath(path);
-    }
-    catch (IOException e){
-      System.out.println("pathplanner threw ioexception while parsing " + pathName);
+    try {
+      PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+      return AutoBuilder.followPath(path);
     }
     catch (ParseException p){
       System.out.println("pathplanner threw parseexception while parsing " + pathName);
+    }
+    catch (IOException e){
+      System.out.println("pathplanner threw ioexception while parsing " + pathName);
     }
     return new Command(){};
    

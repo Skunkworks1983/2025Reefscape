@@ -6,7 +6,12 @@ package frc.robot;
 
 import java.util.Optional;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.utils.error.ErrorCommandGenerator;
 import frc.robot.utils.error.ErrorGroup;
@@ -20,9 +25,11 @@ public class Robot extends TimedRobot {
   // replace subsystem with Optional.empty() for testing
   // ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
   Optional<Drivebase> drivebase = Optional.of(new Drivebase());
-  Optional<Elevator> elevator = Optional.of(new Elevator());
-  Optional<Collector> collector = Optional.of(new Collector());
-  Optional<Climber> climber = Optional.of(new Climber());
+  Optional<Elevator> elevator = Optional.ofNullable(null);
+  Optional<Collector> collector = Optional.ofNullable(null);
+  Optional<Climber> climber = Optional.ofNullable(null);
+
+   private SendableChooser<Command> autoChooser;
   
 
   OI oi = new OI( 
@@ -39,6 +46,9 @@ public class Robot extends TimedRobot {
       assert elevator.isPresent();
       assert climber.isPresent();
     }
+
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
   @Override
@@ -47,7 +57,13 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousInit() {}
+  public void autonomousInit() {
+     Command currentAutonomousCommand = autoChooser.getSelected();
+    if (currentAutonomousCommand != null) {
+      currentAutonomousCommand.schedule();
+    }
+  }
+
 
   @Override
   public void autonomousPeriodic() {}
