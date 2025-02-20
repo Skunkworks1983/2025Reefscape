@@ -13,23 +13,18 @@ import java.util.function.Supplier;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
-import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -58,10 +53,6 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       Constants.Drivebase.PIDs.HEADING_CONTROL_kP,
       Constants.Drivebase.PIDs.HEADING_CONTROL_kI,
       Constants.Drivebase.PIDs.HEADING_CONTROL_kD);
-
-  private SwerveDriveKinematics swerveDriveKinematics;
-  private SwerveDrivePoseEstimator swerveDrivePoseEstimator;
-  private final Field2d swerveOdometryField2d = new Field2d();
 
   private Pigeon2 gyro = new Pigeon2(Constants.Drivebase.PIGEON_ID, Constants.Drivebase.CANIVORE_NAME);
   private StructArrayPublisher<SwerveModuleState> desiredSwervestate = NetworkTableInstance.getDefault()
@@ -126,29 +117,6 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
   @Override
   public void periodic() {
-  }
-
-  /**
-   * This function calls the {@code setModuleStates} function based on
-   * the a desired translation, a desired rotation, and isFieldReletave boolean.
-   * This function should be excecuted once every tick for smooth movement.
-   */
-  public void addVisionMeasurement(
-      Pose2d estimatedPose,
-      double timestamp,
-      Matrix<N3, N1> stdDevs) {
-
-    swerveDrivePoseEstimator.addVisionMeasurement(estimatedPose, timestamp, stdDevs);
-    swerveOdometryField2d.setRobotPose(swerveDrivePoseEstimator.getEstimatedPosition());
-  }
-
-  /**
-   * @return the estimated pose of the robot from the
-   *         {@link SwerveDrivePoseEstimator}'s
-   *         odometry
-   */
-  public Pose2d getEstimatedRobotPose() {
-    return swerveDrivePoseEstimator.getEstimatedPosition();
   }
 
   /**
@@ -257,8 +225,11 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
    * @return the heading needed for the robot to point at the target.
    */
   public Rotation2d getTargetingAngle(Translation2d target) {
-    Pose2d robotPose = getEstimatedRobotPose();
+    positionEstimator.getReadLock().lock();
+    Pose2d robotPose = positionEstimator.swerveDrivePoseEstimator.getEstimatedPosition();
+    positionEstimator.getReadLock().unlock();
     Rotation2d angle = new Rotation2d(target.getX() - robotPose.getX(), target.getY() - robotPose.getY());
+
     return angle;
   }
 
@@ -274,7 +245,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       boolean fieldRelative) {
 
     // Workaround, this counts as effectively final
-    Rotation2d[] lastRecordedHeading = { state.getGyroAngle() };
+    Rotation2d[] lastRecordedHeading = {};
 
     return Commands.sequence(
         getBaseSwerveCommand(
@@ -288,7 +259,12 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
             getYMetersPerSecond,
             (Supplier<Rotation2d>) () -> lastRecordedHeading[0],
             true).beforeStarting(
-                () -> lastRecordedHeading[0] = state.getGyroAngle())
+                () -> {
+                  phoenix6Odometry.setReadLock(true);
+                  lastRecordedHeading[0] = state.getGyroAngle();
+                  phoenix6Odometry.setReadLock(false);
+                }
+            )
             .until(
                 (BooleanSupplier) () -> Math.abs(getOmegaDegreesPerSecond.getAsDouble()) > 0.0))
         .repeatedly();
@@ -306,9 +282,17 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     return getBaseSwerveCommand(
         getXMetersPerSecond,
         getYMetersPerSecond,
-        (DoubleSupplier) () -> headingController.calculate(
+        (DoubleSupplier) () -> {
+
+          phoenix6Odometry.setReadLock(true);
+          double rotSpeed = headingController.calculate(
             state.getGyroAngle().getDegrees(),
-            getDesiredHeading.get().getDegrees()),
+            getDesiredHeading.get().getDegrees()
+          );
+          phoenix6Odometry.setReadLock(false);
+
+          return rotSpeed;
+        },
         isFieldRelative);
   }
 

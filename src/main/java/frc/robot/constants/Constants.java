@@ -81,7 +81,7 @@ public class Constants {
     };
 
     public class Info {
-      public static final double DRIVE_MOTOR_GEAR_RATIO = 6.75; // 6.12;
+      public static final double DRIVE_MOTOR_GEAR_RATIO = 6.12;
       public static final double WHEEL_DIAMETER = 0.0991108;
       public static final double REVS_PER_METER = DRIVE_MOTOR_GEAR_RATIO / (WHEEL_DIAMETER * Math.PI);
       public static final double METERS_PER_REV = 1.0 / REVS_PER_METER;
@@ -277,7 +277,7 @@ public class Constants {
         }
 
         public static final int TARGET_REEF = 1;
-        
+
         public class Climber{
           public static final int GO_TO_MAX = 10;
         }
