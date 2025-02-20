@@ -196,11 +196,15 @@ public class Constants {
     public class Setpoints {
       // All positions are in meters
       public static final double FLOOR_POSITION = 0.0;
-      public static final double L1_POSITION = 0.0;
-      public static final double L2_POSITION = 0.0;
-      public static final double L3_POSITION = 0.0;
-      public static final double L4_POSITION = MAX_HEIGHT_CARRIAGE;
-      public static final double NET_POSITION = 0.0;
+      public static final double L1_POSITION_CORAL = 0.0;
+      public static final double L2_POSITION_CORAL = 0.0;
+      public static final double L3_POSITION_CORAL = 0.0;
+      public static final double L4_POSITION_CORAL = MAX_HEIGHT_CARRIAGE;
+
+      public static final double PROCESSOR_POSITION = 0.0;
+      public static final double L2_POSITION_ALGAE = 0.0;
+      public static final double L3_POSITION_ALGAE = 0.0;
+      public static final double NET_POSITION = MAX_HEIGHT_CARRIAGE;
     }
   }
 
@@ -239,28 +243,6 @@ public class Constants {
     public static final double AXIS_INPUT_EXPONENT = 3.0;
 
     public class IDs {
-      
-      public class OpperatorButtons {
-        ///// LEFT HAND /////
-        // switch being on coresponds to coral
-        public static final int ALGAE_CORAL_TOGGLE = 0;
-
-        // The position will depend on the ALGAE_CORAL_TOGGLE
-        public static final int GOTO_POSITION_1 = 0;
-        public static final int GOTO_POSITION_2 = 0;
-        public static final int GOTO_POSITION_3 = 0;
-        public static final int GOTO_POSITION_4 = 0;
-
-
-        ///// RIGHT HAND /////
-        public static final int STOW = 0;
-        public static final int INTAKE = 0;
-        public static final int EXPELL = 0;
-
-
-        ///// CLIMBER /////
-        public static final int RAISE_FUNNEL = 0;
-      }
 
       public class Joysticks {
         public static final int ROTATION_JOYSTICK_ID = 1;
@@ -269,21 +251,29 @@ public class Constants {
       }
 
       public class Buttons {
-        public class Elevator {
-          public static final int GOTO_FLOOR_POSITION = 0;
-          public static final int GOTO_L1 = 0;
-          public static final int GOTO_L2 = 0;
-          public static final int GOTO_L3 = 0;
-          public static final int GOTO_L4 = 0;
-          public static final int GOTO_NET = 0;
-        }
 
-        public class Collector {
-          public static final int ROTATE_CORAL = 23;
-          public static final int INTAKE_CORAL = 14;
-          public static final int COLLECT_CORAL = 11;
-          public static final int SCORE_CORAL = 12;
-        }
+        // Switch being off coresponds to coral
+        // Switch being on coresponds to algae
+        public static final int ALGAE_TOGGLE = 0;
+
+
+        // The following buttons depend on ALGAE_CORAL_TOGGLE
+        public static final int GOTO_POSITION_1 = 0; // L1 or processor
+        public static final int GOTO_POSITION_2 = 0; // L2
+        public static final int GOTO_POSITION_3 = 0; // L3
+        public static final int GOTO_POSITION_4 = 0; // L4 or net
+
+        // Will stow for algae or coral depending on ALGAE_CORAL_TOGGLE
+        // coral stow doubles as ground collect
+        public static final int STOW = 0; 
+
+        public static final int FLOOR_COLLECT = 0;
+
+      // The effects of these buttons may change depending on algae or coral mode.
+      // Will also change for different positions (e.g. net)
+        public static final int ROTATE_PIECE = 23;
+        public static final int INTAKE = 11;
+        public static final int EXPELL = 12;
       }
     }
   }

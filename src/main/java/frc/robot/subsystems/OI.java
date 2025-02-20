@@ -9,9 +9,12 @@ import java.util.function.DoubleFunction;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants.OI.LIMITS;
 import frc.robot.commands.elevator.*;
 import frc.robot.constants.Constants;
+import frc.robot.constants.Constants.Elevator.Setpoints;
+import frc.robot.constants.Constants.OI.IDs.Buttons;
 import frc.robot.constants.Constants.OI.IDs.Joysticks;
 
 public class OI {
@@ -39,29 +42,38 @@ public class OI {
 
   public OI(Optional<Elevator> optionalElevator, Optional<Collector> optionalCollector) {
 
-    JoystickButton algaeCoralToggle = new JoystickButton(buttonJoystick, Constants.OI.IDs.OpperatorButtons.ALGAE_CORAL_TOGGLE);
+    JoystickButton algaeToggle = new JoystickButton(buttonJoystick, Buttons.ALGAE_TOGGLE);
+    JoystickButton gotoPosition1 = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_1);
+    JoystickButton gotoPosition2 = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_2);
+    JoystickButton gotoPosition3 = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_3);
+    JoystickButton gotoPosition4 = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_4);
 
-    if(optionalElevator.isPresent()) {
+    // TODO: add wrist
+    if(optionalElevator.isPresent() /* && optionalWrist.isPresent() */) {
       Elevator elevator = optionalElevator.get();
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_FLOOR_POSITION)
-        .onTrue(new MoveToPositionCommand(elevator, Constants.Elevator.Setpoints.FLOOR_POSITION));
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L1)
-        .onTrue(new MoveToPositionCommand(elevator, Constants.Elevator.Setpoints.L1_POSITION));
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L2)
-        .onTrue(new MoveToPositionCommand(elevator, Constants.Elevator.Setpoints.L2_POSITION));
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L3)
-        .onTrue(new MoveToPositionCommand(elevator, Constants.Elevator.Setpoints.L3_POSITION));
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L4)
-        .onTrue(new MoveToPositionCommand(elevator, Constants.Elevator.Setpoints.L4_POSITION));
+
+      // Coral mode 
+      Trigger coralToggle = algaeToggle.negate();
+      gotoPosition1.and(coralToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.FLOOR_POSITION));
+      gotoPosition2.and(coralToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.FLOOR_POSITION));
+      gotoPosition3.and(coralToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.FLOOR_POSITION));
+      gotoPosition4.and(coralToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.FLOOR_POSITION));
+
+      // Algae mode 
+      gotoPosition1.and(algaeToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.PROCESSOR_POSITION));
+      gotoPosition2.and(algaeToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.L2_POSITION_ALGAE));
+      gotoPosition3.and(algaeToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.L3_POSITION_ALGAE));
+      gotoPosition4.and(algaeToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.NET_POSITION));
     }
 
     if(optionalCollector.isPresent()) {
       Collector collector = optionalCollector.get();
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.ROTATE_CORAL)
+
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.ROTATE_PIECE)
         .whileTrue(collector.rotateCoralCommand());
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.COLLECT_CORAL)
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.INTAKE)
         .whileTrue(collector.waitAfterCatchPieceCommand());
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.SCORE_CORAL)
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.EXPELL)
         .whileTrue(collector.scorePieceCommand());
     }
   }
