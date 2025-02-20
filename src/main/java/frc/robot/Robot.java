@@ -5,9 +5,7 @@
 package frc.robot;
 
 import java.util.Optional;
-import java.util.function.Supplier;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.utils.error.ErrorCommandGenerator;
@@ -15,6 +13,7 @@ import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.error.DiagnosticSubsystem;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.drivebase.Drivebase;
 
 public class Robot extends TimedRobot {
 
@@ -23,11 +22,14 @@ public class Robot extends TimedRobot {
   Optional<Elevator> elevator = Optional.of(new Elevator());
   Optional<Collector> collector = Optional.of(new Collector());
   Optional<Drivebase> drivebase = Optional.of(new Drivebase());
+  Optional<Climber> climber = Optional.of(new Climber());
+  
 
   OI oi = new OI( 
+    drivebase,
     elevator,
     collector,
-    drivebase
+    climber
   );
   
   ErrorGroup errorGroup = new ErrorGroup();
@@ -37,6 +39,7 @@ public class Robot extends TimedRobot {
       assert drivebase.isPresent();
       assert collector.isPresent();
       assert elevator.isPresent();
+      assert climber.isPresent();
     }
     if(drivebase.isPresent()) {
       drivebase.get().setDefaultCommand(

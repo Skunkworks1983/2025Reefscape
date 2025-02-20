@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.constants.Constants.OI.LIMITS;
+import frc.robot.subsystems.drivebase.Drivebase;
 import frc.robot.constants.Constants;
 import frc.robot.commands.elevator.*;
 import frc.robot.constants.Constants.OI.IDs.Joysticks;
@@ -39,10 +40,7 @@ public class OI {
       ? 0.0
       : axisInput;
 
-  public OI(
-      Optional<Elevator> optionalElevator,
-      Optional<Collector> optionalCollector,
-      Optional<Drivebase> optionalDrivebase) {
+  public OI(Optional<Drivebase> optionalDrivebase, Optional<Elevator> optionalElevator, Optional<Collector> optionalCollector, Optional<Climber> optionalClimber) {
 
     if (optionalElevator.isPresent()) {
       Elevator elevator = optionalElevator.get();
@@ -71,17 +69,23 @@ public class OI {
     if (optionalDrivebase.isPresent()) {
       Drivebase drivebase = optionalDrivebase.get();
 
-      Command c = drivebase.getSwerveHeadingCorrected(
+      Command targetCommand = drivebase.getSwerveHeadingCorrected(
           this::getInstructedXMetersPerSecond,
           this::getInstructedYMetersPerSecond,
           // TODO: define an actual target point
           (Supplier<Rotation2d>) () -> drivebase.getTargetingAngle(new Translation2d(0.0, 0.0)),
           true);
 
-      c.addRequirements(drivebase);
+      targetCommand.addRequirements(drivebase);
 
       new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_REEF)
-          .whileTrue(c);
+          .whileTrue(targetCommand);
+    }
+
+    if(optionalClimber.isPresent()){
+      Climber climber = optionalClimber.get();
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Climber.GO_TO_MAX)
+        .onTrue(climber.waitUntilMagnetSensorsAreTrueThenGoToPos(Constants.ClimberIDs.CLIMBER_MAX));
     }
   }
 
