@@ -163,6 +163,13 @@ public class Constants {
   public class Funnel {
     public static final int PIVOT_MOTOR_ID = 0;
     public static final double PIVOT_MOTOR_GEAR_RATIO = 0.0;
+
+    public static final double FUNNEL_KP = 0.1; //TODO tune constants
+    public static final double FUNNEL_KD = 0.0;
+    public static final double FUNNEL_KI = 0.0;
+    public static final double FUNNEL_KF = 0.0;
+
+    public static final boolean FUNNEL_SMARTPID_ACTIVE = false;
   }
 
   public class Elevator {
