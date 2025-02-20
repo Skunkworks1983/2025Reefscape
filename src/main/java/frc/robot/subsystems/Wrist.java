@@ -7,22 +7,12 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.Wrist.MoveInDirection;
 import frc.robot.constants.Constants;
-import frc.robot.utils.SmartPIDControllerTalonFX;
 
 public class Wrist extends SubsystemBase {
   TalonFX wristMotor;
@@ -42,13 +32,13 @@ public class Wrist extends SubsystemBase {
     slot0Configs.kP = 3; 
     slot0Configs.kI = 0; 
     slot0Configs.kD = 0.1;
-    
   }
 
   @Override
   public void periodic() {
     resetWhenMagnetTriggered();
 
+    SmartDashboard.putNumber("wrist velocity", getWristVelocity());
     SmartDashboard.putNumber("wrist motor position ", getPosition());
   }
 
@@ -64,6 +54,10 @@ public class Wrist extends SubsystemBase {
 
   public double getPosition() {
     return wristMotor.getPosition().getValueAsDouble();
+  }
+
+  public double getWristVelocity() {
+    return wristMotor.getVelocity().getValueAsDouble();
   }
   
   public void setWristMotorControl(PositionVoltage setWristMotorSpeed) {
