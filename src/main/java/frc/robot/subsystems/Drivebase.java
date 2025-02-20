@@ -84,8 +84,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       new Vision(
         this::addVisionMeasurement,
         new VisionIOPhotonVision(
-          VisionConstants.FRONT_CAMERA_NAME, 
-          VisionConstants.ROBOT_TO_FRONT_CAMERA
+          VisionConstants.V
         ),
         new VisionIOPhotonVision(
           VisionConstants.SIDE_CAMERA_NAME, 

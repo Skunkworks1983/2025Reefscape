@@ -45,6 +45,8 @@ public class Vision extends SubsystemBase {
       SmartDashboard.putData(i.getName() + " Odometry", field);
       field2ds.add(field);
     }
+
+    VisionIO = t
   }
 
   @Override

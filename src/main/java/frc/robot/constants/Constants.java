@@ -155,6 +155,8 @@ public class Constants {
           0.0
         )
       );
+    
+    public static final VisionIOConstantsPhotonVision V = new VisionIOConstantsPhotonVision(FRONT_CAMERA_NAME, MOUNT_TO_FRONT_CAMERA);
 
     public static final Transform3d ROBOT_TO_FRONT_CAMERA = ROBOT_TO_MOUNT.plus(MOUNT_TO_FRONT_CAMERA);
     public static final Transform3d ROBOT_TO_SIDE_CAMERA = ROBOT_TO_MOUNT.plus(MOUNT_TO_SIDE_CAMERA);

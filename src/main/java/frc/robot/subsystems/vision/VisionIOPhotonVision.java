@@ -11,6 +11,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import frc.robot.constants.VisionIOConstantsPhotonVision;
 
 public class VisionIOPhotonVision implements VisionIO {
 
@@ -18,6 +19,16 @@ public class VisionIOPhotonVision implements VisionIO {
     private final Transform3d robotToCamera;
     private final PhotonCamera camera;
     private final AprilTagFieldLayout aprilTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+
+    public VisionIOPhotonVision(VisionIOConstantsPhotonVision constants) {
+      this(constants.cameraName, constants.robotToCamera);
+    }
+
+    // public VisionIOPhotonVision() {
+    //   this.camera= new PhotonCamera("cameraName");
+    //   this.robotToCamera = new Transform3d();
+    //   this.cameraName = "";
+    // }
 
     public VisionIOPhotonVision(String cameraName, Transform3d robotToCamera) {
       this.cameraName = cameraName;
