@@ -36,10 +36,9 @@ public class Constants {
     public static final double ROBOT_LENGTH = 0.864; //in meters with bumpers
     public static final double ROBOT_WIDTH = 0.864; // in meters with bumpers
 
-    public static final double MODULE_OFFSETS = Constants.Drivebase.MODULE_OFFSET;
-
     public static final double ROBOT_MASS = 67.1317; //kilograms
     public static final double MOI = 1.0/12.0 * (ROBOT_MASS)*(Math.sqrt(ROBOT_WIDTH) + Math.sqrt(ROBOT_LENGTH));
+    // moment of inertia equation 
 
     public static final double PATHPLANNER_MAX_METERS_PER_SECOND = .0; //TODO give real number
 
@@ -99,7 +98,7 @@ public class Constants {
     }
 
     // All modules are at the position (+-MODULE_TO_OFFSET, +-MODULE_TO_OFFSET)
-    private static double MODULE_OFFSET = 0.288925;
+    public static double MODULE_OFFSET = 0.288925;
 
     public static SwerveModuleConstants MODULES[] = {
       new SwerveModuleConstants(
