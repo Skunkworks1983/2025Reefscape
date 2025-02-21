@@ -92,8 +92,7 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
   }
 
   public boolean isAtSetpoint() {
-    return approxEquals(getHeight(), climberSetPoint, Constants.ClimberIDs.CLIMBER_TOLERANCE);
-    
+    return approxEquals(getHeight(), climberSetPoint, Constants.ClimberIDs.CLIMBER_TOLERANCE); 
   }
     
       public double getCurrent() {

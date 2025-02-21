@@ -167,6 +167,22 @@ public class Constants {
     public static final double MAX_AVERAGE_TAG_DISTANCE = 3.0; // Meters
   }
 
+  public class Funnel {
+    public static final int PIVOT_MOTOR_ID = 4;
+    public static final double PIVOT_MOTOR_GEAR_RATIO = 1 / 100;
+
+    public static final double FUNNEL_KP = 1; //TODO tune constants
+    public static final double FUNNEL_KD = 0.0;
+    public static final double FUNNEL_KI = 0.0;
+    public static final double FUNNEL_KF = 0.0;
+
+    public static final boolean FUNNEL_SMARTPID_ACTIVE = false;
+
+    public static final double FUNNEL_POSITION_1 = 0.0; //TODO FIGURE OUT POSITIONS IN ROTATIONS
+    public static final double FUNNEL_POSITION_2 = 0.0;
+    public static final double FUNNEL_POSITION_3 = 0.0;
+    }
+
   public class Elevator {
     public static final int MOTOR_ID = 12;
     public static final int BOTTOM_LIMIT_SWITCH_ID = 4;
