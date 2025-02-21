@@ -154,4 +154,15 @@ public class Collector extends SubsystemBase {
       )
     );
   }
+
+  public Command rotateThenIntakeCommand() {
+    return Commands.sequence(
+      rotateCoralCommand().until(
+        () -> {
+          return false;
+        }
+      ),
+      waitAfterCatchPieceCommand()
+    );
+  }
 }
