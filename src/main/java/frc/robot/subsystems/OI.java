@@ -85,7 +85,7 @@ public class OI {
 
       targetCommand.addRequirements(drivebase);
 
-      new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_REEF)
+      new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.Drivebase.TARGET_REEF_BUTTON)
           .whileTrue(targetCommand);
     }
 

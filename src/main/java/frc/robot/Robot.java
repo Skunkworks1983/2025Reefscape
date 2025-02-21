@@ -26,7 +26,6 @@ public class Robot extends TimedRobot {
   Optional<Wrist> wrist = Optional.of(new Wrist());
   Optional<Climber> climber = Optional.of(new Climber());
 
-
   OI oi = new OI( 
     elevator,
     collector,
