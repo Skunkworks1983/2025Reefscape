@@ -1,74 +1,89 @@
 package frc.robot.subsystems.vision;
 
-import java.io.IOException;
 import java.util.Optional;
 
-import org.ejml.simple.SimpleMatrix;
-import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.targeting.MultiTargetPNPResult;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
 
 public class VisionIOPhotonVision implements VisionIO {
 
+    private final String cameraName;
+    private final Transform3d robotToCamera;
     private final PhotonCamera camera;
-    private AprilTagFieldLayout aprilTagFieldLayout;
-    private PhotonPoseEstimator poseEstimator;
+    private final AprilTagFieldLayout aprilTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
     public VisionIOPhotonVision(String cameraName, Transform3d robotToCamera) {
-        camera = new PhotonCamera(cameraName);
-
-        try {
-            // TODO: Replace 2024 for 2025 field layout definitions
-            aprilTagFieldLayout = AprilTagFieldLayout
-                    .loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
-        } catch (IOException e) {
-            System.out.println("Exception loading AprilTag field layout JSON: " + e.toString());
-        }
-
-        poseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout,
-                PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCamera);
+      this.cameraName = cameraName;
+      this.robotToCamera = robotToCamera;
+      this.camera = new PhotonCamera(cameraName);
     }
 
     @Override
     public VisionIOData getLatestData() {
-        VisionIOData latest = new VisionIOData();
+      VisionIOData latestData = new VisionIOData();
 
-        for (PhotonPipelineResult result : camera.getAllUnreadResults()) {
-            
-            if (result.hasTargets()) {
-                Optional<EstimatedRobotPose> updatedPose = poseEstimator.update(result);
+      for (PhotonPipelineResult result : camera.getAllUnreadResults()) {
 
-                if (updatedPose.isPresent()) {
-                    EstimatedRobotPose pose = updatedPose.get();
+        if (result.getMultiTagResult().isPresent()) {
+          MultiTargetPNPResult multitagResult = result.getMultiTagResult().get();
 
-                    if (pose.estimatedPose.toPose2d().getX() > 0.0
-                            && pose.estimatedPose.toPose2d().getX() < 20
-                            && pose.estimatedPose.toPose2d().getY() > 0.0
-                            && pose.estimatedPose.toPose2d().getY() < 20) {
+          Transform3d fieldToCamera = multitagResult.estimatedPose.best;
+          Transform3d fieldToRobot = fieldToCamera.plus(robotToCamera.inverse());
+          Pose3d estimatedRobotPose = new Pose3d(fieldToRobot.getTranslation(), fieldToRobot.getRotation());
 
-                        double timestamp = pose.timestampSeconds;
-                        Pose2d pose2d = pose.estimatedPose.toPose2d();
+          double totalTagDistance = 0.0;
+          for (PhotonTrackedTarget target : result.targets) {
+            totalTagDistance += target.bestCameraToTarget.getTranslation().getNorm();
+          }
 
-                        // TODO: Figure out how to handle uncertainty
-                        double[] stdDevs = { 0 };
-                        PoseObservation poseObservation = new PoseObservation(timestamp, pose2d,
-                                new Matrix<N3, N1>(new SimpleMatrix(stdDevs)));
-                        latest.poseObservations.add(poseObservation);
-                    }
-                }
+          latestData.poseObservations.add(
+            new PoseObservation(
+              result.getTimestampSeconds(),
+              estimatedRobotPose,
+              multitagResult.estimatedPose.ambiguity,
+              multitagResult.fiducialIDsUsed.size(),
+              totalTagDistance / result.targets.size()
+            )
+          );
+
+          } else if (!result.targets.isEmpty()) {
+            PhotonTrackedTarget target = result.targets.get(0);
+            Optional<Pose3d> tagPose = aprilTagLayout.getTagPose(target.fiducialId);
+
+            if (tagPose.isPresent()) {
+              Transform3d fieldToTarget = new Transform3d(tagPose.get().getTranslation(),
+              tagPose.get().getRotation());
+
+              Transform3d cameraToTarget = target.bestCameraToTarget;
+              Transform3d fieldToCamera = fieldToTarget.plus(cameraToTarget.inverse());
+              Transform3d fieldToRobot = fieldToCamera.plus(robotToCamera.inverse());
+              Pose3d estimatedRobotPose = new Pose3d(fieldToRobot.getTranslation(), fieldToRobot.getRotation());
+
+              latestData.poseObservations.add(
+                new PoseObservation(
+                  result.getTimestampSeconds(),
+                  estimatedRobotPose,
+                  target.poseAmbiguity,
+                  1,
+                  cameraToTarget.getTranslation().getNorm()
+                )
+              );
             }
         }
-        
-        return latest;
+      }
+
+      return latestData;
+    }
+
+    @Override
+    public String getName() {
+      return cameraName;
     }
 }

@@ -13,20 +13,23 @@ import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.error.DiagnosticSubsystem;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.drivebase.Drivebase;
 
 public class Robot extends TimedRobot {
 
   // replace subsystem with Optional.empty() for testing
   // ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
-  Optional<Drivebase> drivebase = Optional.of(new Drivebase()); //Optional.of(new Drivebase());
-  Optional<Elevator> elevator = Optional.of(new Elevator()); //Optional.of(new Elevator());
-  Optional<Collector> collector = Optional.of(new Collector());//Optional.of(new Collector());
+  Optional<Drivebase> drivebase = Optional.of(new Drivebase()); 
+  Optional<Elevator> elevator = Optional.of(new Elevator()); 
+  Optional<Collector> collector = Optional.of(new Collector());
   Optional<Wrist> wrist = Optional.of(new Wrist());
+  Optional<Climber> climber = Optional.of(new Climber());
 
   OI oi = new OI( 
     elevator,
     collector,
-    wrist
+    wrist,
+    climber
   );
   ErrorGroup errorGroup = new ErrorGroup();
 
@@ -36,6 +39,8 @@ public class Robot extends TimedRobot {
       assert collector.isPresent();
       assert elevator.isPresent();
       assert wrist.isPresent();
+      assert climber.isPresent();
+
     }
   }
 
@@ -45,12 +50,10 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousInit() {
-  }
+  public void autonomousInit() {}
 
   @Override
-  public void autonomousPeriodic() {
-  }
+  public void autonomousPeriodic() {}
 
   @Override
   public void teleopInit() { 
@@ -63,21 +66,21 @@ public class Robot extends TimedRobot {
       ).schedule();
     }
   }
-
+  
   @Override
   public void teleopPeriodic() {
-    
-  }
-
-  @Override
-  public void disabledInit() {
-    errorGroup.putAllErrors();
   }
 
   @Override
   public void disabledPeriodic() {}
 
+  public void disabledInit() {
+    errorGroup.putAllErrors();
+  }
+
   @Override
+  public void testPeriodic() {}
+
   public void testInit() {
     errorGroup.clearAllTest();
 
@@ -89,9 +92,6 @@ public class Robot extends TimedRobot {
       ).schedule();
     }
   }
-
-  @Override
-  public void testPeriodic() {}
 
   @Override
   public void simulationInit() {}

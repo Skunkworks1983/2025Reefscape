@@ -10,7 +10,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
-import frc.robot.constants.Constants.Elevator.Profile;
 import frc.robot.subsystems.Elevator;
 
 // This command moves to the elevator from its current position to the argument
@@ -23,16 +22,17 @@ public class MoveToPositionCommand extends Command {
   State startState;
   State targetState;
   Elevator elevator;
+  boolean isGoingUp;
 
   private final static TrapezoidProfile motionProfile = new TrapezoidProfile(
     new Constraints(
-      Profile.MAX_VELOCITY,
-      Profile.MAX_ACCELERATION
+      Constants.Elevator.Profile.MAX_VELOCITY,
+      Constants.Elevator.Profile.MAX_ACCELERATION
     )
   );
 
   public MoveToPositionCommand(Elevator elevator, double targetHeight) {
-    this.targetState = new State(targetHeight, 0.0);
+    targetState = new State(targetHeight * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS, 0.0);
     this.elevator = elevator;
     timeElapsed = new Timer();
     timeElapsed.stop();
@@ -41,31 +41,41 @@ public class MoveToPositionCommand extends Command {
 
   @Override
   public void initialize() {
+    startState = new State(elevator.getElevatorPosition() * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS, 0.0);
+    isGoingUp = targetState.position > elevator.getElevatorPosition() * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS;
+
     timeElapsed.start();
   }
 
   @Override
   public void execute() {
-    State motionProfileResult = motionProfile.calculate(
+
+    State newState = motionProfile.calculate(
       timeElapsed.get(), // Time is the only variable that changes throughout each run
       startState, 
       targetState
     );
 
-    elevator.setMotor(
-      elevator.getPositionController().calculate(
-        elevator.getElevatorPosition(),
-        motionProfileResult.position
-      )
-    );
+    elevator.setMotorTrapezoidProfileSafe(newState.position, newState.velocity);
   }
 
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    if(elevator.getBottomLimitSwitch() && !isGoingUp) {
+      elevator.setMotorTrapezoidProfileSafe(0.0, 0.0);
+    }
+    else if(elevator.getTopLimitSwitch() && isGoingUp) {
+      elevator.setMotorTrapezoidProfileSafe(Constants.Elevator.Setpoints.L4_POSITION, 0.0);
+    }
+  }
 
   @Override
   public boolean isFinished() {
-    return Constants.Elevator.TOLERENCE_METERS_FOR_MOVE_TO_POSITION > 
-      Math.abs(targetState.position - elevator.getElevatorPosition());
+    return (Constants.Elevator.TOLERENCE_METERS_FOR_MOVE_TO_POSITION > 
+      Math.abs(targetState.position - elevator.getElevatorPosition())) ||
+      (
+        (elevator.getBottomLimitSwitch() && !isGoingUp) ||
+        (elevator.getTopLimitSwitch() && isGoingUp)
+      );
   }
 }

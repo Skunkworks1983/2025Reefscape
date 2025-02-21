@@ -38,7 +38,11 @@ public class OI {
     (axisInput) -> Math.abs(axisInput) < Constants.OI.AXIS_DEADBAND 
       ? 0.0 : axisInput;
 
-  public OI(Optional<Elevator> optionalElevator, Optional<Collector> optionalCollector, Optional<Wrist> optionalWrist) {
+  public OI(
+    Optional<Elevator> optionalElevator, 
+    Optional<Collector> optionalCollector,
+    Optional<Wrist> optionalWrist,
+    Optional<Climber> optionalClimber) {
 
     if(optionalElevator.isPresent()) {
       Elevator elevator = optionalElevator.get();
@@ -70,24 +74,32 @@ public class OI {
         .onTrue(new MoveInDirection(wrist, Constants.WristIDs.WRIST_MAX_ROTATIONS));
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Wrist.WRIST_DOWN)
         .onTrue(new MoveInDirection(wrist, Constants.WristIDs.WRIST_MIN_ROTATIONS));
+    } 
+
+    if(optionalClimber.isPresent()){
+      Climber climber = optionalClimber.get();
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Climber.GO_TO_MAX)
+        .onTrue(climber.waitUntilMagnetSensorsAreTrueThenGoToPos(Constants.ClimberIDs.CLIMBER_MAX));
     }
   }
 
   public double getInstructedXMetersPerSecond() {
     return joystickToMetersPerSecond.apply(
-      applyDeadband.apply(translationJoystick.getX())
+      // X and Y are flipped because the joysticks' coordinate system is different from the field
+      applyDeadband.apply(translationJoystick.getY())
     );
   }
 
   public double getInstructedYMetersPerSecond() {
     return joystickToMetersPerSecond.apply(
-      applyDeadband.apply(translationJoystick.getY())
+      // X and Y are flipped because the joysticks' coordinate system is different from the field
+      applyDeadband.apply(translationJoystick.getX())
     );
   }
 
   public double getInstructedDegreesPerSecond() {
     return joystickToDegreesPerSecond.apply(
-      applyDeadband.apply(rotationJoystick.getY())
+      applyDeadband.apply(-rotationJoystick.getX())
     );
   }
 
