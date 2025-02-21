@@ -7,7 +7,6 @@ package frc.robot.subsystems.drivebase.odometry.phoenix6Odometry;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.locks.ReentrantLock;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
