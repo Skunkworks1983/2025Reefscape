@@ -13,6 +13,7 @@ public class SmartPIDController extends PIDController implements SmartPIDInterfa
 
   public String name;
   public boolean smart;
+  // Wpilib has no kf value in its PID controller, since kf is commonly used, i added a option to use kf in this PID controller
   private double kf;
   private boolean iskf;
 
@@ -61,6 +62,7 @@ public class SmartPIDController extends PIDController implements SmartPIDInterfa
     putValueSmartDashboard(name, "Setpoint", getSetpoint());
     putValueSmartDashboard(name, "Calculated Value", calculate);
 
+    // Adding the kf value onto the calculation
     return calculate + kf;
   }
 
@@ -77,6 +79,7 @@ public class SmartPIDController extends PIDController implements SmartPIDInterfa
     putValueSmartDashboard(name, "Error", getPositionError());
     putValueSmartDashboard(name, "Setpoint", getSetpoint());
 
+    // Adding the kf value onto the calculation
     return super.calculate(measurement, setpoint) + kf;
   }
 
