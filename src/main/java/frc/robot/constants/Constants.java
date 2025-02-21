@@ -111,7 +111,8 @@ public class Constants {
     }
 
     public class FieldTarget {
-      public static final Translation2d REEF = new Translation2d(12, 4);
+      public static final Translation2d REEF_BLUE = new Translation2d(4.0259, 4.48945);
+      public static final Translation2d REEF_RED = new Translation2d(FIELD_X_LENGTH-4.0259, 4.48945);
     }
 
     public static final double FIELD_X_LENGTH = 17.55; // Meters
@@ -119,7 +120,7 @@ public class Constants {
 
     public static final double SECONDS_UNTIL_HEADING_CONTROL = 0.0;
 
-    public static final double SKEW_PROPORTIONAL = .01;
+    public static final double SKEW_PROPORTIONAL = .027;
   }
 
   public class VisionConstants {

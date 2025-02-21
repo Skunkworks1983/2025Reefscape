@@ -73,7 +73,7 @@ public class OI {
           this::getInstructedXMetersPerSecond,
           this::getInstructedYMetersPerSecond,
           // TODO: define an actual target point
-          (Supplier<Rotation2d>) () -> drivebase.getTargetingAngle(FieldTarget.REEF),
+          (Supplier<Rotation2d>) () -> drivebase.getTargetingAngle(FieldTarget.REEF_RED),
           true);
 
       targetCommand.addRequirements(drivebase);
