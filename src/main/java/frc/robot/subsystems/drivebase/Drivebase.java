@@ -135,7 +135,11 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     speeds.vyMetersPerSecond = cY - k * cRot * Math.cos(-Math.atan2(cX, cY) + Math.PI / 2) * magnitudeSpeed;
   }
 
-  // TODO: add docstring
+  /**
+   * This function calls the {@code setSwerveModuleStates} function based on
+   * the a desired translation, a desired rotation, and isFieldReletave boolean.
+   * This function should be excecuted once every tick for smooth movement.
+   */
   private void drive(double xMetersPerSecond, double yMetersPerSecond,
       double degreesPerSecond, boolean isFieldRelative) {
     ChassisSpeeds chassisSpeeds;
