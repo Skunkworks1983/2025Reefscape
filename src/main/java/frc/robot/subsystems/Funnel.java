@@ -19,17 +19,17 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.utils.PIDs.SmartPIDController;
+import frc.robot.utils.PIDs.SmartPIDControllerCANSparkMax;
 
 public class Funnel extends SubsystemBase {
 
   SparkMax pivotMotor;
 
-  private frc.robot.utils.PIDs.SmartPIDControllerCANSparkMax pivotMotorSpeedController;
+  private SmartPIDControllerCANSparkMax pivotMotorSpeedController;
 
   double setPoint;
 
-  public Funnel(/*dont put a peram, not needed  */) {
-    //this.pivotMotor = new SparkMax(pivotMotorId, MotorType.kBrushless);
+  public Funnel() {
     pivotMotor = new SparkMax(Constants.Funnel.PIVOT_MOTOR_ID,  MotorType.kBrushless);
     SparkMaxConfig config = new SparkMaxConfig();
     config.closedLoop
@@ -50,6 +50,7 @@ public class Funnel extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("Funnel Pos (revs)", getPos());
   }
 
   public double getPos(){
@@ -68,8 +69,8 @@ public class Funnel extends SubsystemBase {
     return approxEquals(getPos(), getSetPoint(), Constants.ClimberIDs.CLIMBER_TOLERANCE); 
   }
 
-  public void setFunnelSetPoint(double newSetPoint){
-    setPoint = getPos() - newSetPoint;
+  public void setFunnelSetPoint(double revs){
+    setPoint = getPos() - revs;
     SmartDashboard.putNumber("set point", setPoint);
     SparkClosedLoopController FunnelLoopController = pivotMotor.getClosedLoopController();
     FunnelLoopController.setReference(setPoint, ControlType.kPosition);
@@ -79,7 +80,6 @@ public class Funnel extends SubsystemBase {
     return Commands.startEnd(
       () -> {
         setFunnelSetPoint(position);
-        SmartDashboard.putNumber("current pos", getPos());
       }, () -> {
 
       }).until(
