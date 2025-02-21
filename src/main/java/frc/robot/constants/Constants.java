@@ -18,7 +18,7 @@ public class Constants {
     // must be constructed and assigned to the correct variable in Robot.java.
     // If some subsystems are not created and this value is true, an exeption
     // will be thrown.
-    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = true;
+    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = false;
 
     public static final double NUMBER_OF_MOTOR_ROTATIONS_FOR_MODULE_TEST = 1.0;
     public static final double TURN_MOTOR_ROTATION_SPEED = 0.15;
@@ -99,51 +99,55 @@ public class Constants {
       public static final double SWERVE_MODULE_DRIVE_kI = 0.0;
       public static final double SWERVE_MODULE_DRIVE_kD = 0.0;
       public static final double SWERVE_MODULE_DRIVE_kF = 0.1075;
+      public static final double HEADING_CONTROL_kP = 3.00;
+      public static final double HEADING_CONTROL_kI = 0.0;
+      public static final double HEADING_CONTROL_kD = 0.0;
+      public static final double PID_LOW_LIMIT = -0.8;
+      public static final double PID_HIGH_LIMIT = 0.8;
 
       public static final boolean SMART_PID_ENABLED = true;
       public static final boolean SMART_PID_TURN_ENABLED = true;
       public static final boolean SMART_PID_DRIVE_ENABLED = true;
-
-      public static final double PID_LOW_LIMIT = -0.8;
-      public static final double PID_HIGH_LIMIT = 0.8;
     }
+
+    public class FieldTarget {
+      public static final Translation2d REEF_BLUE = new Translation2d(4.0259, 4.48945);
+      public static final Translation2d REEF_RED = new Translation2d(FIELD_X_LENGTH-4.0259, 4.48945);
+    }
+
+    public static final double FIELD_X_LENGTH = 17.55; // Meters
+    public static final double FIELD_Y_LENGTH = 8.05; // Meters
+
+    public static final double SECONDS_UNTIL_HEADING_CONTROL = 0.0;
+
+    public static final double SKEW_PROPORTIONAL = .027;
   }
 
   public class VisionConstants {
-  
 
     public static final String FRONT_CAMERA_NAME = "Camera_0";
     public static final String SIDE_CAMERA_NAME = "Camera_1";
-    
-    private static final Transform3d MOUNT_TO_FRONT_CAMERA = 
-      new Transform3d(
-        new Translation3d(
-          Units.inchesToMeters(1.351),
-          Units.inchesToMeters(-1.268),
-          Units.inchesToMeters(-0.81)
-        ),
-        new Rotation3d(
-          Units.degreesToRadians(0.0),
-          Units.degreesToRadians(-19.27),
-          Units.degreesToRadians(-15.0)
-        )
-      );
 
-    private static final Transform3d MOUNT_TO_SIDE_CAMERA = 
-      new Transform3d(
+    private static final Transform3d MOUNT_TO_FRONT_CAMERA = new Transform3d(
         new Translation3d(
-          Units.inchesToMeters(-1.050),
-          Units.inchesToMeters(1.365078),
-          Units.inchesToMeters(-0.762394)
-        ),
+            Units.inchesToMeters(1.351),
+            Units.inchesToMeters(-1.268),
+            Units.inchesToMeters(-0.81)),
         new Rotation3d(
-          Units.degreesToRadians(0.0),
-          Units.degreesToRadians(-27.225),
-          Units.degreesToRadians(97.0)
-        )
-      );
+            Units.degreesToRadians(0.0),
+            Units.degreesToRadians(-19.27),
+            Units.degreesToRadians(-15.0)));
 
-    // TODO: Get the transformation that maps the robot's center to the origin of the camera mount.
+    private static final Transform3d MOUNT_TO_SIDE_CAMERA = new Transform3d(
+        new Translation3d(
+            Units.inchesToMeters(-1.050),
+            Units.inchesToMeters(1.365078),
+            Units.inchesToMeters(-0.762394)),
+        new Rotation3d(
+            Units.degreesToRadians(0.0),
+            Units.degreesToRadians(-27.225),
+            Units.degreesToRadians(97.0)));
+
     private static final Transform3d ROBOT_TO_MOUNT =
       new Transform3d(
         new Translation3d( // TODO: check these transformation estimations
@@ -152,11 +156,9 @@ public class Constants {
           Units.inchesToMeters(8.25)
         ),
         new Rotation3d(
-          0.0,
-          0.0,
-          0.0
-        )
-      );
+            0.0,
+            0.0,
+            0.0));
 
     public static final Transform3d ROBOT_TO_FRONT_CAMERA = ROBOT_TO_MOUNT.plus(MOUNT_TO_FRONT_CAMERA);
     public static final Transform3d ROBOT_TO_SIDE_CAMERA = ROBOT_TO_MOUNT.plus(MOUNT_TO_SIDE_CAMERA);
@@ -301,6 +303,9 @@ public class Constants {
           public static final int WRIST_UP = 18;
           public static final int WRIST_DOWN = 13;
         }
+
+        public static final int TARGET_REEF = 1;
+
 
         public class Climber{
           public static final int GO_TO_MAX = 10;
