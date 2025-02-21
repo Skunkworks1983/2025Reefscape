@@ -117,9 +117,6 @@ public class Constants {
 
     public static final double FIELD_X_LENGTH = 17.55; // Meters
     public static final double FIELD_Y_LENGTH = 8.05; // Meters
-
-    public static final double SECONDS_UNTIL_HEADING_CONTROL = 0.0;
-
     public static final double SKEW_PROPORTIONAL = .027;
   }
 
@@ -277,7 +274,9 @@ public class Constants {
           public static final int SCORE_CORAL = 12;
         }
 
-        public static final int TARGET_REEF = 1;
+        public class Drivebase {
+          public static final int TARGET_REEF_BUTTON = 1;
+        }
 
         public class Climber{
           public static final int GO_TO_MAX = 10;
