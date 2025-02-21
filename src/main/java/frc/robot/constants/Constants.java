@@ -194,13 +194,18 @@ public class Constants {
     }
 
     public class Setpoints {
-      // All positions are in meters
-      public static final double FLOOR_POSITION = 0.0;
+      // Reminder: all positions are in meters
+      public static final double BOTTOM = 0.0;
+
+      public static final double GROUND_CORAL = 0;
+      public static final double STOW_CORAL = BOTTOM; // double check value
       public static final double L1_POSITION_CORAL = 0.0;
       public static final double L2_POSITION_CORAL = 0.0;
       public static final double L3_POSITION_CORAL = 0.0;
       public static final double L4_POSITION_CORAL = MAX_HEIGHT_CARRIAGE;
 
+      public static final double GROUND_AGLAE = 0;
+      public static final double STOW_AGLAE = 0;
       public static final double PROCESSOR_POSITION = 0.0;
       public static final double L2_POSITION_ALGAE = 0.0;
       public static final double L3_POSITION_ALGAE = 0.0;
@@ -274,6 +279,12 @@ public class Constants {
         public static final int ROTATE_PIECE = 23;
         public static final int INTAKE = 11;
         public static final int EXPELL = 12;
+
+
+        public static final int GOTO_GROUND = 0;
+
+
+        public static final int GOTO_STOW = 0;
       }
     }
   }

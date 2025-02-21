@@ -47,33 +47,43 @@ public class OI {
     JoystickButton gotoPosition2 = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_2);
     JoystickButton gotoPosition3 = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_3);
     JoystickButton gotoPosition4 = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_4);
+    JoystickButton gotoGround = new JoystickButton(buttonJoystick, Buttons.GOTO_GROUND);
+    JoystickButton gotoStow = new JoystickButton(buttonJoystick, Buttons.GOTO_STOW);
 
-    // TODO: add wrist
+    // TODO: add wrist to all commands in which the elevator moves.
     if(optionalElevator.isPresent() /* && optionalWrist.isPresent() */) {
       Elevator elevator = optionalElevator.get();
 
       // Coral mode 
       Trigger coralToggle = algaeToggle.negate();
-      gotoPosition1.and(coralToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.FLOOR_POSITION));
-      gotoPosition2.and(coralToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.FLOOR_POSITION));
-      gotoPosition3.and(coralToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.FLOOR_POSITION));
-      gotoPosition4.and(coralToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.FLOOR_POSITION));
+      gotoStow.and(coralToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.STOW_CORAL));
+      gotoGround.and(coralToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.GROUND_AGLAE));
+      gotoPosition1.and(coralToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.L1_POSITION_CORAL));
+      gotoPosition2.and(coralToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.L2_POSITION_CORAL));
+      gotoPosition3.and(coralToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.L3_POSITION_CORAL));
+      gotoPosition4.and(coralToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.L4_POSITION_CORAL));
+      gotoPosition4.and(coralToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.L4_POSITION_CORAL));
 
       // Algae mode 
+
+      gotoStow.and(algaeToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.STOW_AGLAE));
+      gotoGround.and(algaeToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.GROUND_AGLAE));
       gotoPosition1.and(algaeToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.PROCESSOR_POSITION));
       gotoPosition2.and(algaeToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.L2_POSITION_ALGAE));
       gotoPosition3.and(algaeToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.L3_POSITION_ALGAE));
       gotoPosition4.and(algaeToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.NET_POSITION));
+
+
     }
 
     if(optionalCollector.isPresent()) {
       Collector collector = optionalCollector.get();
 
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.ROTATE_PIECE)
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.ROTATE_PIECE)
         .whileTrue(collector.rotateCoralCommand());
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.INTAKE)
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.INTAKE)
         .whileTrue(collector.waitAfterCatchPieceCommand());
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.EXPELL)
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.EXPELL)
         .whileTrue(collector.scorePieceCommand());
     }
   }
