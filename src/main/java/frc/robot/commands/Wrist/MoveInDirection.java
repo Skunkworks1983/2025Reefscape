@@ -24,7 +24,7 @@ public class MoveInDirection extends Command {
   double setPoint;
   double newSetPoint;
 
-  final TrapezoidProfile m_profile = new TrapezoidProfile(
+  final TrapezoidProfile profile = new TrapezoidProfile(
     new TrapezoidProfile.Constraints(1, 1));
   
   Timer timePassed;
@@ -47,13 +47,11 @@ public class MoveInDirection extends Command {
     goal = new TrapezoidProfile.State(setPoint,0);
     positionVoltage = new PositionVoltage(0);
     startPosition = new TrapezoidProfile.State(wrist.getPosition(),wrist.getWristVelocity());
-
-    System.out.println("is running");
   }
 
   @Override
   public void execute() {
-    State positionGoal = m_profile.calculate(timePassed.get(), startPosition, goal);
+    State positionGoal = profile.calculate(timePassed.get(), startPosition, goal);
     positionVoltage.Position = positionGoal.position;
     positionVoltage.Velocity = positionGoal.velocity;
     wrist.setWristMotorControl(positionVoltage);

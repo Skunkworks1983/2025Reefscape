@@ -25,13 +25,6 @@ public class Wrist extends SubsystemBase {
     wristMotor.setPosition(0.0);
 
     magnetSensor1 = new DigitalInput(Constants.WristIDs.WRIST_MAGNET_SENSOR_1);
-    
-    Slot0Configs slot0Configs = new Slot0Configs();
-    slot0Configs.kS = 0.0; 
-    slot0Configs.kV = 0.12; 
-    slot0Configs.kP = 3; 
-    slot0Configs.kI = 0; 
-    slot0Configs.kD = 0.1;
   }
 
   @Override
@@ -46,9 +39,9 @@ public class Wrist extends SubsystemBase {
     if (getMagnetSensor1()) {
       wristMotor.setPosition(0.0);
     }
-  }
+  } 
 
-  public boolean getMagnetSensor1() { //TODO find which is top and bottom magnet
+  public boolean getMagnetSensor1() { //TODO find which is top and bottom magnet 
     return !magnetSensor1.get();
   }
 
