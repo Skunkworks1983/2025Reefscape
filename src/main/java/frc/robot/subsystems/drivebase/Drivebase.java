@@ -120,7 +120,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
     RobotConfig config = new RobotConfig(
       Constants.PathPlanner.ROBOT_MASS, 
-      Constants.PathPlanner.MOI, 
+      Constants.PathPlanner.MOMENT_OF_INERTIA, 
       new ModuleConfig(
         Constants.Drivebase.Info.WHEEL_DIAMETER / 2, 
         Constants.Drivebase.Info.MAX_MODULE_SPEED, 
