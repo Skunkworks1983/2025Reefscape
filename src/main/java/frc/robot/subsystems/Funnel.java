@@ -6,6 +6,9 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
+
+import java.util.function.Consumer;
+
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.ClosedLoopConfig;
@@ -17,11 +20,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.AutomatedTests.RunClimberMotorTest;
 import frc.robot.constants.Constants;
 import frc.robot.utils.PIDs.SmartPIDController;
 import frc.robot.utils.PIDs.SmartPIDControllerCANSparkMax;
+import frc.robot.utils.error.DiagnosticSubsystem;
+import frc.robot.utils.error.ErrorGroup;
+import frc.robot.utils.error.TestResult;
 
-public class Funnel extends SubsystemBase {
+public class Funnel extends SubsystemBase implements DiagnosticSubsystem{
 
   SparkMax pivotMotor;
 
@@ -61,6 +68,10 @@ public class Funnel extends SubsystemBase {
     return setPoint;
   }
 
+  public boolean isMotorConnected(){
+    return pivotMotor.getFirmwareVersion() != 00;
+  }
+
   public boolean approxEquals(double value1, double value2, double tolerance) {
     return Math.abs(value1 - value2) < tolerance;
   }
@@ -71,7 +82,7 @@ public class Funnel extends SubsystemBase {
 
   public void setFunnelSetPoint(double revs){
     setPoint = getPos() - revs;
-    SmartDashboard.putNumber("set point", setPoint);
+    SmartDashboard.putNumber("set point (revs)", setPoint);
     SparkClosedLoopController FunnelLoopController = pivotMotor.getClosedLoopController();
     FunnelLoopController.setReference(setPoint, ControlType.kPosition);
   }
@@ -87,5 +98,27 @@ public class Funnel extends SubsystemBase {
           return isAtSetpoint();
         }
       );
+  }
+
+  public Command hardwareConnectionTest(Consumer<TestResult> alert) {
+    return Commands.startEnd(
+        () -> {
+
+        },
+        () -> {
+          alert.accept(
+              new TestResult(
+                  "Funnel Motor is not Connected",
+                  isMotorConnected(),
+                  this,
+                  "checks if motor is connected"));
+        });
+  }
+
+  @Override
+  public Command getErrorCommand(ErrorGroup errorGroupHandler) {
+    return Commands.sequence(
+        hardwareConnectionTest(errorGroupHandler::addTestMapEntry)
+    );
   }
 }
