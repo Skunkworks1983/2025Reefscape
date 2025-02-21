@@ -9,57 +9,84 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.constants.Constants;
 
 /** Add your docs here. */
-public class SmartPIDController extends PIDController {
+public class SmartPIDController extends PIDController implements SmartPIDInterface {
 
   public String name;
   public boolean smart;
-  public String setpointLabel;
-  public String errorLabel;
+  private double kf;
+  private boolean iskf;
 
   public SmartPIDController(double kp, double ki, double kd, String name, boolean smart) {
     super(kp, ki, kd);
 
     this.name = name;
     this.smart = smart;
+    this.kf = 0.0;
+    this.iskf = false;
 
-    SmartDashboard.putNumber(name + " kp Value", kp);
-    SmartDashboard.putNumber(name + " ki Value", ki);
-    SmartDashboard.putNumber(name + " kd Value", kd);
+    putValueSmartDashboard(name, "kp Value", kp);
+    putValueSmartDashboard(name, "ki Value", ki);
+    putValueSmartDashboard(name, "kd Value", kd);
 
-    setpointLabel = name + " Setpoint";
-    errorLabel = name + " Error";
+  }
+
+  public SmartPIDController(double kp, double ki, double kd, double kf, String name, boolean smart) {
+    super(kp, ki, kd);
+
+    this.name = name;
+    this.smart = smart;
+    this.kf = kf;
+    this.iskf = true;
+
+    putValueSmartDashboard(name, "kp Value", kp);
+    putValueSmartDashboard(name, "ki Value", ki);
+    putValueSmartDashboard(name, "kd Value", kd);
+    putValueSmartDashboard(name, "kf Value", kf);
+
   }
 
   @Override
   public double calculate(double measurement) {
 
     if (smart && Constants.Drivebase.PIDs.SMART_PID_ENABLED) {
-      super.setP(SmartDashboard.getNumber(name + " kp Value", super.getP()));
-      super.setI(SmartDashboard.getNumber(name + " ki Value", super.getI()));
-      super.setD(SmartDashboard.getNumber(name + " kd Value", super.getD()));
+      super.setP(getValueFromSmartDashboard(name, "kp Value", super.getP()));
+      super.setI(getValueFromSmartDashboard(name, "ki Value", super.getI()));
+      super.setD(getValueFromSmartDashboard(name, "kd Value", super.getD()));
+      updateKf();
     }
 
     double calculate = super.calculate(measurement);
-    SmartDashboard.putNumber(name + " Measurement", measurement);
-    SmartDashboard.putNumber(errorLabel, getPositionError());
-    SmartDashboard.putNumber(setpointLabel, getSetpoint());
-    SmartDashboard.putNumber(name + " Calculated Value", calculate);
+    putValueSmartDashboard(name, "Measurement", measurement);
+    putValueSmartDashboard(name, "Error", getPositionError());
+    putValueSmartDashboard(name, "Setpoint", getSetpoint());
+    putValueSmartDashboard(name, "Calculated Value", calculate);
 
-    return calculate;
+    return calculate + kf;
   }
 
   @Override
   public double calculate(double measurement, double setpoint) {
 
     if (smart && Constants.Drivebase.PIDs.SMART_PID_ENABLED) {
-      super.setP(SmartDashboard.getNumber(name + " kp Value", super.getP()));
-      super.setI(SmartDashboard.getNumber(name + " ki Value", super.getI()));
-      super.setD(SmartDashboard.getNumber(name + " kd Value", super.getD()));
+      super.setP(getValueFromSmartDashboard(name, "kp Value", super.getP()));
+      super.setI(getValueFromSmartDashboard(name, "ki Value", super.getI()));
+      super.setD(getValueFromSmartDashboard(name, "kd Value", super.getD()));
+      updateKf();
     }
 
-    SmartDashboard.putNumber(errorLabel, getPositionError());
-    SmartDashboard.putNumber(setpointLabel, getSetpoint());
+    putValueSmartDashboard(name, "Error", getPositionError());
+    putValueSmartDashboard(name, "Setpoint", getSetpoint());
 
-    return super.calculate(measurement, setpoint);
+    return super.calculate(measurement, setpoint) + kf;
+  }
+
+  private void updateKf() {
+    if(iskf) {
+      kf = getValueFromSmartDashboard(name, "kf Value", kf);
+    }
+  }
+
+  public double getF() {
+    return kf;
   }
 }
