@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.constants.Constants.Drivebase.FieldTarget;
 import frc.robot.constants.Constants.OI.LIMITS;
+import frc.robot.commands.Wrist.MoveWristToSetpoint;
+import frc.robot.commands.elevator.*;
 import frc.robot.subsystems.drivebase.Drivebase;
 import frc.robot.constants.Constants;
 import frc.robot.commands.elevator.*;
@@ -40,7 +42,12 @@ public class OI {
       ? 0.0
       : axisInput;
 
-  public OI(Optional<Drivebase> optionalDrivebase, Optional<Elevator> optionalElevator, Optional<Collector> optionalCollector, Optional<Climber> optionalClimber) {
+  public OI(
+    Optional<Elevator> optionalElevator, 
+    Optional<Collector> optionalCollector,
+    Optional<Wrist> optionalWrist,
+    Optional<Climber> optionalClimber,
+    Optional<Drivebase> optionalDrivebase) {
 
     if (optionalElevator.isPresent()) {
       Elevator elevator = optionalElevator.get();
@@ -81,6 +88,14 @@ public class OI {
       new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.Drivebase.TARGET_REEF_BUTTON)
           .whileTrue(targetCommand);
     }
+
+    if (optionalWrist.isPresent())  {
+      Wrist wrist = optionalWrist.get();
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Wrist.WRIST_UP)
+        .onTrue(new MoveWristToSetpoint(wrist, Constants.WristIDs.WRIST_MAX_ROTATIONS));
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Wrist.WRIST_DOWN)
+        .onTrue(new MoveWristToSetpoint(wrist, Constants.WristIDs.WRIST_MIN_ROTATIONS));
+    } 
 
     if(optionalClimber.isPresent()){
       Climber climber = optionalClimber.get();
