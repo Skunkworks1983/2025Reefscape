@@ -15,7 +15,7 @@ import frc.robot.constants.Constants;
 import frc.robot.subsystems.Wrist;
 
 
-public class MoveInDirection extends Command {
+public class MoveWristToSetpoint extends Command {
   Wrist wrist;
 
   PositionVoltage positionVoltage;
@@ -29,7 +29,7 @@ public class MoveInDirection extends Command {
   
   Timer timePassed;
 
-  public MoveInDirection(Wrist wrist, double setPoint) {
+  public MoveWristToSetpoint(Wrist wrist, double setPoint) {
     this.setPoint = setPoint;
     this.wrist = wrist;
 
@@ -56,8 +56,8 @@ public class MoveInDirection extends Command {
     positionVoltage.Velocity = positionGoal.velocity;
     wrist.setWristMotorControl(positionVoltage);
 
-    SmartDashboard.putNumber("position goal", positionGoal.position);
-    SmartDashboard.putNumber("velocity", positionGoal.velocity);
+    SmartDashboard.putNumber("Wrist position goal (motor rotations)", positionGoal.position);
+    SmartDashboard.putNumber("Wrist velocity (motor rotations per second)", positionGoal.velocity);
   }
   
   @Override

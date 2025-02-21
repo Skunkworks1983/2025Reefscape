@@ -10,7 +10,7 @@ import java.util.function.DoubleFunction;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.constants.Constants.OI.LIMITS;
-import frc.robot.commands.Wrist.MoveInDirection;
+import frc.robot.commands.Wrist.MoveWristToSetpoint;
 import frc.robot.commands.elevator.*;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.OI.IDs.Joysticks;
@@ -71,9 +71,9 @@ public class OI {
     if (optionalWrist.isPresent())  {
       Wrist wrist = optionalWrist.get();
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Wrist.WRIST_UP)
-        .onTrue(new MoveInDirection(wrist, Constants.WristIDs.WRIST_MAX_ROTATIONS));
+        .onTrue(new MoveWristToSetpoint(wrist, Constants.WristIDs.WRIST_MAX_ROTATIONS));
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Wrist.WRIST_DOWN)
-        .onTrue(new MoveInDirection(wrist, Constants.WristIDs.WRIST_MIN_ROTATIONS));
+        .onTrue(new MoveWristToSetpoint(wrist, Constants.WristIDs.WRIST_MIN_ROTATIONS));
     } 
 
     if(optionalClimber.isPresent()){
@@ -102,6 +102,4 @@ public class OI {
       applyDeadband.apply(-rotationJoystick.getX())
     );
   }
-
-
 }

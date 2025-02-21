@@ -40,7 +40,7 @@ public class Wrist extends SubsystemBase {
     }
   } 
 
-  public boolean getMagnetSensor1() { //TODO find which is top and bottom magnet 
+  public boolean getMagnetSensor1() { 
     return !magnetSensor1.get();
   }
 
