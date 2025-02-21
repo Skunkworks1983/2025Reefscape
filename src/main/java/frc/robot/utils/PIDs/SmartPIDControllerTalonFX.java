@@ -24,9 +24,9 @@ public class SmartPIDControllerTalonFX implements SmartPIDInterface {
   public double lastKiValue;
   public double lastKdValue;
   public double lastKfValue;
-  public Optional<Double> lastKaValue;
-  public Optional<Double> lastKsValue;
-  public Optional<Double> lastKgValue;
+  public Optional<Double> lastKaValue = Optional.empty();
+  public Optional<Double> lastKsValue = Optional.empty();
+  public Optional<Double> lastKgValue = Optional.empty();
 
 
   private SmartPIDControllerTalonFX(double kp, double ki, double kd, double kf, Optional<Double> ka, 

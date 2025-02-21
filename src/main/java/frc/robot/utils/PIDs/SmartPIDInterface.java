@@ -10,11 +10,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public interface SmartPIDInterface {
 
   public default void putValueSmartDashboard(String PIDName, String name, double value) {
-    SmartDashboard.putNumber("SmartPid/" + name + "/" + name, value);
+    SmartDashboard.putNumber("SmartPid/" + PIDName + "/" + name, value);
   }
 
   public default double getValueFromSmartDashboard(String PIDName, String name, double defaultValue) {
-    return SmartDashboard.getNumber("SmartPid/" + name + "/" + name, defaultValue);
+    return SmartDashboard.getNumber("SmartPid/" + PIDName + "/" + name, defaultValue);
   }
 
 }
