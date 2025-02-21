@@ -17,6 +17,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.VisionIOConstants;
 import frc.robot.constants.Constants.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO.PoseObservation;
 import frc.robot.subsystems.vision.VisionIO.VisionIOData;
@@ -31,16 +32,16 @@ import frc.robot.subsystems.vision.VisionIO.VisionIOData;
 public class Vision extends SubsystemBase {
 
   private VisionConsumer consumer;
-  private VisionIO[] io;
+  private VisionIOConstants[] io;
   private List<Field2d> field2ds = new LinkedList<Field2d>();
   private final AprilTagFieldLayout aprilTagLayout = 
     AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
-  public Vision(VisionConsumer consumer, VisionIO... io) {
+  public Vision(VisionConsumer consumer, VisionIOConstants... io) {
     this.consumer = consumer;
     this.io = io;
 
-    for (VisionIO i : io) {
+    for (VisionIOConstants i : io) {
       Field2d field = new Field2d();
       SmartDashboard.putData(i.getName() + " Odometry", field);
       field2ds.add(field);

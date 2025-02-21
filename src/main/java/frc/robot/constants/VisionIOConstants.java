@@ -4,4 +4,9 @@
 
 package frc.robot.constants;
 
-public interface VisionIOConstants {}
+import frc.robot.subsystems.vision.VisionIO;
+
+public interface VisionIOConstants {
+
+  public VisionIO initialize();
+}

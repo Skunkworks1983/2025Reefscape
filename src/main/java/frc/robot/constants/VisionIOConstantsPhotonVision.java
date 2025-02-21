@@ -7,13 +7,7 @@ package frc.robot.constants;
 import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 
-
-
 public class VisionIOConstantsPhotonVision implements VisionIOConstants {
-
-  interface Constructor {
-    VisionIOPhotonVision construct(VisionIOConstantsPhotonVision c);
-  }
 
   public String cameraName;
   public Transform3d robotToCamera;
@@ -23,7 +17,7 @@ public class VisionIOConstantsPhotonVision implements VisionIOConstants {
     this.robotToCamera = robotToCamera;
   }
 
-  public static Constructor getConstructor() {
-    return VisionIOPhotonVision::new;
+  public VisionIOPhotonVision initialize() {
+    return new VisionIOPhotonVision(cameraName, robotToCamera);
   }
 }
