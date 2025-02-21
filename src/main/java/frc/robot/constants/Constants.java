@@ -23,12 +23,12 @@ public class Constants {
 
   public class PathPlanner
   {
-    public static final double PATHPLANNER_DRIVE_KP = .0;
+    public static final double PATHPLANNER_DRIVE_KP = 1.0;
     public static final double PATHPLANNER_DRIVE_KD = .0;
     public static final double PATHPLANNER_DRIVE_KI = .0;
     public static final double PATHPLANNER_DRIVE_KF = .0;
 
-    public static final double PATHPLANNER_TURN_KP = .0;
+    public static final double PATHPLANNER_TURN_KP = 1.0;
     public static final double PATHPLANNER_TURN_KD = .0;
     public static final double PATHPLANNER_TURN_KI = .0;
     public static final double PATHPLANNER_TURN_KF = .0;
@@ -102,16 +102,16 @@ public class Constants {
 
     public static SwerveModuleConstants MODULES[] = {
       new SwerveModuleConstants(
-        10, 11, 12, -0.337158 + .75, new Translation2d(-MODULE_OFFSET, MODULE_OFFSET), "Back Left"
-      ),
-      new SwerveModuleConstants(
-        13, 14, 15, -0.289795 + .25, new Translation2d(-MODULE_OFFSET, -MODULE_OFFSET), "Back Right"
-      ),
-      new SwerveModuleConstants(
         16, 17, 18, 0.476318 - .75, new Translation2d(MODULE_OFFSET, MODULE_OFFSET), "Front Left"
       ),
       new SwerveModuleConstants(
         19, 20, 21, -0.353027 + .75, new Translation2d(MODULE_OFFSET, -MODULE_OFFSET), "Front Right"
+      ),
+      new SwerveModuleConstants(
+        10, 11, 12, -0.337158 + .75, new Translation2d(-MODULE_OFFSET, MODULE_OFFSET), "Back Left"
+      ),
+      new SwerveModuleConstants(
+        13, 14, 15, -0.289795 + .25, new Translation2d(-MODULE_OFFSET, -MODULE_OFFSET), "Back Right"
       )
     };
 
