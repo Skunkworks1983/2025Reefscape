@@ -62,7 +62,7 @@ public class OI {
       // new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.SCORE_CORAL)
       //   .whileTrue(collector.scorePieceCommand());
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.INTAKE_CORAL)
-        .whileTrue(collector.intakeCoralCommand(true));
+        .whileTrue(collector.rotateThenIntakeCommand());
     }
 
     if(optionalClimber.isPresent()){

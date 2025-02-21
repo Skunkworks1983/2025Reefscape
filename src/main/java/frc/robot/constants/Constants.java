@@ -38,7 +38,7 @@ public class Constants {
     public static final double COLLECOR_ROTATE_FAST = 24.0;
     public static final double COLLECTOR_OFFSET = 0.75;
 
-    public static final double COLLECTOR_AMPS_BEFORE_CUTTOF = 4.0;
+    public static final double COLLECTOR_AMPS_BEFORE_CUTTOF = 5.5;
     public static final double SECONDS_BEFORE_CUTTOF = 0.5;
 
     public class PIDs {

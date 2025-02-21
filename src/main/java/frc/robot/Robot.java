@@ -22,7 +22,7 @@ public class Robot extends TimedRobot {
   Optional<Drivebase> drivebase = Optional.ofNullable(null);
   Optional<Elevator> elevator = Optional.ofNullable(null);
   Optional<Collector> collector = Optional.of(new Collector());
-  Optional<Climber> climber = Optional.of(new Climber());
+  Optional<Climber> climber = Optional.ofNullable(null);
   
 
   OI oi = new OI( 
