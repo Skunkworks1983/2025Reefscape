@@ -8,18 +8,18 @@ import java.util.function.Consumer;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.AutomatedTests.RunClimberMotorTest;
 import frc.robot.constants.Constants;
-import frc.robot.utils.SmartPIDControllerTalonFX;
+import frc.robot.utils.PIDControllers.SmartPIDControllerTalonFX;
 import frc.robot.utils.error.DiagnosticSubsystem;
 import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.error.TestResult;
@@ -124,25 +124,38 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
     );
   }
 
-  public Command hardwareConnectionTest(Consumer<TestResult> alert) {
-    return Commands.startEnd(
-        () -> {
+  public Command hardwareConnectionTest(
+    Consumer<TestResult> addTest,
+    Consumer<TestResult> setTest
+  ) {
 
-        },
-        () -> {
-          alert.accept(
-              new TestResult(
-                  "Climb Motor is not Connected",
-                  !isMotorConnected(),
-                  this,
-                  "checks if motor is connected"));
-        });
+    TestResult climbMotorConnectedTest = new TestResult(
+      "Climb Motor is not Connected",
+      AlertType.kWarning,
+      this,
+      "checks if motor is connected"
+    );
+    addTest.accept(climbMotorConnectedTest);
+
+    return Commands.startEnd(
+      () -> {
+        
+      },
+      () -> {
+        if(!isMotorConnected()) {
+          climbMotorConnectedTest.setErrorStatus(AlertType.kError);
+        }
+        else {
+          climbMotorConnectedTest.setErrorStatus(AlertType.kInfo);
+        }
+      }
+    );
   }
 
   @Override
   public Command getErrorCommand(ErrorGroup errorGroupHandler) {
     return Commands.sequence(
-        hardwareConnectionTest(errorGroupHandler::addTestMapEntry),
-        new RunClimberMotorTest(errorGroupHandler::addTestMapEntry, this));
+        hardwareConnectionTest(errorGroupHandler::addTestSetEntry, errorGroupHandler::setTestStatusUsingTestResult),
+        new RunClimberMotorTest(errorGroupHandler::addTestSetEntry, errorGroupHandler::setTestStatusUsingTestResult, this));
   }
 }

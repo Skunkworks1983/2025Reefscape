@@ -64,6 +64,7 @@ public class Constants {
 
     // All modules are at the position (+-MODULE_TO_OFFSET, +-MODULE_TO_OFFSET)
     private static double MODULE_OFFSET = 0.288925;
+
     public static SwerveModuleConstants MODULES[] = {
       new SwerveModuleConstants(
         10, 11, 12, -0.337158 + .75, new Translation2d(-MODULE_OFFSET, MODULE_OFFSET), "Back Left"
@@ -83,6 +84,7 @@ public class Constants {
       public static final double DRIVE_MOTOR_GEAR_RATIO = 6.12;
       public static final double WHEEL_DIAMETER = 0.0991108;
       public static final double REVS_PER_METER = DRIVE_MOTOR_GEAR_RATIO / (WHEEL_DIAMETER * Math.PI);
+      public static final double METERS_PER_REV = 1.0 / REVS_PER_METER;
       public static final double TURN_MOTOR_GEAR_RATIO = 150.0 / 7.0;
 
       public static final double MAX_MODULE_SPEED = 4.498848;
@@ -97,51 +99,52 @@ public class Constants {
       public static final double SWERVE_MODULE_DRIVE_kI = 0.0;
       public static final double SWERVE_MODULE_DRIVE_kD = 0.0;
       public static final double SWERVE_MODULE_DRIVE_kF = 0.1075;
+      public static final double HEADING_CONTROL_kP = 3.00;
+      public static final double HEADING_CONTROL_kI = 0.0;
+      public static final double HEADING_CONTROL_kD = 0.0;
+      public static final double PID_LOW_LIMIT = -0.8;
+      public static final double PID_HIGH_LIMIT = 0.8;
 
       public static final boolean SMART_PID_ENABLED = true;
       public static final boolean SMART_PID_TURN_ENABLED = true;
       public static final boolean SMART_PID_DRIVE_ENABLED = true;
-
-      public static final double PID_LOW_LIMIT = -0.8;
-      public static final double PID_HIGH_LIMIT = 0.8;
     }
+
+    public class FieldTarget {
+      public static final Translation2d REEF_BLUE = new Translation2d(4.0259, 4.48945);
+      public static final Translation2d REEF_RED = new Translation2d(FIELD_X_LENGTH-4.0259, 4.48945);
+    }
+
+    public static final double FIELD_X_LENGTH = 17.55; // Meters
+    public static final double FIELD_Y_LENGTH = 8.05; // Meters
+    public static final double SKEW_PROPORTIONAL = .027;
   }
 
   public class VisionConstants {
-  
 
     public static final String FRONT_CAMERA_NAME = "Camera_0";
     public static final String SIDE_CAMERA_NAME = "Camera_1";
-    
-    private static final Transform3d MOUNT_TO_FRONT_CAMERA = 
-      new Transform3d(
-        new Translation3d(
-          Units.inchesToMeters(1.351),
-          Units.inchesToMeters(-1.268),
-          Units.inchesToMeters(-0.81)
-        ),
-        new Rotation3d(
-          Units.degreesToRadians(0.0),
-          Units.degreesToRadians(-19.27),
-          Units.degreesToRadians(-15.0)
-        )
-      );
 
-    private static final Transform3d MOUNT_TO_SIDE_CAMERA = 
-      new Transform3d(
+    private static final Transform3d MOUNT_TO_FRONT_CAMERA = new Transform3d(
         new Translation3d(
-          Units.inchesToMeters(-1.050),
-          Units.inchesToMeters(1.365078),
-          Units.inchesToMeters(-0.762394)
-        ),
+            Units.inchesToMeters(1.351),
+            Units.inchesToMeters(-1.268),
+            Units.inchesToMeters(-0.81)),
         new Rotation3d(
-          Units.degreesToRadians(0.0),
-          Units.degreesToRadians(-27.225),
-          Units.degreesToRadians(97.0)
-        )
-      );
+            Units.degreesToRadians(0.0),
+            Units.degreesToRadians(-19.27),
+            Units.degreesToRadians(-15.0)));
 
-    // TODO: Get the transformation that maps the robot's center to the origin of the camera mount.
+    private static final Transform3d MOUNT_TO_SIDE_CAMERA = new Transform3d(
+        new Translation3d(
+            Units.inchesToMeters(-1.050),
+            Units.inchesToMeters(1.365078),
+            Units.inchesToMeters(-0.762394)),
+        new Rotation3d(
+            Units.degreesToRadians(0.0),
+            Units.degreesToRadians(-27.225),
+            Units.degreesToRadians(97.0)));
+
     private static final Transform3d ROBOT_TO_MOUNT =
       new Transform3d(
         new Translation3d( // TODO: check these transformation estimations
@@ -278,10 +281,18 @@ public class Constants {
           public static final int SCORE_CORAL = 12;
         }
 
+        public class Drivebase {
+          public static final int TARGET_REEF_BUTTON = 1;
+        }
+
         public class Climber{
           public static final int GO_TO_MAX = 10;
         }
       }
     }
+  }
+
+  public class Phoenix6Odometry {
+    public static final double updatesPerSecond = 100.0;
   }
 }

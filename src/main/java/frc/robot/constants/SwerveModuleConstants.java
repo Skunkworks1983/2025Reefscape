@@ -9,7 +9,14 @@ public class SwerveModuleConstants {
     public double turnEncoderOffset;
     public Translation2d moduleLocation;
     public String moduleName;
-    public SwerveModuleConstants(int turnMotorId, int driveMotorId, int turnEncoderId, double turnEncoderOffset, Translation2d moduleLocation, String moduleName) {
+    public SwerveModuleConstants(
+      int turnMotorId, 
+      int driveMotorId, 
+      int turnEncoderId, 
+      double turnEncoderOffset, 
+      Translation2d moduleLocation,
+      String moduleName
+    ) {
         this.turnMotorId = turnMotorId;
         this.driveMotorId = driveMotorId;
         this.turnEncoderId = turnEncoderId;
