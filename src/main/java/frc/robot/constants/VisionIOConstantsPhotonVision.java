@@ -11,13 +11,13 @@ public class VisionIOConstantsPhotonVision implements VisionIOConstants {
 
   public String cameraName;
   public Transform3d robotToCamera;
-   
+  
   public VisionIOConstantsPhotonVision(String cameraName, Transform3d robotToCamera) {
     this.cameraName = cameraName;
     this.robotToCamera = robotToCamera;
   }
 
-  public VisionIOPhotonVision initialize() {
+  public VisionIOPhotonVision init() {
     return new VisionIOPhotonVision(cameraName, robotToCamera);
   }
 }

@@ -8,5 +8,6 @@ import frc.robot.subsystems.vision.VisionIO;
 
 public interface VisionIOConstants {
 
-  public VisionIO initialize();
+  /** @return a new {@link VisionIO} initialized using the constants contained the implementing class */
+  public VisionIO init();
 }

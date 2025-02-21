@@ -43,7 +43,7 @@ public class Vision extends SubsystemBase {
     io = new VisionIO[ioConstants.length];
 
     for (int i = 0; i < ioConstants.length; i++) {
-      io[i] = ioConstants[i].initialize();
+      io[i] = ioConstants[i].init();
       Field2d field = new Field2d();
       SmartDashboard.putData(io[i].getName() + " Odometry", field);
       field2ds.add(field);
