@@ -23,7 +23,7 @@ public class Robot extends TimedRobot {
   Optional<Elevator> elevator = Optional.of(new Elevator());
   Optional<Collector> collector = Optional.of(new Collector());
   Optional<Climber> climber = Optional.of(new Climber());
-  
+
   OI oi = new OI( 
     elevator,
     collector,
