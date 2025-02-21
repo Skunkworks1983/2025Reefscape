@@ -40,7 +40,7 @@ public class OI {
     (axisInput) -> Math.abs(axisInput) < Constants.OI.AXIS_DEADBAND 
       ? 0.0 : axisInput;
 
-  public OI(Optional<Elevator> optionalElevator, Optional<Collector> optionalCollector) {
+  public OI(Optional<Elevator> optionalElevator, Optional<Collector> optionalCollector, Optional<Climber> optionalClimber) {
 
     JoystickButton algaeToggle = new JoystickButton(buttonJoystick, Buttons.ALGAE_TOGGLE);
     JoystickButton gotoPosition1 = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_1);
@@ -65,7 +65,6 @@ public class OI {
       gotoPosition4.and(coralToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.L4_POSITION_CORAL));
 
       // Algae mode 
-
       gotoStow.and(algaeToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.STOW_AGLAE));
       gotoGround.and(algaeToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.GROUND_AGLAE));
       gotoPosition1.and(algaeToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.PROCESSOR_POSITION));
@@ -85,6 +84,15 @@ public class OI {
         .whileTrue(collector.waitAfterCatchPieceCommand());
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.EXPELL)
         .whileTrue(collector.scorePieceCommand());
+    }
+
+    if(optionalClimber.isPresent()){
+      Climber climber = optionalClimber.get();
+
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.CLIMBER_GOTO_MAX)
+        .onTrue(climber.goToPositionAfterMagnetSensor(Constants.ClimberIDs.CLIMBER_MAX));
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.CLIMBER_GOTO_MIN)
+        .onTrue(climber.goToPositionAfterMagnetSensor(Constants.ClimberIDs.CLIMBER_MIN));
     }
   }
 

@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 
@@ -26,7 +25,6 @@ public class Elevator extends SubsystemBase {
   private DigitalInput topLimitSwitch = new DigitalInput(Constants.Elevator.TOP_LIMIT_SWITCH_ID);
 
   private double targetPosition;
-  private double lastSpeed;
 
   public Elevator() {
     TalonFXConfiguration config = new TalonFXConfiguration();
