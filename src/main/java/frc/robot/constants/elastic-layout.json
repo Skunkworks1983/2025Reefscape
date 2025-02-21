@@ -15,6 +15,434 @@
           "layouts": [],
           "containers": []
         }
+      },
+      {
+        "name": "System Tests",
+        "grid_layout": {
+          "layouts": [],
+          "containers": [
+            {
+              "title": "Turn Encoder Not Connected Front Left Module",
+              "x": 0.0,
+              "y": 0.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Boolean Box",
+              "properties": {
+                "topic": "/SmartDashboard/Tests/Turn Encoder Not Connected Front Left Module",
+                "period": 0.06,
+                "data_type": "boolean",
+                "true_color": 4283215696,
+                "false_color": 4294198070,
+                "true_icon": "None",
+                "false_icon": "None"
+              }
+            },
+            {
+              "title": "Turn Encoder Not Connected Front Right Module",
+              "x": 0.0,
+              "y": 128.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Boolean Box",
+              "properties": {
+                "topic": "/SmartDashboard/Tests/Turn Encoder Not Connected Front Right Module",
+                "period": 0.06,
+                "data_type": "boolean",
+                "true_color": 4283215696,
+                "false_color": 4294198070,
+                "true_icon": "None",
+                "false_icon": "None"
+              }
+            },
+            {
+              "title": "Turn Encoder Not Connected Back Left Module",
+              "x": 0.0,
+              "y": 256.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Boolean Box",
+              "properties": {
+                "topic": "/SmartDashboard/Tests/Turn Encoder Not Connected Back Left Module",
+                "period": 0.06,
+                "data_type": "boolean",
+                "true_color": 4283215696,
+                "false_color": 4294198070,
+                "true_icon": "None",
+                "false_icon": "None"
+              }
+            },
+            {
+              "title": "Turn Encoder Not Connected Back Right Module",
+              "x": 0.0,
+              "y": 384.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Boolean Box",
+              "properties": {
+                "topic": "/SmartDashboard/Tests/Turn Encoder Not Connected Back Right Module",
+                "period": 0.06,
+                "data_type": "boolean",
+                "true_color": 4283215696,
+                "false_color": 4294198070,
+                "true_icon": "None",
+                "false_icon": "None"
+              }
+            },
+            {
+              "title": "Turn Motor Not Connected Front Left Module",
+              "x": 128.0,
+              "y": 0.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Boolean Box",
+              "properties": {
+                "topic": "/SmartDashboard/Tests/Turn Motor Not Connected Front Left Module",
+                "period": 0.06,
+                "data_type": "boolean",
+                "true_color": 4283215696,
+                "false_color": 4294198070,
+                "true_icon": "None",
+                "false_icon": "None"
+              }
+            },
+            {
+              "title": "Turn Motor Not Connected Front Right Module",
+              "x": 128.0,
+              "y": 128.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Boolean Box",
+              "properties": {
+                "topic": "/SmartDashboard/Tests/Turn Motor Not Connected Front Right Module",
+                "period": 0.06,
+                "data_type": "boolean",
+                "true_color": 4283215696,
+                "false_color": 4294198070,
+                "true_icon": "None",
+                "false_icon": "None"
+              }
+            },
+            {
+              "title": "Turn Motor Not Connected Back Right Module",
+              "x": 128.0,
+              "y": 384.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Boolean Box",
+              "properties": {
+                "topic": "/SmartDashboard/Tests/Turn Motor Not Connected Back Right Module",
+                "period": 0.06,
+                "data_type": "boolean",
+                "true_color": 4283215696,
+                "false_color": 4294198070,
+                "true_icon": "None",
+                "false_icon": "None"
+              }
+            },
+            {
+              "title": "Turn Motor Not Connected Back Left Module",
+              "x": 128.0,
+              "y": 256.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Boolean Box",
+              "properties": {
+                "topic": "/SmartDashboard/Tests/Turn Motor Not Connected Back Left Module",
+                "period": 0.06,
+                "data_type": "boolean",
+                "true_color": 4283215696,
+                "false_color": 4294198070,
+                "true_icon": "None",
+                "false_icon": "None"
+              }
+            },
+            {
+              "title": "Drive Motor Not Connected Back Right Module",
+              "x": 256.0,
+              "y": 384.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Boolean Box",
+              "properties": {
+                "topic": "/SmartDashboard/Tests/Drive Motor Not Connected Back Right Module",
+                "period": 0.06,
+                "data_type": "boolean",
+                "true_color": 4283215696,
+                "false_color": 4294198070,
+                "true_icon": "None",
+                "false_icon": "None"
+              }
+            },
+            {
+              "title": "Drive Motor Not Connected Front Left Module",
+              "x": 256.0,
+              "y": 0.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Boolean Box",
+              "properties": {
+                "topic": "/SmartDashboard/Tests/Drive Motor Not Connected Front Left Module",
+                "period": 0.06,
+                "data_type": "boolean",
+                "true_color": 4283215696,
+                "false_color": 4294198070,
+                "true_icon": "None",
+                "false_icon": "None"
+              }
+            },
+            {
+              "title": "Drive Motor Not Connected Front Right Module",
+              "x": 256.0,
+              "y": 128.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Boolean Box",
+              "properties": {
+                "topic": "/SmartDashboard/Tests/Drive Motor Not Connected Front Right Module",
+                "period": 0.06,
+                "data_type": "boolean",
+                "true_color": 4283215696,
+                "false_color": 4294198070,
+                "true_icon": "None",
+                "false_icon": "None"
+              }
+            },
+            {
+              "title": "Drive Motor Not Connected Back Left Module",
+              "x": 256.0,
+              "y": 256.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Boolean Box",
+              "properties": {
+                "topic": "/SmartDashboard/Tests/Drive Motor Not Connected Back Left Module",
+                "period": 0.06,
+                "data_type": "boolean",
+                "true_color": 4283215696,
+                "false_color": 4294198070,
+                "true_icon": "None",
+                "false_icon": "None"
+              }
+            },
+            {
+              "title": "Encoder is reporting 0 Back Left Module",
+              "x": 384.0,
+              "y": 256.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Boolean Box",
+              "properties": {
+                "topic": "/SmartDashboard/Tests/Encoder is reporting 0 Back Left Module",
+                "period": 0.06,
+                "data_type": "boolean",
+                "true_color": 4283215696,
+                "false_color": 4294198070,
+                "true_icon": "None",
+                "false_icon": "None"
+              }
+            },
+            {
+              "title": "Encoder is reporting 0 Back Right Module",
+              "x": 384.0,
+              "y": 384.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Boolean Box",
+              "properties": {
+                "topic": "/SmartDashboard/Tests/Encoder is reporting 0 Back Right Module",
+                "period": 0.06,
+                "data_type": "boolean",
+                "true_color": 4283215696,
+                "false_color": 4294198070,
+                "true_icon": "None",
+                "false_icon": "None"
+              }
+            },
+            {
+              "title": "Encoder is reporting 0 Front Left Module",
+              "x": 384.0,
+              "y": 0.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Boolean Box",
+              "properties": {
+                "topic": "/SmartDashboard/Tests/Encoder is reporting 0 Front Left Module",
+                "period": 0.06,
+                "data_type": "boolean",
+                "true_color": 4283215696,
+                "false_color": 4294198070,
+                "true_icon": "None",
+                "false_icon": "None"
+              }
+            },
+            {
+              "title": "Encoder is reporting 0 Front Right Module",
+              "x": 384.0,
+              "y": 128.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Boolean Box",
+              "properties": {
+                "topic": "/SmartDashboard/Tests/Encoder is reporting 0 Front Right Module",
+                "period": 0.06,
+                "data_type": "boolean",
+                "true_color": 4283215696,
+                "false_color": 4294198070,
+                "true_icon": "None",
+                "false_icon": "None"
+              }
+            },
+            {
+              "title": "Turn Motor did not move Back Right Module",
+              "x": 512.0,
+              "y": 384.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Boolean Box",
+              "properties": {
+                "topic": "/SmartDashboard/Tests/Turn Motor did not move Back Right Module",
+                "period": 0.06,
+                "data_type": "boolean",
+                "true_color": 4283215696,
+                "false_color": 4294198070,
+                "true_icon": "None",
+                "false_icon": "None"
+              }
+            },
+            {
+              "title": "Turn Motor did not move Front Left Module",
+              "x": 512.0,
+              "y": 0.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Boolean Box",
+              "properties": {
+                "topic": "/SmartDashboard/Tests/Turn Motor did not move Front Left Module",
+                "period": 0.06,
+                "data_type": "boolean",
+                "true_color": 4283215696,
+                "false_color": 4294198070,
+                "true_icon": "None",
+                "false_icon": "None"
+              }
+            },
+            {
+              "title": "Turn Motor did not move Front Right Module",
+              "x": 512.0,
+              "y": 128.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Boolean Box",
+              "properties": {
+                "topic": "/SmartDashboard/Tests/Turn Motor did not move Front Right Module",
+                "period": 0.06,
+                "data_type": "boolean",
+                "true_color": 4283215696,
+                "false_color": 4294198070,
+                "true_icon": "None",
+                "false_icon": "None"
+              }
+            },
+            {
+              "title": "Turn Motor did not move Back Left Module",
+              "x": 512.0,
+              "y": 256.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Boolean Box",
+              "properties": {
+                "topic": "/SmartDashboard/Tests/Turn Motor did not move Back Left Module",
+                "period": 0.06,
+                "data_type": "boolean",
+                "true_color": 4283215696,
+                "false_color": 4294198070,
+                "true_icon": "None",
+                "false_icon": "None"
+              }
+            },
+            {
+              "title": "Turn Motor or Encoder Misaligned Back Left Module",
+              "x": 640.0,
+              "y": 256.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Boolean Box",
+              "properties": {
+                "topic": "/SmartDashboard/Tests/Turn Motor or Encoder Misaligned Back Left Module",
+                "period": 0.06,
+                "data_type": "boolean",
+                "true_color": 4283215696,
+                "false_color": 4294198070,
+                "true_icon": "None",
+                "false_icon": "None"
+              }
+            },
+            {
+              "title": "Turn Motor or Encoder Misaligned Back Right Module",
+              "x": 640.0,
+              "y": 384.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Boolean Box",
+              "properties": {
+                "topic": "/SmartDashboard/Tests/Turn Motor or Encoder Misaligned Back Right Module",
+                "period": 0.06,
+                "data_type": "boolean",
+                "true_color": 4283215696,
+                "false_color": 4294198070,
+                "true_icon": "None",
+                "false_icon": "None"
+              }
+            },
+            {
+              "title": "Turn Motor or Encoder Misaligned Front Left Module",
+              "x": 640.0,
+              "y": 0.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Boolean Box",
+              "properties": {
+                "topic": "/SmartDashboard/Tests/Turn Motor or Encoder Misaligned Front Left Module",
+                "period": 0.06,
+                "data_type": "boolean",
+                "true_color": 4283215696,
+                "false_color": 4294198070,
+                "true_icon": "None",
+                "false_icon": "None"
+              }
+            },
+            {
+              "title": "Turn Motor or Encoder Misaligned Front Right Module",
+              "x": 640.0,
+              "y": 128.0,
+              "width": 128.0,
+              "height": 128.0,
+              "type": "Boolean Box",
+              "properties": {
+                "topic": "/SmartDashboard/Tests/Turn Motor or Encoder Misaligned Front Right Module",
+                "period": 0.06,
+                "data_type": "boolean",
+                "true_color": 4283215696,
+                "false_color": 4294198070,
+                "true_icon": "None",
+                "false_icon": "None"
+              }
+            },
+            {
+              "title": "Alerts",
+              "x": 1280.0,
+              "y": 0.0,
+              "width": 256.0,
+              "height": 512.0,
+              "type": "Alerts",
+              "properties": {
+                "topic": "/SmartDashboard/Alerts",
+                "period": 0.06
+              }
+            }
+          ]
+        }
       }
     ]
   }
