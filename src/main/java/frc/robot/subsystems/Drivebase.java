@@ -83,17 +83,11 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     try {
       new Vision(
         this::addVisionMeasurement,
-        new VisionIOPhotonVision(
-          VisionConstants.V
-        ),
-        new VisionIOPhotonVision(
-          VisionConstants.SIDE_CAMERA_NAME, 
-          VisionConstants.ROBOT_TO_SIDE_CAMERA
-        )
+        VisionConstants.VISION_IO_CONSTANTS
       );
-    } catch(Exception exception) {
+    } catch(Exception e) {
       System.out.println("Vision subsystem failed to initialize. See the below stacktrace for more details: ");
-      exception.printStackTrace();
+      e.printStackTrace();
     }
   }
 
