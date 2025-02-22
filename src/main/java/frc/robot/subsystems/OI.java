@@ -87,10 +87,10 @@ public class OI {
 
     if(optionalFunnel.isPresent()) {
       Funnel funnel = optionalFunnel.get();
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.RAISE_FUNNEL)
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.RAISE_FUNNEL_TOGGLE)
         .whileTrue(funnel.goToPos(Constants.Funnel.Setpoints.RAISED_POSITION));
 
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.RAISE_FUNNEL).negate()
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.RAISE_FUNNEL_TOGGLE).negate()
         .whileFalse(funnel.goToPos(Constants.Funnel.Setpoints.LOWERED_POSITION));
 
     }
@@ -99,10 +99,10 @@ public class OI {
       JoystickButton algaeToggle = new JoystickButton(buttonJoystick, Buttons.ALGAE_TOGGLE);
       JoystickButton endEffectorToGround = new JoystickButton(buttonJoystick, Buttons.GOTO_GROUND);
       JoystickButton endEffectorToStow = new JoystickButton(buttonJoystick, Buttons.GOTO_STOW);
-      JoystickButton endEffectorToLowPos = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_1);
-      JoystickButton endEffectorToL2 = new JoystickButton(buttonJoystick, Buttons.GOTO_L2);
-      JoystickButton endEffectorToL3 = new JoystickButton(buttonJoystick, Buttons.GOTO_L3);
-      JoystickButton endEffectorToHighPos = new JoystickButton(buttonJoystick, Buttons.GOTO_HIGH_POSITION);
+      JoystickButton endEffectorToLowPos = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_A);
+      JoystickButton endEffectorToL2 = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_B);
+      JoystickButton endEffectorToL3 = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_C);
+      JoystickButton endEffectorToHighPos = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_D);
 
       Elevator elevator = optionalElevator.get();
       Wrist wrist = optionalWrist.get();

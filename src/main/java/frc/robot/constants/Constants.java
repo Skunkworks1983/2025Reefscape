@@ -238,7 +238,7 @@ public class Constants {
       public static final double BOTTOM = 0.0;
 
       public static final double GROUND_CORAL = 0;
-      public static final double STOW_CORAL = BOTTOM; // double check value
+      public static final double STOW_CORAL = BOTTOM; // TODO: double check value
       public static final double L1_POSITION_CORAL = 0.0;
       public static final double L2_POSITION_CORAL = 0.0;
       public static final double L3_POSITION_CORAL = 0.0;
@@ -349,13 +349,13 @@ public class Constants {
     public static final double AXIS_INPUT_EXPONENT = 3.0;
 
     public class IDs {
-
       public class Joysticks {
         public static final int ROTATION_JOYSTICK_ID = 1;
         public static final int TRANSLATION_JOYSTICK_ID = 0;
         public static final int BUTTON_STICK_ID = 2;
       }
 
+      // TODO: add button IDs
       public class Buttons {
 
         // Switch being off coresponds to coral
@@ -363,10 +363,10 @@ public class Constants {
         public static final int ALGAE_TOGGLE = 0;
 
         // The following buttons depend on ALGAE_CORAL_TOGGLE
-        public static final int GOTO_POSITION_1 = 0; // either L1 or proccesor on ALGAE_TOGGLE
-        public static final int GOTO_L2 = 0;
-        public static final int GOTO_L3 = 0;
-        public static final int GOTO_HIGH_POSITION = 0; // either L4 or net depending on ALGAE_TOGGLE
+        public static final int GOTO_POSITION_A = 0; // either L1 or proccesor on ALGAE_TOGGLE
+        public static final int GOTO_POSITION_B = 0; // either place  coral L2 or remove algae L2
+        public static final int GOTO_POSITION_C = 0; // either place  coral L3 or remove algae L4
+        public static final int GOTO_POSITION_D = 0; // either L4 or net depending on ALGAE_TOGGLE
         public static final int GOTO_STOW = 0; 
         public static final int GOTO_GROUND = 0;
 
@@ -381,7 +381,7 @@ public class Constants {
 
         public static final int TARGET_REEF_BUTTON = 0;
 
-        public static final int RAISE_FUNNEL = 0;
+        public static final int RAISE_FUNNEL_TOGGLE = 0;
       }
     }
   }
