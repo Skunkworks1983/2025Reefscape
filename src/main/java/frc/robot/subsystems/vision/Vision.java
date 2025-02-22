@@ -35,6 +35,8 @@ public class Vision extends SubsystemBase {
   private List<Field2d> field2ds = new LinkedList<Field2d>();
   private final AprilTagFieldLayout aprilTagLayout = 
     AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+  private VisionSetupEvaluator setupEvaluator = new VisionSetupEvaluator();
+
 
   public Vision(VisionConsumer consumer, VisionIO... io) {
     this.consumer = consumer;
@@ -71,6 +73,8 @@ public class Vision extends SubsystemBase {
         if (rejectPose) {
           continue;
         }
+
+        setupEvaluator.updateAvgDeviations(observation.estimatedPose().toPose2d());
 
         double stdDevFactor = Math.pow(observation.averageTagDistance(), 2.0) / observation.tagCount();
         double linearStdDev = VisionConstants.LINEAR_STD_DEV_BASELINE * stdDevFactor;
