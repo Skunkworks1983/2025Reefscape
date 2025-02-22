@@ -63,7 +63,7 @@ public class Constants {
     public class IDS {
       public static int ROTATION_JOYSTICK_ID = 1;
       public static int TRANSLATION_JOYSTICK_ID = 0;
-      public static int BUTTON_STICK_ID = 3;
+      public static int BUTTON_STICK_ID = 2;
     }
 
     // All modules are at the position (+-MODULE_TO_OFFSET, +-MODULE_TO_OFFSET)
