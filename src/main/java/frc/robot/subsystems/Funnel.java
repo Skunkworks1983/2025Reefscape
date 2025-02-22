@@ -73,7 +73,7 @@ public class Funnel extends SubsystemBase implements DiagnosticSubsystem{
   }
 
   public boolean isAtSetpoint() {
-    return approxEquals(getPos(), getSetPoint(), Constants.ClimberIDs.CLIMBER_TOLERANCE); 
+    return approxEquals(getPos(), getSetPoint(), Constants.Climber.CLIMBER_TOLERANCE); 
   }
 
   public void setFunnelSetPoint(double revs){

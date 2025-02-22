@@ -40,6 +40,7 @@ public class Robot extends TimedRobot {
 
   public Robot() {
     if(Constants.Testing.ENSURE_COMPETITION_READY_SUBSYSTEMS) {
+      // TODO: make sure code actually crashes if these are not present
       assert drivebase.isPresent();
       assert collector.isPresent();
       assert elevator.isPresent();

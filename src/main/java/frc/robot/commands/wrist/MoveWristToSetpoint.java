@@ -15,6 +15,7 @@ import frc.robot.constants.Constants;
 import frc.robot.subsystems.Wrist;
 
 
+/* TODO: consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class MoveWristToSetpoint extends Command {
   Wrist wrist;
 
@@ -67,6 +68,6 @@ public class MoveWristToSetpoint extends Command {
   
   @Override
   public boolean isFinished() {
-    return Math.abs(wrist.getPosition() - setPoint) < Constants.Wrist.IDs.WRIST_RANGE || wrist.getMagnetSensor1();
+    return Math.abs(wrist.getPosition() - setPoint) < Constants.Wrist.Limits.WRIST_RANGE || wrist.getMagnetSensor1();
   }
 }

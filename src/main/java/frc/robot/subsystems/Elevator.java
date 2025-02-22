@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
-import frc.robot.utils.PIDControllers.SmartPIDController;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -21,10 +20,10 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 // all accelerations are stored in meters/second/second.
 public class Elevator extends SubsystemBase {
 
-  private TalonFX motor = new TalonFX(Constants.Elevator.MOTOR_ID);
+  private TalonFX motor = new TalonFX(Constants.Elevator.IDs.MOTOR_ID);
 
-  private DigitalInput bottomLimitSwitch = new DigitalInput(Constants.Elevator.BOTTOM_LIMIT_SWITCH_ID);
-  private DigitalInput topLimitSwitch = new DigitalInput(Constants.Elevator.TOP_LIMIT_SWITCH_ID);
+  private DigitalInput bottomLimitSwitch = new DigitalInput(Constants.Elevator.IDs.BOTTOM_LIMIT_SWITCH_ID);
+  private DigitalInput topLimitSwitch = new DigitalInput(Constants.Elevator.IDs.TOP_LIMIT_SWITCH_ID);
 
   private double targetPosition;
   private double targetVelocity;

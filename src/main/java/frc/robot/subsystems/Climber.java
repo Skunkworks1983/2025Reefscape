@@ -33,22 +33,22 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
 
   private SmartPIDControllerTalonFX climberSmartPID;
   private PositionVoltage positionVoltage = new PositionVoltage(0);
-  private double climberSetPoint = Constants.ClimberIDs.CLIMBER_MIN;
+  private double climberSetPoint = Constants.Climber.CLIMBER_MIN;
 
   public Climber() {
-    climbMotor = new TalonFX(Constants.ClimberIDs.CLIMBER_KRAKEN_MOTOR);
+    climbMotor = new TalonFX(Constants.Climber.IDs.CLIMBER_KRAKEN_MOTOR);
     climbMotor.setPosition(0.0);
 
-    magnetSensor1 = new DigitalInput(Constants.ClimberIDs.CLIMBER_MAGNET_SENSOR_1);
-    magnetSensor2 = new DigitalInput(Constants.ClimberIDs.CLIMBER_MAGNET_SENSOR_2);
+    magnetSensor1 = new DigitalInput(Constants.Climber.IDs.CLIMBER_MAGNET_SENSOR_1);
+    magnetSensor2 = new DigitalInput(Constants.Climber.IDs.CLIMBER_MAGNET_SENSOR_2);
 
     climberSmartPID = new SmartPIDControllerTalonFX(
-      Constants.ClimberIDs.CLIMBER_KP,
-      Constants.ClimberIDs.CLIMBER_KI,
-      Constants.ClimberIDs.CLIMBER_KD,
-      Constants.ClimberIDs.CLIMBER_KF,
+      Constants.Climber.PIDs.CLIMBER_KP,
+      Constants.Climber.PIDs.CLIMBER_KI,
+      Constants.Climber.PIDs.CLIMBER_KD,
+      Constants.Climber.PIDs.CLIMBER_KF,
       "Climb Motor",
-      Constants.ClimberIDs.CLIMBER_SMARTPID_ACTIVE,
+      Constants.Climber.CLIMBER_SMARTPID_ACTIVE,
       climbMotor
     );
   }
@@ -68,7 +68,7 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
 
   // returns in meters
   public double getHeight() {
-    return climbMotor.getPosition().getValueAsDouble() * Constants.ClimberIDs.CLIMBER_MOTOR_ROTATIONS_TO_CLIMBER_HEIGHT;
+    return climbMotor.getPosition().getValueAsDouble() * Constants.Climber.CLIMBER_MOTOR_ROTATIONS_TO_CLIMBER_HEIGHT;
   }
 
   public boolean isMotorConnected() {
@@ -78,7 +78,7 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
   public void setClimberSetPoint(double newSetPoint) {
     climberSetPoint = newSetPoint;
     climbMotor.setControl(
-        positionVoltage.withPosition(newSetPoint / Constants.ClimberIDs.CLIMBER_MOTOR_ROTATIONS_TO_CLIMBER_HEIGHT));
+        positionVoltage.withPosition(newSetPoint / Constants.Climber.CLIMBER_MOTOR_ROTATIONS_TO_CLIMBER_HEIGHT));
     SmartDashboard.putNumber("Motor position", getHeight());
   }
 
@@ -92,7 +92,7 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
   }
 
   public boolean isAtSetpoint() {
-    return approxEquals(getHeight(), climberSetPoint, Constants.ClimberIDs.CLIMBER_TOLERANCE); 
+    return approxEquals(getHeight(), climberSetPoint, Constants.Climber.CLIMBER_TOLERANCE); 
   }
     
       public double getCurrent() {

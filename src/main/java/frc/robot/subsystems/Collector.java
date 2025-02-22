@@ -128,11 +128,17 @@ public class Collector extends SubsystemBase {
     );
   }
 
-  public Command scorePieceCommand() {
+  public Command scorePieceCommand(boolean coralMode) {
     return runEnd(
       () -> {
-        setCollectorSpeeds(-Constants.Collector.COLLECOR_ROTATE_FAST, 
-          Constants.Collector.COLLECOR_ROTATE_FAST);
+        if(coralMode) {
+          setCollectorSpeeds(Constants.Collector.COLLECOR_ROTATE_FAST, 
+            -Constants.Collector.COLLECOR_ROTATE_FAST);
+        }
+        else {
+          setCollectorSpeeds(-Constants.Collector.COLLECOR_ROTATE_FAST, 
+            Constants.Collector.COLLECOR_ROTATE_FAST);
+        }
       },
       () -> {
         setCollectorSpeeds(0, 0);
@@ -144,7 +150,7 @@ public class Collector extends SubsystemBase {
     return Commands.sequence(
       intakeCoralCommand(false),
       Commands.race(
-        scorePieceCommand(),
+        scorePieceCommand(false),
         Commands.waitSeconds(Constants.Collector.SECONDS_BEFORE_CUTTOF)
       )
     );

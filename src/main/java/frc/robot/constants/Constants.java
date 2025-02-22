@@ -198,9 +198,11 @@ public class Constants {
   }
 
   public class Elevator {
-    public static final int MOTOR_ID = 12;
-    public static final int BOTTOM_LIMIT_SWITCH_ID = 4;
-    public static final int TOP_LIMIT_SWITCH_ID = 5;
+    public class IDs {
+      public static final int MOTOR_ID = 12;
+      public static final int BOTTOM_LIMIT_SWITCH_ID = 4;
+      public static final int TOP_LIMIT_SWITCH_ID = 5;
+    }
 
     // This tolerance value will be used for deciding if the elevator
     // should target to its setpoint or if the setpoint is too far
@@ -209,6 +211,7 @@ public class Constants {
     // This tolerance value will be used for moving to a setpoint
     // using the MoveToPositionCommand.
     public static final double TOLERENCE_METERS_FOR_MOVE_TO_POSITION = 0.0;
+
     // In meters
     public static final double MAX_HEIGHT_CARRIAGE = 1.527175;
     public static final double MAX_HEIGHT_STAGE_ONE = 0.7366;
@@ -225,6 +228,7 @@ public class Constants {
       public static final double ELEVATOR_kD = 0.15;
       public static final double ELEVATOR_kV = 0.0;
       public static final double ELEVATOR_kS = 0.0;
+
       public static final boolean SMART_PID_ENABLED = false;
     }
 
@@ -257,32 +261,27 @@ public class Constants {
     public class IDs {
       public static final int WRIST_KRAKEN_MOTOR_ID = 12; // ID 12 is for the test board
       public static final int WRIST_MAGNET_SENSOR_1 = 0;
+    }
       
+    public class PIDs {
       public static final double WRIST_KS = 0.0;
       public static final double WRIST_KV = 0.12;
       public static final double WRIST_KP = 5.0;
       public static final double WRIST_KD = 0.1;
       public static final double WRIST_KI = 0.0;
       public static final double WRIST_KF = 0.0;
-
       public static final boolean WRIST_SMARTPID_ACTIVE = false;
+    }
 
-      public static final double WRIST_VELOCITY = 1; 
-
+    public class Limits {
       public static final double WRIST_RANGE = 0.03;
-
       public static final double WRIST_MIDPOINT_ROTATIONS = 2.5; //TODO figure out postitions
       public static final double WRIST_MIN_ROTATIONS = -5;
       public static final double WRIST_MAX_ROTATIONS = 0;
     }
-
-    public class Setpoints {
-
-      public static final double STOW_CORAL = 0;
-
-    }
   }
   
+  // TODO: add end effector setpoints
   public class EndEffectorSetpoints {
     public static final EndEffectorSetpointConstants algaeGround = 
       new EndEffectorSetpointConstants(0.0, 0.0);
@@ -296,7 +295,6 @@ public class Constants {
       new EndEffectorSetpointConstants(0.0, 0.0);
     public static final EndEffectorSetpointConstants algaeNet = 
       new EndEffectorSetpointConstants(0.0, 0.0);
-
 
     public static final EndEffectorSetpointConstants coralGround = 
       new EndEffectorSetpointConstants(0.0, 0.0);
@@ -312,15 +310,19 @@ public class Constants {
       new EndEffectorSetpointConstants(0.0, 0.0);
   };
 
-  public class ClimberIDs {
-    public static final int CLIMBER_KRAKEN_MOTOR = 12;
-    public static final int CLIMBER_MAGNET_SENSOR_1 = 4;
-    public static final int CLIMBER_MAGNET_SENSOR_2 = 5;
+  public class Climber {
+    public class IDs {
+      public static final int CLIMBER_KRAKEN_MOTOR = 12;
+      public static final int CLIMBER_MAGNET_SENSOR_1 = 4;
+      public static final int CLIMBER_MAGNET_SENSOR_2 = 5;
+    }
 
-    public static final double CLIMBER_KP = 0.1; //TODO tune constants
-    public static final double CLIMBER_KD = 0.0;
-    public static final double CLIMBER_KI = 0.0;
-    public static final double CLIMBER_KF = 0.0;
+    public class PIDs {
+      public static final double CLIMBER_KP = 0.1; //TODO tune constants
+      public static final double CLIMBER_KD = 0.0;
+      public static final double CLIMBER_KI = 0.0;
+      public static final double CLIMBER_KF = 0.0;
+    }
 
     public static final boolean CLIMBER_SMARTPID_ACTIVE = false;
 
@@ -364,15 +366,15 @@ public class Constants {
 
         // The following buttons depend on ALGAE_CORAL_TOGGLE
         public static final int GOTO_POSITION_A = 0; // either L1 or proccesor on ALGAE_TOGGLE
-        public static final int GOTO_POSITION_B = 0; // either place  coral L2 or remove algae L2
-        public static final int GOTO_POSITION_C = 0; // either place  coral L3 or remove algae L4
+        public static final int GOTO_POSITION_B = 0; // either place coral L2 or remove algae L2
+        public static final int GOTO_POSITION_C = 0; // either place coral L3 or remove algae L4
         public static final int GOTO_POSITION_D = 0; // either L4 or net depending on ALGAE_TOGGLE
         public static final int GOTO_STOW = 0; 
         public static final int GOTO_GROUND = 0;
 
         // The effects of these buttons may change depending on algae or coral mode.
         // Will also change for different positions (e.g. net)
-        public static final int ROTATE_PIECE = 0;
+        public static final int ROTATE_CORAL = 0;
         public static final int INTAKE = 0;
         public static final int EXPELL = 0;
 
