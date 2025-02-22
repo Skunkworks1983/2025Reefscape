@@ -99,10 +99,10 @@ public class OI {
       JoystickButton algaeToggle = new JoystickButton(buttonJoystick, Buttons.ALGAE_TOGGLE);
       JoystickButton endEffectorToGround = new JoystickButton(buttonJoystick, Buttons.GOTO_GROUND);
       JoystickButton endEffectorToStow = new JoystickButton(buttonJoystick, Buttons.GOTO_STOW);
-      JoystickButton endEffectorToLowPos = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_A);
-      JoystickButton endEffectorToL2 = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_B);
-      JoystickButton endEffectorToL3 = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_C);
-      JoystickButton endEffectorToHighPos = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_D);
+      JoystickButton endEffectorToA = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_A);
+      JoystickButton endEffectorToB = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_B);
+      JoystickButton endEffectorToC = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_C);
+      JoystickButton endEffectorToD = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_D);
 
       Elevator elevator = optionalElevator.get();
       Wrist wrist = optionalWrist.get();
@@ -116,19 +116,19 @@ public class OI {
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.algaeStow)
       );
 
-      endEffectorToLowPos.and(algaeToggle).onTrue(
+      endEffectorToA.and(algaeToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.algaeProcessor)
       );
 
-      endEffectorToL2.and(algaeToggle).onTrue(
+      endEffectorToB.and(algaeToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.algaeL2)
       );
 
-      endEffectorToL3.and(algaeToggle).onTrue(
+      endEffectorToC.and(algaeToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.algaeL3)
       );
 
-      endEffectorToHighPos.and(algaeToggle).onTrue(
+      endEffectorToD.and(algaeToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.algaeNet)
       );
 
@@ -142,23 +142,22 @@ public class OI {
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.coralStow)
       );
 
-      endEffectorToLowPos.and(coralToggle).onTrue(
+      endEffectorToA.and(coralToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.coralL1)
       );
 
-      endEffectorToL2.and(coralToggle).onTrue(
+      endEffectorToB.and(coralToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.coralL2)
       );
 
-      endEffectorToL3.and(coralToggle).onTrue(
+      endEffectorToC.and(coralToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.coralL3)
       );
 
-      endEffectorToHighPos.and(coralToggle).onTrue(
+      endEffectorToD.and(coralToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.coralL4)
       );
     }
-
   }
 
   public double getInstructedXMetersPerSecond() {
