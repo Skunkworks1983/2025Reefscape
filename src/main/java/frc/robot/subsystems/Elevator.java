@@ -22,8 +22,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 // all accelerations are stored in meters/second/second.
 public class Elevator extends SubsystemBase {
 
-  private TalonFX motorLeft = new TalonFX(Constants.Elevator.MOTOR_LEFT_ID);
   private TalonFX motorRight = new TalonFX(Constants.Elevator.MOTOR_RIGHT_ID);
+  private TalonFX motoLeft = new TalonFX(Constants.Elevator.MOTOR_LEFT_ID);
 
   private DigitalInput bottomLimitSwitch = new DigitalInput(Constants.Elevator.BOTTOM_LIMIT_SWITCH_ID);
   private DigitalInput topLimitSwitch = new DigitalInput(Constants.Elevator.TOP_LIMIT_SWITCH_ID);
@@ -34,42 +34,42 @@ public class Elevator extends SubsystemBase {
 
   public Elevator() {
     TalonFXConfiguration config = new TalonFXConfiguration();
-    motorLeft.getConfigurator().apply(config);
     motorRight.getConfigurator().apply(config);
+    motoLeft.getConfigurator().apply(config);
     Slot0Configs slot0Configs = new Slot0Configs();
     slot0Configs.kP = Constants.Elevator.PIDs.ELEVATOR_kP;
     slot0Configs.kI = Constants.Elevator.PIDs.ELEVATOR_kI;
     slot0Configs.kD = Constants.Elevator.PIDs.ELEVATOR_kD;
     slot0Configs.kV = Constants.Elevator.PIDs.ELEVATOR_kV;
     slot0Configs.kS = Constants.Elevator.PIDs.ELEVATOR_kS;
-    motorLeft.getConfigurator().apply(slot0Configs);
     motorRight.getConfigurator().apply(slot0Configs);
+    motoLeft.getConfigurator().apply(slot0Configs);
 
-    motorLeft.setNeutralMode(NeutralModeValue.Brake);
     motorRight.setNeutralMode(NeutralModeValue.Brake);
+    motoLeft.setNeutralMode(NeutralModeValue.Brake);
 
     targetPosition = getElevatorPosition();
-    motorRight.setControl(new Follower(Constants.Elevator.MOTOR_RIGHT_ID, true));
+    motoLeft.setControl(new Follower(Constants.Elevator.MOTOR_RIGHT_ID, true));
   }
 
   @Override
   public void periodic() {
     if(getBottomLimitSwitch()) {
-      motorLeft.setPosition(0.0);
+      motorRight.setPosition(0.0);
     } else if(getTopLimitSwitch()) {
-      motorLeft.setPosition(Constants.Elevator.MAX_HEIGHT_CARRIAGE * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
+      motorRight.setPosition(Constants.Elevator.MAX_HEIGHT_CARRIAGE * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
     }
     // putInfoSmartDashboard(); Used for Elevator info
   }
 
   // Reminder: all positions are measured in meters
   public double getElevatorPosition() {
-    return motorLeft.getPosition().getValueAsDouble() * Constants.Elevator.MOTOR_ROTATIONS_TO_METERS;
+    return motorRight.getPosition().getValueAsDouble() * Constants.Elevator.MOTOR_ROTATIONS_TO_METERS;
   }
 
   // Reminder: all velocities are measured in meters/second
   public double getElevatorVelocity() {
-    return motorLeft.getVelocity().getValueAsDouble() * Constants.Elevator.MOTOR_ROTATIONS_TO_METERS;
+    return motorRight.getVelocity().getValueAsDouble() * Constants.Elevator.MOTOR_ROTATIONS_TO_METERS;
   }
 
   // Inverted because limit switches return true until tripped
@@ -89,7 +89,7 @@ public class Elevator extends SubsystemBase {
     targetPosition = position;
     targetVelocity = velocity;
 
-    motorLeft.setControl(positionVoltage
+    motorRight.setControl(positionVoltage
       .withLimitForwardMotion(getTopLimitSwitch())
       .withLimitReverseMotion(getBottomLimitSwitch())
     );
@@ -109,12 +109,12 @@ public class Elevator extends SubsystemBase {
   }
 
   public void putInfoSmartDashboard() {
-    double currentPos = motorLeft.getPosition().getValueAsDouble();
+    double currentPos = motorRight.getPosition().getValueAsDouble();
 
     SmartDashboard.putNumber("Elevator/Desired velocity in mps", targetVelocity);
     SmartDashboard.putNumber("Elevator/Desired position in meters", targetPosition);
     SmartDashboard.putNumber("Elevator/Desired position in rotations", targetPosition * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
-    SmartDashboard.putNumber("Elevator/Actual velocity in mps", motorLeft.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Elevator/Actual velocity in mps", motorRight.getVelocity().getValueAsDouble());
     SmartDashboard.putNumber("Elevator/Actual position in meters", currentPos * Constants.Elevator.MOTOR_ROTATIONS_TO_METERS);
     SmartDashboard.putNumber("Elevator/Actual position in rotations", currentPos);
     SmartDashboard.putNumber("Elevator/Final setpoint in meters", finalTargetPosition);
