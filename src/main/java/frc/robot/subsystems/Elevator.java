@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.utils.PIDControllers.SmartPIDController;
@@ -26,6 +27,8 @@ public class Elevator extends SubsystemBase {
   private DigitalInput topLimitSwitch = new DigitalInput(Constants.Elevator.TOP_LIMIT_SWITCH_ID);
 
   private double targetPosition;
+  private double targetVelocity;
+  private double finalTargetPosition;
 
   public Elevator() {
     TalonFXConfiguration config = new TalonFXConfiguration();
@@ -74,11 +77,8 @@ public class Elevator extends SubsystemBase {
     PositionVoltage positionVoltage = new PositionVoltage(0).withSlot(0);
     positionVoltage.Position = position;
     positionVoltage.Velocity = velocity;
-
-    // SmartDashboard.putNumber("desired velocity", velocity);
-    // SmartDashboard.putNumber("desired position", position);
-    // SmartDashboard.putNumber("actual velocity", motor.getVelocity().getValueAsDouble());
-    // SmartDashboard.putNumber("actual position", motor.getPosition().getValueAsDouble());
+    targetPosition = position;
+    targetVelocity = velocity;
 
     motor.setControl(positionVoltage
       .withLimitForwardMotion(getTopLimitSwitch())
@@ -95,4 +95,23 @@ public class Elevator extends SubsystemBase {
     targetPosition = newTargetPosition;
   }
 
+  public void setFinalTargetPosition(double newFinalTargetPosition) {
+    finalTargetPosition = newFinalTargetPosition;
+  }
+
+  public void putInfoSmartDashboard() {
+    double currentPos = motor.getPosition().getValueAsDouble();
+
+    SmartDashboard.putNumber("Desired velocity", targetVelocity);
+    SmartDashboard.putNumber("Desired position", targetPosition);
+    SmartDashboard.putNumber("Desired position in rotations", targetPosition * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
+    SmartDashboard.putNumber("Actual velocity", motor.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Actual position", currentPos * Constants.Elevator.MOTOR_ROTATIONS_TO_METERS);
+    SmartDashboard.putNumber("Actual position in rotations", currentPos);
+    SmartDashboard.putNumber("Final setpoint", finalTargetPosition);
+    SmartDashboard.putNumber("Final setpoint in rotations", finalTargetPosition * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
+    SmartDashboard.putBoolean("Bottom limit switch", getBottomLimitSwitch());
+    SmartDashboard.putBoolean("Top limit switch", getTopLimitSwitch());
+
+  }
 }
