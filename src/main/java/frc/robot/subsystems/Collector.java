@@ -55,16 +55,12 @@ public class Collector extends SubsystemBase {
 
    rightMotorController = new SmartPIDControllerTalonFX(Constants.Collector.PIDs.KP,
         Constants.Collector.PIDs.KI, Constants.Collector.PIDs.KD,
-        Constants.Collector.PIDs.KF, Constants.Collector.PIDs.KV,
-        Constants.Collector.PIDs.KA, Constants.Collector.PIDs.KS,
-         "right motor",
+        Constants.Collector.PIDs.KF, "right motor",
         Constants.Collector.PIDs.SMART_PID_ENABLED, rightMotor);
 
     leftMotorController = new SmartPIDControllerTalonFX(Constants.Collector.PIDs.KP,
         Constants.Collector.PIDs.KI, Constants.Collector.PIDs.KD,
-        Constants.Collector.PIDs.KF, Constants.Collector.PIDs.KV,
-        Constants.Collector.PIDs.KA, Constants.Collector.PIDs.KS,
-        "left motor",
+        Constants.Collector.PIDs.KF, "left motor",
         Constants.Drivebase.PIDs.SMART_PID_ENABLED, leftMotor);
     
   }
@@ -86,10 +82,7 @@ public class Collector extends SubsystemBase {
     lastLeftSpeed = leftSpeed;
   }
   @Override
-  public void periodic() {
-    SmartDashboard.putNumber("Right motor current", rightMotor.getSupplyCurrent().getValueAsDouble());
-    SmartDashboard.putNumber("Left motor current", leftMotor.getSupplyCurrent().getValueAsDouble());
-  }
+  public void periodic() { }
   
   public Command rotateCoralCommand() {
     return runEnd(
@@ -105,20 +98,17 @@ public class Collector extends SubsystemBase {
     );
   }
 
-  // true if you want it to stop the motor when the command ends
-  // it should almost always be true unless there will be a following command right after that will end it
-  public Command intakeCoralCommand(
-    boolean stopOnEnd
-  ) {
+  public Command intakeCoralCommand() {
     return runEnd(
       () -> {
         setCollectorSpeeds(-Constants.Collector.COLLECOR_ROTATE_FAST, 
           Constants.Collector.COLLECOR_ROTATE_FAST);
+        SmartDashboard.putNumber("Right motor current", rightMotor.getSupplyCurrent().getValueAsDouble());
+        SmartDashboard.putNumber("Left motor current", leftMotor.getSupplyCurrent().getValueAsDouble());
+
       },
       () -> {
-        if(stopOnEnd) {
-          setCollectorSpeeds(0, 0);
-        }
+        setCollectorSpeeds(0, 0);
       }
     ).until(
       () -> {
@@ -128,17 +118,14 @@ public class Collector extends SubsystemBase {
     );
   }
 
-  public Command scorePieceCommand(boolean coralMode) {
+  public Command scorePieceCommand() {
     return runEnd(
       () -> {
-        if(coralMode) {
-          setCollectorSpeeds(Constants.Collector.COLLECOR_ROTATE_FAST, 
-            -Constants.Collector.COLLECOR_ROTATE_FAST);
-        }
-        else {
-          setCollectorSpeeds(-Constants.Collector.COLLECOR_ROTATE_FAST, 
-            Constants.Collector.COLLECOR_ROTATE_FAST);
-        }
+        setCollectorSpeeds(-Constants.Collector.COLLECOR_ROTATE_FAST, 
+          Constants.Collector.COLLECOR_ROTATE_FAST);
+        SmartDashboard.putNumber("Right motor current", rightMotor.getSupplyCurrent().getValueAsDouble());
+        SmartDashboard.putNumber("Left motor current", leftMotor.getSupplyCurrent().getValueAsDouble());
+
       },
       () -> {
         setCollectorSpeeds(0, 0);
@@ -148,9 +135,9 @@ public class Collector extends SubsystemBase {
 
   public Command waitAfterCatchPieceCommand() {
     return Commands.sequence(
-      intakeCoralCommand(false),
+      intakeCoralCommand(),
       Commands.race(
-        scorePieceCommand(false),
+        scorePieceCommand(),
         Commands.waitSeconds(Constants.Collector.SECONDS_BEFORE_CUTTOF)
       )
     );

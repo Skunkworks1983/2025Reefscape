@@ -64,11 +64,11 @@ public class OI {
         .whileTrue(collector.waitAfterCatchPieceCommand());
 
       // TODO: add intake code -- talk to lukas
-      intake.and(algaeToggle).whileTrue(collector.intakeCoralCommand(true));
-      intake.and(coralToggle).whileTrue(collector.intakeCoralCommand(true));
+      intake.and(algaeToggle).whileTrue(collector.intakeCoralCommand());
+      intake.and(coralToggle).whileTrue(collector.intakeCoralCommand());
 
-      expell.and(algaeToggle).whileTrue(collector.scorePieceCommand(false));
-      expell.and(coralToggle).whileTrue(collector.scorePieceCommand(true));
+      expell.and(algaeToggle).whileTrue(collector.scorePieceCommand());
+      expell.and(coralToggle).whileTrue(collector.scorePieceCommand());
     }
 
     if (optionalDrivebase.isPresent()) {
