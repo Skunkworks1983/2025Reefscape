@@ -32,7 +32,7 @@ public class Collector extends SubsystemBase {
   @SuppressWarnings("unused")
   private SmartPIDControllerTalonFX rightMotorController;
   @SuppressWarnings("unused")
-  private SmartPIDControllerTalonFX leftMotorController;
+  //private SmartPIDControllerTalonFX leftMotorController;
 
   private double getLeftMotorVelocity() {
     return leftMotor.getVelocity().getValueAsDouble();
@@ -61,10 +61,10 @@ public class Collector extends SubsystemBase {
         Constants.Collector.PIDs.KF, "right motor",
         Constants.Collector.PIDs.SMART_PID_ENABLED, rightMotor);
 
-    leftMotorController = new SmartPIDControllerTalonFX(Constants.Collector.PIDs.KP,
-        Constants.Collector.PIDs.KI, Constants.Collector.PIDs.KD,
-        Constants.Collector.PIDs.KF, "left motor",
-        Constants.Drivebase.PIDs.SMART_PID_ENABLED, leftMotor);
+    // leftMotorController = new SmartPIDControllerTalonFX(Constants.Collector.PIDs.KP,
+    //     Constants.Collector.PIDs.KI, Constants.Collector.PIDs.KD,
+    //     Constants.Collector.PIDs.KF, "left motor",
+    //     Constants.Drivebase.PIDs.SMART_PID_ENABLED, leftMotor);
     
         beambreak = new DigitalInput(8);
   }
@@ -115,7 +115,7 @@ public class Collector extends SubsystemBase {
     return runEnd(
       () -> {
         setCollectorSpeeds(-Constants.Collector.COLLECOR_ROTATE_FAST, 
-          Constants.Collector.COLLECOR_ROTATE_FAST* Constants.Collector.COLLECTOR_OFFSET);
+          Constants.Collector.COLLECOR_ROTATE_FAST * Constants.Collector.COLLECTOR_OFFSET);
       },
       () -> {
         if(stopOnEnd) {

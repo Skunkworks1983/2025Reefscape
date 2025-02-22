@@ -29,7 +29,7 @@ public class Constants {
   }
 
   public class Collector {
-    public static final int RIGHT_MOTOR = 42;
+    public static final int RIGHT_MOTOR = 42; //42 is the real id
     public static final int LEFT_MOTOR = 11;
 
     public static final double COLLECTOR_ROTATIONS_PER_METER = 0.0762 * Math.PI;
@@ -98,13 +98,16 @@ public class Constants {
       public static final double SWERVE_MODULE_TURN_kI = 0.0;
       public static final double SWERVE_MODULE_TURN_kD = 0.00017;
       public static final double SWERVE_MODULE_TURN_kF = 0.0;
+
       public static final double SWERVE_MODULE_DRIVE_kP = 0.125;
       public static final double SWERVE_MODULE_DRIVE_kI = 0.0;
       public static final double SWERVE_MODULE_DRIVE_kD = 0.0;
       public static final double SWERVE_MODULE_DRIVE_kF = 0.1075;
+
       public static final double HEADING_CONTROL_kP = 3.00;
       public static final double HEADING_CONTROL_kI = 0.0;
       public static final double HEADING_CONTROL_kD = 0.0;
+      
       public static final double PID_LOW_LIMIT = -0.8;
       public static final double PID_HIGH_LIMIT = 0.8;
 

@@ -66,36 +66,13 @@ public class OI {
     if (optionalCollector.isPresent()) {
       Collector collector = optionalCollector.get();
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.ROTATE_CORAL)
-          .whileTrue(collector.rotateCoralCommand());
+        .whileTrue(collector.rotateCoralCommand());
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.COLLECT_CORAL)
-          .whileTrue(collector.waitAfterCatchPieceCommand());
+        .whileTrue(collector.waitAfterCatchPieceCommand());
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.SCORE_CORAL)
-          .whileTrue(collector.scorePieceCommand());
+        .whileTrue(collector.scorePieceCommand());
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.INTAKE_CORAL);
     }
-
-    if (optionalDrivebase.isPresent()) {
-      Drivebase drivebase = optionalDrivebase.get();
-
-      Command targetCommand = drivebase.getSwerveHeadingCorrected(
-          this::getInstructedXMetersPerSecond,
-          this::getInstructedYMetersPerSecond,
-          // TODO: define an actual target point
-          (Supplier<Rotation2d>) () -> drivebase.getTargetingAngle(FieldTarget.REEF_RED),
-          true);
-
-      targetCommand.addRequirements(drivebase);
-
-      new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.Drivebase.TARGET_REEF_BUTTON)
-          .whileTrue(targetCommand);
-    }
-
-    if (optionalWrist.isPresent())  {
-      Wrist wrist = optionalWrist.get();
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Wrist.WRIST_UP)
-        .onTrue(new MoveWristToSetpoint(wrist, Constants.WristIDs.WRIST_MAX_ROTATIONS));
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Wrist.WRIST_DOWN)
-        .onTrue(new MoveWristToSetpoint(wrist, Constants.WristIDs.WRIST_MIN_ROTATIONS));
-    } 
 
     if(optionalClimber.isPresent()){
       Climber climber = optionalClimber.get();
