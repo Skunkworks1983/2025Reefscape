@@ -172,7 +172,9 @@ public class Constants {
     public static final double LINEAR_STD_DEV_BASELINE = 0.02;
     public static final double ANGULAR_STD_DEV_BASELINE = 0.06;
     public static final double MAX_Z_ERROR = 3.0;
-    public static final double MAX_AVERAGE_TAG_DISTANCE = 3.0; // Meters
+    public static final double MAX_AVERAGE_TAG_DISTANCE = 3.0; // Metersd
+
+    public static final int JITTER_TEST_ROLLING_AVG_LENGTH = 20;
   }
 
   public class Funnel {
