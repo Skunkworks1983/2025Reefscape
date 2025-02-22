@@ -56,10 +56,9 @@ public class Vision extends SubsystemBase {
     for (int i = 0; i < io.length; i++) {
       VisionIOData data = io[i].getLatestData();
       for (PoseObservation observation : data.poseObservations) {
-
-        SmartDashboard.putNumber(io[i].getName() + " Latest Ambiguity", observation.ambiguity());
-        SmartDashboard.putNumber(io[i].getName() + " Latest Z Error", observation.estimatedPose().getZ());
-        SmartDashboard.putNumber(io[i].getName() + " Average Tag Distance", observation.averageTagDistance());
+        SmartDashboard.putNumber(io[i].getName() + " Ambiguity", observation.ambiguity());
+        SmartDashboard.putNumber(io[i].getName() + " Z Error", observation.estimatedPose().getZ());
+        SmartDashboard.putNumber(io[i].getName() + " Avg Tag Distance", observation.averageTagDistance());
 
         boolean rejectPose = 
           observation.tagCount() == 0 ||
@@ -78,6 +77,9 @@ public class Vision extends SubsystemBase {
         double stdDevFactor = Math.pow(observation.averageTagDistance(), 2.0) / observation.tagCount();
         double linearStdDev = VisionConstants.LINEAR_STD_DEV_BASELINE * stdDevFactor;
         double angularStdDev = VisionConstants.ANGULAR_STD_DEV_BASELINE * stdDevFactor;
+
+        SmartDashboard.putNumber(io[i].getName() + " Linear Std Dev", linearStdDev);
+        SmartDashboard.putNumber(io[i].getName() + " Angular Std Dev", angularStdDev);
 
         consumer.accept(
             observation.estimatedPose().toPose2d(),
