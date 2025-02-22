@@ -51,6 +51,7 @@ public class Elevator extends SubsystemBase {
     } else if(getTopLimitSwitch()) {
       motor.setPosition(Constants.Elevator.MAX_HEIGHT_CARRIAGE * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
     }
+    // putInfoSmartDashboard(); Used for Elevator info
   }
 
   // Reminder: all positions are measured in meters
@@ -102,16 +103,16 @@ public class Elevator extends SubsystemBase {
   public void putInfoSmartDashboard() {
     double currentPos = motor.getPosition().getValueAsDouble();
 
-    SmartDashboard.putNumber("Desired velocity", targetVelocity);
-    SmartDashboard.putNumber("Desired position", targetPosition);
-    SmartDashboard.putNumber("Desired position in rotations", targetPosition * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
-    SmartDashboard.putNumber("Actual velocity", motor.getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("Actual position", currentPos * Constants.Elevator.MOTOR_ROTATIONS_TO_METERS);
-    SmartDashboard.putNumber("Actual position in rotations", currentPos);
-    SmartDashboard.putNumber("Final setpoint", finalTargetPosition);
-    SmartDashboard.putNumber("Final setpoint in rotations", finalTargetPosition * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
-    SmartDashboard.putBoolean("Bottom limit switch", getBottomLimitSwitch());
-    SmartDashboard.putBoolean("Top limit switch", getTopLimitSwitch());
+    SmartDashboard.putNumber("Elevator/Desired velocity in mps", targetVelocity);
+    SmartDashboard.putNumber("Elevator/Desired position in meters", targetPosition);
+    SmartDashboard.putNumber("Elevator/Desired position in rotations", targetPosition * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
+    SmartDashboard.putNumber("Elevator/Actual velocity in mps", motor.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Elevator/Actual position in meters", currentPos * Constants.Elevator.MOTOR_ROTATIONS_TO_METERS);
+    SmartDashboard.putNumber("Elevator/Actual position in rotations", currentPos);
+    SmartDashboard.putNumber("Elevator/Final setpoint in meters", finalTargetPosition);
+    SmartDashboard.putNumber("Elevator/Final setpoint in rotations", finalTargetPosition * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
+    SmartDashboard.putBoolean("Elevator/Bottom limit switch", getBottomLimitSwitch());
+    SmartDashboard.putBoolean("Elevator/Top limit switch", getTopLimitSwitch());
 
   }
 }
