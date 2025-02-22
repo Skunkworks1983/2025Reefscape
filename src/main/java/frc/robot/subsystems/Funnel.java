@@ -11,19 +11,14 @@ import java.util.function.Consumer;
 
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.ClosedLoopConfig;
-import com.revrobotics.spark.config.MAXMotionConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.AutomatedTests.RunClimberMotorTest;
 import frc.robot.constants.Constants;
-import frc.robot.utils.PIDs.SmartPIDController;
 import frc.robot.utils.PIDs.SmartPIDControllerCANSparkMax;
 import frc.robot.utils.error.DiagnosticSubsystem;
 import frc.robot.utils.error.ErrorGroup;
@@ -38,18 +33,18 @@ public class Funnel extends SubsystemBase implements DiagnosticSubsystem{
   double setPoint;
 
   public Funnel() {
-    pivotMotor = new SparkMax(Constants.Funnel.PIVOT_MOTOR_ID,  MotorType.kBrushless);
+    pivotMotor = new SparkMax(Constants.Funnel.IDs.PIVOT_MOTOR_ID,  MotorType.kBrushless);
     SparkMaxConfig config = new SparkMaxConfig();
     config.closedLoop
-      .p(Constants.Funnel.FUNNEL_KP)
-      .i(Constants.Funnel.FUNNEL_KI)
-      .d(Constants.Funnel.FUNNEL_KD);
+      .p(Constants.Funnel.PIDs.FUNNEL_KP)
+      .i(Constants.Funnel.PIDs.FUNNEL_KI)
+      .d(Constants.Funnel.PIDs.FUNNEL_KD);
 
     pivotMotorSpeedController = new frc.robot.utils.PIDs.SmartPIDControllerCANSparkMax(
-      Constants.Funnel.FUNNEL_KP,
-      Constants.Funnel.FUNNEL_KI,
-      Constants.Funnel.FUNNEL_KD,
-      Constants.Funnel.FUNNEL_KF,
+      Constants.Funnel.PIDs.FUNNEL_KP,
+      Constants.Funnel.PIDs.FUNNEL_KI,
+      Constants.Funnel.PIDs.FUNNEL_KD,
+      Constants.Funnel.PIDs.FUNNEL_KF,
       "Funnel Pivot Motor",
       Constants.Funnel.FUNNEL_SMARTPID_ACTIVE,
       pivotMotor

@@ -20,10 +20,10 @@ public class Wrist extends SubsystemBase {
   private DigitalInput magnetSensor1;
 
   public Wrist() {
-    wristMotor = new TalonFX(Constants.WristIDs.WRIST_KRAKEN_MOTOR_ID);
+    wristMotor = new TalonFX(Constants.Wrist.IDs.WRIST_KRAKEN_MOTOR_ID);
     wristMotor.setPosition(0.0);
 
-    magnetSensor1 = new DigitalInput(Constants.WristIDs.WRIST_MAGNET_SENSOR_1);
+    magnetSensor1 = new DigitalInput(Constants.Wrist.IDs.WRIST_MAGNET_SENSOR_1);
   }
 
   @Override

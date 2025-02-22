@@ -168,20 +168,26 @@ public class Constants {
   }
 
   public class Funnel {
-    public static final int PIVOT_MOTOR_ID = 4;
-    public static final double PIVOT_MOTOR_GEAR_RATIO = 1 / 100;
-
-    public static final double FUNNEL_KP = 1; //TODO tune constants
-    public static final double FUNNEL_KD = 0.0;
-    public static final double FUNNEL_KI = 0.0;
-    public static final double FUNNEL_KF = 0.0;
+    public class IDs {
+      public static final int PIVOT_MOTOR_ID = 4;
+      public static final double PIVOT_MOTOR_GEAR_RATIO = 1 / 100;
+    }
+ 
+    public class PIDs {
+      public static final double FUNNEL_KP = 1; //TODO tune constants
+      public static final double FUNNEL_KD = 0.0;
+      public static final double FUNNEL_KI = 0.0;
+      public static final double FUNNEL_KF = 0.0;
+    }
 
     public static final boolean FUNNEL_SMARTPID_ACTIVE = false;
 
-    public static final double FUNNEL_POSITION_1 = 0.0; //TODO FIGURE OUT POSITIONS IN ROTATIONS
-    public static final double FUNNEL_POSITION_2 = 0.0;
-    public static final double FUNNEL_POSITION_3 = 0.0;
+    public class Setpoints {
+      //TODO figure out positions in rotations
+      public static final double LOWERED_POSITION  = 0.0;
+      public static final double RAISED_POSITION = 0.0;
     }
+  }
 
   public class Elevator {
     public static final int MOTOR_ID = 12;
@@ -239,27 +245,64 @@ public class Constants {
     }
   }
 
-  public class WristIDs {
-    public static final int WRIST_KRAKEN_MOTOR_ID = 12; // ID 12 is for the test board
-    public static final int WRIST_MAGNET_SENSOR_1 = 0;
-    
-    public static final double WRIST_KS = 0.0;
-    public static final double WRIST_KV = 0.12;
-    public static final double WRIST_KP = 5.0;
-    public static final double WRIST_KD = 0.1;
-    public static final double WRIST_KI = 0.0;
-    public static final double WRIST_KF = 0.0;
+  public class Wrist {
+    public class IDs {
+      public static final int WRIST_KRAKEN_MOTOR_ID = 12; // ID 12 is for the test board
+      public static final int WRIST_MAGNET_SENSOR_1 = 0;
+      
+      public static final double WRIST_KS = 0.0;
+      public static final double WRIST_KV = 0.12;
+      public static final double WRIST_KP = 5.0;
+      public static final double WRIST_KD = 0.1;
+      public static final double WRIST_KI = 0.0;
+      public static final double WRIST_KF = 0.0;
 
-    public static final boolean WRIST_SMARTPID_ACTIVE = false;
+      public static final boolean WRIST_SMARTPID_ACTIVE = false;
 
-    public static final double WRIST_VELOCITY = 1; 
+      public static final double WRIST_VELOCITY = 1; 
 
-    public static final double WRIST_RANGE = 0.03;
+      public static final double WRIST_RANGE = 0.03;
 
-    public static final double WRIST_MIDPOINT_ROTATIONS = 2.5; //TODO figure out postitions
-    public static final double WRIST_MIN_ROTATIONS = -5;
-    public static final double WRIST_MAX_ROTATIONS = 0;
+      public static final double WRIST_MIDPOINT_ROTATIONS = 2.5; //TODO figure out postitions
+      public static final double WRIST_MIN_ROTATIONS = -5;
+      public static final double WRIST_MAX_ROTATIONS = 0;
+    }
+
+    public class Setpoints {
+
+      public static final double STOW_CORAL = 0;
+
+    }
   }
+  
+  public class EndEffectorSetpoints {
+    public static final EndEffectorSetpointConstants algaeGround = 
+      new EndEffectorSetpointConstants(0.0, 0.0);
+    public static final EndEffectorSetpointConstants algaeStow = 
+      new EndEffectorSetpointConstants(0.0, 0.0);
+    public static final EndEffectorSetpointConstants algaeProcessor = 
+      new EndEffectorSetpointConstants(0.0, 0.0);
+    public static final EndEffectorSetpointConstants algaeL2 = 
+      new EndEffectorSetpointConstants(0.0, 0.0);
+    public static final EndEffectorSetpointConstants algaeL3 = 
+      new EndEffectorSetpointConstants(0.0, 0.0);
+    public static final EndEffectorSetpointConstants algaeNet = 
+      new EndEffectorSetpointConstants(0.0, 0.0);
+
+
+    public static final EndEffectorSetpointConstants coralGround = 
+      new EndEffectorSetpointConstants(0.0, 0.0);
+    public static final EndEffectorSetpointConstants coralStow = 
+      new EndEffectorSetpointConstants(0.0, 0.0);
+    public static final EndEffectorSetpointConstants coralL1 = 
+      new EndEffectorSetpointConstants(0.0, 0.0);
+    public static final EndEffectorSetpointConstants coralL2 = 
+      new EndEffectorSetpointConstants(0.0, 0.0);
+    public static final EndEffectorSetpointConstants coralL3 = 
+      new EndEffectorSetpointConstants(0.0, 0.0);
+    public static final EndEffectorSetpointConstants coralL4 = 
+      new EndEffectorSetpointConstants(0.0, 0.0);
+  };
 
   public class ClimberIDs {
     public static final int CLIMBER_KRAKEN_MOTOR = 12;
@@ -312,36 +355,26 @@ public class Constants {
         public static final int ALGAE_TOGGLE = 0;
 
         // The following buttons depend on ALGAE_CORAL_TOGGLE
-        public static final int GOTO_POSITION_1 = 0; // L1 or processor
-        public static final int GOTO_POSITION_2 = 0; // L2
-        public static final int GOTO_POSITION_3 = 0; // L3
-        public static final int GOTO_POSITION_4 = 0; // L4 or net
-
-        // Will stow for algae or coral depending on ALGAE_CORAL_TOGGLE
-        // coral stow doubles as ground collect
-        public static final int STOW = 0; 
-
-        public static final int FLOOR_COLLECT = 0;
-
-      // The effects of these buttons may change depending on algae or coral mode.
-      // Will also change for different positions (e.g. net)
-        public static final int ROTATE_PIECE = 23;
-        public static final int INTAKE = 11;
-        public static final int EXPELL = 12;
-
-
+        public static final int GOTO_POSITION_1 = 0; // either L1 or proccesor on ALGAE_TOGGLE
+        public static final int GOTO_L2 = 0;
+        public static final int GOTO_L3 = 0;
+        public static final int GOTO_HIGH_POSITION = 0; // either L4 or net depending on ALGAE_TOGGLE
+        public static final int GOTO_STOW = 0; 
         public static final int GOTO_GROUND = 0;
 
-        public static final int GOTO_STOW = 0;
-
+        // The effects of these buttons may change depending on algae or coral mode.
+        // Will also change for different positions (e.g. net)
+        public static final int ROTATE_PIECE = 0;
+        public static final int INTAKE = 0;
+        public static final int EXPELL = 0;
 
         public static final int CLIMBER_GOTO_MAX = 0;
-
-
         public static final int CLIMBER_GOTO_MIN = 0;
-      }
 
-      public static final int TARGET_REEF_BUTTON = 0;
+        public static final int TARGET_REEF_BUTTON = 0;
+
+        public static final int RAISE_FUNNEL = 0;
+      }
     }
   }
 

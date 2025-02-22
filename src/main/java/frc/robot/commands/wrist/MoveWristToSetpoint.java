@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Wrist;
+package frc.robot.commands.wrist;
 
 import com.ctre.phoenix6.controls.PositionVoltage;
 
@@ -67,6 +67,6 @@ public class MoveWristToSetpoint extends Command {
   
   @Override
   public boolean isFinished() {
-    return Math.abs(wrist.getPosition() - setPoint) < Constants.WristIDs.WRIST_RANGE || wrist.getMagnetSensor1();
+    return Math.abs(wrist.getPosition() - setPoint) < Constants.Wrist.IDs.WRIST_RANGE || wrist.getMagnetSensor1();
   }
 }

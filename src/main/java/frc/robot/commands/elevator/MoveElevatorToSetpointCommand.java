@@ -17,7 +17,7 @@ import frc.robot.subsystems.Elevator;
 // tolorence of the desired position. This command uses the trapazoid motion profile.
 // This command is long and requires a fair amount of state so it is not defined within the
 // Elevator subsystem.
-public class MoveToPositionCommand extends Command {
+public class MoveElevatorToSetpointCommand extends Command {
   Timer timeElapsed;
   State startState;
   State targetState;
@@ -31,7 +31,7 @@ public class MoveToPositionCommand extends Command {
     )
   );
 
-  public MoveToPositionCommand(Elevator elevator, double targetHeight) {
+  public MoveElevatorToSetpointCommand(Elevator elevator, double targetHeight) {
     targetState = new State(targetHeight * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS, 0.0);
     this.elevator = elevator;
     timeElapsed = new Timer();

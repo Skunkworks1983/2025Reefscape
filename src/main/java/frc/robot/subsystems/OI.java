@@ -8,20 +8,17 @@ import java.util.Optional;
 import java.util.function.DoubleFunction;
 import java.util.function.Supplier;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.constants.Constants.EndEffectorSetpoints;
 import frc.robot.constants.Constants.Drivebase.FieldTarget;
 import frc.robot.constants.Constants.OI.LIMITS;
-import frc.robot.commands.Wrist.MoveWristToSetpoint;
-import frc.robot.commands.elevator.*;
+import frc.robot.commands.MoveEndEffector;
 import frc.robot.subsystems.drivebase.Drivebase;
 import frc.robot.constants.Constants;
-import frc.robot.constants.Constants.Elevator.Setpoints;
 import frc.robot.constants.Constants.OI.IDs.Buttons;
-import frc.robot.commands.elevator.*;
 import frc.robot.constants.Constants.OI.IDs.Joysticks;
 
 public class OI {
@@ -50,40 +47,9 @@ public class OI {
     Optional<Collector> optionalCollector,
     Optional<Wrist> optionalWrist,
     Optional<Climber> optionalClimber,
-    Optional<Drivebase> optionalDrivebase) {
-
-    JoystickButton algaeToggle = new JoystickButton(buttonJoystick, Buttons.ALGAE_TOGGLE);
-    JoystickButton gotoPosition1 = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_1);
-    JoystickButton gotoPosition2 = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_2);
-    JoystickButton gotoPosition3 = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_3);
-    JoystickButton gotoPosition4 = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_4);
-    JoystickButton gotoGround = new JoystickButton(buttonJoystick, Buttons.GOTO_GROUND);
-    JoystickButton gotoStow = new JoystickButton(buttonJoystick, Buttons.GOTO_STOW);
-
-    // TODO: add wrist to all commands in which the elevator moves.
-    if(optionalElevator.isPresent() && optionalWrist.isPresent()) {
-      Elevator elevator = optionalElevator.get();
-      Wrist wrist = optionalWrist.get();
-
-      // Coral mode 
-      Trigger coralToggle = algaeToggle.negate();
-      gotoStow.and(coralToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.STOW_CORAL));
-      gotoGround.and(coralToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.GROUND_AGLAE));
-      gotoPosition1.and(coralToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.L1_POSITION_CORAL));
-      gotoPosition2.and(coralToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.L2_POSITION_CORAL));
-      gotoPosition3.and(coralToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.L3_POSITION_CORAL));
-      gotoPosition4.and(coralToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.L4_POSITION_CORAL));
-      gotoPosition4.and(coralToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.L4_POSITION_CORAL));
-
-      // Algae mode 
-      gotoStow.and(algaeToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.STOW_AGLAE));
-      gotoGround.and(algaeToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.GROUND_AGLAE));
-      gotoPosition1.and(algaeToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.PROCESSOR_POSITION));
-      gotoPosition2.and(algaeToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.L2_POSITION_ALGAE));
-      gotoPosition3.and(algaeToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.L3_POSITION_ALGAE));
-      gotoPosition4.and(algaeToggle).onTrue(new MoveToPositionCommand(elevator, Setpoints.NET_POSITION));
-    }
-
+    Optional<Drivebase> optionalDrivebase,
+    Optional<Funnel> optionalFunnel
+  ) {
     if (optionalCollector.isPresent()) {
       Collector collector = optionalCollector.get();
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.ROTATE_PIECE)
@@ -97,6 +63,7 @@ public class OI {
     if (optionalDrivebase.isPresent()) {
       Drivebase drivebase = optionalDrivebase.get();
 
+      // TODO: find a better place for this command
       Command targetCommand = drivebase.getSwerveHeadingCorrected(
           this::getInstructedXMetersPerSecond,
           this::getInstructedYMetersPerSecond,
@@ -106,18 +73,92 @@ public class OI {
 
       targetCommand.addRequirements(drivebase);
 
-      new JoystickButton(rotationJoystick, Constants.OI.IDs.TARGET_REEF_BUTTON)
+      new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_REEF_BUTTON)
           .whileTrue(targetCommand);
     }
 
     if(optionalClimber.isPresent()){
       Climber climber = optionalClimber.get();
-
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.CLIMBER_GOTO_MAX)
         .onTrue(climber.goToPositionAfterMagnetSensor(Constants.ClimberIDs.CLIMBER_MAX));
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.CLIMBER_GOTO_MIN)
         .onTrue(climber.goToPositionAfterMagnetSensor(Constants.ClimberIDs.CLIMBER_MIN));
     }
+
+    if(optionalFunnel.isPresent()) {
+      Funnel funnel = optionalFunnel.get();
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.RAISE_FUNNEL)
+        .whileTrue(funnel.goToPos(Constants.Funnel.Setpoints.RAISED_POSITION));
+
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.RAISE_FUNNEL).negate()
+        .whileFalse(funnel.goToPos(Constants.Funnel.Setpoints.LOWERED_POSITION));
+
+    }
+
+    if(optionalElevator.isPresent() && optionalWrist.isPresent()) {
+      JoystickButton algaeToggle = new JoystickButton(buttonJoystick, Buttons.ALGAE_TOGGLE);
+      JoystickButton endEffectorToGround = new JoystickButton(buttonJoystick, Buttons.GOTO_GROUND);
+      JoystickButton endEffectorToStow = new JoystickButton(buttonJoystick, Buttons.GOTO_STOW);
+      JoystickButton endEffectorToLowPos = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_1);
+      JoystickButton endEffectorToL2 = new JoystickButton(buttonJoystick, Buttons.GOTO_L2);
+      JoystickButton endEffectorToL3 = new JoystickButton(buttonJoystick, Buttons.GOTO_L3);
+      JoystickButton endEffectorToHighPos = new JoystickButton(buttonJoystick, Buttons.GOTO_HIGH_POSITION);
+
+      Elevator elevator = optionalElevator.get();
+      Wrist wrist = optionalWrist.get();
+
+      // Algae mode
+      endEffectorToGround.and(algaeToggle).onTrue(
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.algaeGround)
+      );
+
+      endEffectorToStow.and(algaeToggle).onTrue(
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.algaeStow)
+      );
+
+      endEffectorToLowPos.and(algaeToggle).onTrue(
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.algaeProcessor)
+      );
+
+      endEffectorToL2.and(algaeToggle).onTrue(
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.algaeL2)
+      );
+
+      endEffectorToL3.and(algaeToggle).onTrue(
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.algaeL3)
+      );
+
+      endEffectorToHighPos.and(algaeToggle).onTrue(
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.algaeNet)
+      );
+
+      // Coral mode
+      Trigger coralToggle = algaeToggle.negate();
+      endEffectorToGround.and(coralToggle).onTrue(
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.coralGround)
+      );
+
+      endEffectorToStow.and(coralToggle).onTrue(
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.coralStow)
+      );
+
+      endEffectorToLowPos.and(coralToggle).onTrue(
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.coralL1)
+      );
+
+      endEffectorToL2.and(coralToggle).onTrue(
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.coralL2)
+      );
+
+      endEffectorToL3.and(coralToggle).onTrue(
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.coralL3)
+      );
+
+      endEffectorToHighPos.and(coralToggle).onTrue(
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.coralL4)
+      );
+    }
+
   }
 
   public double getInstructedXMetersPerSecond() {
