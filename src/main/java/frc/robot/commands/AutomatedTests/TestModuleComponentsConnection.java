@@ -6,22 +6,59 @@ package frc.robot.commands.AutomatedTests;
 
 import java.util.function.Consumer;
 
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.SwerveModule;
+import frc.robot.subsystems.drivebase.SwerveModule;
 import frc.robot.utils.error.TestResult;
 
 public class TestModuleComponentsConnection extends Command {
   
   SwerveModule swerveModule;
-  Consumer<TestResult> alert;
+  Consumer<TestResult> addTest;
+  Consumer<TestResult> setTest;
+
+  TestResult encoderConnectedTest;
+
+  TestResult turnMotorConnectedTest;
+
+  TestResult driveMotorConnectedTest;
 
   // test command to test the connection of swerve module components
   public TestModuleComponentsConnection(
-    Consumer<TestResult> alert,
+    Consumer<TestResult> addTest,
+    Consumer<TestResult> setTest,
     SwerveModule swerveModule
   ) {
-    this.alert = alert;
+    this.addTest = addTest;
+    this.setTest = setTest;
     this.swerveModule = swerveModule;
+
+    encoderConnectedTest = new TestResult(
+      "Turn Encoder Not Connected", 
+      AlertType.kWarning, 
+      swerveModule,
+      "Checks the connection status of the turn encoder"
+    );
+
+    turnMotorConnectedTest = new TestResult(
+      "Turn Motor Not Connected", 
+      AlertType.kWarning, 
+      swerveModule,
+      "Checks the connection status of the turn motor"
+    );
+
+    driveMotorConnectedTest = new TestResult(
+      "Drive Motor Not Connected",
+      AlertType.kWarning, 
+      swerveModule,
+      "Checks the connection status of the drive motor"
+    );
+
+    addTest.accept(encoderConnectedTest);
+
+    addTest.accept(turnMotorConnectedTest);
+
+    addTest.accept(driveMotorConnectedTest);
   }
 
   @Override
@@ -34,34 +71,31 @@ public class TestModuleComponentsConnection extends Command {
   public void end(boolean interrupted) {
 
     // Testing the Modules Encoder connection status
-    alert.accept(
-      new TestResult(
-        "Turn Encoder Not Connected", 
-        !swerveModule.isEncoderConnected(), 
-        swerveModule,
-        "Checks the connection status of the turn encoder"
-      )
-    );
+    if(swerveModule.isEncoderConnected()) {
+      encoderConnectedTest.setErrorStatus(AlertType.kInfo);
+    }
+    else {
+      encoderConnectedTest.setErrorStatus(AlertType.kError);
+    }
+    setTest.accept(encoderConnectedTest);
 
     // Testing the Modules Turn Motor connection status
-    alert.accept(
-      new TestResult(
-        "Turn Motor Not Connected", 
-        !swerveModule.isTurnMotorConnected(), 
-        swerveModule,
-        "Checks the connection status of the turn motor"
-      )
-    );
+    if(swerveModule.isTurnMotorConnected()) {
+      turnMotorConnectedTest.setErrorStatus(AlertType.kInfo);
+    }
+    else {
+      turnMotorConnectedTest.setErrorStatus(AlertType.kError);
+    }
+    setTest.accept(turnMotorConnectedTest);
 
     // Testing the Modules Drive Motor connection status
-    alert.accept(
-      new TestResult(
-        "Drive Motor Not Connected",
-        !swerveModule.isDriveMotorConnected(), 
-        swerveModule,
-        "Checks the connection status of the drive motor"
-      )
-    );
+    if(swerveModule.isDriveMotorConnected()) {
+      driveMotorConnectedTest.setErrorStatus(AlertType.kInfo);
+    }
+    else {
+      driveMotorConnectedTest.setErrorStatus(AlertType.kError);
+    }
+    setTest.accept(driveMotorConnectedTest);
   }
 
   @Override

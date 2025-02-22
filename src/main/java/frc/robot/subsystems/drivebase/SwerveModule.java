@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.drivebase;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -15,8 +15,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,8 +24,10 @@ import frc.robot.commands.AutomatedTests.TestModuleComponentsConnection;
 import frc.robot.commands.AutomatedTests.TestTurnMotorAndEncoderOnModule;
 import frc.robot.constants.Constants;
 import frc.robot.constants.SwerveModuleConstants;
-import frc.robot.utils.SmartPIDController;
-import frc.robot.utils.SmartPIDControllerTalonFX;
+import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.Phoenix6Odometry;
+import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.Phoenix6SwerveModuleState;
+import frc.robot.utils.PIDs.SmartPIDController;
+import frc.robot.utils.PIDs.SmartPIDControllerTalonFX;
 import frc.robot.utils.error.ErrorGroup;
 
 public class SwerveModule extends SubsystemBase {
@@ -42,14 +44,20 @@ public class SwerveModule extends SubsystemBase {
 
   final VelocityVoltage m_Velocity = new VelocityVoltage(0);
 
-  public SwerveModule(SwerveModuleConstants swerveConstants) {
+  final private Phoenix6SwerveModuleState state;
+
+  public SwerveModule(
+    SwerveModuleConstants swerveConstants,
+    Phoenix6Odometry phoenix6Odometry
+  ) {
     this(
       swerveConstants.driveMotorId, 
       swerveConstants.turnMotorId, 
       swerveConstants.turnEncoderId, 
       swerveConstants.turnEncoderOffset, 
       swerveConstants.moduleLocation, 
-      swerveConstants.moduleName
+      swerveConstants.moduleName,
+      phoenix6Odometry
     );
   }
   
@@ -59,11 +67,12 @@ public class SwerveModule extends SubsystemBase {
     int turnEncoderId,
     double turnEncoderOffset, 
     Translation2d moduleLocation, 
-    String moduleName
+    String moduleName,
+    Phoenix6Odometry phoenix6Odometry
   ) {
-    this.driveMotor = new TalonFX(driveModuleId); //TODO, Constants.Drivebase.CANIVORE_NAME);
-    this.turnMotor = new TalonFX(turnModuleId); //TODO, Constants.Drivebase.CANIVORE_NAME);
-    this.turnEncoder = new CANcoder(turnEncoderId); //TODO, Constants.Drivebase.CANIVORE_NAME);
+    this.driveMotor = new TalonFX(driveModuleId, Constants.Drivebase.CANIVORE_NAME);
+    this.turnMotor = new TalonFX(turnModuleId, Constants.Drivebase.CANIVORE_NAME);
+    this.turnEncoder = new CANcoder(turnEncoderId, Constants.Drivebase.CANIVORE_NAME);
     this.moduleLocation = moduleLocation;
     this.moduleName = moduleName;
 
@@ -75,7 +84,7 @@ public class SwerveModule extends SubsystemBase {
       Constants.Drivebase.PIDs.SMART_PID_TURN_ENABLED
     );
     turnController.enableContinuousInput(-180, 180);
-    turnController.setTolerance(0.005);
+    turnController.setTolerance(0.0);
 
     TalonFXConfiguration driveConfig = new TalonFXConfiguration();
     driveConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
@@ -101,6 +110,11 @@ public class SwerveModule extends SubsystemBase {
     turnEncoder.getConfigurator().apply(encoder);
 
     m_Velocity.Slot = 0;
+
+    state = phoenix6Odometry.registerSwerveModule(
+      turnEncoder,
+      driveMotor
+    );
   }
 
   @Override
@@ -129,21 +143,11 @@ public class SwerveModule extends SubsystemBase {
     );
   }
 
-  // returns meters traveled
-  public double getDriveMotorEncoderPosition() {
-    return driveMotor.getPosition().getValueAsDouble() / Constants.Drivebase.Info.REVS_PER_METER;
-  }
-
   // Almost nothing should be calling this exept tests, this gets position from the turn motor
   // what should be used would be getTurnMotorAngle()
   public double getTurnMotorEncoderPosition() {
     // TODO find a way to check robot to see if we are in test mode then log an error if not
     return turnMotor.getPosition().getValueAsDouble() / Constants.Drivebase.Info.TURN_MOTOR_GEAR_RATIO; 
-  }
-
-  // returns velocity in meters
-  public double getDriveMotorVelocity() {
-    return driveMotor.getVelocity().getValueAsDouble() / Constants.Drivebase.Info.REVS_PER_METER;
   }
 
   public void setTurnMotorSpeed(double speed) {
@@ -186,15 +190,11 @@ public class SwerveModule extends SubsystemBase {
     return turnEncoder.isConnected();
   }
 
-  public double getTurnError() {
-    return turnController.getPositionError();
-  }
-
   public double getRawEncoderValue() {
     return turnEncoder.getPosition().getValueAsDouble();
   }
 
-  public void setSwerveModulState(SwerveModuleState newState) {
+  public void setSwerveModuleState(SwerveModuleState newState) {
     // Makes sure we are turning the lowest ammount to get to the desired angle
     SwerveModuleState newStateOptimized = newState;
     newStateOptimized.optimize(getTurnMotorAngle());
@@ -206,15 +206,6 @@ public class SwerveModule extends SubsystemBase {
     // sets the desired turn motor angle to the new angle
     Rotation2d turnMotorAngleOptimized = new Rotation2d(newStateOptimized.angle.getRadians());
     setModuleTurnSetpoint(turnMotorAngleOptimized);
-  }
-
-  public SwerveModuleState getSwerveModuleState() {
-    return new SwerveModuleState(getDriveMotorVelocity(), getTurnMotorAngle());
-  }
-
-  public SwerveModulePosition getSwerveModulePosition() {
-    return new SwerveModulePosition(getDriveMotorEncoderPosition(),
-      getTurnMotorAngle());
   }
 
   @Override
@@ -235,19 +226,31 @@ public class SwerveModule extends SubsystemBase {
     ErrorGroup errorGroupHandler
   ) {
     return Commands.sequence(
-      new TestModuleComponentsConnection(errorGroupHandler::addTestMapEntry, this),
+      new TestModuleComponentsConnection(
+        errorGroupHandler::addTestSetEntry,
+        errorGroupHandler::setTestStatusUsingTestResult,
+        this
+      ),
       // This Commands.either runs an empty command or a test command based on the result of the command above
       // It checks two different error status' before running the command
       Commands.either(
         Commands.race(
-          new TestTurnMotorAndEncoderOnModule(errorGroupHandler::addTestMapEntry, this),
+          new TestTurnMotorAndEncoderOnModule(
+            errorGroupHandler::addTestSetEntry,
+            errorGroupHandler::setTestStatusUsingTestResult,
+            this
+          ),
           // the command is also in a 5 second time out, because the command takes aprox 4.5
           Commands.waitSeconds(5)
         ),
         Commands.none(),
-        () -> !errorGroupHandler.getTestStatus("Turn Encoder Not Connected", this) && 
-              !errorGroupHandler.getTestStatus("Turn Motor Not Connected", this)
+        () -> errorGroupHandler.getTestStatus("Turn Encoder Not Connected", this) == AlertType.kInfo && 
+              errorGroupHandler.getTestStatus("Turn Motor Not Connected", this) == AlertType.kInfo
       )
     );
+  }
+
+  public Phoenix6SwerveModuleState getState() {
+    return state;
   }
 }

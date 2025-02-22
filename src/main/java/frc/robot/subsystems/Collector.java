@@ -9,12 +9,13 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
-import frc.robot.utils.SmartPIDControllerTalonFX;
+import frc.robot.utils.PIDs.SmartPIDControllerTalonFX;
 
 public class Collector extends SubsystemBase {
 
@@ -40,11 +41,13 @@ public class Collector extends SubsystemBase {
     return rightMotor.getVelocity().getValueAsDouble();
   }
 
+  private DigitalInput beambreak;
 
   /** Creates a new Collector. */
   public Collector() {
    rightMotor = new TalonFX(Constants.Collector.RIGHT_MOTOR);
    leftMotor = new TalonFX(Constants.Collector.LEFT_MOTOR);
+   
     
     TalonFXConfiguration talonConfigCollectorMotor = new TalonFXConfiguration();
 
@@ -63,6 +66,7 @@ public class Collector extends SubsystemBase {
         Constants.Collector.PIDs.KF, "left motor",
         Constants.Drivebase.PIDs.SMART_PID_ENABLED, leftMotor);
     
+        beambreak = new DigitalInput(8);
   }
 
   // meters per sec 
@@ -85,6 +89,7 @@ public class Collector extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("Right motor current", rightMotor.getSupplyCurrent().getValueAsDouble());
     SmartDashboard.putNumber("Left motor current", leftMotor.getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putBoolean("Beambreak collector", !beambreak.get());
   }
   
   public Command rotateCoralCommand() {
@@ -152,6 +157,37 @@ public class Collector extends SubsystemBase {
         scorePieceCommand(),
         Commands.waitSeconds(Constants.Collector.SECONDS_BEFORE_CUTTOF)
       )
+    );
+  }
+
+  public Command rotateThenIntakeCommand() {
+    return Commands.runEnd(
+      () -> {
+        if(!beambreak.get()) {
+          setCollectorSpeeds(-Constants.Collector.COLLECOR_ROTATE_FAST, 
+          Constants.Collector.COLLECOR_ROTATE_FAST);
+        }
+        else {
+          setCollectorSpeeds(Constants.Collector.COLLECOR_ROTATE_FAST, 
+          Constants.Collector.COLLECOR_ROTATE_FAST);
+        }
+      },
+      () -> {
+        setCollectorSpeeds(0.0, 0.0);
+      }
+    ).until(
+      () -> {
+        if (rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF &&
+        leftMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF) 
+        {
+          endCount[0]++;
+        }
+        else
+        {
+          endCount[0] = 0;
+        }
+        return endCount[0] > 3;
+      }
     );
   }
   public Command shotPieceOut(boolean stopOnEnd)
