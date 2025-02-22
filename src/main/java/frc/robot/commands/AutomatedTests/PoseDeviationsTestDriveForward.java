@@ -1,6 +1,5 @@
 package frc.robot.commands.AutomatedTests;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
@@ -13,10 +12,10 @@ public class PoseDeviationsTestDriveForward extends Command {
   public class StatePose {
     public final State x, y, rot;
 
-    public StatePose(double x, double y, double rot) {
-      this.x = new State(x, 0.0);
-      this.y = new State(y, 0.0);
-      this.rot = new State(rot, 0.0);
+    public StatePose(State x, State y, State rot) {
+      this.x = x;
+      this.y = y;
+      this.rot = rot;
     }
 
     public StatePose() {
@@ -24,21 +23,35 @@ public class PoseDeviationsTestDriveForward extends Command {
       this.y = new State();
       this.rot = new State();
     }
-
-    public Pose2d calculate() {
-      return new Pose2d();
-    }
   }
 
-  private static final TrapezoidProfile motionProfile = new TrapezoidProfile(
+  private static final TrapezoidProfile xProfile = new TrapezoidProfile(
     new Constraints(
       1.0,
-      .1
+      5.0
+    )
+  );
+
+  private static final TrapezoidProfile yProfile = new TrapezoidProfile(
+    new Constraints(
+      1.0,
+      5.0
+    )
+  );
+
+  private static final TrapezoidProfile rotProfile = new TrapezoidProfile(
+    new Constraints(
+      1.0,
+      5.0
     )
   );
 
   private StatePose startPose = new StatePose();
-  private StatePose endPose = new StatePose(1.0, 0.0, 0.0);
+  private StatePose endPose = new StatePose(
+    new State(0.0,0.0), 
+    new State(1.0, 0.0), 
+    new State(0.0, 0.0));
+
   private final Timer timeElapsed = new Timer();
   Drivebase drivebase;
 
@@ -53,9 +66,10 @@ public class PoseDeviationsTestDriveForward extends Command {
 
   @Override
   public void execute() {
-    State newStateX = motionProfile.calculate(timeElapsed.get(), startPose.x, endPose.x);
-    State newStateY = motion
-    drivebase.drive(newState.velocity, 0.0, 0.0, true);
+    State x = xProfile.calculate(timeElapsed.get(), startPose.x, endPose.x);
+    State y = yProfile.calculate(timeElapsed.get(), startPose.y, endPose.y);
+    State rot = rotProfile.calculate(timeElapsed.get(), startPose.rot, endPose.rot);
+    drivebase.drive(x.velocity, y.velocity, rot.velocity, true);
   }
 
   @Override
