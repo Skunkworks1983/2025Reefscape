@@ -63,10 +63,18 @@ public class MoveWristToSetpoint extends Command {
   @Override
   public void end(boolean interrupted) {
     wrist.setWristMotorSpeed(0);
+
+    if (wrist.getTopMagnetSensor()) {
+      wrist.setWristMotorPosition(Constants.WristIDs.WRIST_MAX_ROTATIONS);
+    }
+
+    if (wrist.getBottomMagnetSensor()) {
+      wrist.setWristMotorPosition(Constants.WristIDs.WRIST_MIN_ROTATIONS); 
+    }
   }
   
   @Override
   public boolean isFinished() {
-    return Math.abs(wrist.getPosition() - setPoint) < Constants.WristIDs.WRIST_RANGE || wrist.getMagnetSensor1();
+    return Math.abs(wrist.getPosition() - setPoint) < Constants.WristIDs.WRIST_RANGE || wrist.getTopMagnetSensor() || wrist.getBottomMagnetSensor();
   }
 }

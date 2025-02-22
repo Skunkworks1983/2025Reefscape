@@ -17,31 +17,33 @@ public class Wrist extends SubsystemBase {
   TalonFX wristMotor;
   StatusSignal<Angle> wristPos;
 
-  private DigitalInput magnetSensor1;
+  private DigitalInput topMagnetSensor;
+  private DigitalInput bottomMagnetSensor;
 
   public Wrist() {
     wristMotor = new TalonFX(Constants.WristIDs.WRIST_KRAKEN_MOTOR_ID);
     wristMotor.setPosition(0.0);
 
-    magnetSensor1 = new DigitalInput(Constants.WristIDs.WRIST_MAGNET_SENSOR_1);
+    topMagnetSensor = new DigitalInput(Constants.WristIDs.WRIST_TOP_MAGNET_SENSOR);
+    bottomMagnetSensor = new DigitalInput(Constants.WristIDs.WRIST_BOTTOM_MAGNET_SENSOR);
   }
 
   @Override
   public void periodic() {
-    resetWhenMagnetTriggered();
-
     SmartDashboard.putNumber("wrist velocity", getWristVelocity());
     SmartDashboard.putNumber("wrist motor position ", getPosition());
+
+    System.out.println("top magnet " + topMagnetSensor.get());
+    System.out.println("bottom magnet "+ bottomMagnetSensor.get());
+
   }
 
-  public void resetWhenMagnetTriggered() {
-    if (getMagnetSensor1()) {
-      wristMotor.setPosition(0.0);
-    }
-  } 
+  public boolean getTopMagnetSensor() { 
+    return !topMagnetSensor.get();
+  }
 
-  public boolean getMagnetSensor1() { 
-    return !magnetSensor1.get();
+  public boolean getBottomMagnetSensor() {
+    return !bottomMagnetSensor.get();
   }
 
   public double getPosition() {
@@ -59,4 +61,10 @@ public class Wrist extends SubsystemBase {
   public void setWristMotorSpeed(double setWristMotorSpeed) {
     wristMotor.set(setWristMotorSpeed);
   } 
+
+  public void setWristMotorPosition(double setWristMotorPosition) {
+    wristMotor.setPosition(setWristMotorPosition);
+  }
+
+
 }

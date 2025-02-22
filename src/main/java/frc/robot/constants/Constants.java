@@ -215,8 +215,9 @@ public class Constants {
   }
 
   public class WristIDs {
-    public static final int WRIST_KRAKEN_MOTOR_ID = 12; // ID 12 is for the test board
-    public static final int WRIST_MAGNET_SENSOR_1 = 0;
+    public static final int WRIST_KRAKEN_MOTOR_ID = 12; // !! all ID's are just for the test board !!
+    public static final int WRIST_TOP_MAGNET_SENSOR = 0;
+    public static final int WRIST_BOTTOM_MAGNET_SENSOR = 1;
     
     public static final double WRIST_KS = 0.0;
     public static final double WRIST_KV = 0.12;
