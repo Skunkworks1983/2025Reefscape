@@ -2,17 +2,18 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.utils.PIDs;
+package frc.robot.utils.PIDControllers;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.constants.Constants;
 
 /** Add your docs here. */
-public class SmartPIDControllerCANSparkMax implements SmartPIDInterface {
+public class SmartPIDControllerCANSparkMax {
 
   public String name;
   public boolean smart;
@@ -39,10 +40,10 @@ public class SmartPIDControllerCANSparkMax implements SmartPIDInterface {
     config.closedLoop.pidf(kp, ki, kd, kf);
     motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    putValueSmartDashboard(name, "kp Value", kp);
-    putValueSmartDashboard(name, "ki Value", ki);
-    putValueSmartDashboard(name, "kd Value", kd);
-    putValueSmartDashboard(name, "kf Value", kd);
+    SmartDashboard.putNumber(name + " kp Value", kp);
+    SmartDashboard.putNumber(name + " ki Value", ki);
+    SmartDashboard.putNumber(name + " kd Value", kd);
+    SmartDashboard.putNumber(name + " kf Value", kd);
   }
 
   public void updatePID() {
@@ -52,10 +53,10 @@ public class SmartPIDControllerCANSparkMax implements SmartPIDInterface {
       return;
     }
 
-    double currentKpValue = getValueFromSmartDashboard(name, "kp Value", lastKpValue);
-    double currentKiValue = getValueFromSmartDashboard(name, "ki Value", lastKiValue);
-    double currentKdValue = getValueFromSmartDashboard(name, "kd Value", lastKdValue);
-    double currentKfValue = getValueFromSmartDashboard(name, "kf Value", lastKfValue);
+    double currentKpValue = SmartDashboard.getNumber(name + " kp Value", lastKpValue);
+    double currentKiValue = SmartDashboard.getNumber(name + " ki Value", lastKiValue);
+    double currentKdValue = SmartDashboard.getNumber(name + " kd Value", lastKdValue);
+    double currentKfValue = SmartDashboard.getNumber(name + " kf Value", lastKfValue);
 
     if (currentKpValue != lastKpValue || currentKiValue != lastKiValue
         || currentKdValue != lastKdValue || currentKfValue != lastKfValue) {

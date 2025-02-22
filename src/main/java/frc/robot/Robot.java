@@ -24,19 +24,24 @@ public class Robot extends TimedRobot {
 
   // replace subsystem with Optional.empty() for testing
   // ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
-  Optional<Drivebase> drivebase = Optional.of(new Drivebase());
-  Optional<Elevator> elevator = Optional.ofNullable(null);
-  Optional<Collector> collector = Optional.ofNullable(null);
-  Optional<Climber> climber = Optional.ofNullable(null);
 
-   private SendableChooser<Command> autoChooser;
-  
+
+  Optional<Drivebase> drivebase = Optional.of(new Drivebase()); 
+  Optional<Elevator> elevator = Optional.of(new Elevator()); 
+  Optional<Collector> collector = Optional.of(new Collector());
+  Optional<Wrist> wrist = Optional.of(new Wrist());
+  Optional<Climber> climber = Optional.of(new Climber());
+
+  private SendableChooser<Command> autoChooser;
 
   OI oi = new OI( 
     elevator,
     collector,
-    climber
+    wrist,
+    climber,
+    drivebase
   );
+  
   ErrorGroup errorGroup = new ErrorGroup();
 
   public Robot() {
@@ -44,7 +49,19 @@ public class Robot extends TimedRobot {
       assert drivebase.isPresent();
       assert collector.isPresent();
       assert elevator.isPresent();
+      assert wrist.isPresent();
       assert climber.isPresent();
+    }
+    if(drivebase.isPresent()) {
+      drivebase.get().setDefaultCommand(
+        drivebase.get().getSwerveCommand(
+          oi::getInstructedXMetersPerSecond,
+          oi::getInstructedYMetersPerSecond,
+          oi::getInstructedDegreesPerSecond,
+          true
+        )
+      ); // add a set translation controls function. Create a curried function that creates
+      // a getSwerveTeleopCommand function. getSwerveTeleopRotationCommand
     }
 
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -71,7 +88,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() { 
     if(drivebase.isPresent()) {
-      drivebase.get().getSwerveTeleopCommand(
+      drivebase.get().getSwerveCommand(
         oi::getInstructedXMetersPerSecond,
         oi::getInstructedYMetersPerSecond,
         oi::getInstructedDegreesPerSecond,
