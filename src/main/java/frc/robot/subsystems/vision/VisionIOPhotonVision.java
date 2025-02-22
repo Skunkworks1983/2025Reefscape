@@ -12,6 +12,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class VisionIOPhotonVision implements VisionIO {
 
@@ -31,6 +32,8 @@ public class VisionIOPhotonVision implements VisionIO {
     VisionIOData latestData = new VisionIOData();
 
     for (PhotonPipelineResult result : camera.getAllUnreadResults()) {
+
+      SmartDashboard.putNumber(getName() + " # Of Targets", result.targets.size());
 
       if (result.getMultiTagResult().isPresent()) {
         MultiTargetPNPResult multitagResult = result.getMultiTagResult().get();
