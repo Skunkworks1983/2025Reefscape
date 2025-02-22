@@ -102,51 +102,52 @@ public class Constants {
       public static final double SWERVE_MODULE_DRIVE_kI = 0.0;
       public static final double SWERVE_MODULE_DRIVE_kD = 0.0;
       public static final double SWERVE_MODULE_DRIVE_kF = 0.1075;
+      public static final double HEADING_CONTROL_kP = 3.00;
+      public static final double HEADING_CONTROL_kI = 0.0;
+      public static final double HEADING_CONTROL_kD = 0.0;
+      public static final double PID_LOW_LIMIT = -0.8;
+      public static final double PID_HIGH_LIMIT = 0.8;
 
       public static final boolean SMART_PID_ENABLED = true;
       public static final boolean SMART_PID_TURN_ENABLED = true;
       public static final boolean SMART_PID_DRIVE_ENABLED = true;
-
-      public static final double PID_LOW_LIMIT = -0.8;
-      public static final double PID_HIGH_LIMIT = 0.8;
     }
+
+    public class FieldTarget {
+      public static final Translation2d REEF_BLUE = new Translation2d(4.0259, 4.48945);
+      public static final Translation2d REEF_RED = new Translation2d(FIELD_X_LENGTH-4.0259, 4.48945);
+    }
+
+    public static final double FIELD_X_LENGTH = 17.55; // Meters
+    public static final double FIELD_Y_LENGTH = 8.05; // Meters
+    public static final double SKEW_PROPORTIONAL = .027;
   }
 
   public class VisionConstants {
-  
 
     public static final String FRONT_CAMERA_NAME = "Camera_0";
     public static final String SIDE_CAMERA_NAME = "Camera_1";
-    
-    private static final Transform3d MOUNT_TO_FRONT_CAMERA = 
-      new Transform3d(
-        new Translation3d(
-          Units.inchesToMeters(1.351),
-          Units.inchesToMeters(-1.268),
-          Units.inchesToMeters(-0.81)
-        ),
-        new Rotation3d(
-          Units.degreesToRadians(0.0),
-          Units.degreesToRadians(-19.27),
-          Units.degreesToRadians(-15.0)
-        )
-      );
 
-    private static final Transform3d MOUNT_TO_SIDE_CAMERA = 
-      new Transform3d(
+    private static final Transform3d MOUNT_TO_FRONT_CAMERA = new Transform3d(
         new Translation3d(
-          Units.inchesToMeters(-1.050),
-          Units.inchesToMeters(1.365078),
-          Units.inchesToMeters(-0.762394)
-        ),
+            Units.inchesToMeters(1.351),
+            Units.inchesToMeters(-1.268),
+            Units.inchesToMeters(-0.81)),
         new Rotation3d(
-          Units.degreesToRadians(0.0),
-          Units.degreesToRadians(-27.225),
-          Units.degreesToRadians(97.0)
-        )
-      );
+            Units.degreesToRadians(0.0),
+            Units.degreesToRadians(-19.27),
+            Units.degreesToRadians(-15.0)));
 
-    // TODO: Get the transformation that maps the robot's center to the origin of the camera mount.
+    private static final Transform3d MOUNT_TO_SIDE_CAMERA = new Transform3d(
+        new Translation3d(
+            Units.inchesToMeters(-1.050),
+            Units.inchesToMeters(1.365078),
+            Units.inchesToMeters(-0.762394)),
+        new Rotation3d(
+            Units.degreesToRadians(0.0),
+            Units.degreesToRadians(-27.225),
+            Units.degreesToRadians(97.0)));
+
     private static final Transform3d ROBOT_TO_MOUNT =
       new Transform3d(
         new Translation3d( // TODO: check these transformation estimations
@@ -155,11 +156,9 @@ public class Constants {
           Units.inchesToMeters(8.25)
         ),
         new Rotation3d(
-          0.0,
-          0.0,
-          0.0
-        )
-      );
+            0.0,
+            0.0,
+            0.0));
 
     public static final Transform3d ROBOT_TO_FRONT_CAMERA = ROBOT_TO_MOUNT.plus(MOUNT_TO_FRONT_CAMERA);
     public static final Transform3d ROBOT_TO_SIDE_CAMERA = ROBOT_TO_MOUNT.plus(MOUNT_TO_SIDE_CAMERA);
@@ -170,6 +169,22 @@ public class Constants {
     public static final double MAX_Z_ERROR = 3.0;
     public static final double MAX_AVERAGE_TAG_DISTANCE = 3.0; // Meters
   }
+
+  public class Funnel {
+    public static final int PIVOT_MOTOR_ID = 4;
+    public static final double PIVOT_MOTOR_GEAR_RATIO = 1 / 100;
+
+    public static final double FUNNEL_KP = 1; //TODO tune constants
+    public static final double FUNNEL_KD = 0.0;
+    public static final double FUNNEL_KI = 0.0;
+    public static final double FUNNEL_KF = 0.0;
+
+    public static final boolean FUNNEL_SMARTPID_ACTIVE = false;
+
+    public static final double FUNNEL_POSITION_1 = 0.0; //TODO FIGURE OUT POSITIONS IN ROTATIONS
+    public static final double FUNNEL_POSITION_2 = 0.0;
+    public static final double FUNNEL_POSITION_3 = 0.0;
+    }
 
   public class Elevator {
     public static final int MOTOR_ID = 12;
@@ -216,6 +231,28 @@ public class Constants {
       public static final double L4_POSITION = MAX_HEIGHT_CARRIAGE;
       public static final double NET_POSITION = 0.0;
     }
+  }
+
+  public class WristIDs {
+    public static final int WRIST_KRAKEN_MOTOR_ID = 12; // ID 12 is for the test board
+    public static final int WRIST_MAGNET_SENSOR_1 = 0;
+    
+    public static final double WRIST_KS = 0.0;
+    public static final double WRIST_KV = 0.12;
+    public static final double WRIST_KP = 5.0;
+    public static final double WRIST_KD = 0.1;
+    public static final double WRIST_KI = 0.0;
+    public static final double WRIST_KF = 0.0;
+
+    public static final boolean WRIST_SMARTPID_ACTIVE = false;
+
+    public static final double WRIST_VELOCITY = 1; 
+
+    public static final double WRIST_RANGE = 0.03;
+
+    public static final double WRIST_MIDPOINT_ROTATIONS = 2.5; //TODO figure out postitions
+    public static final double WRIST_MIN_ROTATIONS = -5;
+    public static final double WRIST_MAX_ROTATIONS = 0;
   }
 
   public class ClimberIDs {
@@ -278,8 +315,18 @@ public class Constants {
           public static final int SCORE_CORAL = 12;
         }
 
+        public class Wrist {
+          public static final int WRIST_UP = 18;
+          public static final int WRIST_DOWN = 13;
+        }
+
+        public class Drivebase {
+          public static final int TARGET_REEF_BUTTON = 1;
+        }
+
         public class Climber{
           public static final int GO_TO_MAX = 10;
+
         }
       }
     }
