@@ -23,7 +23,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 public class Elevator extends SubsystemBase {
 
   private TalonFX motorRight = new TalonFX(Constants.Elevator.MOTOR_RIGHT_ID);
-  private TalonFX motoLeft = new TalonFX(Constants.Elevator.MOTOR_LEFT_ID);
+  private TalonFX motorLeft = new TalonFX(Constants.Elevator.MOTOR_LEFT_ID);
 
   private DigitalInput bottomLimitSwitch = new DigitalInput(Constants.Elevator.BOTTOM_LIMIT_SWITCH_ID);
   private DigitalInput topLimitSwitch = new DigitalInput(Constants.Elevator.TOP_LIMIT_SWITCH_ID);
@@ -35,7 +35,7 @@ public class Elevator extends SubsystemBase {
   public Elevator() {
     TalonFXConfiguration config = new TalonFXConfiguration();
     motorRight.getConfigurator().apply(config);
-    motoLeft.getConfigurator().apply(config);
+    motorLeft.getConfigurator().apply(config);
     Slot0Configs slot0Configs = new Slot0Configs();
     slot0Configs.kP = Constants.Elevator.PIDs.ELEVATOR_kP;
     slot0Configs.kI = Constants.Elevator.PIDs.ELEVATOR_kI;
@@ -43,13 +43,14 @@ public class Elevator extends SubsystemBase {
     slot0Configs.kV = Constants.Elevator.PIDs.ELEVATOR_kV;
     slot0Configs.kS = Constants.Elevator.PIDs.ELEVATOR_kS;
     motorRight.getConfigurator().apply(slot0Configs);
-    motoLeft.getConfigurator().apply(slot0Configs);
+    motorLeft.getConfigurator().apply(slot0Configs);
 
     motorRight.setNeutralMode(NeutralModeValue.Brake);
-    motoLeft.setNeutralMode(NeutralModeValue.Brake);
+    motorLeft.setNeutralMode(NeutralModeValue.Brake);
 
     targetPosition = getElevatorPosition();
-    motoLeft.setControl(new Follower(Constants.Elevator.MOTOR_RIGHT_ID, true));
+    // True means that the motor will be spinning opposite of the one it is following 
+    motorLeft.setControl(new Follower(Constants.Elevator.MOTOR_RIGHT_ID, true));
   }
 
   @Override
