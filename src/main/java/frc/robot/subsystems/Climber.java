@@ -56,6 +56,10 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Motor position", getHeight());
+    SmartDashboard.putBoolean("Magnet Sensor 1", getMagnetSensor1());
+    SmartDashboard.putBoolean("Magnet Sensor 2", getMagnetSensor2());
+    SmartDashboard.putNumber("", 0);
   }
 
   public boolean getMagnetSensor1() {
@@ -79,7 +83,6 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
     climberSetPoint = newSetPoint;
     climbMotor.setControl(
         positionVoltage.withPosition(newSetPoint / Constants.ClimberIDs.CLIMBER_MOTOR_ROTATIONS_TO_CLIMBER_HEIGHT));
-    SmartDashboard.putNumber("Motor position", getHeight());
   }
 
   public double getSetPoint() {
