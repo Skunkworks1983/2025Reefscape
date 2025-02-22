@@ -6,6 +6,7 @@ package frc.robot;
 
 import java.util.Optional;
 
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.utils.error.ErrorCommandGenerator;
@@ -56,6 +57,11 @@ public class Robot extends TimedRobot {
       ); // add a set translation controls function. Create a curried function that creates
       // a getSwerveTeleopCommand function. getSwerveTeleopRotationCommand
     }
+  }
+
+  @Override 
+  public void robotInit() {
+    DataLogManager.start();
   }
 
   @Override
