@@ -24,13 +24,13 @@ public class SmartPIDControllerTalonFX implements SmartPIDInterface {
   public double lastKiValue;
   public double lastKdValue;
   public double lastKfValue;
+  public Optional<Double> lastKvValue = Optional.empty();
   public Optional<Double> lastKaValue = Optional.empty();
   public Optional<Double> lastKsValue = Optional.empty();
-  public Optional<Double> lastKgValue = Optional.empty();
 
 
-  private SmartPIDControllerTalonFX(double kp, double ki, double kd, double kf, Optional<Double> ka, 
-  Optional<Double> ks, Optional<Double> kg, String name, boolean smart, TalonFX motor) {
+  private SmartPIDControllerTalonFX(double kp, double ki, double kd, double kf, Optional<Double> kv, 
+  Optional<Double> ka, Optional<Double> ks, String name, boolean smart, TalonFX motor) {
     this.motor = motor;
     this.name = name;
     this.smart = smart;
@@ -45,7 +45,13 @@ public class SmartPIDControllerTalonFX implements SmartPIDInterface {
     slot0Configs.kP = lastKpValue;
     slot0Configs.kI = lastKiValue;
     slot0Configs.kD = lastKdValue;
-    slot0Configs.kV = lastKfValue;
+    slot0Configs.kG = lastKfValue;
+
+    if(kv.isPresent()) {
+      putValueSmartDashboard(name, "kv Value", kv.get());
+      slot0Configs.kV = kv.get();
+      lastKvValue = kv;
+    }
 
     if(ka.isPresent()) {
       putValueSmartDashboard(name, "ka Value", ka.get());
@@ -57,12 +63,6 @@ public class SmartPIDControllerTalonFX implements SmartPIDInterface {
       putValueSmartDashboard(name, "ks Value", ks.get());
       slot0Configs.kS = ks.get();
       lastKsValue = ks;
-    }
-
-    if(kg.isPresent()) {
-      putValueSmartDashboard(name, "kg Value", kg.get());
-      slot0Configs.kG = kg.get();
-      lastKgValue = kg;
     }
 
     motor.getConfigurator().apply(slot0Configs);
@@ -79,10 +79,10 @@ public class SmartPIDControllerTalonFX implements SmartPIDInterface {
     this(kp, ki, kd, kf, Optional.empty(), Optional.empty(), Optional.empty(), name, smart, motor);
   }
 
-  public SmartPIDControllerTalonFX(double kp, double ki, double kd, double kf, double ka, double ks, double kg, String name,
+  public SmartPIDControllerTalonFX(double kp, double ki, double kd, double kf, double kv, double ka, double ks,  String name,
     boolean smart, TalonFX motor) {
 
-    this(kp, ki, kd, kf, Optional.of(ka), Optional.of(ks), Optional.of(kg), name, smart, motor);
+    this(kp, ki, kd, kf, Optional.of(kv), Optional.of(ka), Optional.of(ks), name, smart, motor);
   }
 
   public void updatePID() {
@@ -99,6 +99,14 @@ public class SmartPIDControllerTalonFX implements SmartPIDInterface {
 
     Slot0Configs slot0Configs = new Slot0Configs();
 
+    Optional<Double> currentKv = Optional.empty();
+    if(lastKvValue.isPresent()) {
+      currentKv = Optional.of(getValueFromSmartDashboard(name, "kv Value", lastKvValue.get()));
+      if(currentKv.get() != lastKvValue.get()) {
+        lastKvValue = currentKv;
+        slot0Configs.kV = currentKv.get();
+      }
+    }
 
     Optional<Double> currentKa = Optional.empty();
     if(lastKaValue.isPresent()) {
@@ -115,15 +123,6 @@ public class SmartPIDControllerTalonFX implements SmartPIDInterface {
       if(currentKs.get() != lastKsValue.get()) {
         lastKsValue = currentKs;
         slot0Configs.kS = currentKs.get();
-      }
-    }
-
-    Optional<Double> currentKg = Optional.empty();
-    if(lastKgValue.isPresent()) {
-      currentKg = Optional.of(getValueFromSmartDashboard(name, "kg Value", lastKgValue.get()));
-      if(currentKg.get() != lastKgValue.get()) {
-        lastKgValue = currentKg;
-        slot0Configs.kG = currentKg.get();
       }
     }
 

@@ -56,14 +56,14 @@ public class SmartPIDController extends PIDController implements SmartPIDInterfa
       updateKf();
     }
 
-    double calculate = super.calculate(measurement);
+    double calculate = super.calculate(measurement) + kf;
     putValueSmartDashboard(name, "Measurement", measurement);
     putValueSmartDashboard(name, "Error", getPositionError());
     putValueSmartDashboard(name, "Setpoint", getSetpoint());
     putValueSmartDashboard(name, "Calculated Value", calculate);
 
     // Adding the kf value onto the calculation
-    return calculate + kf;
+    return calculate;
   }
 
   @Override
@@ -76,11 +76,15 @@ public class SmartPIDController extends PIDController implements SmartPIDInterfa
       updateKf();
     }
 
+    // Adding the kf value onto the calculation
+    double calculate = super.calculate(measurement, setpoint) + kf;
+
+    putValueSmartDashboard(name, "Measurement", measurement);
     putValueSmartDashboard(name, "Error", getPositionError());
     putValueSmartDashboard(name, "Setpoint", getSetpoint());
+    putValueSmartDashboard(name, "Calculated Value", calculate);
 
-    // Adding the kf value onto the calculation
-    return super.calculate(measurement, setpoint) + kf;
+    return calculate;
   }
 
   private void updateKf() {
