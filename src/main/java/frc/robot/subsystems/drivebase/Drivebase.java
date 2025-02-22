@@ -99,13 +99,16 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     // Ensure robot code won't crash if the vision subsystem fails to initialize.
     try {
       new Vision(
-          positionEstimator::addVisionMeasurement,
-          new VisionIOPhotonVision(
-              VisionConstants.FRONT_CAMERA_NAME,
-              VisionConstants.ROBOT_TO_FRONT_CAMERA),
-          new VisionIOPhotonVision(
-              VisionConstants.SIDE_CAMERA_NAME,
-              VisionConstants.ROBOT_TO_SIDE_CAMERA));
+        positionEstimator::addVisionMeasurement,
+        new VisionIOPhotonVision(
+          VisionConstants.FRONT_CAMERA_NAME,
+          VisionConstants.ROBOT_TO_FRONT_CAMERA
+        ),
+        new VisionIOPhotonVision(
+          VisionConstants.SIDE_CAMERA_NAME,
+          VisionConstants.ROBOT_TO_SIDE_CAMERA
+        )
+      );
     } catch (Exception exception) {
       System.out.println("Vision subsystem failed to initialize. See the below stacktrace for more details: ");
       exception.printStackTrace();
@@ -124,7 +127,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
    * 
    * @param speeds The chassis speeds inputs. This function modifies those speeds.
    */
-  public void mitigateSkew(ChassisSpeeds speeds) {
+  private void mitigateSkew(ChassisSpeeds speeds) {
     double cX = speeds.vxMetersPerSecond;
     double cY = speeds.vyMetersPerSecond;
     double cRot = speeds.omegaRadiansPerSecond;
@@ -140,7 +143,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
    * the a desired translation, a desired rotation, and isFieldReletave boolean.
    * This function should be excecuted once every tick for smooth movement.
    */
-  private void drive(double xMetersPerSecond, double yMetersPerSecond,
+  public void drive(double xMetersPerSecond, double yMetersPerSecond,
       double degreesPerSecond, boolean isFieldRelative) {
     ChassisSpeeds chassisSpeeds;
     double radiansPerSecond = Units.degreesToRadians(degreesPerSecond);
