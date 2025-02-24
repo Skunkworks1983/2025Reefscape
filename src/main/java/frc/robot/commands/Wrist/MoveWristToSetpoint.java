@@ -56,8 +56,8 @@ public class MoveWristToSetpoint extends Command {
     positionVoltage.Velocity = positionGoal.velocity;
     wrist.setWristMotorControl(positionVoltage);
 
-    SmartDashboard.putNumber("Wrist position goal (motor rotations)", positionGoal.position);
-    SmartDashboard.putNumber("Wrist velocity (motor rotations per second)", positionGoal.velocity);
+    SmartDashboard.putNumber("Wrist/Position goal (motor revs)", positionGoal.position);
+    SmartDashboard.putNumber("Wrist/Velocity goal (motor revs per second)", positionGoal.velocity);
   }
   
   @Override

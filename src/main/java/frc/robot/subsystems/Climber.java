@@ -79,11 +79,11 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
     climberSetPoint = newSetPoint;
     climbMotor.setControl(
         positionVoltage.withPosition(newSetPoint / Constants.ClimberIDs.CLIMBER_MOTOR_ROTATIONS_TO_CLIMBER_HEIGHT));
-    SmartDashboard.putNumber("Motor position", getHeight());
+    SmartDashboard.putNumber("Climber/Motor position", getHeight());
   }
 
   public double getSetPoint() {
-    SmartDashboard.putNumber("climber set point", climberSetPoint);
+    SmartDashboard.putNumber("Climber/Set point", climberSetPoint);
     return climberSetPoint;
   }
 

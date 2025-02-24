@@ -74,21 +74,21 @@ public class Collector extends SubsystemBase {
     if (rightSpeed != lastRightSpeed) {
       rightMotor.setControl(velocityVoltage
           .withVelocity(rightSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER));
-    SmartDashboard.putNumber("right speed", rightSpeed);
+    SmartDashboard.putNumber("Collector/Desired right speed", rightSpeed);
     }
     lastRightSpeed = rightSpeed;
 
     if (leftSpeed != lastLeftSpeed) {
       leftMotor.setControl(velocityVoltage
           .withVelocity(leftSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER));
-    SmartDashboard.putNumber("left speed", leftSpeed);
+    SmartDashboard.putNumber("Collector/Desired left speed", leftSpeed);
     }
     lastLeftSpeed = leftSpeed;
   }
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Right motor current", rightMotor.getSupplyCurrent().getValueAsDouble());
-    SmartDashboard.putNumber("Left motor current", leftMotor.getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Collector/Right motor current", rightMotor.getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Collector/Left motor current", leftMotor.getSupplyCurrent().getValueAsDouble());
   }
   
   public Command rotateCoralCommand() {
@@ -96,8 +96,8 @@ public class Collector extends SubsystemBase {
       () -> {
         setCollectorSpeeds(Constants.Collector.COLLECOR_ROTATE_SLOW, 
         Constants.Collector.COLLECOR_ROTATE_FAST);
-        SmartDashboard.putNumber("right collector current speed", getRightMotorVelocity());
-        SmartDashboard.putNumber("left collector current speed", getLeftMotorVelocity());
+        SmartDashboard.putNumber("Collector/Right speed", getRightMotorVelocity());
+        SmartDashboard.putNumber("Collector/Left speed", getLeftMotorVelocity());
       }, 
       () -> {
         setCollectorSpeeds(0, 0);

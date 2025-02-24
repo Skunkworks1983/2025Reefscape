@@ -58,7 +58,7 @@ public class Funnel extends SubsystemBase implements DiagnosticSubsystem{
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Funnel Pos (revs)", getPos());
+    SmartDashboard.putNumber("Funnel/Position (revs)", getPos());
   }
 
   public double getPos(){
@@ -83,7 +83,7 @@ public class Funnel extends SubsystemBase implements DiagnosticSubsystem{
 
   public void setFunnelSetPoint(double revs){
     setPoint = getPos() - revs;
-    SmartDashboard.putNumber("set point (revs)", setPoint);
+    SmartDashboard.putNumber("Funnel/Set point (revs)", setPoint);
     SparkClosedLoopController FunnelLoopController = pivotMotor.getClosedLoopController();
     FunnelLoopController.setReference(setPoint, ControlType.kPosition);
   }

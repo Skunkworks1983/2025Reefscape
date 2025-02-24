@@ -30,8 +30,8 @@ public class Wrist extends SubsystemBase {
   public void periodic() {
     resetWhenMagnetTriggered();
 
-    SmartDashboard.putNumber("wrist velocity", getWristVelocity());
-    SmartDashboard.putNumber("wrist motor position ", getPosition());
+    SmartDashboard.putNumber("Wrist/velocity (revs per second)", getWristVelocity());
+    SmartDashboard.putNumber("Wrist/motor position (revs)", getPosition());
   }
 
   public void resetWhenMagnetTriggered() {

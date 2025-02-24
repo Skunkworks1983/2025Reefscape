@@ -42,7 +42,7 @@ public class Vision extends SubsystemBase {
 
     for (VisionIO i : io) {
       Field2d field = new Field2d();
-      SmartDashboard.putData(i.getName() + " Odometry", field);
+      SmartDashboard.putData("Vision/" + i.getName() + " Odometry", field);
       field2ds.add(field);
     }
   }
@@ -54,9 +54,18 @@ public class Vision extends SubsystemBase {
       VisionIOData data = io[i].getLatestData();
       for (PoseObservation observation : data.poseObservations) {
 
-        SmartDashboard.putNumber(io[i].getName() + " Latest Ambiguity", observation.ambiguity());
-        SmartDashboard.putNumber(io[i].getName() + " Latest Z Error", observation.estimatedPose().getZ());
-        SmartDashboard.putNumber(io[i].getName() + " Average Tag Distance", observation.averageTagDistance());
+        SmartDashboard.putNumber(
+          "Vision/" + io[i].getName() + " Latest Ambiguity",
+          observation.ambiguity()
+        );
+        SmartDashboard.putNumber(
+          "Vision/" + io[i].getName() + " Latest Z Error",
+          observation.estimatedPose().getZ()
+        );
+        SmartDashboard.putNumber(
+          "Vision/" + io[i].getName() + " Average Tag Distance",
+          observation.averageTagDistance()
+        );
 
         boolean rejectPose = 
           observation.tagCount() == 0 ||
