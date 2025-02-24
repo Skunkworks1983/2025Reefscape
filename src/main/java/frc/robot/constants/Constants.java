@@ -192,9 +192,11 @@ public class Constants {
     }
 
   public class Elevator {
-    public static final int MOTOR_ID = 12;
-    public static final int BOTTOM_LIMIT_SWITCH_ID = 4;
-    public static final int TOP_LIMIT_SWITCH_ID = 5;
+    // For determining right and left, look at the elevator from the side paralel to the one that the elevator is on
+    public static final int MOTOR_RIGHT_ID = 12; // Temp id
+    public static final int MOTOR_LEFT_ID = 0; // Temp id
+    public static final int BOTTOM_LIMIT_SWITCH_ID = 4; // Temp id
+    public static final int TOP_LIMIT_SWITCH_ID = 5; // Temp id
 
     // This tolerance value will be used for deciding if the elevator
     // should target to its setpoint or if the setpoint is too far
