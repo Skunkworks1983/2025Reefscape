@@ -6,6 +6,8 @@ package frc.robot;
 
 import java.util.Optional;
 
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.utils.error.ErrorCommandGenerator;
@@ -37,6 +39,8 @@ public class Robot extends TimedRobot {
   ErrorGroup errorGroup = new ErrorGroup();
 
   public Robot() {
+    DataLogManager.start();
+
     if(Constants.Testing.ENSURE_COMPETITION_READY_SUBSYSTEMS) {
       assert drivebase.isPresent();
       assert collector.isPresent();
@@ -57,6 +61,9 @@ public class Robot extends TimedRobot {
       // a getSwerveTeleopCommand function. getSwerveTeleopRotationCommand
     }
   }
+
+  @Override 
+  public void robotInit() {}
 
   @Override
   public void robotPeriodic() {
