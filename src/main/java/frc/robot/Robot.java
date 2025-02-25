@@ -16,11 +16,10 @@ import frc.robot.utils.error.ErrorCommandGenerator;
 import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.error.DiagnosticSubsystem;
 import frc.robot.constants.Constants;
-import frc.robot.constants.Constants.VisionConstants;
+import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.drivebase.Drivebase;
 import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.VisionIOPhotonVision;
 
 public class Robot extends TimedRobot {
 
@@ -66,20 +65,12 @@ public class Robot extends TimedRobot {
       // a getSwerveTeleopCommand function. getSwerveTeleopRotationCommand
     }
 
-
     try {
       new Vision(
         new Vision.VisionConsumer() {
           @Override public void accept(Pose2d estimatedPose, double timestamp, Matrix<N3, N1> stdDevs) {}
         },
-        new VisionIOPhotonVision(
-          VisionConstants.FRONT_CAMERA_NAME,
-          VisionConstants.ROBOT_TO_FRONT_CAMERA
-        ),
-        new VisionIOPhotonVision(
-          VisionConstants.SIDE_CAMERA_NAME,
-          VisionConstants.ROBOT_TO_SIDE_CAMERA
-        )
+        VisionConstants.IOConstants.DoubleMount.VISION_IO_CONSTANTS
       );
     } catch (Exception exception) {}
   }
