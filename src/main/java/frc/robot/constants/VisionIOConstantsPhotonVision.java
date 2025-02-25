@@ -4,5 +4,20 @@
 
 package frc.robot.constants;
 
-/** Add your docs here. */
-public class VisionIOConstantsPhotonVision {}
+import edu.wpi.first.math.geometry.Transform3d;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
+
+public class VisionIOConstantsPhotonVision implements VisionIOConstants {
+
+  public String cameraName;
+  public Transform3d robotToCamera;
+  
+  public VisionIOConstantsPhotonVision(String cameraName, Transform3d robotToCamera) {
+    this.cameraName = cameraName;
+    this.robotToCamera = robotToCamera;
+  }
+
+  public VisionIOPhotonVision init() {
+    return new VisionIOPhotonVision(cameraName, robotToCamera);
+  }
+}
