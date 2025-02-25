@@ -59,6 +59,10 @@ public class Funnel extends SubsystemBase implements DiagnosticSubsystem{
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Funnel Pos (revs)", getPos());
+    SmartDashboard.putNumber("Funnel Set Point (revs)", getSetPoint());
+    SmartDashboard.putBoolean("Is Funnel At SetPoint", isAtSetpoint());
+    SmartDashboard.putNumber("Funnel Motor Current", getCurrent());
+    SmartDashboard.putBoolean("Is Funnel Motor Connected", isMotorConnected());
   }
 
   public double getPos(){
@@ -71,6 +75,10 @@ public class Funnel extends SubsystemBase implements DiagnosticSubsystem{
 
   public boolean isMotorConnected(){
     return pivotMotor.getFirmwareVersion() != 00;
+  }
+
+  public double getCurrent(){
+    return pivotMotor.getOutputCurrent();
   }
 
   public boolean approxEquals(double value1, double value2, double tolerance) {
