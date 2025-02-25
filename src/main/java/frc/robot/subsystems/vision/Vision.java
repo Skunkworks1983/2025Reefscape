@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants.VisionConstants;
+import frc.robot.constants.VisionIOConstants;
 import frc.robot.subsystems.vision.VisionIO.PoseObservation;
 import frc.robot.subsystems.vision.VisionIO.VisionIOData;
 
@@ -37,13 +38,15 @@ public class Vision extends SubsystemBase {
     AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
   private PoseDeviations poseDeviations = new PoseDeviations();
 
-  public Vision(VisionConsumer consumer, VisionIO... io) {
+  public Vision(VisionConsumer consumer, VisionIOConstants... ioConstants) {
     this.consumer = consumer;
-    this.io = io;
 
-    for (VisionIO i : io) {
+    io = new VisionIO[ioConstants.length];
+
+    for (int i = 0; i < ioConstants.length; i++) {
+      io[i] = ioConstants[i].init();
       Field2d field = new Field2d();
-      SmartDashboard.putData(i.getName() + " Odometry", field);
+      SmartDashboard.putData(io[i].getName() + " Odometry", field);
       field2ds.add(field);
     }
   }
