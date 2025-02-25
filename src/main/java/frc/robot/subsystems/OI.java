@@ -47,7 +47,8 @@ public class OI {
     Optional<Collector> optionalCollector,
     Optional<Wrist> optionalWrist,
     Optional<Climber> optionalClimber,
-    Optional<Drivebase> optionalDrivebase) {
+    Optional<Drivebase> optionalDrivebase,
+    Optional<Funnel> optionalFunnel) {
 
     if (optionalElevator.isPresent()) {
       Elevator elevator = optionalElevator.get();
@@ -101,6 +102,12 @@ public class OI {
       Climber climber = optionalClimber.get();
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Climber.GO_TO_MAX)
         .onTrue(climber.waitUntilMagnetSensorsAreTrueThenGoToPos(Constants.ClimberIDs.CLIMBER_MAX));
+    }
+
+    if(optionalFunnel.isPresent()){
+      Funnel funnel = optionalFunnel.get();
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Climber.GO_TO_MAX)
+        .onTrue(funnel.goToPos(Constants.Funnel.FUNNEL_POSITION_2));
     }
   }
 
