@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class ConditionalSmartDashboard {
 
   private static boolean smartdashboardEnabled = false;
-  private static boolean isDisabledOrIsTest;
+  private static boolean robotIsDisabledOrIsTest;
 
   // Use instead of SmartDashboard.putNumber
   public static boolean putNumber(String key, double value) {
@@ -51,10 +51,10 @@ public class ConditionalSmartDashboard {
   }
 
   private static boolean checkConditions() {
-    return smartdashboardEnabled || isDisabledOrIsTest;
+    return smartdashboardEnabled || robotIsDisabledOrIsTest;
   }
 
   public static void updateConditions() {
-    isDisabledOrIsTest = DriverStation.isDisabled() || DriverStation.isTestEnabled();
+    robotIsDisabledOrIsTest = DriverStation.isDisabled() || DriverStation.isTestEnabled();
   }
 }
