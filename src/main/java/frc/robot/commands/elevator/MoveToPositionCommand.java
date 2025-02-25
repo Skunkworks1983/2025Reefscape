@@ -43,7 +43,7 @@ public class MoveToPositionCommand extends Command {
   public void initialize() {
     startState = new State(elevator.getElevatorPosition() * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS, 0.0);
     isGoingUp = targetState.position > elevator.getElevatorPosition() * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS;
-
+    elevator.setFinalTargetPosition(targetState.position);
     timeElapsed.start();
   }
 
