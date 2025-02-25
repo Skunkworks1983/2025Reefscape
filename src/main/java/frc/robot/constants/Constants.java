@@ -232,8 +232,8 @@ public class Constants {
 
   public class WristIDs {
     public static final int WRIST_KRAKEN_MOTOR_ID = 12; // !! all ID's are just for the test board !!
-    public static final int WRIST_TOP_MAGNET_SENSOR = 0;
-    public static final int WRIST_BOTTOM_MAGNET_SENSOR = 1;
+    public static final int WRIST_TOP_MAGNET_SENSOR = 4;
+    public static final int WRIST_BOTTOM_MAGNET_SENSOR = 5;
     
     public static final double WRIST_KS = 0.0;
     public static final double WRIST_KV = 0.12;
@@ -246,11 +246,11 @@ public class Constants {
 
     public static final double WRIST_VELOCITY = 1; 
 
-    public static final double WRIST_RANGE = 0.03;
+    public static final double WRIST_RANGE = 0.5;
 
     public static final double WRIST_MIDPOINT_ROTATIONS = 2.5; //TODO figure out postitions
-    public static final double WRIST_MIN_ROTATIONS = -5;
-    public static final double WRIST_MAX_ROTATIONS = 0;
+    public static final double WRIST_MIN_ROTATIONS = 0;
+    public static final double WRIST_MAX_ROTATIONS = 5;
   }
 
   public class ClimberIDs {

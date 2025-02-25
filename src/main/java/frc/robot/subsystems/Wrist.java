@@ -30,12 +30,19 @@ public class Wrist extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("wrist velocity", getWristVelocity());
-    SmartDashboard.putNumber("wrist motor position ", getPosition());
+    
+    SmartDashboard.putNumber("Wrist/Wrist velocity (rotations per second)", getWristVelocity());
+    SmartDashboard.putNumber("Wrist/Wrist motor position(rotations)", getPosition());
+    SmartDashboard.putBoolean("Wrist/Bottom wrist magnet state", getBottomMagnetSensor());
+    SmartDashboard.putBoolean("Wrist/Top wrist magnet state", getTopMagnetSensor());
 
-    System.out.println("top magnet " + topMagnetSensor.get());
-    System.out.println("bottom magnet "+ bottomMagnetSensor.get());
+    if (getTopMagnetSensor()) {
+      wristMotor.setPosition(Constants.WristIDs.WRIST_MAX_ROTATIONS);
+    }
 
+    if (getBottomMagnetSensor()) {
+      wristMotor.setPosition(Constants.WristIDs.WRIST_MIN_ROTATIONS);
+    }
   }
 
   public boolean getTopMagnetSensor() { 
@@ -55,16 +62,14 @@ public class Wrist extends SubsystemBase {
   }
   
   public void setWristMotorControl(PositionVoltage setWristMotorSpeed) {
-    wristMotor.setControl(setWristMotorSpeed);
+    wristMotor.setControl(setWristMotorSpeed
+      .withLimitForwardMotion(getTopMagnetSensor())
+      .withLimitReverseMotion(getBottomMagnetSensor())
+    );
   }
   
   public void setWristMotorSpeed(double setWristMotorSpeed) {
     wristMotor.set(setWristMotorSpeed);
   } 
-
-  public void setWristMotorPosition(double setWristMotorPosition) {
-    wristMotor.setPosition(setWristMotorPosition);
-  }
-
 
 }

@@ -56,25 +56,17 @@ public class MoveWristToSetpoint extends Command {
     positionVoltage.Velocity = positionGoal.velocity;
     wrist.setWristMotorControl(positionVoltage);
 
-    SmartDashboard.putNumber("Wrist position goal (motor rotations)", positionGoal.position);
-    SmartDashboard.putNumber("Wrist velocity (motor rotations per second)", positionGoal.velocity);
+    SmartDashboard.putNumber("Wrist/Wrist position goal (motor rotations)", positionGoal.position);
+    SmartDashboard.putNumber("Wrist/Wrist velocity goal (motor rotations per second)", positionGoal.velocity);
   }
   
   @Override
   public void end(boolean interrupted) {
     wrist.setWristMotorSpeed(0);
-
-    if (wrist.getTopMagnetSensor()) {
-      wrist.setWristMotorPosition(Constants.WristIDs.WRIST_MAX_ROTATIONS);
-    }
-
-    if (wrist.getBottomMagnetSensor()) {
-      wrist.setWristMotorPosition(Constants.WristIDs.WRIST_MIN_ROTATIONS); 
-    }
   }
   
   @Override
   public boolean isFinished() {
-    return Math.abs(wrist.getPosition() - setPoint) < Constants.WristIDs.WRIST_RANGE || wrist.getTopMagnetSensor() || wrist.getBottomMagnetSensor();
+    return (Math.abs(wrist.getPosition() - setPoint)) < Constants.WristIDs.WRIST_RANGE;
   }
 }
