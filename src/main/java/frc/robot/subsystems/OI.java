@@ -55,20 +55,17 @@ public class OI {
 
     if (optionalCollector.isPresent()) {
       Collector collector = optionalCollector.get();
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.ROTATE_CORAL)
-        .whileTrue(collector.rotateCoralCommand());
 
       JoystickButton intake = new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.INTAKE);
       JoystickButton expell = new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.EXPELL);
       intake.and(coralToggle)
         .whileTrue(collector.waitAfterCatchPieceCommand());
 
-      // TODO: add intake code -- talk to lukas
-      intake.and(algaeToggle).whileTrue(collector.intakeCoralCommand());
+      intake.and(algaeToggle).whileTrue(collector.intakeAlgaeCommand());
       intake.and(coralToggle).whileTrue(collector.intakeCoralCommand());
 
-      expell.and(algaeToggle).whileTrue(collector.scorePieceCommand());
-      expell.and(coralToggle).whileTrue(collector.scorePieceCommand());
+      expell.and(algaeToggle).whileTrue(collector.scoreAlgaeCommand());
+      expell.and(coralToggle).whileTrue(collector.scoreCoralCommand());
     }
 
     if (optionalDrivebase.isPresent()) {

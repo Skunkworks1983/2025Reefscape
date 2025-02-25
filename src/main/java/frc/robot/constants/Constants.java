@@ -374,7 +374,6 @@ public class Constants {
 
         // The effects of these buttons may change depending on algae or coral mode.
         // Will also change for different positions (e.g. net)
-        public static final int ROTATE_CORAL = 0;
         public static final int INTAKE = 0;
         public static final int EXPELL = 0;
 
