@@ -10,7 +10,7 @@ import frc.robot.constants.Constants;
 import frc.robot.utils.ConditionalSmartDashboard;
 
 /** Add your docs here. */
-public class SmartPIDController extends PIDController implements SmartPIDInterface {
+public class SmartPIDController extends PIDController implements SmartPIDBase {
 
   public String name;
   public boolean smart;
@@ -50,7 +50,7 @@ public class SmartPIDController extends PIDController implements SmartPIDInterfa
   @Override
   public double calculate(double measurement) {
 
-    if (smart && Constants.Drivebase.PIDs.SMART_PID_ENABLED || !ConditionalSmartDashboard.isSmartdashboardEnabled()) {
+    if (smart && Constants.Drivebase.PIDs.SMART_PID_ENABLED) {
       super.setP(getValueFromSmartDashboard(name, "kp Value", super.getP()));
       super.setI(getValueFromSmartDashboard(name, "ki Value", super.getI()));
       super.setD(getValueFromSmartDashboard(name, "kd Value", super.getD()));
@@ -70,7 +70,7 @@ public class SmartPIDController extends PIDController implements SmartPIDInterfa
   @Override
   public double calculate(double measurement, double setpoint) {
 
-    if (smart && Constants.Drivebase.PIDs.SMART_PID_ENABLED || !ConditionalSmartDashboard.isSmartdashboardEnabled()) {
+    if (smart && Constants.Drivebase.PIDs.SMART_PID_ENABLED) {
       super.setP(getValueFromSmartDashboard(name, "kp Value", super.getP()));
       super.setI(getValueFromSmartDashboard(name, "ki Value", super.getI()));
       super.setD(getValueFromSmartDashboard(name, "kd Value", super.getD()));

@@ -5,13 +5,12 @@
 package frc.robot.utils.PIDControllers;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.utils.ConditionalSmartDashboard;
 
 /** Add your docs here. */
-public interface SmartPIDInterface {
+public interface SmartPIDBase {
 
   public default void putValueSmartDashboard(String PIDName, String name, double value) {
-    ConditionalSmartDashboard.putNumber("SmartPid/" + PIDName + "/" + name, value);
+    SmartDashboard.putNumber("SmartPid/" + PIDName + "/" + name, value);
   }
 
   public default double getValueFromSmartDashboard(String PIDName, String name, double defaultValue) {

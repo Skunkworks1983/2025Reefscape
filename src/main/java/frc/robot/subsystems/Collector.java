@@ -75,14 +75,14 @@ public class Collector extends SubsystemBase {
     if (rightSpeed != lastRightSpeed) {
       rightMotor.setControl(velocityVoltage
           .withVelocity(rightSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER));
-    ConditionalSmartDashboard.putNumber("right speed", rightSpeed);
+      ConditionalSmartDashboard.putNumber("right speed", rightSpeed);
     }
     lastRightSpeed = rightSpeed;
 
     if (leftSpeed != lastLeftSpeed) {
       leftMotor.setControl(velocityVoltage
           .withVelocity(leftSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER));
-    ConditionalSmartDashboard.putNumber("left speed", leftSpeed);
+      ConditionalSmartDashboard.putNumber("left speed", leftSpeed);
     }
     lastLeftSpeed = leftSpeed;
   }

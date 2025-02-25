@@ -16,7 +16,7 @@ import frc.robot.utils.ConditionalSmartDashboard;
 /** Makes it super easy to tune, allows to change K values from smart dashboard*/
 /** Makes it super easy to tune controllers, allows programmers to change constants from smart dashboard */
 
-public class SmartPIDControllerTalonFX implements SmartPIDInterface {
+public class SmartPIDControllerTalonFX implements SmartPIDBase {
 
   public String name;
   public boolean smart;
@@ -89,7 +89,7 @@ public class SmartPIDControllerTalonFX implements SmartPIDInterface {
   public void updatePID() {
     // if we pass this test, we are smart, so we can save some bandwith by only
     // grabing the k values once
-    if (!smart || !Constants.Drivebase.PIDs.SMART_PID_ENABLED || !ConditionalSmartDashboard.isSmartdashboardEnabled()) {
+    if (!smart || !Constants.Drivebase.PIDs.SMART_PID_ENABLED) {
       return;
     }
 

@@ -13,7 +13,7 @@ import frc.robot.constants.Constants;
 import frc.robot.utils.ConditionalSmartDashboard;
 
 /** Add your docs here. */
-public class SmartPIDControllerCANSparkMax implements SmartPIDInterface {
+public class SmartPIDControllerCANSparkMax implements SmartPIDBase {
 
   public String name;
   public boolean smart;
@@ -49,7 +49,7 @@ public class SmartPIDControllerCANSparkMax implements SmartPIDInterface {
   public void updatePID() {
     // if we pass this test, we are smart, so we can save some bandwith by only
     // grabing the k values once
-    if (!smart || !Constants.Drivebase.PIDs.SMART_PID_ENABLED || !ConditionalSmartDashboard.isSmartdashboardEnabled()) {
+    if (!smart || !Constants.Drivebase.PIDs.SMART_PID_ENABLED) {
       return;
     }
 
