@@ -74,6 +74,9 @@ public class VisionIOPhotonVision implements VisionIO {
                   target.poseAmbiguity,
                   1,
                   cameraToTarget.getTranslation().getNorm()));
+        } else {
+          
+          PhotonTrackedTarget object = result.getBestTarget();
         }
       }
     }
