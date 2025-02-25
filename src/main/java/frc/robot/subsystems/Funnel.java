@@ -35,7 +35,7 @@ public class Funnel extends SubsystemBase implements DiagnosticSubsystem{
 
   private SmartPIDControllerCANSparkMax pivotMotorSpeedController;
 
-  double setPoint;
+  double setpoint;
 
   public Funnel() {
     pivotMotor = new SparkMax(Constants.Funnel.PIVOT_MOTOR_ID,  MotorType.kBrushless);
@@ -59,22 +59,23 @@ public class Funnel extends SubsystemBase implements DiagnosticSubsystem{
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Funnel Pos (revs)", getPos());
-    SmartDashboard.putBoolean("Is Funnel At SetPoint", isAtSetpoint());
-    SmartDashboard.putNumber("Funnel Motor Current", getCurrent());
-    SmartDashboard.putBoolean("Is Funnel Motor Connected", isMotorConnected());
+    SmartDashboard.putNumber("Funnel/Pos (revs)", getPos());
+    SmartDashboard.putBoolean("Funnel/At SetPoint", isAtSetpoint());
+    SmartDashboard.putNumber("Funnel/Set point (revs)", setpoint);
+    SmartDashboard.putNumber("Funnel/Motor Current", getCurrent());
+    SmartDashboard.putBoolean("Funnel/Motor Connected", isMotorConnected());
   }
 
   public double getPos(){
     return pivotMotor.getEncoder().getPosition();
   }
 
-  public double getSetPoint(){
-    return setPoint;
+  public double getSetpoint(){
+    return (setpoint / 360) / Constants.Funnel.PIVOT_MOTOR_GEAR_RATIO;
   }
 
   public boolean isMotorConnected(){
-    return pivotMotor.getFirmwareVersion() != 00;
+    return pivotMotor.getFirmwareVersion() != 0;
   }
 
   public double getCurrent(){
@@ -86,28 +87,17 @@ public class Funnel extends SubsystemBase implements DiagnosticSubsystem{
   }
 
   public boolean isAtSetpoint() {
-    return approxEquals(getPos(), getSetPoint(), Constants.ClimberIDs.CLIMBER_TOLERANCE); 
+    return approxEquals(getPos(), getSetpoint(), Constants.ClimberIDs.CLIMBER_TOLERANCE); 
+  }
+
+  public double getVelocity(){
+    return pivotMotor.getEncoder().getVelocity();
   }
 
   public void setFunnelSetPoint(double revs){
-    setPoint = revs;
-    SmartDashboard.putNumber("set point (revs)", setPoint);
+    setpoint = revs;
     SparkClosedLoopController FunnelLoopController = pivotMotor.getClosedLoopController();
-    FunnelLoopController.setReference(setPoint, ControlType.kPosition);
-  }
-
-  public Command goToPos(double position) {
-    return Commands.startEnd(
-      () -> {
-        System.out.println("initialized");
-        setFunnelSetPoint(position);
-      }, () -> {
-        System.out.println("END");
-      }, this).until(
-        () -> {
-          return isAtSetpoint();
-        }
-      );
+    FunnelLoopController.setReference(getSetpoint(), ControlType.kPosition);
   }
 
   public Command hardwareConnectionTest(Consumer<TestResult> addTest,

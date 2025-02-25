@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.constants.Constants.Drivebase.FieldTarget;
 import frc.robot.constants.Constants.OI.LIMITS;
+import frc.robot.commands.Funnel.MoveToPosition;
 import frc.robot.commands.Wrist.MoveWristToSetpoint;
 import frc.robot.commands.elevator.*;
 import frc.robot.subsystems.drivebase.Drivebase;
@@ -107,9 +108,9 @@ public class OI {
     if(optionalFunnel.isPresent()){
       Funnel funnel = optionalFunnel.get();
       new JoystickButton(translationJoystick, Constants.OI.IDs.Buttons.Funnel.GO_TO_MAX)
-        .onTrue(funnel.goToPos(Constants.Funnel.FUNNEL_POSITION_2));
-      new JoystickButton(translationJoystick, Constants.OI.IDs.Buttons.Funnel.GO_TO_MAX)
-        .onTrue(funnel.goToPos(Constants.Funnel.FUNNEL_POSITION_3));
+        .onTrue(new MoveToPosition(funnel, Constants.Funnel.FUNNEL_POSITION_2));
+      new JoystickButton(translationJoystick, Constants.OI.IDs.Buttons.Funnel.GO_TO_MIN)
+        .onTrue(new MoveToPosition(funnel, Constants.Funnel.FUNNEL_POSITION_3));
     }
   }
 

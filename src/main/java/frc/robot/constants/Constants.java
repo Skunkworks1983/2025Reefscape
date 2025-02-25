@@ -187,9 +187,9 @@ public class Constants {
     public static final boolean FUNNEL_SMARTPID_ACTIVE = true;
 
     public static final double FUNNEL_POSITION_1 = 0.0; //TODO FIGURE OUT POSITIONS IN ROTATIONS
-    public static final double FUNNEL_POSITION_2 = (40.0 / 360) / PIVOT_MOTOR_GEAR_RATIO;
+    public static final double FUNNEL_POSITION_2 = 40.0;
     public static final double FUNNEL_POSITION_3 = 0.0;
-    }
+  }
 
   public class Elevator {
     // For determining right and left, look at the elevator from the side paralel to the one that the elevator is on
@@ -347,3 +347,4 @@ public class Constants {
     public static final double updatesPerSecond = 100.0;
   }
 }
+

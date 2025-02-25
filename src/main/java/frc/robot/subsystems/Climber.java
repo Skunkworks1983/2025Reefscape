@@ -56,13 +56,13 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Climber Motor position", getHeight());
-    SmartDashboard.putBoolean("Is Climber Motor Connected", isMotorConnected());
-    SmartDashboard.putNumber("Climber Motor Current", getCurrent());
-    SmartDashboard.putBoolean("Climber Magnet Sensor 1", getMagnetSensor1());
-    SmartDashboard.putBoolean("Climber Magnet Sensor 2", getMagnetSensor2());
-    SmartDashboard.putNumber("Climber Set Point", getSetPoint());
-    SmartDashboard.putBoolean("Is Climber At Set Point", isAtSetpoint());
+    SmartDashboard.putNumber("Climber/Motor position", getHeight());
+    SmartDashboard.putBoolean("Climber/Motor Connected", isMotorConnected());
+    SmartDashboard.putNumber("Climber/Motor Current", getCurrent());
+    SmartDashboard.putBoolean("Climber/Magnet Sensor 1", getMagnetSensor1());
+    SmartDashboard.putBoolean("Climber/Magnet Sensor 2", getMagnetSensor2());
+    SmartDashboard.putNumber("Climber/Set Point", getSetPoint());
+    SmartDashboard.putBoolean("Climber/At Set Point", isAtSetpoint());
   }
 
   public boolean getMagnetSensor1() {
