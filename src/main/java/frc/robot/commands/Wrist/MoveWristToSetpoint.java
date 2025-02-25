@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Wrist;
+import frc.robot.utils.ConditionalSmartDashboard;
 
 
 public class MoveWristToSetpoint extends Command {
@@ -56,8 +57,8 @@ public class MoveWristToSetpoint extends Command {
     positionVoltage.Velocity = positionGoal.velocity;
     wrist.setWristMotorControl(positionVoltage);
 
-    SmartDashboard.putNumber("Wrist/Wrist position goal (motor rotations)", positionGoal.position);
-    SmartDashboard.putNumber("Wrist/Wrist velocity goal (motor rotations per second)", positionGoal.velocity);
+    ConditionalSmartDashboard.putNumber("Wrist position goal (motor rotations)", positionGoal.position);
+    ConditionalSmartDashboard.putNumber("Wrist velocity (motor rotations per second)", positionGoal.velocity);
   }
   
   @Override

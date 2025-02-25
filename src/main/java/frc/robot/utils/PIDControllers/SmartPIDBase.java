@@ -7,7 +7,7 @@ package frc.robot.utils.PIDControllers;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /** Add your docs here. */
-public interface SmartPIDInterface {
+public interface SmartPIDBase {
 
   public default void putValueSmartDashboard(String PIDName, String name, double value) {
     SmartDashboard.putNumber("SmartPid/" + PIDName + "/" + name, value);

@@ -6,6 +6,7 @@ package frc.robot;
 
 import java.util.Optional;
 
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.utils.error.ErrorCommandGenerator;
@@ -20,11 +21,11 @@ public class Robot extends TimedRobot {
   // replace subsystem with Optional.empty() for testing
   // ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
 
-  Optional<Drivebase> drivebase = Optional.empty(); //of(new Drivebase()); 
-  Optional<Elevator> elevator = Optional.empty(); //of(new Elevator()); 
-  Optional<Collector> collector = Optional.empty(); //of(new Collector());
+  Optional<Drivebase> drivebase = Optional.of(new Drivebase());
+  Optional<Elevator> elevator = Optional.of(new Elevator());
+  Optional<Collector> collector = Optional.of(new Collector());
   Optional<Wrist> wrist = Optional.of(new Wrist());
-  Optional<Climber> climber = Optional.empty(); //of(new Climber());
+  Optional<Climber> climber = Optional.of(new Climber());
 
   OI oi = new OI( 
     elevator,
@@ -37,6 +38,8 @@ public class Robot extends TimedRobot {
   ErrorGroup errorGroup = new ErrorGroup();
 
   public Robot() {
+    DataLogManager.start();
+
     if(Constants.Testing.ENSURE_COMPETITION_READY_SUBSYSTEMS) {
       assert drivebase.isPresent();
       assert collector.isPresent();
@@ -57,6 +60,9 @@ public class Robot extends TimedRobot {
       // a getSwerveTeleopCommand function. getSwerveTeleopRotationCommand
     }
   }
+
+  @Override 
+  public void robotInit() {}
 
   @Override
   public void robotPeriodic() {

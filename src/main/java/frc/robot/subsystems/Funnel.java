@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.AutomatedTests.RunClimberMotorTest;
 import frc.robot.constants.Constants;
+import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.PIDControllers.SmartPIDController;
 import frc.robot.utils.PIDControllers.SmartPIDControllerCANSparkMax;
 import frc.robot.utils.error.DiagnosticSubsystem;
@@ -58,7 +59,7 @@ public class Funnel extends SubsystemBase implements DiagnosticSubsystem{
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Funnel Pos (revs)", getPos());
+    ConditionalSmartDashboard.putNumber("Funnel Pos (revs)", getPos());
   }
 
   public double getPos(){
@@ -83,7 +84,7 @@ public class Funnel extends SubsystemBase implements DiagnosticSubsystem{
 
   public void setFunnelSetPoint(double revs){
     setPoint = getPos() - revs;
-    SmartDashboard.putNumber("set point (revs)", setPoint);
+    ConditionalSmartDashboard.putNumber("set point (revs)", setPoint);
     SparkClosedLoopController FunnelLoopController = pivotMotor.getClosedLoopController();
     FunnelLoopController.setReference(setPoint, ControlType.kPosition);
   }
