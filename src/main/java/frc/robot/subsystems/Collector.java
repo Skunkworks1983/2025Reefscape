@@ -55,12 +55,16 @@ public class Collector extends SubsystemBase {
 
    rightMotorController = new SmartPIDControllerTalonFX(Constants.Collector.PIDs.KP,
         Constants.Collector.PIDs.KI, Constants.Collector.PIDs.KD,
-        Constants.Collector.PIDs.KF, "right motor",
+        Constants.Collector.PIDs.KF, Constants.Collector.PIDs.KV,
+        Constants.Collector.PIDs.KA, Constants.Collector.PIDs.KS,
+         "right motor",
         Constants.Collector.PIDs.SMART_PID_ENABLED, rightMotor);
 
     leftMotorController = new SmartPIDControllerTalonFX(Constants.Collector.PIDs.KP,
         Constants.Collector.PIDs.KI, Constants.Collector.PIDs.KD,
-        Constants.Collector.PIDs.KF, "left motor",
+        Constants.Collector.PIDs.KF, Constants.Collector.PIDs.KV,
+        Constants.Collector.PIDs.KA, Constants.Collector.PIDs.KS,
+        "left motor",
         Constants.Drivebase.PIDs.SMART_PID_ENABLED, leftMotor);
     
   }

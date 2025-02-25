@@ -23,8 +23,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.AutomatedTests.RunClimberMotorTest;
 import frc.robot.constants.Constants;
-import frc.robot.utils.PIDs.SmartPIDController;
-import frc.robot.utils.PIDs.SmartPIDControllerCANSparkMax;
+import frc.robot.utils.PIDControllers.SmartPIDController;
+import frc.robot.utils.PIDControllers.SmartPIDControllerCANSparkMax;
 import frc.robot.utils.error.DiagnosticSubsystem;
 import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.error.TestResult;
@@ -45,7 +45,7 @@ public class Funnel extends SubsystemBase implements DiagnosticSubsystem{
       .i(Constants.Funnel.FUNNEL_KI)
       .d(Constants.Funnel.FUNNEL_KD);
 
-    pivotMotorSpeedController = new frc.robot.utils.PIDs.SmartPIDControllerCANSparkMax(
+    pivotMotorSpeedController = new frc.robot.utils.PIDControllers.SmartPIDControllerCANSparkMax(
       Constants.Funnel.FUNNEL_KP,
       Constants.Funnel.FUNNEL_KI,
       Constants.Funnel.FUNNEL_KD,

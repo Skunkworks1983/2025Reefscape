@@ -44,7 +44,11 @@ public class Constants {
       public static final double KP = 0.0;
       public static final double KI = 0.0;
       public static final double KD = 0.0;
-      public static final double KF = 1.3;
+      public static final double KF = 0.0;
+      public static final double KV = 1.3;
+      public static final double KA = 0.0;
+      public static final double KS = 0.0;
+
       public static final boolean SMART_PID_ENABLED = true;
 
     }
@@ -59,7 +63,7 @@ public class Constants {
     public class IDS {
       public static int ROTATION_JOYSTICK_ID = 1;
       public static int TRANSLATION_JOYSTICK_ID = 0;
-      public static int BUTTON_STICK_ID = 3;
+      public static int BUTTON_STICK_ID = 2;
     }
 
     // All modules are at the position (+-MODULE_TO_OFFSET, +-MODULE_TO_OFFSET)
@@ -91,14 +95,18 @@ public class Constants {
     }
 
     public class PIDs {
-      public static final double SWERVE_MODULE_TURN_kP = 0.0145;
-      public static final double SWERVE_MODULE_TURN_kI = 0.0;
-      public static final double SWERVE_MODULE_TURN_kD = 0.00017;
-      public static final double SWERVE_MODULE_TURN_kF = 0.0;
-      public static final double SWERVE_MODULE_DRIVE_kP = 0.125;
-      public static final double SWERVE_MODULE_DRIVE_kI = 0.0;
-      public static final double SWERVE_MODULE_DRIVE_kD = 0.0;
-      public static final double SWERVE_MODULE_DRIVE_kF = 0.1075;
+      public static final double SWERVE_MODULE_TURN_KP = 0.0145;
+      public static final double SWERVE_MODULE_TURN_KI = 0.0;
+      public static final double SWERVE_MODULE_TURN_KD = 0.00017;
+      public static final double SWERVE_MODULE_TURN_KF = 0.0;
+      public static final double SWERVE_MODULE_DRIVE_KP = 0.125;
+      public static final double SWERVE_MODULE_DRIVE_KI = 0.0;
+      public static final double SWERVE_MODULE_DRIVE_KD = 0.0;
+      public static final double SWERVE_MODULE_DRIVE_KF = 0.0;
+      public static final double SWERVE_MODULE_DRIVE_KV = 0.1075;
+      public static final double SWERVE_MODULE_DRIVE_KA = 0.0;
+      public static final double SWERVE_MODULE_DRIVE_KS = 0.0;
+
       public static final double HEADING_CONTROL_kP = 3.00;
       public static final double HEADING_CONTROL_kI = 0.0;
       public static final double HEADING_CONTROL_kD = 0.0;
@@ -184,9 +192,11 @@ public class Constants {
     }
 
   public class Elevator {
-    public static final int MOTOR_ID = 12;
-    public static final int BOTTOM_LIMIT_SWITCH_ID = 4;
-    public static final int TOP_LIMIT_SWITCH_ID = 5;
+    // For determining right and left, look at the elevator from the side paralel to the one that the elevator is on
+    public static final int MOTOR_RIGHT_ID = 12; // Temp id
+    public static final int MOTOR_LEFT_ID = 0; // Temp id
+    public static final int BOTTOM_LIMIT_SWITCH_ID = 4; // Temp id
+    public static final int TOP_LIMIT_SWITCH_ID = 5; // Temp id
 
     // This tolerance value will be used for deciding if the elevator
     // should target to its setpoint or if the setpoint is too far
