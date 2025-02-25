@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import frc.robot.constants.VisionIOConstantsPhotonVision.PipelineType;
 
 // TODO: add all robot constant values when they have been decided
 public class Constants {
@@ -202,9 +203,17 @@ public class Constants {
     private static final Transform3d ROBOT_TO_CAMERA_2 = ROBOT_TO_MOUNT.plus(MOUNT_TO_CAMERA_2);
     
     public static final VisionIOConstants[] VISION_IO_CONSTANTS = {
-      new VisionIOConstantsPhotonVision(CAMERA_0_NAME, ROBOT_TO_CAMERA_0),
-      new VisionIOConstantsPhotonVision(CAMERA_1_NAME, ROBOT_TO_CAMERA_1),
-      new VisionIOConstantsPhotonVision(CAMERA_2_NAME, ROBOT_TO_CAMERA_2)
+      new VisionIOConstantsPhotonVision(
+        CAMERA_0_NAME, ROBOT_TO_CAMERA_0, new PipelineType [] {PipelineType.TAG}
+      ),
+      new VisionIOConstantsPhotonVision(
+        CAMERA_1_NAME, ROBOT_TO_CAMERA_1, new PipelineType [] {PipelineType.TAG}
+      ),
+      new VisionIOConstantsPhotonVision(
+        CAMERA_2_NAME, ROBOT_TO_CAMERA_2, new PipelineType [] {PipelineType.TAG}
+      ),
+      new VisionIOConstantsPhotonVision(
+        "Color_Camera", new Transform3d(), new PipelineType [] {PipelineType.OBJECT_DETECTION})
     };
 
     public static final double MAX_AMBIGUITY = 0.3;

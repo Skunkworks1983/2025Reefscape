@@ -11,8 +11,13 @@ public class VisionIOConstantsPhotonVision implements VisionIOConstants {
 
   public String cameraName;
   public Transform3d robotToCamera;
+
+  public enum PipelineType {
+    TAG,
+    OBJECT_DETECTION
+  }
   
-  public VisionIOConstantsPhotonVision(String cameraName, Transform3d robotToCamera) {
+  public VisionIOConstantsPhotonVision(String cameraName, Transform3d robotToCamera, PipelineType[] pipelines) {
     this.cameraName = cameraName;
     this.robotToCamera = robotToCamera;
   }
