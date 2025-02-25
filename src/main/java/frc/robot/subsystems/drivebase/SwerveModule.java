@@ -152,9 +152,7 @@ public class SwerveModule extends SubsystemBase {
   // what should be used would be getTurnMotorAngle()
   public double getTurnMotorEncoderPosition() {
     if(!DriverStation.isTestEnabled()) {
-      Alert alert = new Alert("getTurnMotorEncoderPosition was called outside of Test", AlertType.kError);
-      alert.set(true);
-      alert.close();
+      new Alert("getTurnMotorEncoderPosition was called outside of Test", AlertType.kError).set(true);
       return getTurnMotorAngle().getDegrees();
     }
     return turnMotor.getPosition().getValueAsDouble() / Constants.Drivebase.Info.TURN_MOTOR_GEAR_RATIO; 
