@@ -6,25 +6,32 @@ package frc.robot;
 
 import java.util.Optional;
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.utils.error.ErrorCommandGenerator;
 import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.error.DiagnosticSubsystem;
 import frc.robot.constants.Constants;
+import frc.robot.constants.Constants.VisionConstants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.drivebase.Drivebase;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
 
 public class Robot extends TimedRobot {
 
   // replace subsystem with Optional.empty() for testing
   // ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
 
-  Optional<Drivebase> drivebase = Optional.of(new Drivebase()); 
-  Optional<Elevator> elevator = Optional.of(new Elevator()); 
-  Optional<Collector> collector = Optional.of(new Collector());
-  Optional<Wrist> wrist = Optional.of(new Wrist());
-  Optional<Climber> climber = Optional.of(new Climber());
+  Optional<Drivebase> drivebase = Optional.empty(); 
+  Optional<Elevator> elevator = Optional.empty(); 
+  Optional<Collector> collector = Optional.empty();
+  Optional<Wrist> wrist = Optional.empty();
+  Optional<Climber> climber = Optional.empty();
 
   OI oi = new OI( 
     elevator,
@@ -33,6 +40,8 @@ public class Robot extends TimedRobot {
     climber,
     drivebase
   );
+
+  
   
   ErrorGroup errorGroup = new ErrorGroup();
 
@@ -56,6 +65,23 @@ public class Robot extends TimedRobot {
       ); // add a set translation controls function. Create a curried function that creates
       // a getSwerveTeleopCommand function. getSwerveTeleopRotationCommand
     }
+
+
+    try {
+      new Vision(
+        new Vision.VisionConsumer() {
+          @Override public void accept(Pose2d estimatedPose, double timestamp, Matrix<N3, N1> stdDevs) {}
+        },
+        new VisionIOPhotonVision(
+          VisionConstants.FRONT_CAMERA_NAME,
+          VisionConstants.ROBOT_TO_FRONT_CAMERA
+        ),
+        new VisionIOPhotonVision(
+          VisionConstants.SIDE_CAMERA_NAME,
+          VisionConstants.ROBOT_TO_SIDE_CAMERA
+        )
+      );
+    } catch (Exception exception) {}
   }
 
   @Override
