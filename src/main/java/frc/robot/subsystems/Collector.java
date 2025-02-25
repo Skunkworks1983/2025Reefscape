@@ -32,7 +32,7 @@ public class Collector extends SubsystemBase {
   @SuppressWarnings("unused")
   private SmartPIDControllerTalonFX rightMotorController;
   @SuppressWarnings("unused")
-  //private SmartPIDControllerTalonFX leftMotorController;
+  private SmartPIDControllerTalonFX leftMotorController;
 
   private double getLeftMotorVelocity() {
     return leftMotor.getVelocity().getValueAsDouble();
@@ -61,10 +61,10 @@ public class Collector extends SubsystemBase {
         Constants.Collector.PIDs.KF, "right motor",
         Constants.Collector.PIDs.SMART_PID_ENABLED, rightMotor);
 
-    // leftMotorController = new SmartPIDControllerTalonFX(Constants.Collector.PIDs.KP,
-    //     Constants.Collector.PIDs.KI, Constants.Collector.PIDs.KD,
-    //     Constants.Collector.PIDs.KF, "left motor",
-    //     Constants.Drivebase.PIDs.SMART_PID_ENABLED, leftMotor);
+    leftMotorController = new SmartPIDControllerTalonFX(Constants.Collector.PIDs.KP,
+        Constants.Collector.PIDs.KI, Constants.Collector.PIDs.KD,
+        Constants.Collector.PIDs.KF, "left motor",
+        Constants.Drivebase.PIDs.SMART_PID_ENABLED, leftMotor);
     
         beambreak = new DigitalInput(8);
   }
@@ -95,8 +95,8 @@ public class Collector extends SubsystemBase {
   public Command rotateCoralCommand() {
     return runEnd(
       () -> {
-        setCollectorSpeeds(-Constants.Collector.COLLECOR_ROTATE_SLOW, 
-        Constants.Collector.COLLECOR_ROTATE_FAST);
+        setCollectorSpeeds(-Constants.Collector.CORAL_INTAKE_SLOW, 
+        Constants.Collector.CORAL_INTAKE_FAST);
         SmartDashboard.putNumber("right collector current speed", getRightMotorVelocity());
         SmartDashboard.putNumber("left collector current speed", getLeftMotorVelocity());
       }, 
@@ -114,8 +114,8 @@ public class Collector extends SubsystemBase {
   ) {
     return runEnd(
       () -> {
-        setCollectorSpeeds(-Constants.Collector.COLLECOR_ROTATE_FAST, 
-          Constants.Collector.COLLECOR_ROTATE_FAST * Constants.Collector.COLLECTOR_OFFSET);
+        setCollectorSpeeds(Constants.Collector.CORAL_INTAKE_FAST, 
+          -Constants.Collector.CORAL_INTAKE_FAST * Constants.Collector.COLLECTOR_OFFSET);
       },
       () -> {
         if(stopOnEnd) {
@@ -141,11 +141,24 @@ public class Collector extends SubsystemBase {
   public Command scorePieceCommand() {
     return runEnd(
       () -> {
-        setCollectorSpeeds(-Constants.Collector.COLLECOR_ROTATE_FAST, 
-          Constants.Collector.COLLECOR_ROTATE_FAST);
+        setCollectorSpeeds(-Constants.Collector.CORAL_INTAKE_FAST, 
+          Constants.Collector.CORAL_INTAKE_FAST);
       },
       () -> {
         setCollectorSpeeds(0, 0);
+      }
+    ).until(
+      () -> {
+        if (rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF &&
+        leftMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF) 
+        {
+          endCount[0]++;
+        }
+        else
+        {
+          endCount[0] = 0;
+        }
+        return endCount[0] > 3;
       }
     );
   }
@@ -164,12 +177,12 @@ public class Collector extends SubsystemBase {
     return Commands.runEnd(
       () -> {
         if(!beambreak.get()) {
-          setCollectorSpeeds(-Constants.Collector.COLLECOR_ROTATE_FAST, 
-          Constants.Collector.COLLECOR_ROTATE_FAST);
+          setCollectorSpeeds(-Constants.Collector.CORAL_INTAKE_FAST, 
+          Constants.Collector.CORAL_INTAKE_FAST);
         }
         else {
-          setCollectorSpeeds(Constants.Collector.COLLECOR_ROTATE_FAST, 
-          Constants.Collector.COLLECOR_ROTATE_FAST);
+          setCollectorSpeeds(Constants.Collector.CORAL_INTAKE_FAST, 
+          Constants.Collector.CORAL_INTAKE_FAST);
         }
       },
       () -> {
@@ -190,11 +203,11 @@ public class Collector extends SubsystemBase {
       }
     );
   }
-  public Command shotPieceOut(boolean stopOnEnd)
+  public Command expelCoral(boolean stopOnEnd)
   {
     return runEnd(
       () -> {
-        setCollectorSpeeds(Constants.Collector.COLLECTOR_REVERSE, 
+        setCollectorSpeeds(-Constants.Collector.COLLECTOR_REVERSE, 
           -Constants.Collector.COLLECTOR_REVERSE);
       },
       () -> {
@@ -218,4 +231,62 @@ public class Collector extends SubsystemBase {
     );
 
   }
+  public Command intakeAlgaeCommand(
+    boolean stopOnEnd
+  ) {
+    return runEnd(
+      () -> {
+        setCollectorSpeeds(-Constants.Collector.ALGAE_INTAKE, 
+          Constants.Collector.ALGAE_INTAKE);
+      },
+      () -> {
+        if(stopOnEnd) {
+          setCollectorSpeeds(0, 0);
+        }
+      }
+    ).until(
+      () -> {
+        if (rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.ALGAE_AMP_CUT_OFF &&
+        leftMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.ALGAE_AMP_CUT_OFF) 
+        {
+          endCount[0]++;
+        }
+        else
+        {
+          endCount[0] = 0;
+        }
+        return endCount[0] > 3;
+      }
+    );
+  }
+
+  public Command expelAlgeaCommand(
+    boolean stopOnEnd
+  ) {
+    return runEnd(
+      () -> {
+        setCollectorSpeeds(Constants.Collector.ALGAE_EXPEL, 
+          -Constants.Collector.ALGAE_EXPEL);
+      },
+      () -> {
+        if(stopOnEnd) {
+          setCollectorSpeeds(0, 0);
+        }
+      }
+    ).until(
+      () -> {
+        if (rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.ALGAE_AMP_CUT_OFF &&
+        leftMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.ALGAE_AMP_CUT_OFF) 
+        {
+          endCount[0]++;
+        }
+        else
+        {
+          endCount[0] = 0;
+        }
+        return endCount[0] > 3;
+      }
+    );
+  }
+  
 }

@@ -34,14 +34,19 @@ public class Constants {
 
     public static final double COLLECTOR_ROTATIONS_PER_METER = 0.0762 * Math.PI;
 
-    public static final double COLLECOR_ROTATE_SLOW = 8.0;
-    public static final double COLLECOR_ROTATE_FAST = 24.0;
+    public static final double CORAL_INTAKE_SLOW = 8.0;
+    public static final double CORAL_INTAKE_FAST = 24.0;
     public static final double COLLECTOR_OFFSET = 0.75;
 
     public static final double COLLECTOR_REVERSE = 0;
+    
+    public static final double ALGAE_INTAKE = 5;
+    public static final double ALGAE_EXPEL = 5;
 
     public static final double COLLECTOR_AMPS_BEFORE_CUTTOF = 5.5;
     public static final double SECONDS_BEFORE_CUTTOF = 0.5;
+
+    public static final double ALGAE_AMP_CUT_OFF = 6.0;
 
     public class PIDs {
       public static final double KP = 0.0;
@@ -312,10 +317,13 @@ public class Constants {
         }
 
         public class Collector {
-          public static final int ROTATE_CORAL = 23;
-          public static final int INTAKE_CORAL = 22;
+          public static final int EXPEL_CORAL = 23;
+          public static final int INTAKE_CORAL = 12;
           public static final int COLLECT_CORAL = 11;
-          public static final int SCORE_CORAL = 12;
+          public static final int SCORE_CORAL = 15;
+
+          public static final int INTAKE_ALGAE = 24;
+          public static final int EXPEL_ALGAE = 17;
         }
 
         public class Wrist {

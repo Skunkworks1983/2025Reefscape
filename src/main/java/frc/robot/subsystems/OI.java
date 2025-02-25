@@ -65,13 +65,19 @@ public class OI {
 
     if (optionalCollector.isPresent()) {
       Collector collector = optionalCollector.get();
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.ROTATE_CORAL)
-        .whileTrue(collector.rotateCoralCommand());
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.COLLECT_CORAL)
         .whileTrue(collector.waitAfterCatchPieceCommand());
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.SCORE_CORAL)
         .whileTrue(collector.scorePieceCommand());
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.INTAKE_CORAL);
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.INTAKE_CORAL)
+        .whileTrue(collector.intakeCoralCommand(true));
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.EXPEL_CORAL)
+        .whileTrue(collector.expelCoral(true));
+
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.INTAKE_ALGAE)
+        .whileTrue(collector.intakeAlgaeCommand(true));
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.EXPEL_ALGAE)  
+        .whileTrue(collector.expelAlgeaCommand(true));
     }
 
     if(optionalClimber.isPresent()){
