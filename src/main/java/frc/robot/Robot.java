@@ -38,6 +38,8 @@ public class Robot extends TimedRobot {
   ErrorGroup errorGroup = new ErrorGroup();
 
   public Robot() {
+    DataLogManager.start();
+
     if(Constants.Testing.ENSURE_COMPETITION_READY_SUBSYSTEMS) {
       assert drivebase.isPresent();
       assert collector.isPresent();
@@ -60,9 +62,7 @@ public class Robot extends TimedRobot {
   }
 
   @Override 
-  public void robotInit() {
-    DataLogManager.start();
-  }
+  public void robotInit() {}
 
   @Override
   public void robotPeriodic() {
