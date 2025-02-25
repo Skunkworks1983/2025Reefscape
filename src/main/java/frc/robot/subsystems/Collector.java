@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
+import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.PIDControllers.SmartPIDControllerTalonFX;
 
 public class Collector extends SubsystemBase {
@@ -74,21 +75,21 @@ public class Collector extends SubsystemBase {
     if (rightSpeed != lastRightSpeed) {
       rightMotor.setControl(velocityVoltage
           .withVelocity(rightSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER));
-    SmartDashboard.putNumber("right speed", rightSpeed);
+      ConditionalSmartDashboard.putNumber("right speed", rightSpeed);
     }
     lastRightSpeed = rightSpeed;
 
     if (leftSpeed != lastLeftSpeed) {
       leftMotor.setControl(velocityVoltage
           .withVelocity(leftSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER));
-    SmartDashboard.putNumber("left speed", leftSpeed);
+      ConditionalSmartDashboard.putNumber("left speed", leftSpeed);
     }
     lastLeftSpeed = leftSpeed;
   }
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Right motor current", rightMotor.getSupplyCurrent().getValueAsDouble());
-    SmartDashboard.putNumber("Left motor current", leftMotor.getSupplyCurrent().getValueAsDouble());
+    ConditionalSmartDashboard.putNumber("Right motor current", rightMotor.getSupplyCurrent().getValueAsDouble());
+    ConditionalSmartDashboard.putNumber("Left motor current", leftMotor.getSupplyCurrent().getValueAsDouble());
   }
   
   public Command rotateCoralCommand() {
@@ -96,8 +97,8 @@ public class Collector extends SubsystemBase {
       () -> {
         setCollectorSpeeds(Constants.Collector.COLLECOR_ROTATE_SLOW, 
         Constants.Collector.COLLECOR_ROTATE_FAST);
-        SmartDashboard.putNumber("right collector current speed", getRightMotorVelocity());
-        SmartDashboard.putNumber("left collector current speed", getLeftMotorVelocity());
+        ConditionalSmartDashboard.putNumber("right collector current speed", getRightMotorVelocity());
+        ConditionalSmartDashboard.putNumber("left collector current speed", getLeftMotorVelocity());
       }, 
       () -> {
         setCollectorSpeeds(0, 0);
