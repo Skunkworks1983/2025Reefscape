@@ -44,6 +44,7 @@ public class Funnel extends SubsystemBase implements DiagnosticSubsystem{
       .p(Constants.Funnel.FUNNEL_KP)
       .i(Constants.Funnel.FUNNEL_KI)
       .d(Constants.Funnel.FUNNEL_KD);
+    pivotMotor.getEncoder().setPosition(0);
 
     pivotMotorSpeedController = new frc.robot.utils.PIDControllers.SmartPIDControllerCANSparkMax(
       Constants.Funnel.FUNNEL_KP,
@@ -59,7 +60,6 @@ public class Funnel extends SubsystemBase implements DiagnosticSubsystem{
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Funnel Pos (revs)", getPos());
-    SmartDashboard.putNumber("Funnel Set Point (revs)", getSetPoint());
     SmartDashboard.putBoolean("Is Funnel At SetPoint", isAtSetpoint());
     SmartDashboard.putNumber("Funnel Motor Current", getCurrent());
     SmartDashboard.putBoolean("Is Funnel Motor Connected", isMotorConnected());
@@ -90,7 +90,7 @@ public class Funnel extends SubsystemBase implements DiagnosticSubsystem{
   }
 
   public void setFunnelSetPoint(double revs){
-    setPoint = getPos() - revs;
+    setPoint = revs;
     SmartDashboard.putNumber("set point (revs)", setPoint);
     SparkClosedLoopController FunnelLoopController = pivotMotor.getClosedLoopController();
     FunnelLoopController.setReference(setPoint, ControlType.kPosition);
@@ -99,10 +99,11 @@ public class Funnel extends SubsystemBase implements DiagnosticSubsystem{
   public Command goToPos(double position) {
     return Commands.startEnd(
       () -> {
+        System.out.println("initialized");
         setFunnelSetPoint(position);
       }, () -> {
-
-      }).until(
+        System.out.println("END");
+      }, this).until(
         () -> {
           return isAtSetpoint();
         }

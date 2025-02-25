@@ -176,18 +176,18 @@ public class Constants {
   }
 
   public class Funnel {
-    public static final int PIVOT_MOTOR_ID = 4;
-    public static final double PIVOT_MOTOR_GEAR_RATIO = 1 / 100;
+    public static final int PIVOT_MOTOR_ID = 23;
+    public static final double PIVOT_MOTOR_GEAR_RATIO = 1.0 / 100.0;
 
-    public static final double FUNNEL_KP = .1; //TODO tune constants
+    public static final double FUNNEL_KP = .08; //TODO tune constants
     public static final double FUNNEL_KD = 0.0;
     public static final double FUNNEL_KI = 0.0;
     public static final double FUNNEL_KF = 0.0;
 
-    public static final boolean FUNNEL_SMARTPID_ACTIVE = false;
+    public static final boolean FUNNEL_SMARTPID_ACTIVE = true;
 
     public static final double FUNNEL_POSITION_1 = 0.0; //TODO FIGURE OUT POSITIONS IN ROTATIONS
-    public static final double FUNNEL_POSITION_2 = (20.0 / 360) / PIVOT_MOTOR_GEAR_RATIO;
+    public static final double FUNNEL_POSITION_2 = (40.0 / 360) / PIVOT_MOTOR_GEAR_RATIO;
     public static final double FUNNEL_POSITION_3 = 0.0;
     }
 
@@ -332,8 +332,12 @@ public class Constants {
         }
 
         public class Climber{
-          public static final int GO_TO_MAX = 10;
+          public static final int GO_TO_MAX = 10; //TODO find out what buttons these will be
+        }
 
+        public class Funnel{
+          public static final int GO_TO_MAX = 3;  //TODO find out what buttons these will be
+          public static final int GO_TO_MIN = 2;
         }
       }
     }

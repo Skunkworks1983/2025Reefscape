@@ -106,8 +106,10 @@ public class OI {
 
     if(optionalFunnel.isPresent()){
       Funnel funnel = optionalFunnel.get();
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Climber.GO_TO_MAX)
+      new JoystickButton(translationJoystick, Constants.OI.IDs.Buttons.Funnel.GO_TO_MAX)
         .onTrue(funnel.goToPos(Constants.Funnel.FUNNEL_POSITION_2));
+      new JoystickButton(translationJoystick, Constants.OI.IDs.Buttons.Funnel.GO_TO_MAX)
+        .onTrue(funnel.goToPos(Constants.Funnel.FUNNEL_POSITION_3));
     }
   }
 
