@@ -49,7 +49,7 @@ public class PoseDeviations {
   };
 
   public PoseDeviations() {
-    SmartDashboard.putData(stdDevsSendable);
+    SmartDashboard.putData("Std Devs", stdDevsSendable);
   }
 
   /** 
