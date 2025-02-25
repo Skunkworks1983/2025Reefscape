@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO.PoseObservation;
 import frc.robot.subsystems.vision.VisionIO.VisionIOData;
+import frc.robot.utils.ConditionalSmartDashboard;
 
 /**
  * A subsystem that takes a VisionConsumer and any number of
@@ -54,9 +55,9 @@ public class Vision extends SubsystemBase {
       VisionIOData data = io[i].getLatestData();
       for (PoseObservation observation : data.poseObservations) {
 
-        SmartDashboard.putNumber(io[i].getName() + " Latest Ambiguity", observation.ambiguity());
-        SmartDashboard.putNumber(io[i].getName() + " Latest Z Error", observation.estimatedPose().getZ());
-        SmartDashboard.putNumber(io[i].getName() + " Average Tag Distance", observation.averageTagDistance());
+        ConditionalSmartDashboard.putNumber(io[i].getName() + " Latest Ambiguity", observation.ambiguity());
+        ConditionalSmartDashboard.putNumber(io[i].getName() + " Latest Z Error", observation.estimatedPose().getZ());
+        ConditionalSmartDashboard.putNumber(io[i].getName() + " Average Tag Distance", observation.averageTagDistance());
 
         boolean rejectPose = 
           observation.tagCount() == 0 ||

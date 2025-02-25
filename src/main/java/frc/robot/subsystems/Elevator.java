@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
+import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.PIDControllers.SmartPIDController;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -60,7 +61,7 @@ public class Elevator extends SubsystemBase {
     } else if(getTopLimitSwitch()) {
       motorRight.setPosition(Constants.Elevator.MAX_HEIGHT_CARRIAGE * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
     }
-    // putInfoSmartDashboard(); Used for Elevator info
+    putInfoSmartDashboard();
   }
 
   // Reminder: all positions are measured in meters
@@ -112,16 +113,16 @@ public class Elevator extends SubsystemBase {
   public void putInfoSmartDashboard() {
     double currentPos = motorRight.getPosition().getValueAsDouble();
 
-    SmartDashboard.putNumber("Elevator/Desired velocity in mps", targetVelocity);
-    SmartDashboard.putNumber("Elevator/Desired position in meters", targetPosition);
-    SmartDashboard.putNumber("Elevator/Desired position in rotations", targetPosition * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
-    SmartDashboard.putNumber("Elevator/Actual velocity in mps", motorRight.getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("Elevator/Actual position in meters", currentPos * Constants.Elevator.MOTOR_ROTATIONS_TO_METERS);
-    SmartDashboard.putNumber("Elevator/Actual position in rotations", currentPos);
-    SmartDashboard.putNumber("Elevator/Final setpoint in meters", finalTargetPosition);
-    SmartDashboard.putNumber("Elevator/Final setpoint in rotations", finalTargetPosition * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
-    SmartDashboard.putBoolean("Elevator/Bottom limit switch", getBottomLimitSwitch());
-    SmartDashboard.putBoolean("Elevator/Top limit switch", getTopLimitSwitch());
+    ConditionalSmartDashboard.putNumber("Elevator/Desired velocity in mps", targetVelocity);
+    ConditionalSmartDashboard.putNumber("Elevator/Desired position in meters", targetPosition);
+    ConditionalSmartDashboard.putNumber("Elevator/Desired position in rotations", targetPosition * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
+    ConditionalSmartDashboard.putNumber("Elevator/Actual velocity in mps", motorRight.getVelocity().getValueAsDouble());
+    ConditionalSmartDashboard.putNumber("Elevator/Actual position in meters", currentPos * Constants.Elevator.MOTOR_ROTATIONS_TO_METERS);
+    ConditionalSmartDashboard.putNumber("Elevator/Actual position in rotations", currentPos);
+    ConditionalSmartDashboard.putNumber("Elevator/Final setpoint in meters", finalTargetPosition);
+    ConditionalSmartDashboard.putNumber("Elevator/Final setpoint in rotations", finalTargetPosition * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
+    ConditionalSmartDashboard.putBoolean("Elevator/Bottom limit switch", getBottomLimitSwitch());
+    ConditionalSmartDashboard.putBoolean("Elevator/Top limit switch", getTopLimitSwitch());
 
   }
 }
