@@ -60,7 +60,7 @@ public class MoveToPosition extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("END OF COMMAND");
+    System.out.println("END OF FUNNEL MOVE TO POSITION COMMAND");
   }
 
   @Override
