@@ -19,7 +19,7 @@ import frc.robot.subsystems.drivebase.Drivebase;
 
 public class Robot extends TimedRobot {
 
-  // replace subsystem with Optional.empty() for testing
+  // replace subsystem with Optional.empty() when testing a signel subsystem.
   // ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
 
   Optional<Drivebase> drivebase = Optional.of(new Drivebase());
@@ -42,12 +42,21 @@ public class Robot extends TimedRobot {
     DataLogManager.start();
 
     if(Constants.Testing.ENSURE_COMPETITION_READY_SUBSYSTEMS) {
-      assert drivebase.isPresent();
-      assert collector.isPresent();
-      assert elevator.isPresent();
-      assert wrist.isPresent();
-      assert climber.isPresent();
-
+      if(drivebase.isPresent()) {
+        throw new IllegalStateException("Drivebase not present");
+      }
+      if (collector.isPresent()) {
+        throw new IllegalStateException("Collector not present");
+      }
+      if (elevator.isPresent()) {
+        throw new IllegalStateException("Elevator not present");
+      }
+      if (wrist.isPresent()) {
+        throw new IllegalStateException("Wrist not present");
+      }
+      if (climber.isPresent()) {
+        throw new IllegalStateException("Climber not present");
+      }
     }
     if(drivebase.isPresent()) {
       drivebase.get().setDefaultCommand(
@@ -57,8 +66,7 @@ public class Robot extends TimedRobot {
           oi::getInstructedDegreesPerSecond,
           true
         )
-      ); // add a set translation controls function. Create a curried function that creates
-      // a getSwerveTeleopCommand function. getSwerveTeleopRotationCommand
+      );
     }
   }
 
@@ -90,8 +98,7 @@ public class Robot extends TimedRobot {
   }
   
   @Override
-  public void teleopPeriodic() {
-  }
+  public void teleopPeriodic() {}
 
   @Override
   public void disabledPeriodic() {}
@@ -106,7 +113,7 @@ public class Robot extends TimedRobot {
   public void testInit() {
     errorGroup.clearAllTest();
 
-    //we provide the errorCommandGenerator with the error group and a array of subsystems to get commands from
+    // We provide the errorCommandGenerator with the error group and a array of subsystems to get commands from
     if(drivebase.isPresent()) {
       ErrorCommandGenerator.getErrorCommand(
         errorGroup,
