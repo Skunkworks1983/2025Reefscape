@@ -9,6 +9,7 @@ import java.util.Optional;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -24,8 +25,6 @@ public class Robot extends TimedRobot {
 
   // replace subsystem with Optional.empty() for testing
   // ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
-
-
   Optional<Drivebase> drivebase = Optional.of(new Drivebase()); 
   Optional<Elevator> elevator = Optional.of(new Elevator()); 
   Optional<Collector> collector = Optional.of(new Collector());
@@ -33,6 +32,8 @@ public class Robot extends TimedRobot {
   Optional<Climber> climber = Optional.of(new Climber());
 
   private SendableChooser<Command> autoChooser;
+
+  private final Field2d field;
 
   OI oi = new OI( 
     elevator,
@@ -66,6 +67,9 @@ public class Robot extends TimedRobot {
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
+
+    field = new Field2d();
+    SmartDashboard.putData("field", field);
   }
 
   @Override
