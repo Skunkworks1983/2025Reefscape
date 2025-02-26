@@ -5,9 +5,7 @@
 package frc.robot.utils.PIDControllers;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.constants.Constants;
-import frc.robot.utils.ConditionalSmartDashboard;
 
 /** Add your docs here. */
 public class SmartPIDController extends PIDController implements SmartPIDBase {
