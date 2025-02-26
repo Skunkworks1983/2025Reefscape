@@ -42,22 +42,23 @@ public class Robot extends TimedRobot {
     DataLogManager.start();
 
     if(Constants.Testing.ENSURE_COMPETITION_READY_SUBSYSTEMS) {
-      if(drivebase.isPresent()) {
+      if(drivebase.isEmpty()) {
         throw new IllegalStateException("Drivebase not present");
       }
-      if (collector.isPresent()) {
+      if (collector.isEmpty()) {
         throw new IllegalStateException("Collector not present");
       }
-      if (elevator.isPresent()) {
+      if (elevator.isEmpty()) {
         throw new IllegalStateException("Elevator not present");
       }
-      if (wrist.isPresent()) {
+      if (wrist.isEmpty()) {
         throw new IllegalStateException("Wrist not present");
       }
-      if (climber.isPresent()) {
+      if (climber.isEmpty()) {
         throw new IllegalStateException("Climber not present");
       }
     }
+
     if(drivebase.isPresent()) {
       drivebase.get().setDefaultCommand(
         drivebase.get().getSwerveCommand(
