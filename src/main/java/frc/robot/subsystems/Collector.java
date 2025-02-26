@@ -129,8 +129,8 @@ public class Collector extends SubsystemBase {
       }
     ).until(
       () -> {
-        SmartDashboard.putNumber("amp cut off right", rightMotor.getSupplyCurrent().getValueAsDouble());
-        SmartDashboard.putNumber("amp cut off left", leftMotor.getSupplyCurrent().getValueAsDouble());
+        ConditionalSmartDashboard.putNumber("amp cut off right", rightMotor.getSupplyCurrent().getValueAsDouble());
+        ConditionalSmartDashboard.putNumber("amp cut off left", leftMotor.getSupplyCurrent().getValueAsDouble());
         if (rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF ||
             leftMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF ||
             rightMotor.getSupplyCurrent().getValueAsDouble() < 0 ||
