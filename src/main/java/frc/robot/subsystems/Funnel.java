@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.AutomatedTests.RunClimberMotorTest;
 import frc.robot.constants.Constants;
+import frc.robot.constants.Constants.CurrentLimits;
 import frc.robot.utils.PIDControllers.SmartPIDController;
 import frc.robot.utils.PIDControllers.SmartPIDControllerCANSparkMax;
 import frc.robot.utils.error.DiagnosticSubsystem;
@@ -40,10 +41,12 @@ public class Funnel extends SubsystemBase implements DiagnosticSubsystem{
   public Funnel() {
     pivotMotor = new SparkMax(Constants.Funnel.PIVOT_MOTOR_ID,  MotorType.kBrushless);
     SparkMaxConfig config = new SparkMaxConfig();
-    config.closedLoop
-      .p(Constants.Funnel.FUNNEL_KP)
-      .i(Constants.Funnel.FUNNEL_KI)
-      .d(Constants.Funnel.FUNNEL_KD);
+    config
+      .secondaryCurrentLimit(CurrentLimits.NEO_550_CURRENT_LIMIT_VALUE)
+      .closedLoop
+        .p(Constants.Funnel.FUNNEL_KP)
+        .i(Constants.Funnel.FUNNEL_KI)
+        .d(Constants.Funnel.FUNNEL_KD);
 
     pivotMotorSpeedController = new frc.robot.utils.PIDControllers.SmartPIDControllerCANSparkMax(
       Constants.Funnel.FUNNEL_KP,
