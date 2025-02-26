@@ -13,7 +13,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.constants.VisionIOConstantsPhotonVision.Pipeline;
+import frc.robot.constants.VisionIOConstantsPhotonVision.PhotonVisionPipelineType;
 
 public class VisionIOPhotonVision implements VisionIO {
 
@@ -21,9 +21,9 @@ public class VisionIOPhotonVision implements VisionIO {
   private final Transform3d robotToCamera;
   private final PhotonCamera camera;
   private final AprilTagFieldLayout aprilTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
-  private final Pipeline[] pipelines;
+  private final PhotonVisionPipelineType[] pipelines;
 
-  public VisionIOPhotonVision(String cameraName, Transform3d robotToCamera, Pipeline[] pipelines) {
+  public VisionIOPhotonVision(String cameraName, Transform3d robotToCamera, PhotonVisionPipelineType[] pipelines) {
     this.cameraName = cameraName;
     this.robotToCamera = robotToCamera;
     this.camera = new PhotonCamera(cameraName);
@@ -31,13 +31,16 @@ public class VisionIOPhotonVision implements VisionIO {
   }
 
   @Override
-  public VisionIOData getLatestData() {
+  public PoseEstimationData getLatestData() {
 
-    /* The active camera pipeline. Handling it this way because it's possible for it to change dynamically. */
-    Pipeline activePipeline = pipelines[camera.getPipelineIndex()];
+    /* 
+      The active camera pipeline. Handling it this way because 
+      it's possible for it to change dynamically. 
+    */
+    PhotonVisionPipelineType activePipeline = pipelines[camera.getPipelineIndex()];
 
-    if(activePipeline == Pipeline.TAG) {
-      VisionIOData latestData = new VisionIOData();
+    if (activePipeline == PhotonVisionPipelineType.APRILTAG) {
+      PoseEstimationData latestData = new PoseEstimationData();
 
       for (PhotonPipelineResult result : camera.getAllUnreadResults()) {
 
@@ -92,7 +95,7 @@ public class VisionIOPhotonVision implements VisionIO {
 
     return latestData;
     } else {
-      return new VisionIOData();
+      return new PoseEstimationData();
     }
     
   }

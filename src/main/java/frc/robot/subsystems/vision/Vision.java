@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants.VisionConstants;
 import frc.robot.constants.VisionIOConstants;
 import frc.robot.subsystems.vision.VisionIO.PoseObservation;
-import frc.robot.subsystems.vision.VisionIO.VisionIOData;
+import frc.robot.subsystems.vision.VisionIO.PoseEstimationData;
 
 /**
  * A subsystem that takes a VisionConsumer and any number of
@@ -54,7 +54,7 @@ public class Vision extends SubsystemBase {
   public void periodic() {
 
     for (int i = 0; i < io.length; i++) {
-      VisionIOData data = io[i].getLatestData();
+      PoseEstimationData data = io[i].getLatestData();
       for (PoseObservation observation : data.poseObservations) {
 
         SmartDashboard.putNumber(io[i].getName() + " Latest Ambiguity", observation.ambiguity());

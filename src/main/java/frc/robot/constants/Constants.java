@@ -9,8 +9,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import frc.robot.constants.VisionIOConstantsPhotonVision.Pipeline;
-import frc.robot.constants.VisionIOConstantsPhotonVision.PipelineType;
+import frc.robot.constants.VisionIOConstantsPhotonVision.PhotonVisionPipelineType;
 
 // TODO: add all robot constant values when they have been decided
 public class Constants {
@@ -203,18 +202,18 @@ public class Constants {
     private static final Transform3d ROBOT_TO_CAMERA_1 = ROBOT_TO_MOUNT.plus(MOUNT_TO_CAMERA_1);
     private static final Transform3d ROBOT_TO_CAMERA_2 = ROBOT_TO_MOUNT.plus(MOUNT_TO_CAMERA_2);
     
-    public static final VisionIOConstants[] VISION_IO_CONSTANTS = {
+    public static final VisionIOConstants[] IO_CONSTANTS = {
       new VisionIOConstantsPhotonVision(
-        CAMERA_0_NAME, ROBOT_TO_CAMERA_0, new Pipeline[] {Pipeline.TAG}
+        CAMERA_0_NAME, ROBOT_TO_CAMERA_0, PhotonVisionPipelineType.APRILTAG
       ),
       new VisionIOConstantsPhotonVision(
-        CAMERA_1_NAME, ROBOT_TO_CAMERA_1, new Pipeline [] {Pipeline.TAG}
+        CAMERA_1_NAME, ROBOT_TO_CAMERA_1, PhotonVisionPipelineType.APRILTAG
       ),
       new VisionIOConstantsPhotonVision(
-        CAMERA_2_NAME, ROBOT_TO_CAMERA_2, new Pipeline [] {Pipeline.TAG}
+        CAMERA_2_NAME, ROBOT_TO_CAMERA_2, PhotonVisionPipelineType.APRILTAG
       ),
       new VisionIOConstantsPhotonVision(
-        "Color_Camera", new Transform3d(), new Pipeline [] {Pipeline.OBJECT_DETECTION})
+        "Color_Camera", new Transform3d(), PhotonVisionPipelineType.COLORED_SHAPE)
     };
 
     public static final double MAX_AMBIGUITY = 0.3;

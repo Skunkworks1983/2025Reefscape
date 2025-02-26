@@ -1,21 +1,25 @@
 package frc.robot.subsystems.vision;
 
-import java.lang.annotation.Target;
 import java.util.LinkedList;
 import java.util.List;
-
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
 
+/** 
+ * Represents one camera. 
+ */
 public interface VisionIO {
 
-  public class VisionIOData {
+  public class IOData {
     public boolean connected = false;
+  }
+
+  public class PoseEstimationData {
     public List<PoseObservation> poseObservations = new LinkedList<PoseObservation>();
   }
 
-  public class ObjectDetectionData {
-    public TargetObservation lastObservation = new TargetObservation(new Rotation2d(), new Rotation2d());
+  public class ColoredShapeData {
+    public ColoredShapeObservation lastObservation = new ColoredShapeObservation(new Transform3d());
   }
 
   record PoseObservation(
@@ -26,11 +30,10 @@ public interface VisionIO {
     double averageTagDistance) {
   }
 
-  record TargetObservation(
-    Rotation2d tx,
-    Rotation2d ty) {
+  record ColoredShapeObservation(
+    Transform3d robotToTarget) {
   }
 
-  public VisionIOData getLatestData();
+  public PoseEstimationData getLatestData();
   public String getName();
 }

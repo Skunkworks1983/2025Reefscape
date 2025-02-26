@@ -11,18 +11,30 @@ public class VisionIOConstantsPhotonVision implements VisionIOConstants {
 
   public final String cameraName;
   public final Transform3d robotToCamera;
-  public final Pipeline [] pipelines;
+  public final PhotonVisionPipelineType [] pipelines;
 
-  public enum Pipeline {
+  public enum PhotonVisionPipelineType {
     REFLECTIVE,
     COLORED_SHAPE,
     APRILTAG
   }
-  
-  public VisionIOConstantsPhotonVision(String cameraName, Transform3d robotToCamera, Pipeline[] pipelines) {
+
+  /**
+   * @param cameraName
+   * @param robotToCamera
+   * @param pipeline
+   * @param additionalPipelines
+   */
+  public VisionIOConstantsPhotonVision(String cameraName, Transform3d robotToCamera, PhotonVisionPipelineType pipeline, PhotonVisionPipelineType... additionalPipelines) {
     this.cameraName = cameraName;
     this.robotToCamera = robotToCamera;
-    this.pipelines = pipelines;
+
+    // Initialize pipeline array
+    this.pipelines = new PhotonVisionPipelineType[1+additionalPipelines.length];
+    this.pipelines[0] =  pipeline;
+    for(int i = 0; i<additionalPipelines.length; i++) {
+      this.pipelines[i+1] = additionalPipelines[i];
+    }
   }
 
   public VisionIOPhotonVision init() {
