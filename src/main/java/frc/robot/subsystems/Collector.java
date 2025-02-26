@@ -124,8 +124,12 @@ public class Collector extends SubsystemBase {
       }
     ).until(
       () -> {
-        if (rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF &&
-        leftMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF) 
+        SmartDashboard.putNumber("amp cut off right", rightMotor.getSupplyCurrent().getValueAsDouble());
+        SmartDashboard.putNumber("amp cut off left", leftMotor.getSupplyCurrent().getValueAsDouble());
+        if (rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF ||
+            leftMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF ||
+            rightMotor.getSupplyCurrent().getValueAsDouble() < 0 ||
+            leftMotor.getSupplyCurrent().getValueAsDouble() < 0) 
         {
           endCount[0]++;
         }
@@ -133,7 +137,7 @@ public class Collector extends SubsystemBase {
         {
           endCount[0] = 0;
         }
-        return endCount[0] > 3;
+        return endCount[0] >= 1;
       }
     );
   }
@@ -215,19 +219,6 @@ public class Collector extends SubsystemBase {
           setCollectorSpeeds(0, 0);
         }
       }
-    ).until(
-      () -> {
-        if (rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF &&
-        leftMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF) 
-        {
-          endCount[0]++;
-        }
-        else
-        {
-          endCount[0] = 0;
-        }
-        return endCount[0] > 3;
-      }
     );
 
   }
@@ -272,19 +263,6 @@ public class Collector extends SubsystemBase {
         if(stopOnEnd) {
           setCollectorSpeeds(0, 0);
         }
-      }
-    ).until(
-      () -> {
-        if (rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.ALGAE_AMP_CUT_OFF &&
-        leftMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.ALGAE_AMP_CUT_OFF) 
-        {
-          endCount[0]++;
-        }
-        else
-        {
-          endCount[0] = 0;
-        }
-        return endCount[0] > 3;
       }
     );
   }
