@@ -9,20 +9,23 @@ import frc.robot.subsystems.vision.VisionIOPhotonVision;
 
 public class VisionIOConstantsPhotonVision implements VisionIOConstants {
 
-  public String cameraName;
-  public Transform3d robotToCamera;
+  public final String cameraName;
+  public final Transform3d robotToCamera;
+  public final Pipeline [] pipelines;
 
-  public enum PipelineType {
-    TAG,
-    OBJECT_DETECTION
+  public enum Pipeline {
+    REFLECTIVE,
+    COLORED_SHAPE,
+    APRILTAG
   }
   
-  public VisionIOConstantsPhotonVision(String cameraName, Transform3d robotToCamera, PipelineType[] pipelines) {
+  public VisionIOConstantsPhotonVision(String cameraName, Transform3d robotToCamera, Pipeline[] pipelines) {
     this.cameraName = cameraName;
     this.robotToCamera = robotToCamera;
+    this.pipelines = pipelines;
   }
 
   public VisionIOPhotonVision init() {
-    return new VisionIOPhotonVision(cameraName, robotToCamera);
+    return new VisionIOPhotonVision(cameraName, robotToCamera, pipelines);
   }
 }
