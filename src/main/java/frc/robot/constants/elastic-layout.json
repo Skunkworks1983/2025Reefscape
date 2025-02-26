@@ -445,19 +445,79 @@
       }
     },
     {
-      "name": "Collector",
+      "name": "Elevator",
       "grid_layout": {
         "layouts": [],
         "containers": [
           {
-            "title": "Beambreak collector",
-            "x": 384.0,
-            "y": 256.0,
-            "width": 256.0,
+            "title": "Actual position in rotations",
+            "x": 1152.0,
+            "y": 384.0,
+            "width": 384.0,
+            "height": 256.0,
+            "type": "Graph",
+            "properties": {
+              "topic": "/SmartDashboard/Elevator/Actual position in rotations",
+              "period": 0.033,
+              "data_type": "double",
+              "time_displayed": 5.0,
+              "color": 4278238420,
+              "line_width": 2.0
+            }
+          },
+          {
+            "title": "Desired position in rotations",
+            "x": 1152.0,
+            "y": 0.0,
+            "width": 384.0,
+            "height": 256.0,
+            "type": "Graph",
+            "properties": {
+              "topic": "/SmartDashboard/Elevator/Desired position in rotations",
+              "period": 0.033,
+              "data_type": "double",
+              "time_displayed": 5.0,
+              "color": 4278238420,
+              "line_width": 2.0
+            }
+          },
+          {
+            "title": "Actual position in rotations",
+            "x": 1152.0,
+            "y": 640.0,
+            "width": 384.0,
             "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Elevator/Actual position in rotations",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Desired position in rotations",
+            "x": 1152.0,
+            "y": 256.0,
+            "width": 384.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Elevator/Desired position in rotations",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Top limit switch",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 256.0,
             "type": "Boolean Box",
             "properties": {
-              "topic": "/SmartDashboard/Beambreak collector",
+              "topic": "/SmartDashboard/Elevator/Top limit switch",
               "period": 0.06,
               "data_type": "boolean",
               "true_color": 4283215696,
@@ -467,112 +527,165 @@
             }
           },
           {
-            "title": "Left motor current",
-            "x": 384.0,
+            "title": "Bottom limit switch",
+            "x": 0.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/Elevator/Bottom limit switch",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "Final setpoint in rotations",
+            "x": 0.0,
+            "y": 640.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Elevator/Final setpoint in rotations",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Actual position in meters",
+            "x": 768.0,
+            "y": 640.0,
+            "width": 384.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Elevator/Actual position in meters",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Desired position in meters",
+            "x": 768.0,
+            "y": 256.0,
+            "width": 384.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Elevator/Desired position in meters",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Actual position in meters",
+            "x": 768.0,
+            "y": 384.0,
+            "width": 384.0,
+            "height": 256.0,
+            "type": "Graph",
+            "properties": {
+              "topic": "/SmartDashboard/Elevator/Actual position in meters",
+              "period": 0.033,
+              "data_type": "double",
+              "time_displayed": 5.0,
+              "color": 4278238420,
+              "line_width": 2.0
+            }
+          },
+          {
+            "title": "Desired position in meters",
+            "x": 768.0,
             "y": 0.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
+            "width": 384.0,
+            "height": 256.0,
+            "type": "Graph",
             "properties": {
-              "topic": "/SmartDashboard/Left motor current",
-              "period": 0.06,
+              "topic": "/SmartDashboard/Elevator/Desired position in meters",
+              "period": 0.033,
               "data_type": "double",
-              "show_submit_button": false
+              "time_displayed": 5.0,
+              "color": 4278238420,
+              "line_width": 2.0
             }
           },
           {
-            "title": "Right motor current",
-            "x": 640.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/Right motor current",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "left motor kd Value",
-            "x": 1024.0,
-            "y": 128.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/left motor kd Value",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "left motor ki Value",
-            "x": 1280.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/left motor ki Value",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "left motor kp Value",
-            "x": 1024.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/left motor kp Value",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "right motor kd Value",
-            "x": 1024.0,
+            "title": "Final setpoint in meters",
+            "x": 0.0,
             "y": 512.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Text Display",
             "properties": {
-              "topic": "/SmartDashboard/right motor kd Value",
+              "topic": "/SmartDashboard/Elevator/Final setpoint in meters",
               "period": 0.06,
               "data_type": "double",
               "show_submit_button": false
             }
           },
           {
-            "title": "right motor kp Value",
-            "x": 1024.0,
-            "y": 384.0,
-            "width": 256.0,
+            "title": "Actual velocity in mps",
+            "x": 384.0,
+            "y": 640.0,
+            "width": 384.0,
             "height": 128.0,
             "type": "Text Display",
             "properties": {
-              "topic": "/SmartDashboard/right motor kp Value",
+              "topic": "/SmartDashboard/Elevator/Actual velocity in mps",
               "period": 0.06,
               "data_type": "double",
               "show_submit_button": false
             }
           },
           {
-            "title": "right motor ki Value",
-            "x": 1280.0,
+            "title": "Actual velocity in mps",
+            "x": 384.0,
             "y": 384.0,
-            "width": 256.0,
+            "width": 384.0,
+            "height": 256.0,
+            "type": "Graph",
+            "properties": {
+              "topic": "/SmartDashboard/Elevator/Actual velocity in mps",
+              "period": 0.033,
+              "data_type": "double",
+              "time_displayed": 5.0,
+              "color": 4278238420,
+              "line_width": 2.0
+            }
+          },
+          {
+            "title": "Desired velocity in mps",
+            "x": 384.0,
+            "y": 0.0,
+            "width": 384.0,
+            "height": 256.0,
+            "type": "Graph",
+            "properties": {
+              "topic": "/SmartDashboard/Elevator/Desired velocity in mps",
+              "period": 0.033,
+              "data_type": "double",
+              "time_displayed": 5.0,
+              "color": 4278238420,
+              "line_width": 2.0
+            }
+          },
+          {
+            "title": "Desired velocity in mps",
+            "x": 384.0,
+            "y": 256.0,
+            "width": 384.0,
             "height": 128.0,
             "type": "Text Display",
             "properties": {
-              "topic": "/SmartDashboard/right motor ki Value",
+              "topic": "/SmartDashboard/Elevator/Desired velocity in mps",
               "period": 0.06,
               "data_type": "double",
               "show_submit_button": false

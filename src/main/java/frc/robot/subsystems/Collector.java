@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
+import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.PIDControllers.SmartPIDControllerTalonFX;
 
 public class Collector extends SubsystemBase {
@@ -58,12 +59,16 @@ public class Collector extends SubsystemBase {
 
    rightMotorController = new SmartPIDControllerTalonFX(Constants.Collector.PIDs.KP,
         Constants.Collector.PIDs.KI, Constants.Collector.PIDs.KD,
-        Constants.Collector.PIDs.KF, "right motor",
+        Constants.Collector.PIDs.KF, Constants.Collector.PIDs.KV,
+        Constants.Collector.PIDs.KA, Constants.Collector.PIDs.KS,
+         "right motor",
         Constants.Collector.PIDs.SMART_PID_ENABLED, rightMotor);
 
     leftMotorController = new SmartPIDControllerTalonFX(Constants.Collector.PIDs.KP,
         Constants.Collector.PIDs.KI, Constants.Collector.PIDs.KD,
-        Constants.Collector.PIDs.KF, "left motor",
+        Constants.Collector.PIDs.KF, Constants.Collector.PIDs.KV,
+        Constants.Collector.PIDs.KA, Constants.Collector.PIDs.KS,
+        "left motor",
         Constants.Drivebase.PIDs.SMART_PID_ENABLED, leftMotor);
     
         beambreak = new DigitalInput(8);
@@ -74,21 +79,21 @@ public class Collector extends SubsystemBase {
     if (rightSpeed != lastRightSpeed) {
       rightMotor.setControl(velocityVoltage
           .withVelocity(rightSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER));
-    SmartDashboard.putNumber("right speed", rightSpeed);
+      ConditionalSmartDashboard.putNumber("right speed", rightSpeed);
     }
     lastRightSpeed = rightSpeed;
 
     if (leftSpeed != lastLeftSpeed) {
       leftMotor.setControl(velocityVoltage
           .withVelocity(leftSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER));
-    SmartDashboard.putNumber("left speed", leftSpeed);
+      ConditionalSmartDashboard.putNumber("left speed", leftSpeed);
     }
     lastLeftSpeed = leftSpeed;
   }
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Right motor current", rightMotor.getSupplyCurrent().getValueAsDouble());
-    SmartDashboard.putNumber("Left motor current", leftMotor.getSupplyCurrent().getValueAsDouble());
+    ConditionalSmartDashboard.putNumber("Right motor current", rightMotor.getSupplyCurrent().getValueAsDouble());
+    ConditionalSmartDashboard.putNumber("Left motor current", leftMotor.getSupplyCurrent().getValueAsDouble());
     SmartDashboard.putBoolean("Beambreak collector", !beambreak.get());
   }
   
@@ -97,8 +102,8 @@ public class Collector extends SubsystemBase {
       () -> {
         setCollectorSpeeds(-Constants.Collector.CORAL_INTAKE_SLOW, 
         Constants.Collector.CORAL_INTAKE_FAST);
-        SmartDashboard.putNumber("right collector current speed", getRightMotorVelocity());
-        SmartDashboard.putNumber("left collector current speed", getLeftMotorVelocity());
+        ConditionalSmartDashboard.putNumber("right collector current speed", getRightMotorVelocity());
+        ConditionalSmartDashboard.putNumber("left collector current speed", getLeftMotorVelocity());
       }, 
       () -> {
         setCollectorSpeeds(0, 0);

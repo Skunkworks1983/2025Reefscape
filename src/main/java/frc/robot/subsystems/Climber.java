@@ -13,12 +13,12 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Alert.AlertType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.AutomatedTests.RunClimberMotorTest;
 import frc.robot.constants.Constants;
+import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.PIDControllers.SmartPIDControllerTalonFX;
 import frc.robot.utils.error.DiagnosticSubsystem;
 import frc.robot.utils.error.ErrorGroup;
@@ -79,11 +79,11 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
     climberSetPoint = newSetPoint;
     climbMotor.setControl(
         positionVoltage.withPosition(newSetPoint / Constants.ClimberIDs.CLIMBER_MOTOR_ROTATIONS_TO_CLIMBER_HEIGHT));
-    SmartDashboard.putNumber("Motor position", getHeight());
+    ConditionalSmartDashboard.putNumber("Motor position", getHeight());
   }
 
   public double getSetPoint() {
-    SmartDashboard.putNumber("climber set point", climberSetPoint);
+    ConditionalSmartDashboard.putNumber("climber set point", climberSetPoint);
     return climberSetPoint;
   }
 

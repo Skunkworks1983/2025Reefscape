@@ -77,9 +77,9 @@ public class SwerveModule extends SubsystemBase {
     this.moduleName = moduleName;
 
     turnController = new SmartPIDController(
-      Constants.Drivebase.PIDs.SWERVE_MODULE_TURN_kP,
-      Constants.Drivebase.PIDs.SWERVE_MODULE_TURN_kI, 
-      Constants.Drivebase.PIDs.SWERVE_MODULE_TURN_kD, 
+      Constants.Drivebase.PIDs.SWERVE_MODULE_TURN_KP,
+      Constants.Drivebase.PIDs.SWERVE_MODULE_TURN_KI, 
+      Constants.Drivebase.PIDs.SWERVE_MODULE_TURN_KD, 
       moduleName + " Turn", 
       Constants.Drivebase.PIDs.SMART_PID_TURN_ENABLED
     );
@@ -91,10 +91,13 @@ public class SwerveModule extends SubsystemBase {
     driveMotor.getConfigurator().apply(driveConfig);
 
     driveController = new SmartPIDControllerTalonFX(
-      Constants.Drivebase.PIDs.SWERVE_MODULE_DRIVE_kP,
-      Constants.Drivebase.PIDs.SWERVE_MODULE_DRIVE_kI, 
-      Constants.Drivebase.PIDs.SWERVE_MODULE_DRIVE_kD,
-      Constants.Drivebase.PIDs.SWERVE_MODULE_DRIVE_kF, 
+      Constants.Drivebase.PIDs.SWERVE_MODULE_DRIVE_KP,
+      Constants.Drivebase.PIDs.SWERVE_MODULE_DRIVE_KI, 
+      Constants.Drivebase.PIDs.SWERVE_MODULE_DRIVE_KD,
+      Constants.Drivebase.PIDs.SWERVE_MODULE_DRIVE_KF,
+      Constants.Drivebase.PIDs.SWERVE_MODULE_DRIVE_KV,
+      Constants.Drivebase.PIDs.SWERVE_MODULE_DRIVE_KA,
+      Constants.Drivebase.PIDs.SWERVE_MODULE_DRIVE_KS,
       moduleName + " Drive",
       Constants.Drivebase.PIDs.SMART_PID_DRIVE_ENABLED, 
       driveMotor
@@ -176,7 +179,7 @@ public class SwerveModule extends SubsystemBase {
     return turnMotorRotation;
   }
 
-  // Returns Voltage
+  // Returns voltage in volts
   public double getTurnMotorVoltage() {
     return turnMotor.getMotorVoltage().getValueAsDouble();
   }
