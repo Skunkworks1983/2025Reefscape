@@ -19,8 +19,8 @@ import frc.robot.subsystems.drivebase.Drivebase;
 
 public class Robot extends TimedRobot {
 
-  // replace subsystem with Optional.empty() for testing
-  // ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
+  // replace subsystem with Optional.empty() when you do not wish to use add all
+  // subsystems. ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
 
   Optional<Drivebase> drivebase = Optional.of(new Drivebase());
   Optional<Elevator> elevator = Optional.of(new Elevator());
@@ -42,13 +42,23 @@ public class Robot extends TimedRobot {
     DataLogManager.start();
 
     if(Constants.Testing.ENSURE_COMPETITION_READY_SUBSYSTEMS) {
-      assert drivebase.isPresent();
-      assert collector.isPresent();
-      assert elevator.isPresent();
-      assert wrist.isPresent();
-      assert climber.isPresent();
-
+      if(drivebase.isEmpty()) {
+        throw new IllegalStateException("Drivebase not present");
+      }
+      if (collector.isEmpty()) {
+        throw new IllegalStateException("Collector not present");
+      }
+      if (elevator.isEmpty()) {
+        throw new IllegalStateException("Elevator not present");
+      }
+      if (wrist.isEmpty()) {
+        throw new IllegalStateException("Wrist not present");
+      }
+      if (climber.isEmpty()) {
+        throw new IllegalStateException("Climber not present");
+      }
     }
+
     if(drivebase.isPresent()) {
       drivebase.get().setDefaultCommand(
         drivebase.get().getSwerveCommand(
@@ -57,8 +67,7 @@ public class Robot extends TimedRobot {
           oi::getInstructedDegreesPerSecond,
           true
         )
-      ); // add a set translation controls function. Create a curried function that creates
-      // a getSwerveTeleopCommand function. getSwerveTeleopRotationCommand
+      );
     }
   }
 
@@ -90,8 +99,7 @@ public class Robot extends TimedRobot {
   }
   
   @Override
-  public void teleopPeriodic() {
-  }
+  public void teleopPeriodic() {}
 
   @Override
   public void disabledPeriodic() {}
@@ -106,7 +114,7 @@ public class Robot extends TimedRobot {
   public void testInit() {
     errorGroup.clearAllTest();
 
-    //we provide the errorCommandGenerator with the error group and a array of subsystems to get commands from
+    // We provide the errorCommandGenerator with the error group and a array of subsystems to get commands from
     if(drivebase.isPresent()) {
       ErrorCommandGenerator.getErrorCommand(
         errorGroup,
