@@ -17,9 +17,10 @@ public class Constants {
 
   public class CurrentLimits {
 
-    // Amps
+    // Measured in amps
     public static final double KRAKEN_CURRENT_LIMIT_VALUE = 90.0;
-    public static final int NEO_550_CURRENT_LIMIT_VALUE = 30;
+    public static final int NEO_550_CURRENT_LIMIT_VALUE = 25;
+
     public static final CurrentLimitsConfigs KRAKEN_CURRENT_LIMIT_CONFIG;
 
     static {
@@ -32,7 +33,6 @@ public class Constants {
         = KRAKEN_CURRENT_LIMIT_CONFIG.SupplyCurrentLimitEnable
         = true;
     };
-    // public static final double NEO_CURRENT_LIMIT = 90.0;
 
   }
 
