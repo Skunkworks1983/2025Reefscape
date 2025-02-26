@@ -4,6 +4,7 @@
 
 package frc.robot.constants;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -121,6 +122,8 @@ public class Constants {
     public class FieldTarget {
       public static final Translation2d REEF_BLUE = new Translation2d(4.0259, 4.48945);
       public static final Translation2d REEF_RED = new Translation2d(FIELD_X_LENGTH-4.0259, 4.48945);
+      public static final Rotation2d LEFT_CORAL_STATION_ANGLE = Rotation2d.fromDegrees(0);
+      public static final Rotation2d RIGHT_CORAL_STATION_ANGLE = Rotation2d.fromDegrees(0);
     }
 
     public static final double FIELD_X_LENGTH = 17.55; // Meters

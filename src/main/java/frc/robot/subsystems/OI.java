@@ -8,17 +8,15 @@ import java.util.Optional;
 import java.util.function.DoubleFunction;
 import java.util.function.Supplier;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.constants.Constants.Drivebase.FieldTarget;
 import frc.robot.constants.Constants.OI.LIMITS;
 import frc.robot.commands.Wrist.MoveWristToSetpoint;
 import frc.robot.commands.elevator.*;
 import frc.robot.subsystems.drivebase.Drivebase;
+import frc.robot.subsystems.drivebase.TargetingUtils;
 import frc.robot.constants.Constants;
-import frc.robot.commands.elevator.*;
 import frc.robot.constants.Constants.OI.IDs.Joysticks;
 
 public class OI {
@@ -80,7 +78,8 @@ public class OI {
           this::getInstructedXMetersPerSecond,
           this::getInstructedYMetersPerSecond,
           // TODO: define an actual target point
-          (Supplier<Rotation2d>) () -> drivebase.getTargetingAngle(FieldTarget.REEF_RED),
+          (Supplier<Rotation2d>) () -> 
+            TargetingUtils.getPointAtReefFaceAngle(drivebase::getEstimatedRobotPose),
           true);
 
       targetCommand.addRequirements(drivebase);

@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.VisionConstants;
+import frc.robot.constants.Constants.Drivebase.FieldTarget;
 import frc.robot.subsystems.drivebase.odometry.OdometryThread;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.Phoenix6Odometry;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.Phoenix6DrivebaseState;
@@ -213,6 +214,16 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     }
   }
 
+  /** 
+   * Get the field-relative robot pose estimated by odometry
+   */
+  public Pose2d getEstimatedRobotPose() {
+    positionEstimator.getReadLock().lock();
+    Pose2d robotPose = positionEstimator.swerveDrivePoseEstimator.getEstimatedPosition();
+    positionEstimator.getReadLock().unlock();
+    return robotPose;
+  }
+
   @Override
   public Command getErrorCommand(
       ErrorGroup errorGroupHandler) {
@@ -221,21 +232,6 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       swerveModuleCommandArray[i] = swerveModules[i].TestConnectionThenModule(errorGroupHandler);
     }
     return Commands.parallel(swerveModuleCommandArray);
-  }
-
-  /**
-   * Bound in OI.
-   * 
-   * @param target the field location to point at.
-   * @return the heading needed for the robot to point at the target.
-   */
-  public Rotation2d getTargetingAngle(Translation2d target) {
-    positionEstimator.getReadLock().lock();
-    Pose2d robotPose = positionEstimator.swerveDrivePoseEstimator.getEstimatedPosition();
-    positionEstimator.getReadLock().unlock();
-    Rotation2d angle = new Rotation2d(target.getX() - robotPose.getX(), target.getY() - robotPose.getY());
-
-    return angle;
   }
 
   /**
