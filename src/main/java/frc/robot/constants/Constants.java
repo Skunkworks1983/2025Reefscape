@@ -247,7 +247,7 @@ public class Constants {
     
     public static final double WRIST_KS = 0.0;
     public static final double WRIST_KV = 0.12;
-    public static final double WRIST_KP = 5.0;
+    public static final double WRIST_KP = 1.0;
     public static final double WRIST_KD = 0.1;
     public static final double WRIST_KI = 0.0;
     public static final double WRIST_KF = 0.0;
