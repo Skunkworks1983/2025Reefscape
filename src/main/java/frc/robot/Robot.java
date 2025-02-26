@@ -19,7 +19,7 @@ import frc.robot.subsystems.drivebase.Drivebase;
 
 public class Robot extends TimedRobot {
 
-  // replace subsystem with Optional.empty() when testing a signel subsystem.
+  // replace subsystem with Optional.empty() when testing a single subsystem.
   // ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
 
   Optional<Drivebase> drivebase = Optional.of(new Drivebase());
