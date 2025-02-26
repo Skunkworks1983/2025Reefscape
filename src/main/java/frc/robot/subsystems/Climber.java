@@ -66,7 +66,7 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
     SmartDashboard.putBoolean("Climber/At Set Point", isAtSetpoint());
   }
 
-  public boolean getMagnetSensor1() {
+  public boolean getMagnetSensor1() { //Negated because magnet sensors return false when supposed to be true
     return !magnetSensor1.get();
   }
 

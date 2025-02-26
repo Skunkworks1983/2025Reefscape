@@ -9,6 +9,7 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Funnel;
@@ -23,7 +24,7 @@ public class MoveToPosition extends Command {
   double newSetPoint;
 
   final TrapezoidProfile profile = new TrapezoidProfile(
-    new TrapezoidProfile.Constraints(1, 1));
+    new TrapezoidProfile.Constraints(10, 50));
   
   Timer timePassed;
 
@@ -48,12 +49,16 @@ public class MoveToPosition extends Command {
     goal = new TrapezoidProfile.State(setPoint,0);
     positionVoltage = new PositionVoltage(0);
     startPosition = new TrapezoidProfile.State(funnel.getPos(), funnel.getVelocity());
+    SmartDashboard.putNumber("DESIRED POSITION", goal.position);
+    SmartDashboard.putNumber("DESIRED VELOCITY", goal.velocity);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     State positionGoal = profile.calculate(timePassed.get(), startPosition, goal);
+    SmartDashboard.putNumber("DESIRED POSITION", positionGoal.position);
+    SmartDashboard.putNumber("DESIRED VELOCITY", positionGoal.velocity);
     funnel.setFunnelSetPoint(positionGoal.position);
   }
 
@@ -65,6 +70,6 @@ public class MoveToPosition extends Command {
 
   @Override
   public boolean isFinished() {
-    return funnel.isAtSetpoint();
+    return Math.abs(funnel.getPos() - goal.position) < 0.1;
   }
 }
