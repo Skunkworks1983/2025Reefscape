@@ -8,6 +8,7 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
@@ -41,6 +42,8 @@ public class MoveWristToSetpoint extends Command {
   
   @Override
   public void initialize() {
+    DataLogManager.log("MoveWristToSetpoint command initialized");
+
     timePassed.reset(); 
     timePassed.start();
 
@@ -63,6 +66,7 @@ public class MoveWristToSetpoint extends Command {
   @Override
   public void end(boolean interrupted) {
     wrist.setWristMotorSpeed(0);
+    DataLogManager.log("MoveWristToSetpoint command ended");
   }
   
   @Override
