@@ -71,7 +71,7 @@ public class Collector extends SubsystemBase {
         "left motor",
         Constants.Drivebase.PIDs.SMART_PID_ENABLED, leftMotor);
     
-        beambreak = new DigitalInput(8);
+        beambreak = new DigitalInput((int) Constants.Collector.DIGITAL_INPUT_CHANNEL);
   }
 
   // meters per sec 

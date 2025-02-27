@@ -44,6 +44,7 @@ public class Constants {
     public static final double ALGAE_EXPEL = 5;
 
     public static final double END_COUNT_TICK_COUNTER = 1;
+    public static final double DIGITAL_INPUT_CHANNEL = 8;
 
     public static final double COLLECTOR_AMPS_BEFORE_CUTTOF = 5.0;
     public static final double SECONDS_BEFORE_CUTTOF = 0.5;
