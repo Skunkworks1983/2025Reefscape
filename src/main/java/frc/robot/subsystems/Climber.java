@@ -59,19 +59,19 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
     ConditionalSmartDashboard.putNumber("Climber/Motor position", getHeight());
     ConditionalSmartDashboard.putBoolean("Climber/Motor Connected", isMotorConnected());
     ConditionalSmartDashboard.putNumber("Climber/Motor Current", getCurrent());
-    ConditionalSmartDashboard.putBoolean("Climber/Magnet Sensor 1", getMagnetSensor1());
-    ConditionalSmartDashboard.putBoolean("Climber/Magnet Sensor 2", getMagnetSensor2());
+    ConditionalSmartDashboard.putBoolean("Climber/Magnet Sensor 1", magnetSensor1Tripped());
+    ConditionalSmartDashboard.putBoolean("Climber/Magnet Sensor 2", magnetSensor2Tripped());
     ConditionalSmartDashboard.putNumber("Climber/Set Point", getSetPoint());
     ConditionalSmartDashboard.putBoolean("Climber/At Set Point", isAtSetpoint());
   }
 
   //Negated because magnet sensors return false when activated even though there supposed to be true when activated 
   //and when there true the command activates sooooooo...
-  public boolean getMagnetSensor1() {
+  public boolean magnetSensor1Tripped() {
     return !magnetSensor1.get();
   }
 
-  public boolean getMagnetSensor2() {
+  public boolean magnetSensor2Tripped() {
     return !magnetSensor2.get();
   }
 
@@ -127,7 +127,7 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
   public Command waitUntilMagnetSensorsAreTrue() {
     return Commands.waitUntil(
       () -> {
-        return getMagnetSensor1() && getMagnetSensor2();
+        return magnetSensor1Tripped() && magnetSensor2Tripped();
       }
     );
   }
