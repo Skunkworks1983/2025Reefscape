@@ -201,7 +201,7 @@ public class Constants {
     public static final double FUNNEL_POSITION_LOW = 0.0; //TODO FIGURE OUT POSITIONS IN ROTATIONS
     public static final double FUNNEL_POSITION_HIGH_IN_DEGREES = 40.0;
     
-    public static final double FUNNEL_POSITION_HIGH_IN_ROTATIONS = (FUNNEL_POSITION_HIGH_IN_DEGREES / 360) / PIVOT_MOTOR_GEAR_RATIO;
+    public static final double FUNNEL_POSITION_HIGH_CONVERTED = (FUNNEL_POSITION_HIGH_IN_DEGREES / 360) / PIVOT_MOTOR_GEAR_RATIO;
   }
 
   public class Elevator {
