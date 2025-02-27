@@ -74,6 +74,9 @@ public class OI {
         .whileTrue(collector.intakeAlgaeCommand(true));
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.EXPEL_ALGAE)  
         .whileTrue(collector.expelAlgaeCommand(true));
+
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.SET_VOLTAGE)
+        .whileTrue(collector.SetMotorVoltage());
     }
 
     if(optionalClimber.isPresent()){

@@ -5,9 +5,11 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.controls.VoltageOut;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -98,17 +100,23 @@ public class Collector extends SubsystemBase {
     ConditionalSmartDashboard.putNumber("Collector/ Left motor current", leftMotor.getSupplyCurrent().getValueAsDouble());
     ConditionalSmartDashboard.putBoolean("Collector/ Beambreak collector", !beambreak.get());
   }
+
+  public void acceptVoltage(double voltage) {
+    VoltageOut rightVoltageOut = new VoltageOut(voltage);
+    VoltageOut leftVoltageOut = new VoltageOut(-voltage);
+    rightMotor.setControl(rightVoltageOut);
+    leftMotor.setControl(leftVoltageOut);
+  }
   
-  public Command rotateCoralCommand() {
+  public Command SetMotorVoltage() {
     return runEnd(
       () -> {
-        setCollectorSpeeds(Constants.Collector.CORAL_INTAKE_SLOW_SPEED, 
-        Constants.Collector.CORAL_INTAKE_FAST_SPEED);
-        ConditionalSmartDashboard.putNumber("Collector/ right collector current speed", getRightMotorVelocity());
-        ConditionalSmartDashboard.putNumber("Collector/ left collector current speed", getLeftMotorVelocity());
+        acceptVoltage(6);
+        SmartDashboard.putNumber("right motor voltage", rightMotor.getStatorCurrent().getValueAsDouble());
+        SmartDashboard.putNumber("left motor voltage", leftMotor.getStatorCurrent().getValueAsDouble());
       }, 
       () -> {
-        setCollectorSpeeds(0, 0);
+        acceptVoltage(0);
       }
     );
   }
