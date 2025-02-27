@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.constants.Constants.Drivebase.FieldTarget;
 import frc.robot.constants.Constants.OI.LIMITS;
+import frc.robot.commands.Funnel.MoveToPosition;
 import frc.robot.commands.Wrist.MoveWristToSetpoint;
 import frc.robot.commands.elevator.*;
 import frc.robot.subsystems.drivebase.Drivebase;
@@ -47,7 +48,8 @@ public class OI {
     Optional<Collector> optionalCollector,
     Optional<Wrist> optionalWrist,
     Optional<Climber> optionalClimber,
-    Optional<Drivebase> optionalDrivebase) {
+    Optional<Drivebase> optionalDrivebase,
+    Optional<Funnel> optionalFunnel) {
 
     if (optionalElevator.isPresent()) {
       Elevator elevator = optionalElevator.get();
@@ -80,6 +82,14 @@ public class OI {
       Climber climber = optionalClimber.get();
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Climber.GO_TO_MAX)
         .onTrue(climber.waitUntilMagnetSensorsAreTrueThenGoToPos(Constants.ClimberIDs.CLIMBER_MAX));
+    }
+
+    if(optionalFunnel.isPresent()){
+      Funnel funnel = optionalFunnel.get();
+      new JoystickButton(translationJoystick, Constants.OI.IDs.Buttons.Funnel.GO_TO_MAX)
+        .onTrue(new MoveToPosition(funnel, Constants.Funnel.FUNNEL_POSITION_HIGH_CONVERTED));
+      new JoystickButton(translationJoystick, Constants.OI.IDs.Buttons.Funnel.GO_TO_MIN)
+        .onTrue(new MoveToPosition(funnel, Constants.Funnel.FUNNEL_POSITION_LOW_CONVERTED));
     }
   }
 

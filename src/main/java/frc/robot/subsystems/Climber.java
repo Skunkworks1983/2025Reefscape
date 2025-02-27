@@ -56,13 +56,20 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    ConditionalSmartDashboard.putNumber("Climber/Motor position", getHeight());
+    ConditionalSmartDashboard.putBoolean("Climber/Motor Connected", isMotorConnected());
+    ConditionalSmartDashboard.putNumber("Climber/Motor Current", getCimbMotorCurrent());
+    ConditionalSmartDashboard.putBoolean("Climber/Magnet Sensor 1", magnetSensor1Tripped());
+    ConditionalSmartDashboard.putBoolean("Climber/Magnet Sensor 2", magnetSensor2Tripped());
+    ConditionalSmartDashboard.putNumber("Climber/Set Point", getSetPoint());
+    ConditionalSmartDashboard.putBoolean("Climber/At Set Point", isAtSetpoint());
   }
 
-  public boolean getMagnetSensor1() {
+  public boolean magnetSensor1Tripped() {
     return !magnetSensor1.get();
   }
 
-  public boolean getMagnetSensor2() {
+  public boolean magnetSensor2Tripped() {
     return !magnetSensor2.get();
   }
 
@@ -95,7 +102,7 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
     return approxEquals(getHeight(), climberSetPoint, Constants.ClimberIDs.CLIMBER_TOLERANCE); 
   }
     
-      public double getCurrent() {
+  public double getCimbMotorCurrent() {
     return climbMotor.getSupplyCurrent().getValueAsDouble();
   }
 
@@ -118,7 +125,7 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
   public Command waitUntilMagnetSensorsAreTrue() {
     return Commands.waitUntil(
       () -> {
-        return getMagnetSensor1() && getMagnetSensor2();
+        return magnetSensor1Tripped() && magnetSensor2Tripped();
       }
     );
   }
