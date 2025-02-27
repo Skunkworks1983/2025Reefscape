@@ -36,7 +36,7 @@ public class Constants {
 
     public static final double CORAL_INTAKE_SLOW_SPEED = 8.0; //revs per sec
     public static final double CORAL_INTAKE_FAST_SPEED = 18.0; //rev per sec 
-    public static final double COLLECTOR_OFFSET = 0.75; //
+    public static final double COLLECTOR_OFFSET = 0.75; // 
 
     public static final double COLLECTOR_REVERSE = 0;
     
@@ -44,7 +44,7 @@ public class Constants {
     public static final double ALGAE_EXPEL = 5;
 
     public static final double END_COUNT_TICK_COUNTER = 1;
-    public static final double DIGITAL_INPUT_CHANNEL = 8;
+    public static final int DIGITAL_INPUT_CHANNEL = 8;
 
     public static final double COLLECTOR_AMPS_BEFORE_CUTTOF = 5.0;
     public static final double SECONDS_BEFORE_CUTTOF = 0.5;
