@@ -65,10 +65,6 @@ public class OI {
 
     if (optionalCollector.isPresent()) {
       Collector collector = optionalCollector.get();
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.COLLECT_CORAL)
-        .whileTrue(collector.waitAfterCatchPieceCommand());
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.SCORE_CORAL)
-        .whileTrue(collector.scoreCoralCommand());
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.INTAKE_CORAL)
         .whileTrue(collector.intakeCoralCommand(true));
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.EXPEL_CORAL)

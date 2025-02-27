@@ -330,8 +330,6 @@ public class Constants {
         public class Collector {
           public static final int EXPEL_CORAL = 23;
           public static final int INTAKE_CORAL = 12;
-          public static final int COLLECT_CORAL = 11;
-          public static final int SCORE_CORAL = 15;
 
           public static final int INTAKE_ALGAE = 24;
           public static final int EXPEL_ALGAE = 17;
