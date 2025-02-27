@@ -73,24 +73,24 @@ public class Collector extends SubsystemBase {
         "left motor",
         Constants.Drivebase.PIDs.SMART_PID_ENABLED, leftMotor);
     
-        beambreak = new DigitalInput((int) Constants.Collector.DIGITAL_INPUT_CHANNEL);
+        beambreak = new DigitalInput(Constants.Collector.DIGITAL_INPUT_CHANNEL);
   }
 
   // meters per sec 
-  private void setCollectorSpeeds(double rightSpeed, double leftSpeed){
-    if (rightSpeed != lastRightSpeed) {
+  private void setCollectorSpeeds(double RightSpeed, double LeftSpeed){
+    if (RightSpeed != lastRightSpeed) {
       rightMotor.setControl(velocityVoltage
-          .withVelocity(rightSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER));
-      ConditionalSmartDashboard.putNumber("Collector/ right speed", rightSpeed);
+          .withVelocity(RightSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER));
+      ConditionalSmartDashboard.putNumber("Collector/ right speed", RightSpeed);
     }
-    lastRightSpeed = rightSpeed;
+    lastRightSpeed = RightSpeed;
 
-    if (leftSpeed != lastLeftSpeed) {
+    if (LeftSpeed != lastLeftSpeed) {
       leftMotor.setControl(velocityVoltage
-          .withVelocity(leftSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER));
-      ConditionalSmartDashboard.putNumber("Collector/ left speed", leftSpeed);
+          .withVelocity(LeftSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER));
+      ConditionalSmartDashboard.putNumber("Collector/ left speed", LeftSpeed);
     }
-    lastLeftSpeed = leftSpeed;
+    lastLeftSpeed = LeftSpeed;
   }
   @Override
   public void periodic() {
@@ -113,8 +113,9 @@ public class Collector extends SubsystemBase {
     );
   }
 
-  int endCount [] = {0}; //this value needs to be effectivly final 
-  // true if you want it to stop the motor when the command ends
+  int endCount [] = {0}; // This value needs to be effectivly final 
+
+  // Rrue if you want it to stop the motor when the command ends
   // it should almost always be true unless there will be a following command right after that will end it
   public Command intakeCoralCommand(
     boolean stopOnEnd
