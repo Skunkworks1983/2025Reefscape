@@ -231,7 +231,9 @@ public class Constants {
       public static final double ELEVATOR_kP = 1.25;
       public static final double ELEVATOR_kI = 0.0;
       public static final double ELEVATOR_kD = 0.15;
+      public static final double ELEVATOR_kF = 0.0;
       public static final double ELEVATOR_kV = 0.0;
+      public static final double ELEVATOR_kA = 0.0;
       public static final double ELEVATOR_kS = 0.0;
       public static final boolean SMART_PID_ENABLED = false;
     }
