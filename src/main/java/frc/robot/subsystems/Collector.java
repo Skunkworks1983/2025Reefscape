@@ -100,8 +100,8 @@ public class Collector extends SubsystemBase {
   public Command rotateCoralCommand() {
     return runEnd(
       () -> {
-        setCollectorSpeeds(-Constants.Collector.CORAL_INTAKE_SLOW, 
-        Constants.Collector.CORAL_INTAKE_FAST);
+        setCollectorSpeeds(-Constants.Collector.CORAL_INTAKE_SLOW_SPEED, 
+        Constants.Collector.CORAL_INTAKE_FAST_SPEED);
         ConditionalSmartDashboard.putNumber("right collector current speed", getRightMotorVelocity());
         ConditionalSmartDashboard.putNumber("left collector current speed", getLeftMotorVelocity());
       }, 
@@ -119,8 +119,9 @@ public class Collector extends SubsystemBase {
   ) {
     return runEnd(
       () -> {
-        setCollectorSpeeds(Constants.Collector.CORAL_INTAKE_FAST, 
-          -Constants.Collector.CORAL_INTAKE_FAST * Constants.Collector.COLLECTOR_OFFSET);
+        leftMotor.setInverted(true);
+        setCollectorSpeeds(Constants.Collector.CORAL_INTAKE_FAST_SPEED, 
+          Constants.Collector.CORAL_INTAKE_FAST_SPEED * Constants.Collector.COLLECTOR_OFFSET);
       },
       () -> {
         if(stopOnEnd) {
@@ -142,16 +143,17 @@ public class Collector extends SubsystemBase {
         {
           endCount[0] = 0;
         }
-        return endCount[0] >= 1;
+        return endCount[0] >= Constants.Collector.END_COUNT_TICK_COUNTER;
       }
     );
   }
 
-  public Command scorePieceCommand() {
+  public Command scoreCoralCommand() {
     return runEnd(
       () -> {
-        setCollectorSpeeds(-Constants.Collector.CORAL_INTAKE_FAST, 
-          Constants.Collector.CORAL_INTAKE_FAST);
+        rightMotor.setInverted(true);
+        setCollectorSpeeds(Constants.Collector.CORAL_INTAKE_FAST_SPEED, 
+          Constants.Collector.CORAL_INTAKE_FAST_SPEED);
       },
       () -> {
         setCollectorSpeeds(0, 0);
@@ -167,7 +169,7 @@ public class Collector extends SubsystemBase {
         {
           endCount[0] = 0;
         }
-        return endCount[0] > 3;
+        return endCount[0] > Constants.Collector.END_COUNT_TICK_COUNTER;
       }
     );
   }
@@ -176,7 +178,7 @@ public class Collector extends SubsystemBase {
     return Commands.sequence(
       intakeCoralCommand(false),
       Commands.race(
-        scorePieceCommand(),
+        scoreCoralCommand(),
         Commands.waitSeconds(Constants.Collector.SECONDS_BEFORE_CUTTOF)
       )
     );
@@ -186,12 +188,13 @@ public class Collector extends SubsystemBase {
     return Commands.runEnd(
       () -> {
         if(!beambreak.get()) {
-          setCollectorSpeeds(-Constants.Collector.CORAL_INTAKE_FAST, 
-          Constants.Collector.CORAL_INTAKE_FAST);
+          rightMotor.setInverted(true);
+          setCollectorSpeeds(Constants.Collector.CORAL_INTAKE_FAST_SPEED, 
+          Constants.Collector.CORAL_INTAKE_FAST_SPEED);
         }
         else {
-          setCollectorSpeeds(Constants.Collector.CORAL_INTAKE_FAST, 
-          Constants.Collector.CORAL_INTAKE_FAST);
+          setCollectorSpeeds(Constants.Collector.CORAL_INTAKE_FAST_SPEED, 
+          Constants.Collector.CORAL_INTAKE_FAST_SPEED);
         }
       },
       () -> {
@@ -208,7 +211,7 @@ public class Collector extends SubsystemBase {
         {
           endCount[0] = 0;
         }
-        return endCount[0] > 3;
+        return endCount[0] > Constants.Collector.END_COUNT_TICK_COUNTER;
       }
     );
   }
@@ -216,8 +219,10 @@ public class Collector extends SubsystemBase {
   {
     return runEnd(
       () -> {
-        setCollectorSpeeds(-Constants.Collector.COLLECTOR_REVERSE, 
-          -Constants.Collector.COLLECTOR_REVERSE);
+        rightMotor.setInverted(true);
+        leftMotor.setInverted(true);
+        setCollectorSpeeds(Constants.Collector.COLLECTOR_REVERSE, 
+          Constants.Collector.COLLECTOR_REVERSE);
       },
       () -> {
         if(stopOnEnd) {
@@ -232,7 +237,8 @@ public class Collector extends SubsystemBase {
   ) {
     return runEnd(
       () -> {
-        setCollectorSpeeds(-Constants.Collector.ALGAE_INTAKE, 
+        rightMotor.setInverted(true);
+        setCollectorSpeeds(Constants.Collector.ALGAE_INTAKE, 
           Constants.Collector.ALGAE_INTAKE);
       },
       () -> {
@@ -251,7 +257,7 @@ public class Collector extends SubsystemBase {
         {
           endCount[0] = 0;
         }
-        return endCount[0] > 3;
+        return endCount[0] > Constants.Collector.END_COUNT_TICK_COUNTER;
       }
     );
   }
@@ -261,8 +267,9 @@ public class Collector extends SubsystemBase {
   ) {
     return runEnd(
       () -> {
+        leftMotor.setInverted(true);
         setCollectorSpeeds(Constants.Collector.ALGAE_EXPEL, 
-          -Constants.Collector.ALGAE_EXPEL);
+          Constants.Collector.ALGAE_EXPEL);
       },
       () -> {
         if(stopOnEnd) {
