@@ -23,7 +23,7 @@ public class TargetingUtils {
   /** @return the angle needed to point at the nearest face of the reef */
   public static Rotation2d getPointAtReefFaceAngle(Supplier<Pose2d> getRobotPose) {
     double angleDegrees = getTargetingAngle(FieldTarget.REEF_BLUE, getRobotPose).getDegrees();
-    // Using Math.floor here because Math.round is unintuitive when the value is in the middle, like .5
+    // Using Math.floor() here because Math.round() is unintuitive when the value is in the middle, like .5
     return Rotation2d.fromDegrees(Math.floor((angleDegrees + 30) / 60) * 60);
   }
 

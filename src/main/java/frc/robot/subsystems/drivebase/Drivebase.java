@@ -31,7 +31,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.VisionConstants;
-import frc.robot.constants.Constants.Drivebase.FieldTarget;
 import frc.robot.subsystems.drivebase.odometry.OdometryThread;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.Phoenix6Odometry;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.Phoenix6DrivebaseState;
@@ -61,6 +60,8 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       .getStructArrayTopic("Desired swervestate", SwerveModuleState.struct).publish();
   private StructArrayPublisher<SwerveModuleState> actualSwervestate = NetworkTableInstance.getDefault()
       .getStructArrayTopic("Actual swervestate", SwerveModuleState.struct).publish();
+
+  private Pose2d cachedEstimatedRobotPose = new Pose2d();
 
   public Drivebase() {
     // Creates a pheonix 6 pro state based on the gyro -- the only sensor owned
@@ -119,11 +120,11 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
   @Override
   public void periodic() {
+    cacheEstimatedRobotPose();
   }
 
   /**
    * Mitigate the skew resulting from rotating and driving simaltaneously.
-   * 
    * @param speeds The chassis speeds inputs. This function modifies those speeds.
    */
   public void mitigateSkew(ChassisSpeeds speeds) {
@@ -215,13 +216,25 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   }
 
   /** 
-   * Get the field-relative robot pose estimated by odometry
+   * Cache the latest estimate of the robot's pose a local variable.
+   * Should only be called in Drivebase periodic, which runs every loop. Doing this so that 
+   * lock and unlock don't get called too frequently on the position estimator.
+   */
+  private void cacheEstimatedRobotPose() {
+    positionEstimator.getReadLock().lock();
+    cachedEstimatedRobotPose = positionEstimator.swerveDrivePoseEstimator.getEstimatedPosition();
+    positionEstimator.getReadLock().unlock();
+  }
+
+  /**
+   * 
+   * @return 
+   *  The latest field-relative robot pose estimated by the position estimator
+   *  (a local variable of the drivebase, updated by {@code cacheEstimatedRobotPose} 
+   *  once per loop in periodic)
    */
   public Pose2d getEstimatedRobotPose() {
-    positionEstimator.getReadLock().lock();
-    Pose2d robotPose = positionEstimator.swerveDrivePoseEstimator.getEstimatedPosition();
-    positionEstimator.getReadLock().unlock();
-    return robotPose;
+    return cachedEstimatedRobotPose;
   }
 
   @Override
@@ -235,9 +248,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   }
 
   /**
-   * @return The swerve drive command to be used in Teleop. Heading is corrected
-   *         with
-   *         PID.
+   * @return The swerve drive command to be used in Teleop. Heading is corrected with PID.
    */
   public Command getSwerveCommand(
       DoubleSupplier getXMetersPerSecond,
@@ -282,7 +293,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   }
 
   /**
-   * Intented to be used for position targeting exclusively.
+   * Intented to be used for targeting features exclusively.
    */
   public Command getSwerveHeadingCorrected(
       DoubleSupplier getXMetersPerSecond,
@@ -345,6 +356,10 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
             () -> {
               setAllModulesTurnPidActive();
             });
+  }
+
+  private Command getAutoAlignReefCommand() {
+    
   }
 
   public Phoenix6DrivebaseState getState() {
