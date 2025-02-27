@@ -108,9 +108,9 @@ public class OI {
     if(optionalFunnel.isPresent()){
       Funnel funnel = optionalFunnel.get();
       new JoystickButton(translationJoystick, Constants.OI.IDs.Buttons.Funnel.GO_TO_MAX)
-        .onTrue(new MoveToPosition(funnel, Constants.Funnel.FUNNEL_POSITION_2));
+        .onTrue(new MoveToPosition(funnel, Constants.Funnel.FUNNEL_POSITION_HIGH_IN_ROTATIONS));
       new JoystickButton(translationJoystick, Constants.OI.IDs.Buttons.Funnel.GO_TO_MIN)
-        .onTrue(new MoveToPosition(funnel, Constants.Funnel.FUNNEL_POSITION_3));
+        .onTrue(new MoveToPosition(funnel, Constants.Funnel.FUNNEL_POSITION_LOW));
     }
   }
 

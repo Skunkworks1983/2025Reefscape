@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 /** Add your docs here. */
 public class ConditionalSmartDashboard {
 
-  private static boolean smartdashboardEnabled = false;
+  private static boolean smartdashboardEnabled = true;
 
   // Use instead of SmartDashboard.putNumber
   public static boolean putNumber(String key, double value) {

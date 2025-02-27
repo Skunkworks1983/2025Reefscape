@@ -60,8 +60,10 @@ public class Funnel extends SubsystemBase implements DiagnosticSubsystem{
 
   @Override
   public void periodic() {
-    ConditionalSmartDashboard.putNumber("Funnel Pos (revs)", getPos());
-    ConditionalSmartDashboard.putNumber("set point (revs)", setpoint);
+    ConditionalSmartDashboard.putNumber("Funnel/Motor Pos (revs)", getPos());
+    ConditionalSmartDashboard.putNumber("Funnel/Set point (revs)", setpoint);
+    ConditionalSmartDashboard.putBoolean("Funnel/At Set Point", isAtSetpoint());
+    ConditionalSmartDashboard.putNumber("Funnel/Motor Current", getCurrent());
   }
 
   public double getPos(){
@@ -69,9 +71,7 @@ public class Funnel extends SubsystemBase implements DiagnosticSubsystem{
   }
 
   public double getSetpoint(){
-    System.out.println("SetPoint / 360 " + (setpoint / 380.0));
-    System.out.println("setPoint " + setpoint);
-    return (setpoint / 360.0) / Constants.Funnel.PIVOT_MOTOR_GEAR_RATIO;
+    return setpoint;
   }
 
   public boolean isMotorConnected(){

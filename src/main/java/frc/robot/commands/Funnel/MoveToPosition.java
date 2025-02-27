@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Funnel;
+import frc.robot.utils.ConditionalSmartDashboard;
 
 public class MoveToPosition extends Command {
   Funnel funnel;
@@ -24,7 +25,7 @@ public class MoveToPosition extends Command {
   double newSetPoint;
 
   final TrapezoidProfile profile = new TrapezoidProfile(
-    new TrapezoidProfile.Constraints(10, 50));
+    new TrapezoidProfile.Constraints(100, 500));
   
   Timer timePassed;
 
@@ -49,16 +50,14 @@ public class MoveToPosition extends Command {
     goal = new TrapezoidProfile.State(setPoint,0);
     positionVoltage = new PositionVoltage(0);
     startPosition = new TrapezoidProfile.State(funnel.getPos(), funnel.getVelocity());
-    SmartDashboard.putNumber("DESIRED POSITION", goal.position);
-    SmartDashboard.putNumber("DESIRED VELOCITY", goal.velocity);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     State positionGoal = profile.calculate(timePassed.get(), startPosition, goal);
-    SmartDashboard.putNumber("DESIRED POSITION", positionGoal.position);
-    SmartDashboard.putNumber("DESIRED VELOCITY", positionGoal.velocity);
+    ConditionalSmartDashboard.putNumber("DESIRED POSITION", positionGoal.position);
+    ConditionalSmartDashboard.putNumber("DESIRED VELOCITY", positionGoal.velocity);
     funnel.setFunnelSetPoint(positionGoal.position);
   }
 

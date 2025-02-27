@@ -57,13 +57,13 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Climber/Motor position", getHeight());
-    SmartDashboard.putBoolean("Climber/Motor Connected", isMotorConnected());
-    SmartDashboard.putNumber("Climber/Motor Current", getCurrent());
-    SmartDashboard.putBoolean("Climber/Magnet Sensor 1", getMagnetSensor1());
-    SmartDashboard.putBoolean("Climber/Magnet Sensor 2", getMagnetSensor2());
-    SmartDashboard.putNumber("Climber/Set Point", getSetPoint());
-    SmartDashboard.putBoolean("Climber/At Set Point", isAtSetpoint());
+    ConditionalSmartDashboard.putNumber("Climber/Motor position", getHeight());
+    ConditionalSmartDashboard.putBoolean("Climber/Motor Connected", isMotorConnected());
+    ConditionalSmartDashboard.putNumber("Climber/Motor Current", getCurrent());
+    ConditionalSmartDashboard.putBoolean("Climber/Magnet Sensor 1", getMagnetSensor1());
+    ConditionalSmartDashboard.putBoolean("Climber/Magnet Sensor 2", getMagnetSensor2());
+    ConditionalSmartDashboard.putNumber("Climber/Set Point", getSetPoint());
+    ConditionalSmartDashboard.putBoolean("Climber/At Set Point", isAtSetpoint());
   }
 
   //Negated because magnet sensors return false when activated even though there supposed to be true when activated 
