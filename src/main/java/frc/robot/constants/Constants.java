@@ -64,22 +64,37 @@ public class Constants {
   }
 
   public class Collector {
-    public static final int RIGHT_MOTOR = 42;
+    public static final int RIGHT_MOTOR = 42; //42 is the real id
     public static final int LEFT_MOTOR = 11;
 
     public static final double COLLECTOR_ROTATIONS_PER_METER = 0.0762 * Math.PI;
 
-    public static final double COLLECOR_ROTATE_SLOW = 4.0;
-    public static final double COLLECOR_ROTATE_FAST = 6.0;
+    public static final double CORAL_INTAKE_SLOW_SPEED = 8.0; //meters per sec
+    public static final double CORAL_INTAKE_FAST_SPEED = 18.0; //meters per sec 
+    public static final double SPEED_MULIPILER_LEFT = 0.75;
 
-    public static final double COLLECTOR_AMPS_BEFORE_CUTTOF = 3.0;
+    public static final double COLLECTOR_REVERSE = 0;
+    
+    public static final double ALGAE_INTAKE = 5;
+    public static final double ALGAE_EXPEL = 5;
+
+    public static final double END_COUNT_TICK_COUNTER = 1;
+    public static final int DIGITAL_INPUT_CHANNEL = 8;
+
+    public static final double COLLECTOR_AMPS_BEFORE_CUTTOF = 5.0;
     public static final double SECONDS_BEFORE_CUTTOF = 0.5;
+
+    public static final double ALGAE_AMP_CUT_OFF = 6.0;
 
     public class PIDs {
       public static final double KP = 0.0;
       public static final double KI = 0.0;
       public static final double KD = 0.0;
-      public static final double KF = 1.3;
+      public static final double KF = 0.0;
+      public static final double KV = 1.3;
+      public static final double KA = 0.0;
+      public static final double KS = 0.0;
+
       public static final boolean SMART_PID_ENABLED = true;
 
     }
@@ -94,7 +109,7 @@ public class Constants {
     public class IDS {
       public static int ROTATION_JOYSTICK_ID = 1;
       public static int TRANSLATION_JOYSTICK_ID = 0;
-      public static int BUTTON_STICK_ID = 3;
+      public static int BUTTON_STICK_ID = 2;
     }
 
     // All modules are at the position (+-MODULE_TO_OFFSET, +-MODULE_TO_OFFSET)
@@ -126,17 +141,22 @@ public class Constants {
     }
 
     public class PIDs {
-      public static final double SWERVE_MODULE_TURN_kP = 0.0145;
-      public static final double SWERVE_MODULE_TURN_kI = 0.0;
-      public static final double SWERVE_MODULE_TURN_kD = 0.00017;
-      public static final double SWERVE_MODULE_TURN_kF = 0.0;
-      public static final double SWERVE_MODULE_DRIVE_kP = 0.125;
-      public static final double SWERVE_MODULE_DRIVE_kI = 0.0;
-      public static final double SWERVE_MODULE_DRIVE_kD = 0.0;
-      public static final double SWERVE_MODULE_DRIVE_kF = 0.1075;
+      public static final double SWERVE_MODULE_TURN_KP = 0.0145;
+      public static final double SWERVE_MODULE_TURN_KI = 0.0;
+      public static final double SWERVE_MODULE_TURN_KD = 0.00017;
+      public static final double SWERVE_MODULE_TURN_KF = 0.0;
+      public static final double SWERVE_MODULE_DRIVE_KP = 0.125;
+      public static final double SWERVE_MODULE_DRIVE_KI = 0.0;
+      public static final double SWERVE_MODULE_DRIVE_KD = 0.0;
+      public static final double SWERVE_MODULE_DRIVE_KF = 0.0;
+      public static final double SWERVE_MODULE_DRIVE_KV = 0.1075;
+      public static final double SWERVE_MODULE_DRIVE_KA = 0.0;
+      public static final double SWERVE_MODULE_DRIVE_KS = 0.0;
+
       public static final double HEADING_CONTROL_kP = 3.00;
       public static final double HEADING_CONTROL_kI = 0.0;
       public static final double HEADING_CONTROL_kD = 0.0;
+      
       public static final double PID_LOW_LIMIT = -0.8;
       public static final double PID_HIGH_LIMIT = 0.8;
 
@@ -219,9 +239,11 @@ public class Constants {
     }
 
   public class Elevator {
-    public static final int MOTOR_ID = 12;
-    public static final int BOTTOM_LIMIT_SWITCH_ID = 4;
-    public static final int TOP_LIMIT_SWITCH_ID = 5;
+    // For determining right and left, look at the elevator from the side paralel to the one that the elevator is on
+    public static final int MOTOR_RIGHT_ID = 12; // Temp id
+    public static final int MOTOR_LEFT_ID = 0; // Temp id
+    public static final int BOTTOM_LIMIT_SWITCH_ID = 4; // Temp id
+    public static final int TOP_LIMIT_SWITCH_ID = 5; // Temp id
 
     // This tolerance value will be used for deciding if the elevator
     // should target to its setpoint or if the setpoint is too far
@@ -266,12 +288,13 @@ public class Constants {
   }
 
   public class WristIDs {
-    public static final int WRIST_KRAKEN_MOTOR_ID = 12; // ID 12 is for the test board
-    public static final int WRIST_MAGNET_SENSOR_1 = 0;
+    public static final int WRIST_KRAKEN_MOTOR_ID = 12; // !! all ID's are just for the test board !!
+    public static final int WRIST_TOP_MAGNET_SENSOR = 4;
+    public static final int WRIST_BOTTOM_MAGNET_SENSOR = 5;
     
     public static final double WRIST_KS = 0.0;
     public static final double WRIST_KV = 0.12;
-    public static final double WRIST_KP = 5.0;
+    public static final double WRIST_KP = 1.0;
     public static final double WRIST_KD = 0.1;
     public static final double WRIST_KI = 0.0;
     public static final double WRIST_KF = 0.0;
@@ -280,11 +303,11 @@ public class Constants {
 
     public static final double WRIST_VELOCITY = 1; 
 
-    public static final double WRIST_RANGE = 0.03;
+    public static final double WRIST_TOLERANCE = 0.5;
 
     public static final double WRIST_MIDPOINT_ROTATIONS = 2.5; //TODO figure out postitions
-    public static final double WRIST_MIN_ROTATIONS = -5;
-    public static final double WRIST_MAX_ROTATIONS = 0;
+    public static final double WRIST_MIN_ROTATIONS = 0;
+    public static final double WRIST_MAX_ROTATIONS = 5;
   }
 
   public class ClimberIDs {
@@ -341,10 +364,11 @@ public class Constants {
         }
 
         public class Collector {
-          public static final int ROTATE_CORAL = 23;
-          public static final int INTAKE_CORAL = 14;
-          public static final int COLLECT_CORAL = 11;
-          public static final int SCORE_CORAL = 12;
+          public static final int EXPEL_CORAL = 23;
+          public static final int INTAKE_CORAL = 12;
+
+          public static final int INTAKE_ALGAE = 24;
+          public static final int EXPEL_ALGAE = 17;
         }
 
         public class Wrist {

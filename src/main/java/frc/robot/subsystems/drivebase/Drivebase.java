@@ -33,7 +33,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
-
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -320,7 +320,16 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
             getYMetersPerSecond,
             getOmegaDegreesPerSecond,
             fieldRelative).until(
-                (BooleanSupplier) () -> Math.abs(getOmegaDegreesPerSecond.getAsDouble()) == 0.0),
+                (BooleanSupplier) () -> Math.abs(getOmegaDegreesPerSecond.getAsDouble()) == 0.0)
+            .beforeStarting(
+              () -> {
+                DataLogManager.log("Base Swerve Start");
+              }
+            ).finallyDo(
+              () -> {
+                DataLogManager.log("Base Swerve End");
+              }
+            ),
         getSwerveHeadingCorrected(
             getXMetersPerSecond,
             getYMetersPerSecond,
@@ -333,7 +342,8 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
                 }
             )
             .until(
-                (BooleanSupplier) () -> Math.abs(getOmegaDegreesPerSecond.getAsDouble()) > 0.0))
+                (BooleanSupplier) () -> Math.abs(getOmegaDegreesPerSecond.getAsDouble()) > 0.0)
+        )
         .repeatedly();
   }
 
@@ -360,7 +370,15 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
           return rotSpeed;
         },
-        isFieldRelative);
+        isFieldRelative).beforeStarting(
+          () -> {
+            DataLogManager.log("Heading Control Swerve Start");
+          }
+        ).finallyDo(
+          () -> {
+            DataLogManager.log("Heading Control Swerve End");
+          }
+        );
   }
 
   /**
@@ -388,7 +406,8 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
               isFieldRelative);
         },
         () -> {
-        }).beforeStarting(
+        }
+    ).beforeStarting(
             () -> {
               setAllModulesTurnPidActive();
             });
