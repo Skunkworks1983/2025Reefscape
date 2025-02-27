@@ -36,7 +36,7 @@ public class Constants {
 
     public static final double CORAL_INTAKE_SLOW_SPEED = 8.0; //revs per sec
     public static final double CORAL_INTAKE_FAST_SPEED = 18.0; //rev per sec 
-    public static final double COLLECTOR_OFFSET = 0.75;
+    public static final double COLLECTOR_OFFSET = 0.75; //
 
     public static final double COLLECTOR_REVERSE = 0;
     

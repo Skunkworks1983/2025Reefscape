@@ -185,6 +185,7 @@ public class Collector extends SubsystemBase {
   }
 
   public Command rotateThenIntakeCommand() {
+    //if the coral is in werid this will turn it then intake it to where its ment to be so it can be scored
     return Commands.runEnd(
       () -> {
         if(!beambreak.get()) {
