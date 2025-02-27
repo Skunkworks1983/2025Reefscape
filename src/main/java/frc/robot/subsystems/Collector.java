@@ -48,6 +48,8 @@ public class Collector extends SubsystemBase {
   public Collector() {
    rightMotor = new TalonFX(Constants.Collector.RIGHT_MOTOR);
    leftMotor = new TalonFX(Constants.Collector.LEFT_MOTOR);
+
+   leftMotor.setInverted(true);
    
     
     TalonFXConfiguration talonConfigCollectorMotor = new TalonFXConfiguration();
@@ -100,7 +102,7 @@ public class Collector extends SubsystemBase {
   public Command rotateCoralCommand() {
     return runEnd(
       () -> {
-        setCollectorSpeeds(-Constants.Collector.CORAL_INTAKE_SLOW_SPEED, 
+        setCollectorSpeeds(Constants.Collector.CORAL_INTAKE_SLOW_SPEED, 
         Constants.Collector.CORAL_INTAKE_FAST_SPEED);
         ConditionalSmartDashboard.putNumber("Collector/ right collector current speed", getRightMotorVelocity());
         ConditionalSmartDashboard.putNumber("Collector/ left collector current speed", getLeftMotorVelocity());
@@ -119,9 +121,8 @@ public class Collector extends SubsystemBase {
   ) {
     return runEnd(
       () -> {
-        leftMotor.setInverted(true);
         setCollectorSpeeds(Constants.Collector.CORAL_INTAKE_FAST_SPEED, 
-          Constants.Collector.CORAL_INTAKE_FAST_SPEED * Constants.Collector.COLLECTOR_OFFSET);
+          Constants.Collector.CORAL_INTAKE_FAST_SPEED * Constants.Collector.SPEED_MULIPILER_LEFT);
       },
       () -> {
         if(stopOnEnd) {
@@ -151,7 +152,6 @@ public class Collector extends SubsystemBase {
   public Command scoreCoralCommand() {
     return runEnd(
       () -> {
-        rightMotor.setInverted(true);
         setCollectorSpeeds(Constants.Collector.CORAL_INTAKE_FAST_SPEED, 
           Constants.Collector.CORAL_INTAKE_FAST_SPEED);
       },
@@ -189,7 +189,6 @@ public class Collector extends SubsystemBase {
     return Commands.runEnd(
       () -> {
         if(!beambreak.get()) {
-          rightMotor.setInverted(true);
           setCollectorSpeeds(Constants.Collector.CORAL_INTAKE_FAST_SPEED, 
           Constants.Collector.CORAL_INTAKE_FAST_SPEED);
         }
@@ -220,8 +219,6 @@ public class Collector extends SubsystemBase {
   {
     return runEnd(
       () -> {
-        rightMotor.setInverted(true);
-        leftMotor.setInverted(true);
         setCollectorSpeeds(Constants.Collector.COLLECTOR_REVERSE, 
           Constants.Collector.COLLECTOR_REVERSE);
       },
@@ -238,7 +235,6 @@ public class Collector extends SubsystemBase {
   ) {
     return runEnd(
       () -> {
-        rightMotor.setInverted(true);
         setCollectorSpeeds(Constants.Collector.ALGAE_INTAKE, 
           Constants.Collector.ALGAE_INTAKE);
       },
@@ -268,7 +264,6 @@ public class Collector extends SubsystemBase {
   ) {
     return runEnd(
       () -> {
-        leftMotor.setInverted(true);
         setCollectorSpeeds(Constants.Collector.ALGAE_EXPEL, 
           Constants.Collector.ALGAE_EXPEL);
       },

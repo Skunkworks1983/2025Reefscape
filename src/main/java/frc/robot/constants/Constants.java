@@ -34,9 +34,9 @@ public class Constants {
 
     public static final double COLLECTOR_ROTATIONS_PER_METER = 0.0762 * Math.PI;
 
-    public static final double CORAL_INTAKE_SLOW_SPEED = 8.0; //revs per sec
-    public static final double CORAL_INTAKE_FAST_SPEED = 18.0; //rev per sec 
-    public static final double COLLECTOR_OFFSET = 0.75; // 
+    public static final double CORAL_INTAKE_SLOW_SPEED = 8.0; //meters per sec
+    public static final double CORAL_INTAKE_FAST_SPEED = 18.0; //meters per sec 
+    public static final double SPEED_MULIPILER_LEFT = 0.75;
 
     public static final double COLLECTOR_REVERSE = 0;
     
