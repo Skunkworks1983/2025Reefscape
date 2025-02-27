@@ -111,7 +111,7 @@ public class Collector extends SubsystemBase {
     );
   }
 
-  int endCount [] = {0};
+  int endCount [] = {0}; //this value needs to be effectivly final 
   // true if you want it to stop the motor when the command ends
   // it should almost always be true unless there will be a following command right after that will end it
   public Command intakeCoralCommand(
