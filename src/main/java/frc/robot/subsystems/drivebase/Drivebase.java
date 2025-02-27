@@ -143,7 +143,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
    * the a desired translation, a desired rotation, and isFieldReletave boolean.
    * This function should be excecuted once every tick for smooth movement.
    */
-  private void drive(double xMetersPerSecond, double yMetersPerSecond,
+  public void drive(double xMetersPerSecond, double yMetersPerSecond,
       double degreesPerSecond, boolean isFieldRelative) {
     ChassisSpeeds chassisSpeeds;
     double radiansPerSecond = Units.degreesToRadians(degreesPerSecond);
@@ -358,8 +358,19 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
             });
   }
 
-  private Command getAutoAlignReefCommand() {
-    
+  /** The left or right branch on a face of the reef. */
+  public enum BranchSide {
+    LEFT,
+    RIGHT
+  }
+
+  /** The distance from the center of the reef to any one of the reef corners. */
+  public static final double REEF_SMALL_RADIUS = Units.inchesToMeters(93.50 / 2);
+
+  public Command autoAlignToReefCommand(BranchSide branchSide) {
+    Pose2d estimatedPose = getEstimatedRobotPose();
+    Rotation2d desiredPoseAngle = TargetingUtils.getPointAtReefFaceAngle(() -> getEstimatedRobotPose());
+    Translation2d reefCenterTo = new Translation2d(desiredPoseAngle.getCos() * REEF_SMALL_RADIUS, desiredPoseAngle.getSin() * REEF_SMALL_RADIUS);
   }
 
   public Phoenix6DrivebaseState getState() {
