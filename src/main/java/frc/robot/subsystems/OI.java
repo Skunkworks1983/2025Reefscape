@@ -77,7 +77,7 @@ public class OI {
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.INTAKE_ALGAE)
         .whileTrue(collector.intakeAlgaeCommand(true));
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.EXPEL_ALGAE)  
-        .whileTrue(collector.expelAlgeaCommand(true));
+        .whileTrue(collector.expelAlgaeCommand(true));
     }
 
     if(optionalClimber.isPresent()){

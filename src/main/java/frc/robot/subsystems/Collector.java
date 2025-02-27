@@ -260,7 +260,7 @@ public class Collector extends SubsystemBase {
     );
   }
 
-  public Command expelAlgeaCommand(
+  public Command expelAlgaeCommand(
     boolean stopOnEnd
   ) {
     return runEnd(
