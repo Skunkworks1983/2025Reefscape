@@ -57,8 +57,8 @@ public class MoveToPosition extends Command {
   @Override
   public void execute() {
     State positionGoal = profile.calculate(timePassed.get(), startPosition, goal);
-    ConditionalSmartDashboard.putNumber("FUNNEL/DESIRED POSITION", positionGoal.position);
-    ConditionalSmartDashboard.putNumber("FUNNEL/DESIRED VELOCITY", positionGoal.velocity);
+    ConditionalSmartDashboard.putNumber("Funnel/Desired position", positionGoal.position);
+    ConditionalSmartDashboard.putNumber("Funnel/Desired velocity", positionGoal.velocity);
     funnel.setFunnelSetPoint(positionGoal.position);
   }
 
