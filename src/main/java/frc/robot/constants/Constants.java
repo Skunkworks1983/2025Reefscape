@@ -29,16 +29,27 @@ public class Constants {
   }
 
   public class Collector {
-    public static final int RIGHT_MOTOR = 42;
+    public static final int RIGHT_MOTOR = 42; //42 is the real id
     public static final int LEFT_MOTOR = 11;
 
     public static final double COLLECTOR_ROTATIONS_PER_METER = 0.0762 * Math.PI;
 
-    public static final double COLLECOR_ROTATE_SLOW = 4.0;
-    public static final double COLLECOR_ROTATE_FAST = 6.0;
+    public static final double CORAL_INTAKE_SLOW_SPEED = 8.0; //meters per sec
+    public static final double CORAL_INTAKE_FAST_SPEED = 18.0; //meters per sec 
+    public static final double SPEED_MULIPILER_LEFT = 0.75;
 
-    public static final double COLLECTOR_AMPS_BEFORE_CUTTOF = 3.0;
+    public static final double COLLECTOR_REVERSE = 0;
+    
+    public static final double ALGAE_INTAKE = 5;
+    public static final double ALGAE_EXPEL = 5;
+
+    public static final double END_COUNT_TICK_COUNTER = 1;
+    public static final int DIGITAL_INPUT_CHANNEL = 8;
+
+    public static final double COLLECTOR_AMPS_BEFORE_CUTTOF = 5.0;
     public static final double SECONDS_BEFORE_CUTTOF = 0.5;
+
+    public static final double ALGAE_AMP_CUT_OFF = 6.0;
 
     public class PIDs {
       public static final double KP = 0.0;
@@ -110,6 +121,7 @@ public class Constants {
       public static final double HEADING_CONTROL_kP = 3.00;
       public static final double HEADING_CONTROL_kI = 0.0;
       public static final double HEADING_CONTROL_kD = 0.0;
+      
       public static final double PID_LOW_LIMIT = -0.8;
       public static final double PID_HIGH_LIMIT = 0.8;
 
@@ -242,12 +254,13 @@ public class Constants {
   }
 
   public class WristIDs {
-    public static final int WRIST_KRAKEN_MOTOR_ID = 12; // ID 12 is for the test board
-    public static final int WRIST_MAGNET_SENSOR_1 = 0;
+    public static final int WRIST_KRAKEN_MOTOR_ID = 12; // !! all ID's are just for the test board !!
+    public static final int WRIST_TOP_MAGNET_SENSOR = 4;
+    public static final int WRIST_BOTTOM_MAGNET_SENSOR = 5;
     
     public static final double WRIST_KS = 0.0;
     public static final double WRIST_KV = 0.12;
-    public static final double WRIST_KP = 5.0;
+    public static final double WRIST_KP = 1.0;
     public static final double WRIST_KD = 0.1;
     public static final double WRIST_KI = 0.0;
     public static final double WRIST_KF = 0.0;
@@ -256,11 +269,11 @@ public class Constants {
 
     public static final double WRIST_VELOCITY = 1; 
 
-    public static final double WRIST_RANGE = 0.03;
+    public static final double WRIST_TOLERANCE = 0.5;
 
     public static final double WRIST_MIDPOINT_ROTATIONS = 2.5; //TODO figure out postitions
-    public static final double WRIST_MIN_ROTATIONS = -5;
-    public static final double WRIST_MAX_ROTATIONS = 0;
+    public static final double WRIST_MIN_ROTATIONS = 0;
+    public static final double WRIST_MAX_ROTATIONS = 5;
   }
 
   public class ClimberIDs {
@@ -317,10 +330,11 @@ public class Constants {
         }
 
         public class Collector {
-          public static final int ROTATE_CORAL = 23;
-          public static final int INTAKE_CORAL = 14;
-          public static final int COLLECT_CORAL = 11;
-          public static final int SCORE_CORAL = 12;
+          public static final int EXPEL_CORAL = 23;
+          public static final int INTAKE_CORAL = 12;
+
+          public static final int INTAKE_ALGAE = 24;
+          public static final int EXPEL_ALGAE = 17;
         }
 
         public class Wrist {

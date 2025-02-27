@@ -8,8 +8,8 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Wrist;
@@ -42,6 +42,8 @@ public class MoveWristToSetpoint extends Command {
   
   @Override
   public void initialize() {
+    DataLogManager.log("MoveWristToSetpoint command initialized");
+
     timePassed.reset(); 
     timePassed.start();
 
@@ -64,10 +66,11 @@ public class MoveWristToSetpoint extends Command {
   @Override
   public void end(boolean interrupted) {
     wrist.setWristMotorSpeed(0);
+    DataLogManager.log("MoveWristToSetpoint command ended");
   }
   
   @Override
   public boolean isFinished() {
-    return Math.abs(wrist.getPosition() - setPoint) < Constants.WristIDs.WRIST_RANGE || wrist.getMagnetSensor1();
+    return (Math.abs(wrist.getPosition() - setPoint)) < Constants.WristIDs.WRIST_TOLERANCE;
   }
 }

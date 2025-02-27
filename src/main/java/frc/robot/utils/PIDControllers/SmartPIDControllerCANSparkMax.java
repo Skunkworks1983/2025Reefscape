@@ -10,7 +10,6 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import frc.robot.constants.Constants;
-import frc.robot.utils.ConditionalSmartDashboard;
 
 /** Add your docs here. */
 public class SmartPIDControllerCANSparkMax implements SmartPIDBase {

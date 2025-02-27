@@ -9,6 +9,7 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -41,11 +42,15 @@ public class Collector extends SubsystemBase {
     return rightMotor.getVelocity().getValueAsDouble();
   }
 
+  private DigitalInput beambreak;
 
   /** Creates a new Collector. */
   public Collector() {
    rightMotor = new TalonFX(Constants.Collector.RIGHT_MOTOR);
    leftMotor = new TalonFX(Constants.Collector.LEFT_MOTOR);
+
+   leftMotor.setInverted(true);
+   
     
     TalonFXConfiguration talonConfigCollectorMotor = new TalonFXConfiguration();
 
@@ -68,6 +73,7 @@ public class Collector extends SubsystemBase {
         "left motor",
         Constants.Drivebase.PIDs.SMART_PID_ENABLED, leftMotor);
     
+        beambreak = new DigitalInput(Constants.Collector.DIGITAL_INPUT_CHANNEL);
   }
 
   // meters per sec 
@@ -75,30 +81,31 @@ public class Collector extends SubsystemBase {
     if (rightSpeed != lastRightSpeed) {
       rightMotor.setControl(velocityVoltage
           .withVelocity(rightSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER));
-      ConditionalSmartDashboard.putNumber("right speed", rightSpeed);
+      ConditionalSmartDashboard.putNumber("Collector/ Right speed", rightSpeed);
     }
     lastRightSpeed = rightSpeed;
 
     if (leftSpeed != lastLeftSpeed) {
       leftMotor.setControl(velocityVoltage
           .withVelocity(leftSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER));
-      ConditionalSmartDashboard.putNumber("left speed", leftSpeed);
+      ConditionalSmartDashboard.putNumber("Collector/ Left speed", leftSpeed);
     }
     lastLeftSpeed = leftSpeed;
   }
   @Override
   public void periodic() {
-    ConditionalSmartDashboard.putNumber("Right motor current", rightMotor.getSupplyCurrent().getValueAsDouble());
-    ConditionalSmartDashboard.putNumber("Left motor current", leftMotor.getSupplyCurrent().getValueAsDouble());
+    ConditionalSmartDashboard.putNumber("Collector/ Right motor current", rightMotor.getSupplyCurrent().getValueAsDouble());
+    ConditionalSmartDashboard.putNumber("Collector/ Left motor current", leftMotor.getSupplyCurrent().getValueAsDouble());
+    ConditionalSmartDashboard.putBoolean("Collector/ Beambreak collector", !beambreak.get());
   }
   
   public Command rotateCoralCommand() {
     return runEnd(
       () -> {
-        setCollectorSpeeds(Constants.Collector.COLLECOR_ROTATE_SLOW, 
-        Constants.Collector.COLLECOR_ROTATE_FAST);
-        ConditionalSmartDashboard.putNumber("right collector current speed", getRightMotorVelocity());
-        ConditionalSmartDashboard.putNumber("left collector current speed", getLeftMotorVelocity());
+        setCollectorSpeeds(Constants.Collector.CORAL_INTAKE_SLOW_SPEED, 
+        Constants.Collector.CORAL_INTAKE_FAST_SPEED);
+        ConditionalSmartDashboard.putNumber("Collector/ right collector current speed", getRightMotorVelocity());
+        ConditionalSmartDashboard.putNumber("Collector/ left collector current speed", getLeftMotorVelocity());
       }, 
       () -> {
         setCollectorSpeeds(0, 0);
@@ -106,15 +113,17 @@ public class Collector extends SubsystemBase {
     );
   }
 
-  // true if you want it to stop the motor when the command ends
+  int endCount [] = {0}; // This value needs to be effectivly final 
+
+  // Rrue if you want it to stop the motor when the command ends
   // it should almost always be true unless there will be a following command right after that will end it
   public Command intakeCoralCommand(
     boolean stopOnEnd
   ) {
     return runEnd(
       () -> {
-        setCollectorSpeeds(-Constants.Collector.COLLECOR_ROTATE_FAST, 
-          Constants.Collector.COLLECOR_ROTATE_FAST);
+        setCollectorSpeeds(Constants.Collector.CORAL_INTAKE_FAST_SPEED, 
+          Constants.Collector.CORAL_INTAKE_FAST_SPEED * Constants.Collector.SPEED_MULIPILER_LEFT);
       },
       () -> {
         if(stopOnEnd) {
@@ -123,20 +132,45 @@ public class Collector extends SubsystemBase {
       }
     ).until(
       () -> {
-        return rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF &&
-        leftMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF;
+        ConditionalSmartDashboard.putNumber("Collector/ amp cut off right", rightMotor.getSupplyCurrent().getValueAsDouble());
+        ConditionalSmartDashboard.putNumber("Collector/ amp cut off left", leftMotor.getSupplyCurrent().getValueAsDouble());
+        if (rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF ||
+            leftMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF ||
+            rightMotor.getSupplyCurrent().getValueAsDouble() < 0 ||
+            leftMotor.getSupplyCurrent().getValueAsDouble() < 0) 
+        {
+          endCount[0]++;
+        }
+        else
+        {
+          endCount[0] = 0;
+        }
+        return endCount[0] >= Constants.Collector.END_COUNT_TICK_COUNTER;
       }
     );
   }
 
-  public Command scorePieceCommand() {
+  public Command scoreCoralCommand() {
     return runEnd(
       () -> {
-        setCollectorSpeeds(-Constants.Collector.COLLECOR_ROTATE_FAST, 
-          Constants.Collector.COLLECOR_ROTATE_FAST);
+        setCollectorSpeeds(Constants.Collector.CORAL_INTAKE_FAST_SPEED, 
+          Constants.Collector.CORAL_INTAKE_FAST_SPEED);
       },
       () -> {
         setCollectorSpeeds(0, 0);
+      }
+    ).until(
+      () -> {
+        if (rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF &&
+        leftMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF) 
+        {
+          endCount[0]++;
+        }
+        else
+        {
+          endCount[0] = 0;
+        }
+        return endCount[0] > Constants.Collector.END_COUNT_TICK_COUNTER;
       }
     );
   }
@@ -145,9 +179,101 @@ public class Collector extends SubsystemBase {
     return Commands.sequence(
       intakeCoralCommand(false),
       Commands.race(
-        scorePieceCommand(),
+        scoreCoralCommand(),
         Commands.waitSeconds(Constants.Collector.SECONDS_BEFORE_CUTTOF)
       )
     );
   }
+
+  public Command rotateThenIntakeCommand() {
+    //if the coral is in werid this will turn it then intake it to where its ment to be so it can be scored
+    return Commands.runEnd(
+      () -> {
+        if(!beambreak.get()) {
+          setCollectorSpeeds(Constants.Collector.CORAL_INTAKE_FAST_SPEED, 
+          Constants.Collector.CORAL_INTAKE_FAST_SPEED);
+        }
+        else {
+          setCollectorSpeeds(Constants.Collector.CORAL_INTAKE_FAST_SPEED, 
+          Constants.Collector.CORAL_INTAKE_FAST_SPEED);
+        }
+      },
+      () -> {
+        setCollectorSpeeds(0.0, 0.0);
+      }
+    ).until(
+      () -> {
+        if (rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF &&
+        leftMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF) 
+        {
+          endCount[0]++;
+        }
+        else
+        {
+          endCount[0] = 0;
+        }
+        return endCount[0] > Constants.Collector.END_COUNT_TICK_COUNTER;
+      }
+    );
+  }
+  public Command expelCoral(boolean stopOnEnd)
+  {
+    return runEnd(
+      () -> {
+        setCollectorSpeeds(Constants.Collector.COLLECTOR_REVERSE, 
+          Constants.Collector.COLLECTOR_REVERSE);
+      },
+      () -> {
+        if(stopOnEnd) {
+          setCollectorSpeeds(0, 0);
+        }
+      }
+    );
+
+  }
+  public Command intakeAlgaeCommand(
+    boolean stopOnEnd
+  ) {
+    return runEnd(
+      () -> {
+        setCollectorSpeeds(Constants.Collector.ALGAE_INTAKE, 
+          Constants.Collector.ALGAE_INTAKE);
+      },
+      () -> {
+        if(stopOnEnd) {
+          setCollectorSpeeds(0, 0);
+        }
+      }
+    ).until(
+      () -> {
+        if (rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.ALGAE_AMP_CUT_OFF &&
+        leftMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.ALGAE_AMP_CUT_OFF) 
+        {
+          endCount[0]++;
+        }
+        else
+        {
+          endCount[0] = 0;
+        }
+        return endCount[0] > Constants.Collector.END_COUNT_TICK_COUNTER;
+      }
+    );
+  }
+
+  public Command expelAlgaeCommand(
+    boolean stopOnEnd
+  ) {
+    return runEnd(
+      () -> {
+        setCollectorSpeeds(Constants.Collector.ALGAE_EXPEL, 
+          Constants.Collector.ALGAE_EXPEL);
+      },
+      () -> {
+        if(stopOnEnd) {
+          setCollectorSpeeds(0, 0);
+        }
+      }
+    );
+  }
+  
 }
