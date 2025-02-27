@@ -8,6 +8,7 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -43,7 +44,7 @@ public class MoveToPosition extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("INITILIAZED FUNNEL MOVE TO POS COMMAND");
+    DataLogManager.log("Initialized funnel move to position command");
     timePassed.reset(); 
     timePassed.start();
 
@@ -56,19 +57,19 @@ public class MoveToPosition extends Command {
   @Override
   public void execute() {
     State positionGoal = profile.calculate(timePassed.get(), startPosition, goal);
-    ConditionalSmartDashboard.putNumber("DESIRED POSITION", positionGoal.position);
-    ConditionalSmartDashboard.putNumber("DESIRED VELOCITY", positionGoal.velocity);
+    ConditionalSmartDashboard.putNumber("FUNNEL/DESIRED POSITION", positionGoal.position);
+    ConditionalSmartDashboard.putNumber("FUNNEL/DESIRED VELOCITY", positionGoal.velocity);
     funnel.setFunnelSetPoint(positionGoal.position);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("END OF FUNNEL MOVE TO POSITION COMMAND");
+    DataLogManager.log("End of funnel move to position command");
   }
 
   @Override
   public boolean isFinished() {
-    return Math.abs(funnel.getPos() - goal.position) < 0.1;
+    return Math.abs(funnel.getPos() - goal.position) < Constants.Funnel.FUNNEL_TOLERANCE;
   }
 }

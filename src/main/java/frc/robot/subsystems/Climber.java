@@ -58,7 +58,7 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
     // This method will be called once per scheduler run
     ConditionalSmartDashboard.putNumber("Climber/Motor position", getHeight());
     ConditionalSmartDashboard.putBoolean("Climber/Motor Connected", isMotorConnected());
-    ConditionalSmartDashboard.putNumber("Climber/Motor Current", getCurrent());
+    ConditionalSmartDashboard.putNumber("Climber/Motor Current", getCimbMotorCurrent());
     ConditionalSmartDashboard.putBoolean("Climber/Magnet Sensor 1", magnetSensor1Tripped());
     ConditionalSmartDashboard.putBoolean("Climber/Magnet Sensor 2", magnetSensor2Tripped());
     ConditionalSmartDashboard.putNumber("Climber/Set Point", getSetPoint());
@@ -104,7 +104,7 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
     return approxEquals(getHeight(), climberSetPoint, Constants.ClimberIDs.CLIMBER_TOLERANCE); 
   }
     
-  public double getCurrent() {
+  public double getCimbMotorCurrent() {
     return climbMotor.getSupplyCurrent().getValueAsDouble();
   }
 

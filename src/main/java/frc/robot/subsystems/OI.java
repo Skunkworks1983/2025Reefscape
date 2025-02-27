@@ -89,7 +89,7 @@ public class OI {
       new JoystickButton(translationJoystick, Constants.OI.IDs.Buttons.Funnel.GO_TO_MAX)
         .onTrue(new MoveToPosition(funnel, Constants.Funnel.FUNNEL_POSITION_HIGH_CONVERTED));
       new JoystickButton(translationJoystick, Constants.OI.IDs.Buttons.Funnel.GO_TO_MIN)
-        .onTrue(new MoveToPosition(funnel, Constants.Funnel.FUNNEL_POSITION_LOW));
+        .onTrue(new MoveToPosition(funnel, Constants.Funnel.FUNNEL_POSITION_LOW_CONVERTED));
     }
   }
 

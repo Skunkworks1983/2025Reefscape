@@ -191,6 +191,8 @@ public class Constants {
     public static final int PIVOT_MOTOR_ID = 23;
     public static final double PIVOT_MOTOR_GEAR_RATIO = 1.0 / 100.0;
 
+    public static final double FUNNEL_TOLERANCE = 0.1;
+
     public static final double FUNNEL_KP = .08; //TODO tune constants
     public static final double FUNNEL_KD = 0.0;
     public static final double FUNNEL_KI = 0.0;
@@ -198,9 +200,8 @@ public class Constants {
 
     public static final boolean FUNNEL_SMARTPID_ACTIVE = true;
 
-    public static final double FUNNEL_POSITION_LOW = 0.0; //TODO FIGURE OUT POSITIONS IN ROTATIONS
+    public static final double FUNNEL_POSITION_LOW_CONVERTED = 0.0; //TODO FIGURE OUT POSITIONS IN ROTATIONS
     public static final double FUNNEL_POSITION_HIGH_IN_DEGREES = 40.0;
-    
     public static final double FUNNEL_POSITION_HIGH_CONVERTED = (FUNNEL_POSITION_HIGH_IN_DEGREES / 360) / PIVOT_MOTOR_GEAR_RATIO;
   }
 
