@@ -9,13 +9,12 @@ import java.util.Optional;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.constants.Constants;
 
 /** Makes it super easy to tune, allows to change K values from smart dashboard*/
 /** Makes it super easy to tune controllers, allows programmers to change constants from smart dashboard */
 
-public class SmartPIDControllerTalonFX implements SmartPIDInterface {
+public class SmartPIDControllerTalonFX implements SmartPIDBase {
 
   public String name;
   public boolean smart;

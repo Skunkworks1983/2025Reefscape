@@ -16,6 +16,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -149,7 +151,10 @@ public class SwerveModule extends SubsystemBase {
   // Almost nothing should be calling this exept tests, this gets position from the turn motor
   // what should be used would be getTurnMotorAngle()
   public double getTurnMotorEncoderPosition() {
-    // TODO find a way to check robot to see if we are in test mode then log an error if not
+    if(!DriverStation.isTestEnabled()) {
+      new Alert("getTurnMotorEncoderPosition was called outside of Test", AlertType.kError).set(true);
+      return getTurnMotorAngle().getDegrees();
+    }
     return turnMotor.getPosition().getValueAsDouble() / Constants.Drivebase.Info.TURN_MOTOR_GEAR_RATIO; 
   }
 
@@ -179,7 +184,7 @@ public class SwerveModule extends SubsystemBase {
     return turnMotorRotation;
   }
 
-  // Returns Voltage
+  // Returns voltage in volts
   public double getTurnMotorVoltage() {
     return turnMotor.getMotorVoltage().getValueAsDouble();
   }

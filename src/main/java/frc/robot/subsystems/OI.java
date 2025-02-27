@@ -15,7 +15,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants.EndEffectorSetpoints;
 import frc.robot.constants.Constants.Drivebase.FieldTarget;
 import frc.robot.constants.Constants.OI.LIMITS;
-import frc.robot.commands.MoveEndEffector;
+import frc.robot.commands.Funnel.MoveToPosition;
+import frc.robot.commands.wrist.MoveWristToSetpoint;
+import frc.robot.commands.elevator.*;
 import frc.robot.subsystems.drivebase.Drivebase;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.OI.IDs.Buttons;
@@ -48,41 +50,19 @@ public class OI {
     Optional<Wrist> optionalWrist,
     Optional<Climber> optionalClimber,
     Optional<Drivebase> optionalDrivebase,
-    Optional<Funnel> optionalFunnel
-  ) {
-    JoystickButton algaeToggle = new JoystickButton(buttonJoystick, Buttons.ALGAE_TOGGLE);
-    Trigger coralToggle = algaeToggle.negate();
+    Optional<Funnel> optionalFunnel) {
 
     if (optionalCollector.isPresent()) {
       Collector collector = optionalCollector.get();
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.INTAKE_CORAL)
+        .whileTrue(collector.intakeCoralCommand(true));
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.EXPEL_CORAL)
+        .whileTrue(collector.expelCoral(true));
 
-      JoystickButton intake = new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.INTAKE);
-      JoystickButton expell = new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.EXPELL);
-      intake.and(coralToggle)
-        .whileTrue(collector.waitAfterCatchPieceCommand());
-
-      intake.and(algaeToggle).whileTrue(collector.intakeAlgaeCommand());
-      intake.and(coralToggle).whileTrue(collector.intakeCoralCommand());
-
-      expell.and(algaeToggle).whileTrue(collector.scoreAlgaeCommand());
-      expell.and(coralToggle).whileTrue(collector.scoreCoralCommand());
-    }
-
-    if (optionalDrivebase.isPresent()) {
-      Drivebase drivebase = optionalDrivebase.get();
-
-      // TODO: find a better place for this command
-      Command targetCommand = drivebase.getSwerveHeadingCorrected(
-          this::getInstructedXMetersPerSecond,
-          this::getInstructedYMetersPerSecond,
-          // TODO: define an actual target point
-          (Supplier<Rotation2d>) () -> drivebase.getTargetingAngle(FieldTarget.REEF_RED),
-          true);
-
-      targetCommand.addRequirements(drivebase);
-
-      new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_REEF_BUTTON)
-          .whileTrue(targetCommand);
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.INTAKE_ALGAE)
+        .whileTrue(collector.intakeAlgaeCommand(true));
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.EXPEL_ALGAE)  
+        .whileTrue(collector.expelAlgaeCommand(true));
     }
 
     if(optionalClimber.isPresent()){
@@ -165,6 +145,14 @@ public class OI {
       endEffectorToPositionD.and(coralToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.coralL4)
       );
+    }
+
+    if(optionalFunnel.isPresent()){
+      Funnel funnel = optionalFunnel.get();
+      new JoystickButton(translationJoystick, Constants.OI.IDs.Buttons.Funnel.GO_TO_MAX)
+        .onTrue(new MoveToPosition(funnel, Constants.Funnel.FUNNEL_POSITION_HIGH_CONVERTED));
+      new JoystickButton(translationJoystick, Constants.OI.IDs.Buttons.Funnel.GO_TO_MIN)
+        .onTrue(new MoveToPosition(funnel, Constants.Funnel.FUNNEL_POSITION_LOW_CONVERTED));
     }
   }
 
