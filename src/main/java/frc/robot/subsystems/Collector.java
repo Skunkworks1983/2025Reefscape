@@ -77,20 +77,20 @@ public class Collector extends SubsystemBase {
   }
 
   // meters per sec 
-  private void setCollectorSpeeds(double RightSpeed, double LeftSpeed){
-    if (RightSpeed != lastRightSpeed) {
+  private void setCollectorSpeeds(double rightSpeed, double leftSpeed){
+    if (rightSpeed != lastRightSpeed) {
       rightMotor.setControl(velocityVoltage
-          .withVelocity(RightSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER));
-      ConditionalSmartDashboard.putNumber("Collector/ right speed", RightSpeed);
+          .withVelocity(rightSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER));
+      ConditionalSmartDashboard.putNumber("Collector/ Right speed", rightSpeed);
     }
-    lastRightSpeed = RightSpeed;
+    lastRightSpeed = rightSpeed;
 
-    if (LeftSpeed != lastLeftSpeed) {
+    if (leftSpeed != lastLeftSpeed) {
       leftMotor.setControl(velocityVoltage
-          .withVelocity(LeftSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER));
-      ConditionalSmartDashboard.putNumber("Collector/ left speed", LeftSpeed);
+          .withVelocity(leftSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER));
+      ConditionalSmartDashboard.putNumber("Collector/ Left speed", leftSpeed);
     }
-    lastLeftSpeed = LeftSpeed;
+    lastLeftSpeed = leftSpeed;
   }
   @Override
   public void periodic() {
