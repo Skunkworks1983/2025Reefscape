@@ -71,6 +71,6 @@ public class MoveWristToSetpoint extends Command {
   
   @Override
   public boolean isFinished() {
-    return (Math.abs(wrist.getPosition() - setPoint)) < Constants.WristIDs.WRIST_RANGE;
+    return (Math.abs(wrist.getPosition() - setPoint)) < Constants.WristIDs.WRIST_TOLERANCE;
   }
 }

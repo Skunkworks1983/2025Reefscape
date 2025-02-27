@@ -62,6 +62,7 @@ public class Wrist extends SubsystemBase {
     }
   }
 
+  // magnet outputs reversed so that they are true when triggered
   public boolean getTopMagnetSensor() { 
     return !topMagnetSensor.get();
   }

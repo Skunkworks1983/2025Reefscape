@@ -256,7 +256,7 @@ public class Constants {
 
     public static final double WRIST_VELOCITY = 1; 
 
-    public static final double WRIST_RANGE = 0.5;
+    public static final double WRIST_TOLERANCE = 0.5;
 
     public static final double WRIST_MIDPOINT_ROTATIONS = 2.5; //TODO figure out postitions
     public static final double WRIST_MIN_ROTATIONS = 0;
