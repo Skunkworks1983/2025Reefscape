@@ -195,7 +195,7 @@ public class Constants {
     public static final double FUNNEL_TOLERANCE = 0.1;
 
     public class PIDs {
-      public static final double FUNNEL_KP = .08; //TODO tune constants
+      public static final double FUNNEL_KP = .08;
       public static final double FUNNEL_KD = 0.0;
       public static final double FUNNEL_KI = 0.0;
       public static final double FUNNEL_KF = 0.0;
@@ -373,7 +373,7 @@ public class Constants {
         // The effects of these buttons may change depending on algae or coral mode.
         // Will also change for different positions (e.g. net)
         public static final int INTAKE = 0;
-        public static final int EXPELL = 0;
+        public static final int EXPEL = 0;
 
         public static final int CLIMBER_GOTO_MAX = 0;
         public static final int CLIMBER_GOTO_MIN = 0;

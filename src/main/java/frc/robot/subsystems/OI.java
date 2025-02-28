@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants.EndEffectorSetpoints;
 import frc.robot.constants.Constants.OI.LIMITS;
 import frc.robot.commands.MoveEndEffector;
-import frc.robot.commands.Funnel.MoveFunnelToSetpoint;
+import frc.robot.commands.funnel.MoveFunnelToSetpoint;
 import frc.robot.subsystems.drivebase.Drivebase;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.OI.IDs.Buttons;
@@ -57,7 +57,7 @@ public class OI {
         .and(coralToggle)
         .whileTrue(collector.intakeCoralCommand(true));
 
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.EXPELL)
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.EXPEL)
         .and(coralToggle)
         .whileTrue(collector.expelCoral(true));
 
@@ -65,7 +65,7 @@ public class OI {
         .and(algaeToggle)
         .whileTrue(collector.intakeAlgaeCommand(true));
 
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.EXPELL)
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.EXPEL)
         .and(algaeToggle)
         .whileTrue(collector.expelAlgaeCommand(true));
     }
