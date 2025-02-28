@@ -250,25 +250,6 @@ public class Constants {
       public static final double MAX_VELOCITY = 60.0;
       public static final double MAX_ACCELERATION = 80.0;
     }
-
-    public class Setpoints {
-      // Reminder: all positions are in meters
-      public static final double BOTTOM = 0.0;
-
-      public static final double GROUND_CORAL = 0;
-      public static final double STOW_CORAL = BOTTOM; // TODO: double check value
-      public static final double L1_POSITION_CORAL = 0.0;
-      public static final double L2_POSITION_CORAL = 0.0;
-      public static final double L3_POSITION_CORAL = 0.0;
-      public static final double L4_POSITION_CORAL = MAX_HEIGHT_CARRIAGE;
-
-      public static final double GROUND_AGLAE = 0;
-      public static final double STOW_AGLAE = 0;
-      public static final double PROCESSOR_POSITION = 0.0;
-      public static final double L2_POSITION_ALGAE = 0.0;
-      public static final double L3_POSITION_ALGAE = 0.0;
-      public static final double NET_POSITION = MAX_HEIGHT_CARRIAGE;
-    }
   }
 
   public class Wrist {

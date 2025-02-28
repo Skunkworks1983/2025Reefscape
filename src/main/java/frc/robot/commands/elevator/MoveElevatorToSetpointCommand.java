@@ -65,7 +65,10 @@ public class MoveElevatorToSetpointCommand extends Command {
       elevator.setMotorTrapezoidProfileSafe(0.0, 0.0);
     }
     else if(elevator.getTopLimitSwitch() && isGoingUp) {
-      elevator.setMotorTrapezoidProfileSafe(Constants.Elevator.Setpoints.L4_POSITION_CORAL, 0.0);
+      elevator.setMotorTrapezoidProfileSafe(
+        Constants.EndEffectorSetpoints.coralL4.elevatorSetpoint,
+        0.0
+      );
     }
   }
 
