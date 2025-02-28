@@ -362,7 +362,7 @@ public class Constants {
         // Switch being on coresponds to algae
         public static final int ALGAE_TOGGLE = 0;
 
-        // The following buttons depend on ALGAE_CORAL_TOGGLE
+        // The following buttons depend on ALGAE_TOGGLE
         public static final int GOTO_POSITION_A = 0; // either L1 or proccesor on ALGAE_TOGGLE
         public static final int GOTO_POSITION_B = 0; // either place coral L2 or remove algae L2
         public static final int GOTO_POSITION_C = 0; // either place coral L3 or remove algae L4

@@ -48,7 +48,7 @@ public class OI {
     Optional<Drivebase> optionalDrivebase,
     Optional<Funnel> optionalFunnel) {
       Trigger algaeToggle = new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.ALGAE_TOGGLE);
-      Trigger coralToggle = algaeToggle.negate();
+      Trigger coralToggle = algaeToggle.negate(); // If not in algae mode, we are using coral mode.
 
     if (optionalCollector.isPresent()) {
       Collector collector = optionalCollector.get();
@@ -64,12 +64,13 @@ public class OI {
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.INTAKE)
         .and(algaeToggle)
         .whileTrue(collector.intakeAlgaeCommand(true));
+
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.EXPELL)
-        .and(algaeToggle)  
+        .and(algaeToggle)
         .whileTrue(collector.expelAlgaeCommand(true));
     }
 
-    if(optionalClimber.isPresent()){
+    if(optionalClimber.isPresent()) {
       Climber climber = optionalClimber.get();
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.CLIMBER_GOTO_MAX)
         .onTrue(climber.goToPositionAfterMagnetSensor(Constants.Climber.CLIMBER_MAX));
