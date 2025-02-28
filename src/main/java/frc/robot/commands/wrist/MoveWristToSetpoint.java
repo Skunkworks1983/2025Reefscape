@@ -47,7 +47,7 @@ public class MoveWristToSetpoint extends Command {
     timePassed.start();
 
     double circlePortion = setPoint / 360.0;
-    double newSetPoint = circlePortion * Constants.WristIDs.WRIST_GEAR_RATIO;
+    double newSetPoint = circlePortion * Constants.Wrist.WRIST_GEAR_RATIO;
 
     goal = new TrapezoidProfile.State(newSetPoint,0);
     positionVoltage = new PositionVoltage(0);
