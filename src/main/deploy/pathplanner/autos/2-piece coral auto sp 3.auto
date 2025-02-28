@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "SP1 to Face6"
+                  "pathName": "SP3 to face 2"
                 }
               },
               {
@@ -68,7 +68,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Face 6 to Top Coral Station"
+                  "pathName": "face 2 to coral station"
                 }
               },
               {
@@ -125,7 +125,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Top Coral Station to Face 5"
+                  "pathName": "coral station to face 3"
                 }
               },
               {
