@@ -363,10 +363,10 @@ public class Constants {
         public static final int ALGAE_TOGGLE = 0;
 
         // The following buttons depend on ALGAE_TOGGLE
-        public static final int GOTO_LOW = 0; // either L1 or proccesor on ALGAE_TOGGLE
+        public static final int GOTO_SCORE_LOW = 0; // either L1 or proccesor on ALGAE_TOGGLE
         public static final int GOTO_L2 = 0; // either place coral L2 or remove algae L2
         public static final int GOTO_L3 = 0; // either place coral L3 or remove algae L4
-        public static final int GOTO_HIGH = 0; // either L4 or net depending on ALGAE_TOGGLE
+        public static final int GOTO_SCORE_HIGH = 0; // either L4 or net depending on ALGAE_TOGGLE
         public static final int GOTO_STOW = 0; 
         public static final int GOTO_GROUND = 0;
 

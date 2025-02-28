@@ -107,10 +107,10 @@ public class OI {
 
       JoystickButton endEffectorGround = new JoystickButton(buttonJoystick, Buttons.GOTO_GROUND);
       JoystickButton endEffectorStow = new JoystickButton(buttonJoystick, Buttons.GOTO_STOW);
-      JoystickButton endEffectorLow = new JoystickButton(buttonJoystick, Buttons.GOTO_LOW);
+      JoystickButton endEffectorToScoreLow = new JoystickButton(buttonJoystick, Buttons.GOTO_SCORE_LOW);
       JoystickButton endEffectorToL2 = new JoystickButton(buttonJoystick, Buttons.GOTO_L2);
       JoystickButton endEffectorToL3 = new JoystickButton(buttonJoystick, Buttons.GOTO_L3);
-      JoystickButton endEffectorHigh = new JoystickButton(buttonJoystick, Buttons.GOTO_HIGH);
+      JoystickButton endEffectorToScoreHigh = new JoystickButton(buttonJoystick, Buttons.GOTO_SCORE_HIGH);
 
       // Algae mode
       endEffectorGround.and(algaeToggle).onTrue(
@@ -121,7 +121,7 @@ public class OI {
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.algaeStow)
       );
 
-      endEffectorLow.and(algaeToggle).onTrue(
+      endEffectorToScoreLow.and(algaeToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.algaeProcessor)
       );
 
@@ -133,7 +133,7 @@ public class OI {
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.algaeL3)
       );
 
-      endEffectorHigh.and(algaeToggle).onTrue(
+      endEffectorToScoreHigh.and(algaeToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.algaeNet)
       );
 
@@ -146,7 +146,7 @@ public class OI {
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.coralStow)
       );
 
-      endEffectorLow.and(coralToggle).onTrue(
+      endEffectorToScoreLow.and(coralToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.coralL1)
       );
 
@@ -158,7 +158,7 @@ public class OI {
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.coralL3)
       );
 
-      endEffectorHigh.and(coralToggle).onTrue(
+      endEffectorToScoreHigh.and(coralToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.coralL4)
       );
     }
