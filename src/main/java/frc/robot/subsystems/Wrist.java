@@ -77,10 +77,10 @@ public class Wrist extends SubsystemBase {
     return wristMotor.getVelocity().getValueAsDouble();
   }
   
-  public void setWristMotorControl(PositionVoltage setWristMotorSpeed) {
-    wristMotor.setControl(setWristMotorSpeed
+  public void setWristMotorControl(PositionVoltage setWristMotorControl) {
+    wristMotor.setControl(setWristMotorControl
       .withLimitForwardMotion(getTopMagnetSensor())
-      .withLimitReverseMotion(getBottomMagnetSensor())
+      .withLimitReverseMotion(getBottomMagnetSensor()).withEnableFOC(true)
     );
   }
   

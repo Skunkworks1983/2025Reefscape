@@ -270,13 +270,16 @@ public class Constants {
       public static final boolean WRIST_SMARTPID_ACTIVE = false;
     }
 
-    public static final double WRIST_VELOCITY = 1; 
+    public static final double WRIST_MAX_VELOCITY = 1;
+    public static final double WRIST_MAX_ACCELERATION = 1; 
 
     public static final double WRIST_TOLERANCE = 0.5;
 
-    public static final double WRIST_MIDPOINT_ROTATIONS = 2.5; //TODO figure out postitions
+    public static final double WRIST_MIDPOINT_ROTATIONS = 45; //TODO figure out postitions
     public static final double WRIST_MIN_ROTATIONS = 0;
-    public static final double WRIST_MAX_ROTATIONS = 5;
+    public static final double WRIST_MAX_ROTATIONS = 90;
+
+    public static final int WRIST_GEAR_RATIO = 56; //56 motor rotations to 1 wrist rotation
   }
   
   // TODO: add end effector setpoints
