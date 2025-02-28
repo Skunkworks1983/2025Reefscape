@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Funnel;
+package frc.robot.commands.wrist;
 
 import com.ctre.phoenix6.controls.PositionVoltage;
 
@@ -10,14 +10,14 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.Funnel;
+import frc.robot.subsystems.Wrist;
 import frc.robot.utils.ConditionalSmartDashboard;
 
-public class MoveToPosition extends Command {
-  Funnel funnel;
+
+public class MoveWristToSetpoint extends Command {
+  Wrist wrist;
 
   PositionVoltage positionVoltage;
   TrapezoidProfile.State goal;
@@ -26,50 +26,51 @@ public class MoveToPosition extends Command {
   double newSetPoint;
 
   final TrapezoidProfile profile = new TrapezoidProfile(
-    new TrapezoidProfile.Constraints(100, 500));
+    new TrapezoidProfile.Constraints(1, 1));
   
   Timer timePassed;
 
-  public MoveToPosition(Funnel funnel, double setPoint) {
-    this.funnel = funnel;
+  public MoveWristToSetpoint(Wrist wrist, double setPoint) {
     this.setPoint = setPoint;
+    this.wrist = wrist;
 
-    addRequirements(funnel);
+    addRequirements(wrist);
 
     timePassed = new Timer();
     timePassed.stop();
-
   }
-
-  // Called when the command is initially scheduled.
+  
   @Override
   public void initialize() {
-    DataLogManager.log("Initialized funnel move to position command");
+    DataLogManager.log("MoveWristToSetpoint command initialized");
+
     timePassed.reset(); 
     timePassed.start();
 
     goal = new TrapezoidProfile.State(setPoint,0);
     positionVoltage = new PositionVoltage(0);
-    startPosition = new TrapezoidProfile.State(funnel.getPos(), funnel.getVelocity());
+    startPosition = new TrapezoidProfile.State(wrist.getPosition(),wrist.getWristVelocity());
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     State positionGoal = profile.calculate(timePassed.get(), startPosition, goal);
-    ConditionalSmartDashboard.putNumber("Funnel/Desired position", positionGoal.position);
-    ConditionalSmartDashboard.putNumber("Funnel/Desired velocity", positionGoal.velocity);
-    funnel.setFunnelSetPoint(positionGoal.position);
-  }
+    positionVoltage.Position = positionGoal.position;
+    positionVoltage.Velocity = positionGoal.velocity;
+    wrist.setWristMotorControl(positionVoltage);
 
-  // Called once the command ends or is interrupted.
+    ConditionalSmartDashboard.putNumber("Wrist position goal (motor rotations)", positionGoal.position);
+    ConditionalSmartDashboard.putNumber("Wrist velocity goal (motor rotations per second)", positionGoal.velocity);
+  }
+  
   @Override
   public void end(boolean interrupted) {
-    DataLogManager.log("End of funnel move to position command");
+    wrist.setWristMotorSpeed(0);
+    DataLogManager.log("MoveWristToSetpoint command ended");
   }
-
+  
   @Override
   public boolean isFinished() {
-    return Math.abs(funnel.getPos() - goal.position) < Constants.Funnel.FUNNEL_TOLERANCE;
+    return (Math.abs(wrist.getPosition() - setPoint)) < Constants.Wrist.WRIST_TOLERANCE;
   }
 }
