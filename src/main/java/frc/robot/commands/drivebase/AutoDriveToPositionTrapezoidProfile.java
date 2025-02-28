@@ -1,6 +1,8 @@
 package frc.robot.commands.drivebase;
 
-import edu.wpi.first.math.geometry.Translation2d;
+import java.util.function.Supplier;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.Timer;
@@ -76,8 +78,19 @@ public class AutoDriveToPositionTrapezoidProfile extends Command {
   private final Timer timeElapsed = new Timer();
   Drivebase drivebase;
 
-  public AutoDriveToPositionTrapezoidProfile(Drivebase drivebase, Translation2d point) {
-    this.drivebase = drivebase;
+  @FunctionalInterface
+  public interface DriveFunction<A, B, C, D> {
+    public void apply(A xMetersPerSecond, B yMetersPerSecond, C degreesPerSecond, D fieldRelative);
+  }
+
+  DriveFunction<Double, Double, Double, Boolean> drive;
+
+  public AutoDriveToPositionTrapezoidProfile(
+      DriveFunction<Double, Double, Double, Boolean> drive, 
+      Supplier<Pose2d> getEstimatedRobotPose,
+      Pose2d position) {
+        
+    this.drive = drive;
   }
 
   @Override
@@ -88,7 +101,7 @@ public class AutoDriveToPositionTrapezoidProfile extends Command {
   @Override
   public void execute() {
     StatePose statePose = motionProfile.calculate(timeElapsed.get(), initialPose, endPose);
-    drivebase.drive(statePose.x.position, statePose.y.position, statePose.rot.position, true);
+    drive.apply(statePose.x.position, statePose.y.position, statePose.rot.position, true);
   }
 
   @Override

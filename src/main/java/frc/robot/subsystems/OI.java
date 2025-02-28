@@ -16,6 +16,7 @@ import frc.robot.commands.Wrist.MoveWristToSetpoint;
 import frc.robot.commands.elevator.*;
 import frc.robot.subsystems.drivebase.Drivebase;
 import frc.robot.subsystems.drivebase.TargetingUtils;
+import frc.robot.subsystems.drivebase.Drivebase.BranchSide;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.OI.IDs.Joysticks;
 
@@ -84,8 +85,17 @@ public class OI {
 
       targetCommand.addRequirements(drivebase);
 
+      Command goToLeftBranch = drivebase.getAutoLineupToReefCommand(BranchSide.LEFT);
+      goToLeftBranch.addRequirements(drivebase);
+
+      Command goToRightBranch = drivebase.getAutoLineupToReefCommand(BranchSide.RIGHT);
+      goToRightBranch.addRequirements(drivebase);
+
       new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.Drivebase.TARGET_REEF_BUTTON)
           .whileTrue(targetCommand);
+
+      new JoystickButton(translationJoystick, 0).whileTrue(goToLeftBranch);
+      new JoystickButton(translationJoystick, 0).whileTrue(goToRightBranch);
     }
 
     if (optionalWrist.isPresent())  {

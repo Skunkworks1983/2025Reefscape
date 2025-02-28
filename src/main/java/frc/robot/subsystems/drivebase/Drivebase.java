@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.drivebase;
 
+import java.lang.annotation.Target;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
@@ -16,6 +17,7 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -28,9 +30,12 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.drivebase.AutoDriveToPositionTrapezoidProfile;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.VisionConstants;
+import frc.robot.constants.Constants.Drivebase.FieldTarget;
 import frc.robot.subsystems.drivebase.odometry.OdometryThread;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.Phoenix6Odometry;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.Phoenix6DrivebaseState;
@@ -247,6 +252,11 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     return Commands.parallel(swerveModuleCommandArray);
   }
 
+  public static Alliance getAlliance() {
+    Optional<Alliance> alliance = DriverStation.getAlliance();
+    return alliance.isPresent() ? alliance.get() : Alliance.Blue;
+  }
+
   /**
    * @return The swerve drive command to be used in Teleop. Heading is corrected with PID.
    */
@@ -364,13 +374,36 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     RIGHT
   }
 
-  /** The distance from the center of the reef to any one of the reef corners. */
+  /** The distance from the center of the reef to any one of the reef sides. */
   public static final double REEF_SMALL_RADIUS = Units.inchesToMeters(93.50 / 2);
 
-  public Command autoAlignToReefCommand(BranchSide branchSide) {
-    Pose2d estimatedPose = getEstimatedRobotPose();
-    Rotation2d desiredPoseAngle = TargetingUtils.getPointAtReefFaceAngle(() -> getEstimatedRobotPose());
-    Translation2d reefCenterTo = new Translation2d(desiredPoseAngle.getCos() * REEF_SMALL_RADIUS, desiredPoseAngle.getSin() * REEF_SMALL_RADIUS);
+  /** The horizontal offset needed to position the robot in front of one of one of the two branches. */
+  public static final double BRANCH_LINEUP_HORIZONTAL_OFFSET = 1.0;
+  public static final double BRANCH_LINEUP_DIST_FROM_REEF = 1.0;
+  public static final double MAX_DIST_FROM_REEF_CENTER = 1.0;
+
+  /** 
+   * @param branchSide The branch (left or right) of the nearest Reef face that's being aligned to. 
+   *    This command should be bound by two buttons in OI: one for left and one for right.
+   */
+  public Command getAutoLineupToReefCommand(BranchSide branchSide) {
+    Rotation2d angle = TargetingUtils.getPointAtReefFaceAngle(this::getEstimatedRobotPose);
+    Pose2d originToReefCenter = new Pose2d(FieldTarget.REEF_BLUE, angle);
+    Transform2d reefCenterToRobot =
+      new Transform2d(
+        // The small radius of the reef plus some length so the robot doesn't collide.
+        REEF_SMALL_RADIUS + BRANCH_LINEUP_DIST_FROM_REEF,
+        // Positive or negative offset depending on the branch side.
+        branchSide == BranchSide.LEFT ? BRANCH_LINEUP_HORIZONTAL_OFFSET : -BRANCH_LINEUP_HORIZONTAL_OFFSET, 
+        new Rotation2d()
+      );
+    Pose2d goalPose = originToReefCenter.plus(reefCenterToRobot);
+
+    if (TargetingUtils.distToReefCenter(this::getEstimatedRobotPose) > MAX_DIST_FROM_REEF_CENTER) {
+      return new InstantCommand();
+    }
+
+    return new AutoDriveToPositionTrapezoidProfile(this::drive, this::getEstimatedRobotPose, goalPose);
   }
 
   public Phoenix6DrivebaseState getState() {

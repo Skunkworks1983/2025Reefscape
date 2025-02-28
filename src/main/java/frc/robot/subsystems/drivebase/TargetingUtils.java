@@ -6,6 +6,8 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.constants.Constants.Drivebase.FieldTarget;
 
 public class TargetingUtils {
@@ -22,7 +24,7 @@ public class TargetingUtils {
 
   /** @return the angle needed to point at the nearest face of the reef */
   public static Rotation2d getPointAtReefFaceAngle(Supplier<Pose2d> getRobotPose) {
-    double angleDegrees = getTargetingAngle(FieldTarget.REEF_BLUE, getRobotPose).getDegrees();
+    double angleDegrees = getTargetingAngle(getReefCenter(), getRobotPose).getDegrees();
     // Using Math.floor() here because Math.round() is unintuitive when the value is in the middle, like .5
     return Rotation2d.fromDegrees(Math.floor((angleDegrees + 30) / 60) * 60);
   }
@@ -33,9 +35,25 @@ public class TargetingUtils {
    */
   public static Rotation2d getPointAtCoralStationAngle(Supplier<Pose2d> getRobotPose) {
     return getTargetingAngle(
-      FieldTarget.REEF_BLUE,
+      getReefCenter(),
       getRobotPose
     ).getDegrees() > 0 ?  
       FieldTarget.LEFT_CORAL_STATION_ANGLE : FieldTarget.RIGHT_CORAL_STATION_ANGLE;
+  }
+
+  /** The distance between the robot's current field position and the center of the Reef. */
+  public static double distToReefCenter(Supplier<Pose2d> getRobotPose) {
+    Translation2d reefCenter = getReefCenter();
+    Pose2d robotPose = getRobotPose.get();
+    double x = reefCenter.getX() - robotPose.getX();
+    double y = reefCenter.getY() - robotPose.getY();
+    double dist = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+    
+    return dist;
+  }
+
+  private static Translation2d getReefCenter() {
+    return (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) ? 
+      FieldTarget.REEF_RED : FieldTarget.REEF_BLUE;
   }
 }
