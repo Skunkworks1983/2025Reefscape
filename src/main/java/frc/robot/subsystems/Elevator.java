@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.utils.ConditionalSmartDashboard;
+import frc.robot.utils.PIDControllers.SmartPIDControllerTalonFX;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -31,18 +32,25 @@ public class Elevator extends SubsystemBase {
   private double targetVelocity;
   private double finalTargetPosition;
 
+  private SmartPIDControllerTalonFX smartPIDController;
+
   public Elevator() {
     TalonFXConfiguration config = new TalonFXConfiguration();
     motorRight.getConfigurator().apply(config);
     motorLeft.getConfigurator().apply(config);
-    Slot0Configs slot0Configs = new Slot0Configs();
-    slot0Configs.kP = Constants.Elevator.PIDs.ELEVATOR_kP;
-    slot0Configs.kI = Constants.Elevator.PIDs.ELEVATOR_kI;
-    slot0Configs.kD = Constants.Elevator.PIDs.ELEVATOR_kD;
-    slot0Configs.kV = Constants.Elevator.PIDs.ELEVATOR_kV;
-    slot0Configs.kS = Constants.Elevator.PIDs.ELEVATOR_kS;
-    motorRight.getConfigurator().apply(slot0Configs);
-    motorLeft.getConfigurator().apply(slot0Configs);
+    
+    smartPIDController = new SmartPIDControllerTalonFX(
+      Constants.Elevator.PIDs.ELEVATOR_kP, 
+      Constants.Elevator.PIDs.ELEVATOR_kI, 
+      Constants.Elevator.PIDs.ELEVATOR_kD, 
+      Constants.Elevator.PIDs.ELEVATOR_kF,
+      Constants.Elevator.PIDs.ELEVATOR_kV,
+      Constants.Elevator.PIDs.ELEVATOR_kA,
+      Constants.Elevator.PIDs.ELEVATOR_kS,
+      "Elevator",
+      Constants.Elevator.PIDs.SMART_PID_ENABLED,
+      motorRight
+    );
 
     motorRight.setNeutralMode(NeutralModeValue.Brake);
     motorLeft.setNeutralMode(NeutralModeValue.Brake);

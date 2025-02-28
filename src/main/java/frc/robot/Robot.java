@@ -27,13 +27,15 @@ public class Robot extends TimedRobot {
   Optional<Collector> collector = Optional.of(new Collector());
   Optional<Wrist> wrist = Optional.of(new Wrist());
   Optional<Climber> climber = Optional.of(new Climber());
+  Optional<Funnel> funnel = Optional.of(new Funnel());
 
   OI oi = new OI( 
     elevator,
     collector,
     wrist,
     climber,
-    drivebase
+    drivebase,
+    funnel
   );
   
   ErrorGroup errorGroup = new ErrorGroup();
