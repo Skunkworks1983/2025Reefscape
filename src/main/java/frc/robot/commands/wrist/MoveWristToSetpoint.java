@@ -25,7 +25,7 @@ public class MoveWristToSetpoint extends Command {
   double setPoint;
 
   final TrapezoidProfile profile = new TrapezoidProfile(
-    new TrapezoidProfile.Constraints(1, 1));
+    new TrapezoidProfile.Constraints(Constants.Wrist.WRIST_MAX_VELOCITY, Constants.Wrist.WRIST_MAX_ACCELERATION));
   
   Timer timePassed;
 
