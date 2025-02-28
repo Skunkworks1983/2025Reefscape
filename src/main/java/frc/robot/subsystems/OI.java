@@ -105,60 +105,60 @@ public class OI {
       Elevator elevator = optionalElevator.get();
       Wrist wrist = optionalWrist.get();
 
-      JoystickButton endEffectorToGround = new JoystickButton(buttonJoystick, Buttons.GOTO_GROUND);
-      JoystickButton endEffectorToStow = new JoystickButton(buttonJoystick, Buttons.GOTO_STOW);
-      JoystickButton endEffectorToPositionA = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_A);
-      JoystickButton endEffectorToPositionB = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_B);
-      JoystickButton endEffectorToPositionC = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_C);
-      JoystickButton endEffectorToPositionD = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_D);
+      JoystickButton endEffectorGround = new JoystickButton(buttonJoystick, Buttons.GOTO_GROUND);
+      JoystickButton endEffectorStow = new JoystickButton(buttonJoystick, Buttons.GOTO_STOW);
+      JoystickButton endEffectorLow = new JoystickButton(buttonJoystick, Buttons.GOTO_LOW);
+      JoystickButton endEffectorToL2 = new JoystickButton(buttonJoystick, Buttons.GOTO_L2);
+      JoystickButton endEffectorToL3 = new JoystickButton(buttonJoystick, Buttons.GOTO_L3);
+      JoystickButton endEffectorHigh = new JoystickButton(buttonJoystick, Buttons.GOTO_HIGH);
 
       // Algae mode
-      endEffectorToGround.and(algaeToggle).onTrue(
+      endEffectorGround.and(algaeToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.algaeGround)
       );
 
-      endEffectorToStow.and(algaeToggle).onTrue(
+      endEffectorStow.and(algaeToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.algaeStow)
       );
 
-      endEffectorToPositionA.and(algaeToggle).onTrue(
+      endEffectorLow.and(algaeToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.algaeProcessor)
       );
 
-      endEffectorToPositionB.and(algaeToggle).onTrue(
+      endEffectorToL2.and(algaeToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.algaeL2)
       );
 
-      endEffectorToPositionC.and(algaeToggle).onTrue(
+      endEffectorToL3.and(algaeToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.algaeL3)
       );
 
-      endEffectorToPositionD.and(algaeToggle).onTrue(
+      endEffectorHigh.and(algaeToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.algaeNet)
       );
 
       // Coral mode
-      endEffectorToGround.and(coralToggle).onTrue(
+      endEffectorGround.and(coralToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.coralGround)
       );
 
-      endEffectorToStow.and(coralToggle).onTrue(
+      endEffectorStow.and(coralToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.coralStow)
       );
 
-      endEffectorToPositionA.and(coralToggle).onTrue(
+      endEffectorLow.and(coralToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.coralL1)
       );
 
-      endEffectorToPositionB.and(coralToggle).onTrue(
+      endEffectorToL2.and(coralToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.coralL2)
       );
 
-      endEffectorToPositionC.and(coralToggle).onTrue(
+      endEffectorToL3.and(coralToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.coralL3)
       );
 
-      endEffectorToPositionD.and(coralToggle).onTrue(
+      endEffectorHigh.and(coralToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.coralL4)
       );
     }

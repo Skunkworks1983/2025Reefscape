@@ -4,13 +4,11 @@
 
 package frc.robot.constants;
 
-/** Add your docs here. */
 public class EndEffectorSetpointConstants {
   public final double elevatorSetpoint;
   public final double wristSetpoint;
   public EndEffectorSetpointConstants(double elevatorSetpoint, double wristSetpoint) {
     this.elevatorSetpoint = elevatorSetpoint;
     this.wristSetpoint = wristSetpoint;
-
   }
 }
