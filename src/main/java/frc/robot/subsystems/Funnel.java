@@ -35,21 +35,21 @@ public class Funnel extends SubsystemBase implements DiagnosticSubsystem{
   double setpoint;
 
   public Funnel() {
-    pivotMotor = new SparkMax(Constants.Funnel.PIVOT_MOTOR_ID,  MotorType.kBrushless);
+    pivotMotor = new SparkMax(Constants.Funnel.IDs.PIVOT_MOTOR_ID,  MotorType.kBrushless);
     SparkMaxConfig config = new SparkMaxConfig();
     config.closedLoop
-      .p(Constants.Funnel.FUNNEL_KP)
-      .i(Constants.Funnel.FUNNEL_KI)
-      .d(Constants.Funnel.FUNNEL_KD);
+      .p(Constants.Funnel.PIDs.FUNNEL_KP)
+      .i(Constants.Funnel.PIDs.FUNNEL_KI)
+      .d(Constants.Funnel.PIDs.FUNNEL_KD);
     pivotMotor.getEncoder().setPosition(0);
 
     pivotMotorSpeedController = new frc.robot.utils.PIDControllers.SmartPIDControllerCANSparkMax(
-      Constants.Funnel.FUNNEL_KP,
-      Constants.Funnel.FUNNEL_KI,
-      Constants.Funnel.FUNNEL_KD,
-      Constants.Funnel.FUNNEL_KF,
+      Constants.Funnel.PIDs.FUNNEL_KP,
+      Constants.Funnel.PIDs.FUNNEL_KI,
+      Constants.Funnel.PIDs.FUNNEL_KD,
+      Constants.Funnel.PIDs.FUNNEL_KF,
       "Funnel Pivot Motor",
-      Constants.Funnel.FUNNEL_SMARTPID_ACTIVE,
+      Constants.Funnel.PIDs.FUNNEL_SMARTPID_ACTIVE,
       pivotMotor
     );
   }

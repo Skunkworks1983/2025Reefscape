@@ -188,18 +188,22 @@ public class Constants {
   }
 
   public class Funnel {
-    public static final int PIVOT_MOTOR_ID = 23;
-    public static final double PIVOT_MOTOR_GEAR_RATIO = 1.0 / 100.0;
+    public class IDs {
+      public static final int PIVOT_MOTOR_ID = 23;
+    }
 
     public static final double FUNNEL_TOLERANCE = 0.1;
 
-    public static final double FUNNEL_KP = .08; //TODO tune constants
-    public static final double FUNNEL_KD = 0.0;
-    public static final double FUNNEL_KI = 0.0;
-    public static final double FUNNEL_KF = 0.0;
+    public class PIDs {
+      public static final double FUNNEL_KP = .08; //TODO tune constants
+      public static final double FUNNEL_KD = 0.0;
+      public static final double FUNNEL_KI = 0.0;
+      public static final double FUNNEL_KF = 0.0;
 
-    public static final boolean FUNNEL_SMARTPID_ACTIVE = true;
+      public static final boolean FUNNEL_SMARTPID_ACTIVE = true;
+    }
 
+    public static final double PIVOT_MOTOR_GEAR_RATIO = 1.0 / 100.0;
     public static final double FUNNEL_POSITION_LOW_CONVERTED = 0.0; //TODO FIGURE OUT POSITIONS IN ROTATIONS
     public static final double FUNNEL_POSITION_HIGH_IN_DEGREES = 40.0;
     public static final double FUNNEL_POSITION_HIGH_CONVERTED = (FUNNEL_POSITION_HIGH_IN_DEGREES / 360) / PIVOT_MOTOR_GEAR_RATIO;
@@ -268,18 +272,22 @@ public class Constants {
   }
 
   public class Wrist {
-    public static final int WRIST_KRAKEN_MOTOR_ID = 12; // !! all ID's are just for the test board !!
-    public static final int WRIST_TOP_MAGNET_SENSOR = 4;
-    public static final int WRIST_BOTTOM_MAGNET_SENSOR = 5;
+    public class IDs {
+      public static final int WRIST_KRAKEN_MOTOR_ID = 12; // !! all ID's are just for the test board !!
+      public static final int WRIST_TOP_MAGNET_SENSOR = 4;
+      public static final int WRIST_BOTTOM_MAGNET_SENSOR = 5;
+    }
     
-    public static final double WRIST_KS = 0.0;
-    public static final double WRIST_KV = 0.12;
-    public static final double WRIST_KP = 1.0;
-    public static final double WRIST_KD = 0.1;
-    public static final double WRIST_KI = 0.0;
-    public static final double WRIST_KF = 0.0;
+    public class PIDs {
+      public static final double WRIST_KS = 0.0;
+      public static final double WRIST_KV = 0.12;
+      public static final double WRIST_KP = 1.0;
+      public static final double WRIST_KD = 0.1;
+      public static final double WRIST_KI = 0.0;
+      public static final double WRIST_KF = 0.0;
 
-    public static final boolean WRIST_SMARTPID_ACTIVE = false;
+      public static final boolean WRIST_SMARTPID_ACTIVE = false;
+    }
 
     public static final double WRIST_VELOCITY = 1; 
 

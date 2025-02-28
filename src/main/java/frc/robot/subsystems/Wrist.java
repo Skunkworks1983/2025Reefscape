@@ -24,22 +24,22 @@ public class Wrist extends SubsystemBase {
   private DigitalInput bottomMagnetSensor;
 
   public Wrist() {
-    wristMotor = new TalonFX(Constants.Wrist.WRIST_KRAKEN_MOTOR_ID);
+    wristMotor = new TalonFX(Constants.Wrist.IDs.WRIST_KRAKEN_MOTOR_ID);
     wristMotor.setPosition(0.0);
 
-    topMagnetSensor = new DigitalInput(Constants.Wrist.WRIST_TOP_MAGNET_SENSOR);
-    bottomMagnetSensor = new DigitalInput(Constants.Wrist.WRIST_BOTTOM_MAGNET_SENSOR);
+    topMagnetSensor = new DigitalInput(Constants.Wrist.IDs.WRIST_TOP_MAGNET_SENSOR);
+    bottomMagnetSensor = new DigitalInput(Constants.Wrist.IDs.WRIST_BOTTOM_MAGNET_SENSOR);
 
     TalonFXConfiguration config = new TalonFXConfiguration();
 
     wristMotor.getConfigurator().apply(config);
     
     Slot0Configs slot0Configs = new Slot0Configs();
-    slot0Configs.kP = Constants.Wrist.WRIST_KP;
-    slot0Configs.kI = Constants.Wrist.WRIST_KI;
-    slot0Configs.kD = Constants.Wrist.WRIST_KD;
-    slot0Configs.kV = Constants.Wrist.WRIST_KV;
-    slot0Configs.kS = Constants.Wrist.WRIST_KS;
+    slot0Configs.kP = Constants.Wrist.PIDs.WRIST_KP;
+    slot0Configs.kI = Constants.Wrist.PIDs.WRIST_KI;
+    slot0Configs.kD = Constants.Wrist.PIDs.WRIST_KD;
+    slot0Configs.kV = Constants.Wrist.PIDs.WRIST_KV;
+    slot0Configs.kS = Constants.Wrist.PIDs.WRIST_KS;
     wristMotor.getConfigurator().apply(slot0Configs);
   }
 
