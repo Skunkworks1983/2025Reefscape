@@ -16,7 +16,6 @@ import frc.robot.subsystems.Wrist;
 import frc.robot.utils.ConditionalSmartDashboard;
 
 
-/* TODO: consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class MoveWristToSetpoint extends Command {
   Wrist wrist;
 
