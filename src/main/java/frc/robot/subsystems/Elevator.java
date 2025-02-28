@@ -99,7 +99,7 @@ public class Elevator extends SubsystemBase {
 
     motorRight.setControl(positionVoltage
       .withLimitForwardMotion(getTopLimitSwitch())
-      .withLimitReverseMotion(getBottomLimitSwitch())
+      .withLimitReverseMotion(getBottomLimitSwitch()).withEnableFOC(true)
     );
   }
 
