@@ -53,7 +53,7 @@ public class OI {
 
     if (optionalElevator.isPresent()) {
       Elevator elevator = optionalElevator.get();
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_FLOOR_POSITION)
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_FLOOR_POSITION)  //TODO add a distinction between the algea and coral
           .onTrue(new MoveToPositionCommand(elevator, Constants.Elevator.Setpoints.FLOOR_POSITION));
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Elevator.GOTO_L1)
           .onTrue(new MoveToPositionCommand(elevator, Constants.Elevator.Setpoints.L1_POSITION));
@@ -82,6 +82,8 @@ public class OI {
       Climber climber = optionalClimber.get();
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Climber.GO_TO_MAX)
         .onTrue(climber.waitUntilMagnetSensorsAreTrueThenGoToPos(Constants.ClimberIDs.CLIMBER_MAX));
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Climber.GO_TO_MIN)
+        .onTrue(climber.waitUntilMagnetSensorsAreTrueThenGoToPos(Constants.ClimberIDs.CLIMBER_MIN));
     }
 
     if(optionalFunnel.isPresent()){
@@ -90,6 +92,16 @@ public class OI {
         .onTrue(new MoveToPosition(funnel, Constants.Funnel.FUNNEL_POSITION_HIGH_CONVERTED));
       new JoystickButton(translationJoystick, Constants.OI.IDs.Buttons.Funnel.GO_TO_MIN)
         .onTrue(new MoveToPosition(funnel, Constants.Funnel.FUNNEL_POSITION_LOW_CONVERTED));
+    }
+
+    if(optionalWrist.isPresent()){
+      Wrist wrist = optionalWrist.get();
+      new JoystickButton(translationJoystick, Constants.OI.IDs.Buttons.Wrist.WRIST_UP)
+        .onTrue(new MoveWristToSetpoint(wrist, Constants.WristIDs.WRIST_MAX_ROTATIONS));
+      new JoystickButton(translationJoystick, Constants.OI.IDs.Buttons.Wrist.WRIST_MID)
+        .onTrue(new MoveWristToSetpoint(wrist, Constants.WristIDs.WRIST_MIDPOINT_ROTATIONS));
+      new JoystickButton(translationJoystick, Constants.OI.IDs.Buttons.Wrist.WRIST_DOWN)
+        .onTrue(new MoveWristToSetpoint(wrist, Constants.WristIDs.WRIST_MIN_ROTATIONS));
     }
   }
 

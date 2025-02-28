@@ -266,15 +266,21 @@ public class Constants {
     public static final double WRIST_KI = 0.0;
     public static final double WRIST_KF = 0.0;
 
+    public static final double WRIST_GEAR_RATIO = 1 / 56.0;
+
     public static final boolean WRIST_SMARTPID_ACTIVE = false;
 
     public static final double WRIST_VELOCITY = 1; 
 
     public static final double WRIST_TOLERANCE = 0.5;
 
-    public static final double WRIST_MIDPOINT_ROTATIONS = 2.5; //TODO figure out postitions
-    public static final double WRIST_MIN_ROTATIONS = 0;
-    public static final double WRIST_MAX_ROTATIONS = 5;
+    public static final double WRIST_MAX_DEGREES = 0.0; //TODO figure out postitions
+    public static final double WRIST_MIN_DEGREES = 0.0;
+    public static final double WRIST_MID_DEGREES = 0.0;
+
+    public static final double WRIST_MIDPOINT_ROTATIONS = (WRIST_MID_DEGREES / 360) / WRIST_GEAR_RATIO;
+    public static final double WRIST_MIN_ROTATIONS = (WRIST_MIN_DEGREES / 360) / WRIST_GEAR_RATIO;
+    public static final double WRIST_MAX_ROTATIONS = (WRIST_MAX_DEGREES / 360) / WRIST_GEAR_RATIO;
   }
 
   public class ClimberIDs {
@@ -339,7 +345,8 @@ public class Constants {
         }
 
         public class Wrist {
-          public static final int WRIST_UP = 18;
+          public static final int WRIST_UP = 18; //TODO figure out these constants
+          public static final int WRIST_MID = 0;
           public static final int WRIST_DOWN = 13;
         }
 
@@ -349,6 +356,7 @@ public class Constants {
 
         public class Climber{
           public static final int GO_TO_MAX = 10; //TODO find out what buttons these will be
+          public static final int GO_TO_MIN = 10; //TODO find out what buttons these will be
         }
 
         public class Funnel{
