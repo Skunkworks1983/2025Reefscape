@@ -257,6 +257,7 @@ public class Constants {
       public static final int WRIST_KRAKEN_MOTOR_ID = 12; // !! all ID's are just for the test board !!
       public static final int WRIST_TOP_MAGNET_SENSOR = 4;
       public static final int WRIST_BOTTOM_MAGNET_SENSOR = 5;
+
     }
     
     public class PIDs {
@@ -269,6 +270,7 @@ public class Constants {
 
       public static final boolean WRIST_SMARTPID_ACTIVE = false;
     }
+    public static final int WRIST_GEAR_RATIO = 1 / 56;
 
     public static final double WRIST_VELOCITY = 1; 
 
