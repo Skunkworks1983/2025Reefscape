@@ -4,6 +4,10 @@
 
 package frc.robot.utils.error;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
@@ -13,12 +17,17 @@ import edu.wpi.first.wpilibj2.command.Commands;
 public class ErrorCommandGenerator {
   public static Command getErrorCommand(
     ErrorGroup errorGroup,
-    DiagnosticSubsystem[] errorSubsystem
+    List<Optional<? extends DiagnosticSubsystem>> errorSubsystems
   ) {
-    Command[] errorCommandArray = new Command[errorSubsystem.length];
-    for(int i = 0; i < errorSubsystem.length; i++) {
-      errorCommandArray[i] = errorSubsystem[i].getErrorCommand(errorGroup);
+    
+    ArrayList<Command> errorCommandArray = new ArrayList<>();
+    
+    for(int i = 0; i < errorSubsystems.size(); i++) {
+      if(errorSubsystems.get(i).isPresent()) {
+        errorCommandArray.add(errorSubsystems.get(i).get().getErrorCommand(errorGroup));
+      }
     }
-    return Commands.sequence(errorCommandArray);
+
+    return Commands.sequence(errorCommandArray.toArray(new Command[0]));
   }
 }

@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -116,13 +118,17 @@ public class Robot extends TimedRobot {
   public void testInit() {
     errorGroup.clearAllTest();
 
+    List<Optional<? extends DiagnosticSubsystem>> diagnosticSubsystem = List.of(
+         drivebase,
+         climber
+    );
+
     // We provide the errorCommandGenerator with the error group and a array of subsystems to get commands from
-    if(drivebase.isPresent()) {
-      ErrorCommandGenerator.getErrorCommand(
-        errorGroup,
-        new DiagnosticSubsystem[] {drivebase.get()}
-      ).schedule();
-    }
+    ErrorCommandGenerator.getErrorCommand(
+      errorGroup,
+      diagnosticSubsystem
+    ).schedule();
+
   }
 
   @Override
