@@ -33,6 +33,7 @@ public class Robot extends TimedRobot {
   Optional<Collector> collector = Optional.of(new Collector());
   Optional<Wrist> wrist = Optional.of(new Wrist());
   Optional<Climber> climber = Optional.of(new Climber());
+  Optional<Funnel> funnel = Optional.of(new Funnel());
 
   private SendableChooser<Command> autoChooser;
 
@@ -43,7 +44,8 @@ public class Robot extends TimedRobot {
     collector,
     wrist,
     climber,
-    drivebase
+    drivebase,
+    funnel
   );
   
   ErrorGroup errorGroup = new ErrorGroup();
