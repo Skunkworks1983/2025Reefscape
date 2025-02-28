@@ -223,7 +223,7 @@ public class Constants {
     public static final double MAX_HEIGHT_CARRIAGE = 1.527175;
     public static final double MAX_HEIGHT_STAGE_ONE = 0.7366;
     public static final double STAGE_ONE_TO_CARRIAGE_HEIGHT = MAX_HEIGHT_CARRIAGE / MAX_HEIGHT_STAGE_ONE;
-    public static final double GEAR_RATIO = 1.0/5.0;
+    public static final double GEAR_RATIO = 1.0/6.25;
     public static final double ROTATIONS_TO_METERS = 0.1016 * STAGE_ONE_TO_CARRIAGE_HEIGHT;
     public static final double MOTOR_ROTATIONS_TO_METERS = GEAR_RATIO * ROTATIONS_TO_METERS;
     public static final double METERS_TO_MOTOR_ROTATIONS = 1 / MOTOR_ROTATIONS_TO_METERS;
@@ -233,7 +233,9 @@ public class Constants {
       public static final double ELEVATOR_kP = 1.25;
       public static final double ELEVATOR_kI = 0.0;
       public static final double ELEVATOR_kD = 0.15;
+      public static final double ELEVATOR_kF = 0.0;
       public static final double ELEVATOR_kV = 0.0;
+      public static final double ELEVATOR_kA = 0.0;
       public static final double ELEVATOR_kS = 0.0;
       public static final boolean SMART_PID_ENABLED = false;
     }
