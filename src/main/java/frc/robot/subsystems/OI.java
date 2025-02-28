@@ -6,18 +6,13 @@ package frc.robot.subsystems;
 
 import java.util.Optional;
 import java.util.function.DoubleFunction;
-import java.util.function.Supplier;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants.EndEffectorSetpoints;
-import frc.robot.constants.Constants.Drivebase.FieldTarget;
 import frc.robot.constants.Constants.OI.LIMITS;
-import frc.robot.commands.Funnel.MoveToPosition;
-import frc.robot.commands.wrist.MoveWristToSetpoint;
-import frc.robot.commands.elevator.*;
+import frc.robot.commands.MoveEndEffector;
+import frc.robot.commands.Funnel.MoveFunnelToSetpoint;
 import frc.robot.subsystems.drivebase.Drivebase;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.OI.IDs.Buttons;
@@ -27,6 +22,7 @@ public class OI {
   private Joystick rotationJoystick = new Joystick(Joysticks.ROTATION_JOYSTICK_ID);
   private Joystick translationJoystick = new Joystick(Joysticks.TRANSLATION_JOYSTICK_ID);
   private Joystick buttonJoystick = new Joystick(Joysticks.BUTTON_STICK_ID);
+  
 
   // Input to the function could be x or y axis.
   private DoubleFunction<Double> joystickToMetersPerSecond = (
@@ -51,17 +47,25 @@ public class OI {
     Optional<Climber> optionalClimber,
     Optional<Drivebase> optionalDrivebase,
     Optional<Funnel> optionalFunnel) {
+      Trigger algaeToggle = new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.ALGAE_TOGGLE);
+      Trigger coralToggle = algaeToggle.negate();
 
     if (optionalCollector.isPresent()) {
       Collector collector = optionalCollector.get();
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.INTAKE_CORAL)
+
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.INTAKE)
+        .and(coralToggle)
         .whileTrue(collector.intakeCoralCommand(true));
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.EXPEL_CORAL)
+
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.EXPELL)
+        .and(coralToggle)
         .whileTrue(collector.expelCoral(true));
 
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.INTAKE_ALGAE)
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.INTAKE)
+        .and(algaeToggle)
         .whileTrue(collector.intakeAlgaeCommand(true));
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Collector.EXPEL_ALGAE)  
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.EXPELL)
+        .and(algaeToggle)  
         .whileTrue(collector.expelAlgaeCommand(true));
     }
 
@@ -81,20 +85,31 @@ public class OI {
         Constants.OI.IDs.Buttons.RAISE_FUNNEL_TOGGLE
       );
 
-      raiseFunnel.whileTrue(funnel.goToPos(Constants.Funnel.Setpoints.RAISED_POSITION));
-      raiseFunnel.whileFalse(funnel.goToPos(Constants.Funnel.Setpoints.LOWERED_POSITION));
+      raiseFunnel.whileTrue(
+        new MoveFunnelToSetpoint(
+          funnel,
+          Constants.Funnel.FUNNEL_POSITION_HIGH_CONVERTED
+        )
+      );
+
+      raiseFunnel.whileFalse(
+        new MoveFunnelToSetpoint(
+          funnel,
+          Constants.Funnel.FUNNEL_POSITION_LOW_CONVERTED
+        )
+      );
     }
 
     if(optionalElevator.isPresent() && optionalWrist.isPresent()) {
+      Elevator elevator = optionalElevator.get();
+      Wrist wrist = optionalWrist.get();
+
       JoystickButton endEffectorToGround = new JoystickButton(buttonJoystick, Buttons.GOTO_GROUND);
       JoystickButton endEffectorToStow = new JoystickButton(buttonJoystick, Buttons.GOTO_STOW);
       JoystickButton endEffectorToPositionA = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_A);
       JoystickButton endEffectorToPositionB = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_B);
       JoystickButton endEffectorToPositionC = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_C);
       JoystickButton endEffectorToPositionD = new JoystickButton(buttonJoystick, Buttons.GOTO_POSITION_D);
-
-      Elevator elevator = optionalElevator.get();
-      Wrist wrist = optionalWrist.get();
 
       // Algae mode
       endEffectorToGround.and(algaeToggle).onTrue(
@@ -149,10 +164,10 @@ public class OI {
 
     if(optionalFunnel.isPresent()){
       Funnel funnel = optionalFunnel.get();
-      new JoystickButton(translationJoystick, Constants.OI.IDs.Buttons.Funnel.GO_TO_MAX)
-        .onTrue(new MoveToPosition(funnel, Constants.Funnel.FUNNEL_POSITION_HIGH_CONVERTED));
-      new JoystickButton(translationJoystick, Constants.OI.IDs.Buttons.Funnel.GO_TO_MIN)
-        .onTrue(new MoveToPosition(funnel, Constants.Funnel.FUNNEL_POSITION_LOW_CONVERTED));
+      new JoystickButton(translationJoystick, Constants.OI.IDs.Buttons.FUNNEL_GO_TO_MAX)
+        .onTrue(new MoveFunnelToSetpoint(funnel, Constants.Funnel.FUNNEL_POSITION_HIGH_CONVERTED));
+      new JoystickButton(translationJoystick, Constants.OI.IDs.Buttons.FUNNEL_GO_TO_MIN)
+        .onTrue(new MoveFunnelToSetpoint(funnel, Constants.Funnel.FUNNEL_POSITION_LOW_CONVERTED));
     }
   }
 

@@ -16,7 +16,7 @@ import frc.robot.constants.Constants;
 import frc.robot.subsystems.Funnel;
 import frc.robot.utils.ConditionalSmartDashboard;
 
-public class MoveToPosition extends Command {
+public class MoveFunnelToSetpoint extends Command {
   Funnel funnel;
 
   PositionVoltage positionVoltage;
@@ -30,7 +30,7 @@ public class MoveToPosition extends Command {
   
   Timer timePassed;
 
-  public MoveToPosition(Funnel funnel, double setPoint) {
+  public MoveFunnelToSetpoint(Funnel funnel, double setPoint) {
     this.funnel = funnel;
     this.setPoint = setPoint;
 

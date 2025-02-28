@@ -392,6 +392,9 @@ public class Constants {
         public static final int TARGET_REEF_BUTTON = 0;
 
         public static final int RAISE_FUNNEL_TOGGLE = 0;
+
+        public static final int FUNNEL_GO_TO_MAX = 0;
+        public static final int FUNNEL_GO_TO_MIN = 0;
       }
     }
   }
