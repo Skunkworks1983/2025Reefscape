@@ -272,7 +272,9 @@ public class Constants {
 
     public static final double WRIST_MIDPOINT_ROTATIONS = 2.5; //TODO figure out postitions
     public static final double WRIST_MIN_ROTATIONS = 0;
-    public static final double WRIST_MAX_ROTATIONS = 5;
+    public static final double WRIST_MAX_ROTATIONS = 90;
+
+    public static final int WRIST_GEAR_RATIO = 56; //56 to 1
   }
 
   public class ClimberIDs {

@@ -81,6 +81,14 @@ public class OI {
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Climber.GO_TO_MAX)
         .onTrue(climber.waitUntilMagnetSensorsAreTrueThenGoToPos(Constants.ClimberIDs.CLIMBER_MAX));
     }
+
+    if(optionalWrist.isPresent()) {
+      Wrist wrist = optionalWrist.get();
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Wrist.WRIST_UP)
+        .onTrue(new MoveWristToSetpoint(wrist, Constants.WristIDs.WRIST_MAX_ROTATIONS));
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.Wrist.WRIST_DOWN)
+        .onTrue(new MoveWristToSetpoint(wrist, Constants.WristIDs.WRIST_MIN_ROTATIONS));
+    }
   }
 
   public double getInstructedXMetersPerSecond() {
