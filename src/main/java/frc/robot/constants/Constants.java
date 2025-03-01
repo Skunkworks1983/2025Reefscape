@@ -270,7 +270,6 @@ public class Constants {
 
       public static final boolean WRIST_SMARTPID_ACTIVE = false;
     }
-    public static final int WRIST_GEAR_RATIO = 1 / 56;
 
     public static final double WRIST_MAX_VELOCITY = 1;
     public static final double WRIST_MAX_ACCELERATION = 1; 
