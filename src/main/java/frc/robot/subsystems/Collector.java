@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.Collector.HoldPositionCommand;
 import frc.robot.constants.Constants;
+import frc.robot.constants.Constants.CurrentLimits;
 import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.PIDControllers.SmartPIDControllerTalonFX;
 
@@ -55,6 +56,8 @@ public class Collector extends SubsystemBase {
    
     
     TalonFXConfiguration talonConfigCollectorMotor = new TalonFXConfiguration();
+    talonConfigCollectorMotor.CurrentLimits = CurrentLimits.KRAKEN_CURRENT_LIMIT_CONFIG;
+
 
     talonConfigCollectorMotor.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
@@ -97,6 +100,9 @@ public class Collector extends SubsystemBase {
   }
   @Override
   public void periodic() {
+    leftMotorController.updatePID();
+    rightMotorController.updatePID();
+    
     ConditionalSmartDashboard.putNumber("Collector/ Right motor current", rightMotor.getSupplyCurrent().getValueAsDouble());
     ConditionalSmartDashboard.putNumber("Collector/ Left motor current", leftMotor.getSupplyCurrent().getValueAsDouble());
     ConditionalSmartDashboard.putBoolean("Collector/ Beambreak collector", !beambreak.get());

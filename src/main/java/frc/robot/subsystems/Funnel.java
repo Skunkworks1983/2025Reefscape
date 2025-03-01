@@ -43,6 +43,9 @@ public class Funnel extends SubsystemBase implements DiagnosticSubsystem{
       .d(Constants.Funnel.PIDs.FUNNEL_KD);
     pivotMotor.getEncoder().setPosition(0);
 
+    // NOTE: we are intentionally not setting a current limit because this subsystem
+    // is rarely used and will likely not exceed a reasonable current.
+
     pivotMotorSpeedController = new frc.robot.utils.PIDControllers.SmartPIDControllerCANSparkMax(
       Constants.Funnel.PIDs.FUNNEL_KP,
       Constants.Funnel.PIDs.FUNNEL_KI,
@@ -56,6 +59,7 @@ public class Funnel extends SubsystemBase implements DiagnosticSubsystem{
 
   @Override
   public void periodic() {
+    pivotMotorSpeedController.updatePID();
     ConditionalSmartDashboard.putNumber("Funnel/Motor Pos (revs)", getPos());
     ConditionalSmartDashboard.putNumber("Funnel/Set point (revs)", setpoint);
     ConditionalSmartDashboard.putBoolean("Funnel/At Set Point", isAtSetpoint());
