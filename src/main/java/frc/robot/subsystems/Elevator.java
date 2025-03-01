@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
+import frc.robot.constants.Constants.CurrentLimits;
+import frc.robot.utils.PIDControllers.SmartPIDController;
 import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.PIDControllers.SmartPIDControllerTalonFX;
 
@@ -36,6 +38,7 @@ public class Elevator extends SubsystemBase {
 
   public Elevator() {
     TalonFXConfiguration config = new TalonFXConfiguration();
+    config.CurrentLimits = CurrentLimits.KRAKEN_CURRENT_LIMIT_CONFIG;
     motorRight.getConfigurator().apply(config);
     motorLeft.getConfigurator().apply(config);
     
@@ -62,6 +65,7 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
+    smartPIDController.updatePID();
     if(getBottomLimitSwitch()) {
       motorRight.setPosition(0.0);
     } else if(getTopLimitSwitch()) {
@@ -99,7 +103,7 @@ public class Elevator extends SubsystemBase {
 
     motorRight.setControl(positionVoltage
       .withLimitForwardMotion(getTopLimitSwitch())
-      .withLimitReverseMotion(getBottomLimitSwitch())
+      .withLimitReverseMotion(getBottomLimitSwitch()).withEnableFOC(true)
     );
   }
 

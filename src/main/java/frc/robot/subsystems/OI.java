@@ -170,6 +170,7 @@ public class OI {
       new JoystickButton(translationJoystick, Constants.OI.IDs.Buttons.FUNNEL_GO_TO_MIN)
         .onTrue(new MoveFunnelToSetpoint(funnel, Constants.Funnel.FUNNEL_POSITION_LOW_CONVERTED));
     }
+
   }
 
   public double getInstructedXMetersPerSecond() {

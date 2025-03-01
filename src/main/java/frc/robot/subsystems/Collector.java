@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
+import frc.robot.constants.Constants.CurrentLimits;
 import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.PIDControllers.SmartPIDControllerTalonFX;
 
@@ -53,6 +54,8 @@ public class Collector extends SubsystemBase {
    
     
     TalonFXConfiguration talonConfigCollectorMotor = new TalonFXConfiguration();
+    talonConfigCollectorMotor.CurrentLimits = CurrentLimits.KRAKEN_CURRENT_LIMIT_CONFIG;
+
 
     talonConfigCollectorMotor.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
@@ -71,7 +74,7 @@ public class Collector extends SubsystemBase {
         Constants.Collector.PIDs.KF, Constants.Collector.PIDs.KV,
         Constants.Collector.PIDs.KA, Constants.Collector.PIDs.KS,
         "left motor",
-        Constants.Drivebase.PIDs.SMART_PID_ENABLED, leftMotor);
+        Constants.Collector.PIDs.SMART_PID_ENABLED, leftMotor);
     
         beambreak = new DigitalInput(Constants.Collector.DIGITAL_INPUT_CHANNEL);
   }
@@ -80,20 +83,23 @@ public class Collector extends SubsystemBase {
   private void setCollectorSpeeds(double rightSpeed, double leftSpeed){
     if (rightSpeed != lastRightSpeed) {
       rightMotor.setControl(velocityVoltage
-          .withVelocity(rightSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER));
+          .withVelocity(rightSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER).withEnableFOC(true));
       ConditionalSmartDashboard.putNumber("Collector/ Right speed", rightSpeed);
     }
     lastRightSpeed = rightSpeed;
 
     if (leftSpeed != lastLeftSpeed) {
       leftMotor.setControl(velocityVoltage
-          .withVelocity(leftSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER));
+          .withVelocity(leftSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER).withEnableFOC(true));
       ConditionalSmartDashboard.putNumber("Collector/ Left speed", leftSpeed);
     }
     lastLeftSpeed = leftSpeed;
   }
   @Override
   public void periodic() {
+    leftMotorController.updatePID();
+    rightMotorController.updatePID();
+    
     ConditionalSmartDashboard.putNumber("Collector/ Right motor current", rightMotor.getSupplyCurrent().getValueAsDouble());
     ConditionalSmartDashboard.putNumber("Collector/ Left motor current", leftMotor.getSupplyCurrent().getValueAsDouble());
     ConditionalSmartDashboard.putBoolean("Collector/ Beambreak collector", !beambreak.get());
