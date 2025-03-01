@@ -14,6 +14,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
+import frc.robot.constants.Constants.CurrentLimits;
 import frc.robot.utils.ConditionalSmartDashboard;
 
 public class Wrist extends SubsystemBase {
@@ -33,6 +34,8 @@ public class Wrist extends SubsystemBase {
     TalonFXConfiguration config = new TalonFXConfiguration();
 
     wristMotor.getConfigurator().apply(config);
+
+    config.CurrentLimits = CurrentLimits.KRAKEN_CURRENT_LIMIT_CONFIG;
     
     Slot0Configs slot0Configs = new Slot0Configs();
     slot0Configs.kP = Constants.Wrist.PIDs.WRIST_KP;
