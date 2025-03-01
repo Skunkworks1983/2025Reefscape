@@ -139,10 +139,13 @@ public class Constants {
     public static final double MAX_METERS_PER_SECOND = 4.5;
     public static final double MAX_DEGREES_PER_SECOND = 270;
 
+    public static final double DRIVE_CURRENT_LIMIT = 100;
+
     public class IDS {
       public static int ROTATION_JOYSTICK_ID = 1;
       public static int TRANSLATION_JOYSTICK_ID = 0;
       public static int BUTTON_STICK_ID = 2;
+
     }
 
     // All modules are at the position (+-MODULE_TO_OFFSET, +-MODULE_TO_OFFSET)
@@ -150,13 +153,13 @@ public class Constants {
 
     public static SwerveModuleConstants MODULES[] = {
       new SwerveModuleConstants(
-        16, 17, 18, 0.476318 - .75, new Translation2d(MODULE_OFFSET, MODULE_OFFSET), "Front Left"
-      ),
-      new SwerveModuleConstants(
-        19, 20, 21, -0.353027 + .75, new Translation2d(MODULE_OFFSET, -MODULE_OFFSET), "Front Right"
-      ),
-      new SwerveModuleConstants(
         10, 11, 12, -0.337158 + .75, new Translation2d(-MODULE_OFFSET, MODULE_OFFSET), "Back Left"
+      ),
+      new SwerveModuleConstants(
+         19, 20, 21, -0.353027 + .75, new Translation2d(MODULE_OFFSET, -MODULE_OFFSET), "Front Right"
+      ),
+      new SwerveModuleConstants(
+       16, 17, 18, 0.476318 - .75, new Translation2d(MODULE_OFFSET, MODULE_OFFSET), "Front Left"
       ),
       new SwerveModuleConstants(
         13, 14, 15, -0.289795 + .25, new Translation2d(-MODULE_OFFSET, -MODULE_OFFSET), "Back Right"

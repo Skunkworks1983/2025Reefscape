@@ -52,7 +52,6 @@ import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.error.DiagnosticSubsystem;
 
-import org.ejml.equation.Variable;
 import org.json.simple.parser.ParseException;
 
 public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
@@ -137,8 +136,8 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
         Constants.Drivebase.Info.MAX_MODULE_SPEED, 
         1, 
         DCMotor.getKrakenX60(1).withReduction(Constants.Drivebase.Info.DRIVE_MOTOR_GEAR_RATIO), 
-        100, 
-        4
+        Constants.Drivebase.DRIVE_CURRENT_LIMIT,
+        Constants.Drivebase.MODULES.length
         ),
       Constants.Drivebase.MODULE_OFFSET);
       positionEstimator.stateLock.readLock().lock();
@@ -229,7 +228,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
         Constants.Drivebase.Info.MAX_MODULE_SPEED);
     setModuleStates(swerveModuleStates);
   }
-  
+
   private void setModuleStates(SwerveModuleState[] moduleStates) {
     desiredSwervestate.set(moduleStates);
     actualSwervestate.set(getSwerveModuleStates());
