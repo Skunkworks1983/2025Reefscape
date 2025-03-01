@@ -33,7 +33,7 @@ import frc.robot.utils.ConditionalSmartDashboard;
 public class Vision extends SubsystemBase {
 
   private VisionConsumer consumer;
-  private VisionIO[] io;
+  private LinkedList<VisionIO> io;
   private List<Field2d> field2ds = new LinkedList<Field2d>();
   private final AprilTagFieldLayout aprilTagLayout = 
     AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
@@ -42,26 +42,31 @@ public class Vision extends SubsystemBase {
   public Vision(VisionConsumer consumer, VisionIOConstants... ioConstants) {
     this.consumer = consumer;
 
-    io = new VisionIO[ioConstants.length];
-
-    for (int i = 0; i < ioConstants.length; i++) {
-      io[i] = ioConstants[i].init();
-      Field2d field = new Field2d();
-      SmartDashboard.putData(io[i].getName() + " Odometry", field);
-      field2ds.add(field);
+    for (VisionIOConstants i : ioConstants) {
+      try {
+        VisionIO inited = i.init();
+        io.add(inited);
+        Field2d field = new Field2d();
+        SmartDashboard.putData(inited.getName() + " Odometry", field);
+        field2ds.add(field);
+      } catch (Exception e) {
+        System.err.println("A Vision IO failed to initialize");
+        e.printStackTrace();
+        continue;
+      }      
     }
   }
 
   @Override
   public void periodic() {
 
-    for (int i = 0; i < io.length; i++) {
-      VisionIOData data = io[i].getLatestData();
+    for (int i = 0; i < io.size(); i++) {
+      VisionIOData data = io.get(i).getLatestData();
       for (PoseObservation observation : data.poseObservations) {
 
-        ConditionalSmartDashboard.putNumber(io[i].getName() + " Latest Ambiguity", observation.ambiguity());
-        ConditionalSmartDashboard.putNumber(io[i].getName() + " Latest Z Error", observation.estimatedPose().getZ());
-        ConditionalSmartDashboard.putNumber(io[i].getName() + " Average Tag Distance", observation.averageTagDistance());
+        ConditionalSmartDashboard.putNumber(io.get(i).getName() + " Latest Ambiguity", observation.ambiguity());
+        ConditionalSmartDashboard.putNumber(io.get(i).getName() + " Latest Z Error", observation.estimatedPose().getZ());
+        ConditionalSmartDashboard.putNumber(io.get(i).getName() + " Average Tag Distance", observation.averageTagDistance());
 
         boolean rejectPose = 
           observation.tagCount() == 0 ||

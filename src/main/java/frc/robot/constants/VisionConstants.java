@@ -13,7 +13,6 @@ public class VisionConstants {
       * Camera_0: The front facing camera
       * Camera_1: The topmost camera
       * Camera_2: The reverse facing camera
-      * x is negated and y
       */
       private static final String CAMERA_0_NAME = "Camera_0";
       private static final String CAMERA_1_NAME = "Camera_1";
@@ -61,7 +60,6 @@ public class VisionConstants {
           )
         );
 
-      // TODO: Figure out this transformation
       private static final Transform3d ROBOT_TO_MOUNT =
         new Transform3d(
           new Translation3d(
@@ -117,7 +115,7 @@ public class VisionConstants {
 
     private static final Transform3d ROBOT_TO_MOUNT =
         new Transform3d(
-          new Translation3d( // TODO: check these transformation estimations
+          new Translation3d(
             0.0,
             0.0,
             0.0
@@ -140,8 +138,8 @@ public class VisionConstants {
 
     public class SwerveModuleMount {
       /*
-      * Camera_0: The front facing camera
-      * Camera_1: The side facing camera
+      * Camera_0: The camera mounted on the front right module, facing right.
+      * Camera_1: The camera mounted on the front left module, facing fowards.
       */
       private static final String CAMERA_0_NAME = "Camera_0";
       private static final String CAMERA_1_NAME = "Camera_1";

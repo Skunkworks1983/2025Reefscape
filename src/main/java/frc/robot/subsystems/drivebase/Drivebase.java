@@ -101,16 +101,10 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
     odometryThread = new OdometryThread(phoenix6Odometry, positionEstimator);
 
-    // Ensure robot code won't crash if the vision subsystem fails to initialize.
-    try {
-      new Vision(
-        positionEstimator::addVisionMeasurement,
-        VisionConstants.SwerveModuleMount.VISION_IO_CONSTANTS
-      );
-    } catch (Exception exception) {
-      System.out.println("Vision subsystem failed to initialize. See the below stacktrace for more details: ");
-      exception.printStackTrace();
-    }
+    new Vision(
+      positionEstimator::addVisionMeasurement,
+      VisionConstants.SwerveModuleMount.VISION_IO_CONSTANTS
+    );
 
     headingController.enableContinuousInput(0, 360);
     odometryThread.startThread();
