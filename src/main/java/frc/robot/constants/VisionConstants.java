@@ -155,7 +155,7 @@ public class VisionConstants {
         new Rotation3d(
           Units.degreesToRadians(0.0),
           Units.degreesToRadians(-25.0),
-          Units.degreesToRadians(-90.0)));
+          Units.degreesToRadians(0.0)));
 
       private static final Transform3d MOUNT_TO_CAMERA_1 = new Transform3d(
         new Translation3d(
@@ -165,7 +165,7 @@ public class VisionConstants {
         new Rotation3d(
           Units.degreesToRadians(0.0),
           Units.degreesToRadians(-25.0),
-          Units.degreesToRadians(-180.0)));
+          Units.degreesToRadians(-90.0)));
 
       private static final Transform3d ROBOT_TO_MOUNT =
           new Transform3d(

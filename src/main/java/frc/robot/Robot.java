@@ -82,14 +82,14 @@ public class Robot extends TimedRobot {
       );
     }
 
-    try {
-      new Vision(
-        new Vision.VisionConsumer() {
-          @Override public void accept(Pose2d estimatedPose, double timestamp, Matrix<N3, N1> stdDevs) {}
-        },
-        VisionConstants.IOConstants.DoubleMount.VISION_IO_CONSTANTS
-      );
-    } catch (Exception exception) {}
+    // try {
+    //   new Vision(
+    //     new Vision.VisionConsumer() {
+    //       @Override public void accept(Pose2d estimatedPose, double timestamp, Matrix<N3, N1> stdDevs) {}
+    //     },
+    //     VisionConstants.IOConstants.DoubleMount.VISION_IO_CONSTANTS
+    //   );
+    // } catch (Exception exception) {}
   }
 
   @Override 
