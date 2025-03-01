@@ -91,10 +91,8 @@ public class SwerveModule extends SubsystemBase {
     turnController.setTolerance(0.0);
 
     TalonFXConfiguration driveConfig = new TalonFXConfiguration();
-
-    driveConfig.CurrentLimits = CurrentLimits.KRAKEN_CURRENT_LIMIT_CONFIG;
-
     driveConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    driveConfig.CurrentLimits = CurrentLimits.KRAKEN_CURRENT_LIMIT_CONFIG;
     driveMotor.getConfigurator().apply(driveConfig);
 
     driveController = new SmartPIDControllerTalonFX(
