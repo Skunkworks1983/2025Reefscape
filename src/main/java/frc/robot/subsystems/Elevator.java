@@ -62,6 +62,7 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
+    smartPIDController.updatePID();
     if(getBottomLimitSwitch()) {
       motorRight.setPosition(0.0);
     } else if(getTopLimitSwitch()) {
