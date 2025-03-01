@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.Collector.HoldPositionCommand;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.CurrentLimits;
 import frc.robot.utils.ConditionalSmartDashboard;
@@ -52,7 +51,7 @@ public class Collector extends SubsystemBase {
    leftMotor.setPosition(0.0);
 
    leftMotor.setInverted(true);
-   setDefaultCommand(new HoldPositionCommand(this));
+   setDefaultCommand(holdPositionCommand());
    
     
     TalonFXConfiguration talonConfigCollectorMotor = new TalonFXConfiguration();
@@ -275,6 +274,19 @@ public class Collector extends SubsystemBase {
     );
 
   }
+
+  public Command holdPositionCommand()
+  {
+    return startEnd(
+      () -> {
+        setCollectorSetPoint(getRightMotorPosition(), getLeftMotorPosition());
+      },
+      () -> {
+
+      }
+    );
+  }
+
   public Command intakeAlgaeCommand(
     boolean stopOnEnd
   ) {
