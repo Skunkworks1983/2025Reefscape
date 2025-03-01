@@ -93,7 +93,7 @@ public class SmartPIDControllerTalonFX implements SmartPIDBase {
     Optional<Double> currentKv = Optional.empty();
     if(lastKvValue.isPresent()) {
       currentKv = Optional.of(getValueFromSmartDashboard(name, "kv Value", lastKvValue.get()));
-      if(currentKv.get() != lastKvValue.get()) {
+      if(!currentKv.equals(lastKvValue)) {
         lastKvValue = currentKv;
         slot0Configs.kV = currentKv.get();
         newPIDValues = true;
@@ -103,7 +103,7 @@ public class SmartPIDControllerTalonFX implements SmartPIDBase {
     Optional<Double> currentKa = Optional.empty();
     if(lastKaValue.isPresent()) {
       currentKa = Optional.of(getValueFromSmartDashboard(name, "ka Value", lastKaValue.get()));
-      if(currentKa.get() != lastKaValue.get()) {
+      if(!currentKa.equals(lastKaValue)) {
         lastKaValue = currentKa;
         slot0Configs.kA = currentKa.get();
         newPIDValues = true;
@@ -113,7 +113,7 @@ public class SmartPIDControllerTalonFX implements SmartPIDBase {
     Optional<Double> currentKs = Optional.empty();
     if(lastKsValue.isPresent()) {
       currentKs = Optional.of(getValueFromSmartDashboard(name, "ks Value", lastKsValue.get()));
-      if(currentKs.get() != lastKsValue.get()) {
+      if(!currentKs.equals(lastKsValue)) {
         lastKsValue = currentKs;
         slot0Configs.kS = currentKs.get();
         newPIDValues = true;
