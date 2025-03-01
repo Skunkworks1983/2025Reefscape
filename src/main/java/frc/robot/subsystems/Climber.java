@@ -56,6 +56,7 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    climberSmartPID.updatePID();
     ConditionalSmartDashboard.putNumber("Climber/Motor position", getHeight());
     ConditionalSmartDashboard.putBoolean("Climber/Motor Connected", isMotorConnected());
     ConditionalSmartDashboard.putNumber("Climber/Motor Current", getCimbMotorCurrent());

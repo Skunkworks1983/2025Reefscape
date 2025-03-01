@@ -60,7 +60,7 @@ public class Constants {
       public static final double KA = 0.0;
       public static final double KS = 0.0;
 
-      public static final boolean SMART_PID_ENABLED = true;
+      public static final boolean SMART_PID_ENABLED = false;
 
     }
   }
@@ -125,9 +125,9 @@ public class Constants {
       public static final double PID_LOW_LIMIT = -0.8;
       public static final double PID_HIGH_LIMIT = 0.8;
 
-      public static final boolean SMART_PID_ENABLED = true;
-      public static final boolean SMART_PID_TURN_ENABLED = true;
-      public static final boolean SMART_PID_DRIVE_ENABLED = true;
+      public static final boolean SMART_PID_ENABLED = false;
+      public static final boolean SMART_PID_TURN_ENABLED = false;
+      public static final boolean SMART_PID_DRIVE_ENABLED = false;
     }
 
     public class FieldTarget {
@@ -200,7 +200,7 @@ public class Constants {
       public static final double FUNNEL_KI = 0.0;
       public static final double FUNNEL_KF = 0.0;
 
-      public static final boolean FUNNEL_SMARTPID_ACTIVE = true;
+      public static final boolean FUNNEL_SMARTPID_ACTIVE = false;
     }
 
     public static final double PIVOT_MOTOR_GEAR_RATIO = 1.0 / 100.0;

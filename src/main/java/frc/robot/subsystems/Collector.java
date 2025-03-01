@@ -71,7 +71,7 @@ public class Collector extends SubsystemBase {
         Constants.Collector.PIDs.KF, Constants.Collector.PIDs.KV,
         Constants.Collector.PIDs.KA, Constants.Collector.PIDs.KS,
         "left motor",
-        Constants.Drivebase.PIDs.SMART_PID_ENABLED, leftMotor);
+        Constants.Collector.PIDs.SMART_PID_ENABLED, leftMotor);
     
         beambreak = new DigitalInput(Constants.Collector.DIGITAL_INPUT_CHANNEL);
   }
@@ -94,6 +94,9 @@ public class Collector extends SubsystemBase {
   }
   @Override
   public void periodic() {
+    leftMotorController.updatePID();
+    rightMotorController.updatePID();
+    
     ConditionalSmartDashboard.putNumber("Collector/ Right motor current", rightMotor.getSupplyCurrent().getValueAsDouble());
     ConditionalSmartDashboard.putNumber("Collector/ Left motor current", leftMotor.getSupplyCurrent().getValueAsDouble());
     ConditionalSmartDashboard.putBoolean("Collector/ Beambreak collector", !beambreak.get());
