@@ -7,6 +7,7 @@ package frc.robot;
 import java.util.Optional;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -19,6 +20,8 @@ import frc.robot.utils.error.ErrorCommandGenerator;
 import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.error.DiagnosticSubsystem;
+import frc.robot.commands.MoveEndEffector;
+import frc.robot.commands.funnel.MoveFunnelToSetpoint;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.drivebase.Drivebase;
@@ -91,7 +94,62 @@ public class Robot extends TimedRobot {
   }
 
   @Override 
-  public void robotInit() {}
+  public void robotInit() {
+    if (elevator.isPresent() && wrist.isPresent()){
+
+    //move to pos coral 
+    NamedCommands.registerCommand("Coral to L4",
+      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.coralL4));
+    
+    NamedCommands.registerCommand("Coral to L3", 
+      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.coralL3));
+
+    NamedCommands.registerCommand("Coral to L2", 
+      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.coralL2));
+
+    NamedCommands.registerCommand("Coral to L1", 
+      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.coralL1));
+
+    NamedCommands.registerCommand("Coral to Ground", 
+      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.coralGround));
+
+    NamedCommands.registerCommand("Coral to Stow ", 
+    new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.coralStow));
+
+    // move to pos Algae
+    NamedCommands.registerCommand("Algae to L2 ", 
+    new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.algaeL2));
+
+    NamedCommands.registerCommand("Algae to L3", 
+      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.algaeL3));
+
+    NamedCommands.registerCommand("Algae to Ground", 
+      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.algaeGround));
+
+    NamedCommands.registerCommand("Algae to Processor", 
+      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.algaeProcessor));
+    
+    NamedCommands.registerCommand("Algea to Stow", 
+      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.algaeStow));
+
+    // funnel 
+    NamedCommands.registerCommand("Funnel to Station", 
+      new MoveFunnelToSetpoint(funnel.get(), Constants.Funnel.FUNNEL_POSITION_LOW_CONVERTED));
+    
+    NamedCommands.registerCommand("Funnel to up pos",
+      new MoveFunnelToSetpoint(funnel.get(), Constants.Funnel.FUNNEL_POSITION_HIGH_CONVERTED));
+
+    //Collector 
+    NamedCommands.registerCommand("Expel Coral", collector.get().expelCoral(isAutonomous()));
+
+    NamedCommands.registerCommand("Expel Algea",collector.get().expelAlgaeCommand(isAutonomous()));
+
+    NamedCommands.registerCommand("Intake Coral", collector.get().intakeCoralCommand(isAutonomous()));
+
+    NamedCommands.registerCommand("Intake Algea", collector.get().intakeAlgaeCommand(isAutonomous()));
+
+    }
+  }
 
   @Override
   public void robotPeriodic() {
@@ -102,7 +160,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
      Command currentAutonomousCommand = autoChooser.getSelected();
-    if (currentAutonomousCommand != null) {
+    if (currentAutonomousCommand != new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.algaeL2)) {
       currentAutonomousCommand.schedule();
     }
   }

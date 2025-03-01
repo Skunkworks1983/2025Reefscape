@@ -15,22 +15,9 @@
                 }
               },
               {
-                "type": "parallel",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "elevator to reef level 4"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Wrist to reef 4 scoring"
-                      }
-                    }
-                  ]
+                  "name": "Coral to L4"
                 }
               },
               {
@@ -49,7 +36,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Score Coral"
+                  "name": "Expel Coral"
                 }
               },
               {
@@ -72,22 +59,9 @@
                 }
               },
               {
-                "type": "parallel",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "elevator to coral station pos"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "wrist to coral station pos"
-                      }
-                    }
-                  ]
+                  "name": "Funnel to Station"
                 }
               },
               {
@@ -129,22 +103,9 @@
                 }
               },
               {
-                "type": "parallel",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "elevator to reef level 4"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Wrist to reef 4 scoring"
-                      }
-                    }
-                  ]
+                  "name": "Coral to L4"
                 }
               },
               {
@@ -163,7 +124,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Score Coral"
+                  "name": "Expel Coral"
                 }
               },
               {
