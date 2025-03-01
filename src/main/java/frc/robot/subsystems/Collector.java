@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.Collector.HoldPositionCommand;
 import frc.robot.constants.Constants;
 import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.PIDControllers.SmartPIDControllerTalonFX;
@@ -39,9 +38,13 @@ public class Collector extends SubsystemBase {
 
   private DigitalInput beambreak;
 
-  double collectorRightSetpoint;
-  double collectorLeftSetPoint;
-  private PositionVoltage positionVoltage = new PositionVoltage(0);
+  private double getLeftMotorVelocity() {
+    return leftMotor.getVelocity().getValueAsDouble();
+  }
+
+  private double getRightMotorVelocity() {
+    return rightMotor.getVelocity().getValueAsDouble();
+  }
 
   /** Creates a new Collector. */
   public Collector() {
@@ -49,7 +52,6 @@ public class Collector extends SubsystemBase {
    leftMotor = new TalonFX(Constants.Collector.LEFT_MOTOR);
 
    leftMotor.setInverted(true);
-  setDefaultCommand(new HoldPositionCommand(this));
    
     
     TalonFXConfiguration talonConfigCollectorMotor = new TalonFXConfiguration();
@@ -97,23 +99,6 @@ public class Collector extends SubsystemBase {
     ConditionalSmartDashboard.putNumber("Collector/ Right motor current", rightMotor.getSupplyCurrent().getValueAsDouble());
     ConditionalSmartDashboard.putNumber("Collector/ Left motor current", leftMotor.getSupplyCurrent().getValueAsDouble());
     ConditionalSmartDashboard.putBoolean("Collector/ Beambreak collector", !beambreak.get());
-  }
-  
-  public double getLeftMotorVelocity() {
-    return leftMotor.getVelocity().getValueAsDouble();
-  }
-
-  public double getRightMotorVelocity() {
-    return rightMotor.getVelocity().getValueAsDouble();
-  }
-
-  public void setCollectorSetPoint(double newRightSetPoint, double newLeftSetPoint) {
-    collectorRightSetpoint = newRightSetPoint;
-    collectorLeftSetPoint = newLeftSetPoint;
-    rightMotor.setControl(
-        positionVoltage.withPosition(newRightSetPoint));
-    rightMotor.setControl(
-        positionVoltage.withPosition(newLeftSetPoint));
   }
 
   public Command rotateCoralCommand() {
