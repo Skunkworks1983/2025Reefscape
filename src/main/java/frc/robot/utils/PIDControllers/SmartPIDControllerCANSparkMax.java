@@ -12,7 +12,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.constants.Constants;
 
 /** Add your docs here. */
-public class SmartPIDControllerCANSparkMax implements SmartPIDInterface {
+public class SmartPIDControllerCANSparkMax implements SmartPIDBase {
 
   public String name;
   public boolean smart;
