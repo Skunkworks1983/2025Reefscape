@@ -10,11 +10,13 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.utils.error.ErrorCommandGenerator;
 import frc.robot.utils.error.ErrorGroup;
+import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.error.DiagnosticSubsystem;
 import frc.robot.commands.AutomatedTests.PoseDeviationsTestDriveForward;
 import frc.robot.constants.Constants;
@@ -25,21 +27,23 @@ import frc.robot.subsystems.vision.Vision;
 
 public class Robot extends TimedRobot {
 
-  // replace subsystem with Optional.empty() for testing
-  // ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
+  // replace subsystem with Optional.empty() when you do not wish to use add all
+  // subsystems. ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
 
-  Optional<Drivebase> drivebase = Optional.of(new Drivebase()); 
-  Optional<Elevator> elevator = Optional.empty(); 
-  Optional<Collector> collector = Optional.empty();
-  Optional<Wrist> wrist = Optional.empty();
-  Optional<Climber> climber = Optional.empty();
+  Optional<Drivebase> drivebase = Optional.of(new Drivebase());
+  Optional<Elevator> elevator = Optional.empty(); // of(new Elevator());
+  Optional<Collector> collector = Optional.empty();//  of(new Collector());
+  Optional<Wrist> wrist = Optional.empty(); // of(new Wrist());
+  Optional<Climber> climber = Optional.empty(); // of(new Climber());
+  Optional<Funnel> funnel = Optional.empty(); // of(new Funnel());
 
   OI oi = new OI( 
     elevator,
     collector,
     wrist,
     climber,
-    drivebase
+    drivebase,
+    funnel
   );
 
   
@@ -47,14 +51,26 @@ public class Robot extends TimedRobot {
   Command poseDeviationsTestCommand;
 
   public Robot() {
-    if(Constants.Testing.ENSURE_COMPETITION_READY_SUBSYSTEMS) {
-      assert drivebase.isPresent();
-      assert collector.isPresent();
-      assert elevator.isPresent();
-      assert wrist.isPresent();
-      assert climber.isPresent();
+    DataLogManager.start();
 
+    if(Constants.Testing.ENSURE_COMPETITION_READY_SUBSYSTEMS) {
+      if(drivebase.isEmpty()) {
+        throw new IllegalStateException("Drivebase not present");
+      }
+      if (collector.isEmpty()) {
+        throw new IllegalStateException("Collector not present");
+      }
+      if (elevator.isEmpty()) {
+        throw new IllegalStateException("Elevator not present");
+      }
+      if (wrist.isEmpty()) {
+        throw new IllegalStateException("Wrist not present");
+      }
+      if (climber.isEmpty()) {
+        throw new IllegalStateException("Climber not present");
+      }
     }
+
     if(drivebase.isPresent()) {
       drivebase.get().setDefaultCommand(
         drivebase.get().getSwerveCommand(
@@ -63,10 +79,7 @@ public class Robot extends TimedRobot {
           oi::getInstructedDegreesPerSecond,
           true
         )
-      ); // add a set translation controls function. Create a curried function that creates
-      // a getSwerveTeleopCommand function. getSwerveTeleopRotationCommand
-
-      poseDeviationsTestCommand = new PoseDeviationsTestDriveForward(drivebase.get());
+      );
     }
 
     try {
@@ -79,9 +92,13 @@ public class Robot extends TimedRobot {
     } catch (Exception exception) {}
   }
 
+  @Override 
+  public void robotInit() {}
+
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+    ConditionalSmartDashboard.updateConditions();
   }
 
   @Override
@@ -105,8 +122,7 @@ public class Robot extends TimedRobot {
   }
   
   @Override
-  public void teleopPeriodic() {
-  }
+  public void teleopPeriodic() {}
 
   @Override
   public void disabledPeriodic() {}
@@ -121,7 +137,7 @@ public class Robot extends TimedRobot {
   public void testInit() {
     errorGroup.clearAllTest();
 
-    //we provide the errorCommandGenerator with the error group and a array of subsystems to get commands from
+    // We provide the errorCommandGenerator with the error group and a array of subsystems to get commands from
     if(drivebase.isPresent()) {
       ErrorCommandGenerator.getErrorCommand(
         errorGroup,
