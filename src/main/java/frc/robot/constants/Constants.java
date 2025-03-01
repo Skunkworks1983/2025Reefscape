@@ -272,17 +272,16 @@ public class Constants {
     }
     public static final int WRIST_GEAR_RATIO = 1 / 56;
 
-    public static final double WRIST_VELOCITY = 1; 
+    public static final double WRIST_MAX_VELOCITY = 1;
+    public static final double WRIST_MAX_ACCELERATION = 1; 
 
     public static final double WRIST_TOLERANCE = 0.5;
 
-    public static final double WRIST_MAX_DEGREES = 0.0; //TODO figure out postitions
-    public static final double WRIST_MIN_DEGREES = 0.0;
-    public static final double WRIST_MID_DEGREES = 0.0;
+    public static final double WRIST_MIDPOINT_ROTATIONS = 45; //TODO figure out postitions
+    public static final double WRIST_MIN_ROTATIONS = 0;
+    public static final double WRIST_MAX_ROTATIONS = 90;
 
-    public static final double WRIST_MIDPOINT_ROTATIONS = (WRIST_MID_DEGREES / 360) / WRIST_GEAR_RATIO;
-    public static final double WRIST_MIN_ROTATIONS = (WRIST_MIN_DEGREES / 360) / WRIST_GEAR_RATIO;
-    public static final double WRIST_MAX_ROTATIONS = (WRIST_MAX_DEGREES / 360) / WRIST_GEAR_RATIO;
+    public static final int WRIST_GEAR_RATIO = 56; //56 motor rotations to 1 wrist rotation
   }
   
   // TODO: add end effector setpoints

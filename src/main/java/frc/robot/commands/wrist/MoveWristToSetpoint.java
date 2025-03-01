@@ -23,10 +23,9 @@ public class MoveWristToSetpoint extends Command {
   TrapezoidProfile.State goal;
   TrapezoidProfile.State startPosition;
   double setPoint;
-  double newSetPoint;
 
   final TrapezoidProfile profile = new TrapezoidProfile(
-    new TrapezoidProfile.Constraints(1, 1));
+    new TrapezoidProfile.Constraints(Constants.Wrist.WRIST_MAX_VELOCITY, Constants.Wrist.WRIST_MAX_ACCELERATION));
   
   Timer timePassed;
 
@@ -47,7 +46,10 @@ public class MoveWristToSetpoint extends Command {
     timePassed.reset(); 
     timePassed.start();
 
-    goal = new TrapezoidProfile.State(setPoint,0);
+    double circlePortion = setPoint / 360.0;
+    double newSetPoint = circlePortion * Constants.Wrist.WRIST_GEAR_RATIO;
+
+    goal = new TrapezoidProfile.State(newSetPoint,0);
     positionVoltage = new PositionVoltage(0);
     startPosition = new TrapezoidProfile.State(wrist.getPosition(),wrist.getWristVelocity());
   }
