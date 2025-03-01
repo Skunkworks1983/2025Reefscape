@@ -8,7 +8,6 @@ import frc.robot.constants.visionIOConstants.VisionIOConstants;
 import frc.robot.constants.visionIOConstants.VisionIOConstantsPhotonVision;
 
 public class VisionConstants {
-  public class IOConstants {
     public class TripleMount {
       /*
       * Camera_0: The front facing camera
@@ -155,7 +154,7 @@ public class VisionConstants {
         new Rotation3d(
           Units.degreesToRadians(0.0),
           Units.degreesToRadians(-25.0),
-          Units.degreesToRadians(0.0)));
+          Units.degreesToRadians(-90.0)));
 
       private static final Transform3d MOUNT_TO_CAMERA_1 = new Transform3d(
         new Translation3d(
@@ -165,7 +164,7 @@ public class VisionConstants {
         new Rotation3d(
           Units.degreesToRadians(0.0),
           Units.degreesToRadians(-25.0),
-          Units.degreesToRadians(-90.0)));
+          Units.degreesToRadians(0.0)));
 
       private static final Transform3d ROBOT_TO_MOUNT =
           new Transform3d(
@@ -189,7 +188,6 @@ public class VisionConstants {
         new VisionIOConstantsPhotonVision(CAMERA_1_NAME, ROBOT_TO_CAMERA_1)      
       };
     }
-  }
 
   public static final double MAX_AMBIGUITY = 0.3;
   public static final double LINEAR_STD_DEV_BASELINE = 0.02;

@@ -46,7 +46,6 @@ public class Robot extends TimedRobot {
     funnel
   );
 
-  
   ErrorGroup errorGroup = new ErrorGroup();
   Command poseDeviationsTestCommand;
 
