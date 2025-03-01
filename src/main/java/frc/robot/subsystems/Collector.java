@@ -51,7 +51,7 @@ public class Collector extends SubsystemBase {
    leftMotor.setPosition(0.0);
 
    leftMotor.setInverted(true);
-  setDefaultCommand(new HoldPositionCommand(this));
+   setDefaultCommand(new HoldPositionCommand(this));
    
     
     TalonFXConfiguration talonConfigCollectorMotor = new TalonFXConfiguration();
@@ -61,19 +61,19 @@ public class Collector extends SubsystemBase {
    rightMotor.getConfigurator().apply(talonConfigCollectorMotor);
    leftMotor.getConfigurator().apply(talonConfigCollectorMotor);
 
-   rightMotorController = new SmartPIDControllerTalonFX(Constants.Collector.PIDs.KP,
-        Constants.Collector.PIDs.KI, Constants.Collector.PIDs.KD,
-        Constants.Collector.PIDs.KF, Constants.Collector.PIDs.KV,
-        Constants.Collector.PIDs.KA, Constants.Collector.PIDs.KS,
+   rightMotorController = new SmartPIDControllerTalonFX(Constants.Collector.VelocityControlMode.KP,
+        Constants.Collector.VelocityControlMode.KI, Constants.Collector.VelocityControlMode.KD,
+        Constants.Collector.VelocityControlMode.KF, Constants.Collector.VelocityControlMode.KV,
+        Constants.Collector.VelocityControlMode.KA, Constants.Collector.VelocityControlMode.KS,
          "right motor",
-        Constants.Collector.PIDs.SMART_PID_ENABLED, rightMotor);
+        Constants.Collector.VelocityControlMode.SMART_PID_ENABLED, rightMotor);
 
-    leftMotorController = new SmartPIDControllerTalonFX(Constants.Collector.PIDs.KP,
-        Constants.Collector.PIDs.KI, Constants.Collector.PIDs.KD,
-        Constants.Collector.PIDs.KF, Constants.Collector.PIDs.KV,
-        Constants.Collector.PIDs.KA, Constants.Collector.PIDs.KS,
+    leftMotorController = new SmartPIDControllerTalonFX(Constants.Collector.VelocityControlMode.KP,
+        Constants.Collector.VelocityControlMode.KI, Constants.Collector.VelocityControlMode.KD,
+        Constants.Collector.VelocityControlMode.KF, Constants.Collector.VelocityControlMode.KV,
+        Constants.Collector.VelocityControlMode.KA, Constants.Collector.VelocityControlMode.KS,
         "left motor",
-        Constants.Drivebase.PIDs.SMART_PID_ENABLED, leftMotor);
+        Constants.Collector.VelocityControlMode.SMART_PID_ENABLED, leftMotor);
     
         beambreak = new DigitalInput(Constants.Collector.DIGITAL_INPUT_CHANNEL);
   }
@@ -107,6 +107,14 @@ public class Collector extends SubsystemBase {
 
   public double getRightMotorVelocity() {
     return rightMotor.getVelocity().getValueAsDouble();
+  }
+
+  public double getRightMotorPosition(){
+    return rightMotor.getPosition().getValueAsDouble();
+  }
+
+  public double getLeftMotorPosition(){
+    return leftMotor.getPosition().getValueAsDouble();
   }
 
   public void setCollectorSetPoint(double newRightSetPoint, double newLeftSetPoint) {

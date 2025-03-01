@@ -21,15 +21,15 @@ public class HoldPositionCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    rightSetpoint = collector.getRightMotorVelocity();
-    leftSetpoint = collector.getLeftMotorVelocity();
+    rightSetpoint = collector.getRightMotorPosition();
+    leftSetpoint = collector.getLeftMotorPosition();
+
+    collector.setCollectorSetPoint(rightSetpoint, leftSetpoint);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    collector.setCollectorSetPoint(rightSetpoint, leftSetpoint);
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
