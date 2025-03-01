@@ -131,6 +131,25 @@ public class Constants {
     public static final double SKEW_PROPORTIONAL = .027;
   }
 
+  /** 
+   * The drivebase related constants for the 2024 robot. 
+   * For testing & debugging purposes only; do not use for the production robot! 
+   */
+  public class Drivebase2024Comp {
+    public static final double T_X = 0.925;
+    public static final double T_Y = 0.8041666; 
+    public static SwerveModuleConstants MODULES[] = {
+    	new SwerveModuleConstants(18, 16, 17, 0.311035, new Translation2d(T_X, T_Y),
+    		"Front Left"),
+    	new SwerveModuleConstants(12, 10, 11, -0.415283, new Translation2d(T_X,
+    		-T_Y), "Front Right"),
+    	new SwerveModuleConstants(23, 25, 24, -0.205566, new Translation2d(-T_X,
+    		T_Y), "Back Left"),
+    	new SwerveModuleConstants(20, 22, 21, 0.308838, new Translation2d(-T_X,
+    		-T_Y), "Back Right")
+    };	
+  }
+
   public class VisionConstants {
 
     public static final String FRONT_CAMERA_NAME = "Camera_0";
