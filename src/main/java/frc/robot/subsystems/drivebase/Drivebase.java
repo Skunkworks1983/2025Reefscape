@@ -83,6 +83,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
         phoenix6Odometry::setReadLock,
         moduleLocations);
 
+    positionEstimator.reset(new Pose2d());
     Pigeon2Configuration gyroConfiguration = new Pigeon2Configuration();
     gyroConfiguration.MountPose.MountPoseYaw = 0;
     gyro.getConfigurator().apply(gyroConfiguration);
@@ -90,16 +91,11 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
     odometryThread = new OdometryThread(phoenix6Odometry, positionEstimator);
 
-    Pigeon2Configuration gConfiguration = new Pigeon2Configuration();
-    gConfiguration.MountPose.MountPoseYaw = 0;
-    gyro.getConfigurator().apply(gConfiguration);
-    resetGyroHeading();
-
     // Ensure robot code won't crash if the vision subsystem fails to initialize.
     try {
       new Vision(
         positionEstimator::addVisionMeasurement,
-        VisionConstants.IOConstants.DoubleMount.VISION_IO_CONSTANTS
+        VisionConstants.IOConstants.SwerveModuleMount.VISION_IO_CONSTANTS
       );
     } catch (Exception exception) {
       System.out.println("Vision subsystem failed to initialize. See the below stacktrace for more details: ");

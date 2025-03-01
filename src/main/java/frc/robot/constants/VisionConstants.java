@@ -140,8 +140,54 @@ public class VisionConstants {
     }
 
     public class SwerveModuleMount {
-      
+      /*
+      * Camera_0: The front facing camera
+      * Camera_1: The side facing camera
+      */
+      private static final String CAMERA_0_NAME = "Camera_0";
+      private static final String CAMERA_1_NAME = "Camera_1";
 
+      private static final Transform3d MOUNT_TO_CAMERA_0 = new Transform3d(
+        new Translation3d(
+          Units.feetToMeters(0.925),
+          Units.feetToMeters(-0.8041666),
+          Units.inchesToMeters(8.0)),
+        new Rotation3d(
+          Units.degreesToRadians(0.0),
+          Units.degreesToRadians(-25.0),
+          Units.degreesToRadians(-90.0+45.0)));
+
+      private static final Transform3d MOUNT_TO_CAMERA_1 = new Transform3d(
+        new Translation3d(
+          Units.feetToMeters(0.925),
+          Units.feetToMeters(0.8041666),
+          Units.inchesToMeters(8.0)),
+        new Rotation3d(
+          Units.degreesToRadians(0.0),
+          Units.degreesToRadians(-25.0),
+          Units.degreesToRadians(90.0+45.0)));
+
+      private static final Transform3d ROBOT_TO_MOUNT =
+          new Transform3d(
+            new Translation3d(
+              0.0,
+              0.0,
+              0.0
+            ),
+            new Rotation3d(
+                0.0,
+                0.0,
+                0.0
+            )
+          );
+
+      private static final Transform3d ROBOT_TO_CAMERA_0 = ROBOT_TO_MOUNT.plus(MOUNT_TO_CAMERA_0);
+      private static final Transform3d ROBOT_TO_CAMERA_1 = ROBOT_TO_MOUNT.plus(MOUNT_TO_CAMERA_1);
+
+      public static final VisionIOConstants[] VISION_IO_CONSTANTS = {
+        new VisionIOConstantsPhotonVision(CAMERA_0_NAME, ROBOT_TO_CAMERA_0),
+        new VisionIOConstantsPhotonVision(CAMERA_1_NAME, ROBOT_TO_CAMERA_1)      
+      };
     }
   }
 

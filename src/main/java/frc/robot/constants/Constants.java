@@ -52,8 +52,8 @@ public class Constants {
   }
 
   public class Drivebase {
-    public static final String CANIVORE_NAME = "Evil Canivore";
-    public static final int PIGEON_ID = 22;
+    public static final String CANIVORE_NAME = "1983 Comp Drivebase"; // "Evil Canivore";
+    public static final int PIGEON_ID = 26; // 22;
     public static final double MAX_METERS_PER_SECOND = 4.5;
     public static final double MAX_DEGREES_PER_SECOND = 270;
 
@@ -66,23 +66,36 @@ public class Constants {
     // All modules are at the position (+-MODULE_TO_OFFSET, +-MODULE_TO_OFFSET)
     private static double MODULE_OFFSET = 0.288925;
 
+    // public static SwerveModuleConstants MODULES[] = {
+    //   new SwerveModuleConstants(
+    //     10, 11, 12, -0.337158 + .75, new Translation2d(-MODULE_OFFSET, MODULE_OFFSET), "Back Left"
+    //   ),
+    //   new SwerveModuleConstants(
+    //     13, 14, 15, -0.289795 + .25, new Translation2d(-MODULE_OFFSET, -MODULE_OFFSET), "Back Right"
+    //   ),
+    //   new SwerveModuleConstants(
+    //     16, 17, 18, 0.476318 - .75, new Translation2d(MODULE_OFFSET, MODULE_OFFSET), "Front Left"
+    //   ),
+    //   new SwerveModuleConstants(
+    //     19, 20, 21, -0.353027 + .75, new Translation2d(MODULE_OFFSET, -MODULE_OFFSET), "Front Right"
+    //   )
+    // };
+
+    public static final double T_X = 0.925;
+    public static final double T_Y = 0.8041666; 
     public static SwerveModuleConstants MODULES[] = {
-      new SwerveModuleConstants(
-        10, 11, 12, -0.337158 + .75, new Translation2d(-MODULE_OFFSET, MODULE_OFFSET), "Back Left"
-      ),
-      new SwerveModuleConstants(
-        13, 14, 15, -0.289795 + .25, new Translation2d(-MODULE_OFFSET, -MODULE_OFFSET), "Back Right"
-      ),
-      new SwerveModuleConstants(
-        16, 17, 18, 0.476318 - .75, new Translation2d(MODULE_OFFSET, MODULE_OFFSET), "Front Left"
-      ),
-      new SwerveModuleConstants(
-        19, 20, 21, -0.353027 + .75, new Translation2d(MODULE_OFFSET, -MODULE_OFFSET), "Front Right"
-      )
+    	new SwerveModuleConstants(18, 16, 17, 0.311035, new Translation2d(T_X, T_Y),
+    		"Front Left"),
+    	new SwerveModuleConstants(12, 10, 11, -0.415283, new Translation2d(T_X,
+    		-T_Y), "Front Right"),
+    	new SwerveModuleConstants(23, 25, 24, -0.205566, new Translation2d(-T_X,
+    		T_Y), "Back Left"),
+    	new SwerveModuleConstants(20, 22, 21, 0.308838, new Translation2d(-T_X,
+    		-T_Y), "Back Right")
     };
 
     public class Info {
-      public static final double DRIVE_MOTOR_GEAR_RATIO = 6.12;
+      public static final double DRIVE_MOTOR_GEAR_RATIO = 6.75; // 6.12;
       public static final double WHEEL_DIAMETER = 0.0991108;
       public static final double REVS_PER_METER = DRIVE_MOTOR_GEAR_RATIO / (WHEEL_DIAMETER * Math.PI);
       public static final double METERS_PER_REV = 1.0 / REVS_PER_METER;

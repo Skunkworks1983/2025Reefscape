@@ -81,7 +81,7 @@ public class Vision extends SubsystemBase {
 
         double stdDevFactor = Math.pow(observation.averageTagDistance(), 2.0) / observation.tagCount();
         double linearStdDev = VisionConstants.LINEAR_STD_DEV_BASELINE * stdDevFactor;
-        double angularStdDev = VisionConstants.ANGULAR_STD_DEV_BASELINE * stdDevFactor;
+        double angularStdDev = 1000.0;// VisionConstants.ANGULAR_STD_DEV_BASELINE * stdDevFactor;
 
         consumer.accept(
             observation.estimatedPose().toPose2d(),

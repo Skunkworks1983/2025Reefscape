@@ -41,15 +41,15 @@ public class PoseDeviationsTestDriveForward extends Command {
 
   private static final TrapezoidProfile rotProfile = new TrapezoidProfile(
     new Constraints(
-      1.0,
-      5.0
+      90.0,
+      360.0
     )
   );
 
   private StatePose startPose = new StatePose();
   private StatePose endPose = new StatePose(
-    new State(0.0,0.0), 
-    new State(1.0, 0.0), 
+    new State(1.0,0.0), 
+    new State(0.0, 0.0), 
     new State(0.0, 0.0));
 
   private final Timer timeElapsed = new Timer();
@@ -57,6 +57,7 @@ public class PoseDeviationsTestDriveForward extends Command {
 
   public PoseDeviationsTestDriveForward(Drivebase drivebase) {
     this.drivebase = drivebase;
+    addRequirements(drivebase);
   }
 
   @Override

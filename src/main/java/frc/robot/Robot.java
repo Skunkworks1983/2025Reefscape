@@ -11,10 +11,12 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.utils.error.ErrorCommandGenerator;
 import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.error.DiagnosticSubsystem;
+import frc.robot.commands.AutomatedTests.PoseDeviationsTestDriveForward;
 import frc.robot.constants.Constants;
 import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.*;
@@ -26,7 +28,7 @@ public class Robot extends TimedRobot {
   // replace subsystem with Optional.empty() for testing
   // ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
 
-  Optional<Drivebase> drivebase = Optional.empty(); 
+  Optional<Drivebase> drivebase = Optional.of(new Drivebase()); 
   Optional<Elevator> elevator = Optional.empty(); 
   Optional<Collector> collector = Optional.empty();
   Optional<Wrist> wrist = Optional.empty();
@@ -41,8 +43,8 @@ public class Robot extends TimedRobot {
   );
 
   
-  
   ErrorGroup errorGroup = new ErrorGroup();
+  Command poseDeviationsTestCommand;
 
   public Robot() {
     if(Constants.Testing.ENSURE_COMPETITION_READY_SUBSYSTEMS) {
@@ -63,6 +65,8 @@ public class Robot extends TimedRobot {
         )
       ); // add a set translation controls function. Create a curried function that creates
       // a getSwerveTeleopCommand function. getSwerveTeleopRotationCommand
+
+      poseDeviationsTestCommand = new PoseDeviationsTestDriveForward(drivebase.get());
     }
 
     try {
@@ -81,7 +85,9 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousInit() {}
+  public void autonomousInit() {
+    // poseDeviationsTestCommand.schedule();
+  }
 
   @Override
   public void autonomousPeriodic() {}

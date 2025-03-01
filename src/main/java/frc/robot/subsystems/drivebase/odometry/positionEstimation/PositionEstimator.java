@@ -10,6 +10,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -55,8 +56,10 @@ public class PositionEstimator {
       new Pose2d()
     );
 
+   // reset(new Pose2d(20, 0, new Rotation2d()));
     SmartDashboard.putData("Swerve Drive Odometry", swerveOdometryField2d);
     swerveOdometryField2d.setRobotPose(new Pose2d());
+
   }
   
   /**
