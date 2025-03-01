@@ -32,11 +32,9 @@ public class Wrist extends SubsystemBase {
     bottomMagnetSensor = new DigitalInput(Constants.Wrist.IDs.WRIST_BOTTOM_MAGNET_SENSOR);
 
     TalonFXConfiguration config = new TalonFXConfiguration();
-
+    config.CurrentLimits = CurrentLimits.KRAKEN_CURRENT_LIMIT_CONFIG;
     wristMotor.getConfigurator().apply(config);
 
-    config.CurrentLimits = CurrentLimits.KRAKEN_CURRENT_LIMIT_CONFIG;
-    
     Slot0Configs slot0Configs = new Slot0Configs();
     slot0Configs.kP = Constants.Wrist.PIDs.WRIST_KP;
     slot0Configs.kI = Constants.Wrist.PIDs.WRIST_KI;
