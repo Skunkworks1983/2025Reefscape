@@ -84,6 +84,8 @@ public class Constants {
 
       public static final double ALGAE_AMP_CUT_OFF = 6.0;
 
+      public static final boolean SMART_PID_ENABLED = false;
+
     public class PositionControlMode {
       public static final double KP = 0.0;
       public static final double KI = 0.0;
@@ -93,7 +95,7 @@ public class Constants {
       public static final double KA = 0.0;
       public static final double KS = 0.0;
 
-      public static final boolean SMART_PID_ENABLED = true;
+      public static final boolean SMART_PID_ENABLED = false;
     }
 
     public class VelocityControlMode {
@@ -104,8 +106,6 @@ public class Constants {
       public static final double KV = 1.3;
       public static final double KA = 0.0;
       public static final double KS = 0.0;
-
-      public static final boolean SMART_PID_ENABLED = true;
     }
   }
 
