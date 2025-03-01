@@ -47,6 +47,8 @@ public class Collector extends SubsystemBase {
   public Collector() {
    rightMotor = new TalonFX(Constants.Collector.RIGHT_MOTOR);
    leftMotor = new TalonFX(Constants.Collector.LEFT_MOTOR);
+   rightMotor.setPosition(0.0);
+   leftMotor.setPosition(0.0);
 
    leftMotor.setInverted(true);
   setDefaultCommand(new HoldPositionCommand(this));
@@ -112,7 +114,7 @@ public class Collector extends SubsystemBase {
     collectorLeftSetPoint = newLeftSetPoint;
     rightMotor.setControl(
         positionVoltage.withPosition(newRightSetPoint));
-    rightMotor.setControl(
+    leftMotor.setControl(
         positionVoltage.withPosition(newLeftSetPoint));
   }
 
