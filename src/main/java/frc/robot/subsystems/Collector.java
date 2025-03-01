@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
+import frc.robot.constants.Constants.CurrentLimits;
 import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.PIDControllers.SmartPIDControllerTalonFX;
 
@@ -53,6 +54,8 @@ public class Collector extends SubsystemBase {
    
     
     TalonFXConfiguration talonConfigCollectorMotor = new TalonFXConfiguration();
+    talonConfigCollectorMotor.CurrentLimits = CurrentLimits.KRAKEN_CURRENT_LIMIT_CONFIG;
+
 
     talonConfigCollectorMotor.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
