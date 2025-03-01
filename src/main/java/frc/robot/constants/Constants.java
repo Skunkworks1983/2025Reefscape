@@ -19,9 +19,11 @@ public class Constants {
 
     // Measured in amps
     public static final double KRAKEN_CURRENT_LIMIT_VALUE = 90.0;
+    public static final double MINI_KRAKEN_CURRENT_LIMIT_VALUE = 70.0;
     public static final int NEO_550_CURRENT_LIMIT_VALUE = 25; // not used
 
     public static final CurrentLimitsConfigs KRAKEN_CURRENT_LIMIT_CONFIG;
+    public static final CurrentLimitsConfigs MINI_KRAKEN_CURRENT_LIMIT_CONFIG;
 
     static {
       KRAKEN_CURRENT_LIMIT_CONFIG = new CurrentLimitsConfigs();
@@ -32,8 +34,16 @@ public class Constants {
       KRAKEN_CURRENT_LIMIT_CONFIG.StatorCurrentLimitEnable 
         = KRAKEN_CURRENT_LIMIT_CONFIG.SupplyCurrentLimitEnable
         = true;
-    };
 
+      MINI_KRAKEN_CURRENT_LIMIT_CONFIG = new CurrentLimitsConfigs();
+      MINI_KRAKEN_CURRENT_LIMIT_CONFIG.StatorCurrentLimit 
+        = MINI_KRAKEN_CURRENT_LIMIT_CONFIG.SupplyCurrentLimit
+        = MINI_KRAKEN_CURRENT_LIMIT_VALUE;
+
+      MINI_KRAKEN_CURRENT_LIMIT_CONFIG.StatorCurrentLimitEnable 
+        = MINI_KRAKEN_CURRENT_LIMIT_CONFIG.SupplyCurrentLimitEnable
+        = true;
+    };
   }
 
   public class Testing {

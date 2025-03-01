@@ -45,7 +45,7 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
     magnetSensor2 = new DigitalInput(Constants.Climber.IDs.CLIMBER_MAGNET_SENSOR_2);
 
     TalonFXConfiguration config = new TalonFXConfiguration();
-    config.CurrentLimits = CurrentLimits.KRAKEN_CURRENT_LIMIT_CONFIG;
+    config.CurrentLimits = CurrentLimits.MINI_KRAKEN_CURRENT_LIMIT_CONFIG;
     climbMotor.getConfigurator().apply(config);
 
     climberSmartPID = new SmartPIDControllerTalonFX(
