@@ -69,7 +69,12 @@ public class Collector extends SubsystemBase {
         Constants.Collector.VelocityControlMode.KF, Constants.Collector.VelocityControlMode.KV,
         Constants.Collector.VelocityControlMode.KA, Constants.Collector.VelocityControlMode.KS,
          "right motor",
-        Constants.Collector.VelocityControlMode.SMART_PID_ENABLED, rightMotor);
+        Constants.Collector.SMART_PID_ENABLED, rightMotor);
+   rightMotorController.AddSlot1Configs(Constants.Collector.PositionControlMode.KP,
+    Constants.Collector.PositionControlMode.KI, Constants.Collector.PositionControlMode.KD,
+    Constants.Collector.PositionControlMode.KF, Constants.Collector.PositionControlMode.KV,
+    Constants.Collector.PositionControlMode.KA, Constants.Collector.PositionControlMode.KS
+  );
 
     leftMotorController = new SmartPIDControllerTalonFX(Constants.Collector.VelocityControlMode.KP,
         Constants.Collector.VelocityControlMode.KI,
@@ -77,7 +82,12 @@ public class Collector extends SubsystemBase {
         Constants.Collector.VelocityControlMode.KF, Constants.Collector.VelocityControlMode.KV,
         Constants.Collector.VelocityControlMode.KA, Constants.Collector.VelocityControlMode.KS,
         "left motor",
-        Constants.Collector.VelocityControlMode.SMART_PID_ENABLED, leftMotor);
+        Constants.Collector.SMART_PID_ENABLED, leftMotor);
+    leftMotorController.AddSlot1Configs(Constants.Collector.PositionControlMode.KP,
+        Constants.Collector.PositionControlMode.KI, Constants.Collector.PositionControlMode.KD,
+        Constants.Collector.PositionControlMode.KF, Constants.Collector.PositionControlMode.KV,
+        Constants.Collector.PositionControlMode.KA, Constants.Collector.PositionControlMode.KS
+      );
     
         beambreak = new DigitalInput(Constants.Collector.DIGITAL_INPUT_CHANNEL);
   }
@@ -86,14 +96,14 @@ public class Collector extends SubsystemBase {
   private void setCollectorSpeeds(double rightSpeed, double leftSpeed){
     if (rightSpeed != lastRightSpeed) {
       rightMotor.setControl(velocityVoltage
-          .withVelocity(rightSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER).withEnableFOC(true));
+          .withVelocity(rightSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER).withEnableFOC(true).withSlot(0));
       ConditionalSmartDashboard.putNumber("Collector/ Right speed", rightSpeed);
     }
     lastRightSpeed = rightSpeed;
 
     if (leftSpeed != lastLeftSpeed) {
       leftMotor.setControl(velocityVoltage
-          .withVelocity(leftSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER).withEnableFOC(true));
+          .withVelocity(leftSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER).withEnableFOC(true).withSlot(0));
       ConditionalSmartDashboard.putNumber("Collector/ Left speed", leftSpeed);
     }
     lastLeftSpeed = leftSpeed;
@@ -128,9 +138,9 @@ public class Collector extends SubsystemBase {
     collectorRightSetpoint = newRightSetPoint;
     collectorLeftSetPoint = newLeftSetPoint;
     rightMotor.setControl(
-        positionVoltage.withPosition(newRightSetPoint));
+        positionVoltage.withPosition(newRightSetPoint).withSlot(1));
     leftMotor.setControl(
-        positionVoltage.withPosition(newLeftSetPoint));
+        positionVoltage.withPosition(newLeftSetPoint).withSlot(1));
   }
 
   public Command rotateCoralCommand() {
