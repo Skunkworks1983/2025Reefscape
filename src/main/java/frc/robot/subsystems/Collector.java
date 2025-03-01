@@ -69,7 +69,8 @@ public class Collector extends SubsystemBase {
         Constants.Collector.VelocityControlMode.SMART_PID_ENABLED, rightMotor);
 
     leftMotorController = new SmartPIDControllerTalonFX(Constants.Collector.VelocityControlMode.KP,
-        Constants.Collector.VelocityControlMode.KI, Constants.Collector.VelocityControlMode.KD,
+        Constants.Collector.VelocityControlMode.KI,
+         Constants.Collector.VelocityControlMode.KD,
         Constants.Collector.VelocityControlMode.KF, Constants.Collector.VelocityControlMode.KV,
         Constants.Collector.VelocityControlMode.KA, Constants.Collector.VelocityControlMode.KS,
         "left motor",
