@@ -86,7 +86,7 @@ public class Constants {
 
       public static final boolean SMART_PID_ENABLED = false;
 
-    public class PositionControlMode {
+  public class PositionControlMode {
       public static final double KP = 0.0;
       public static final double KI = 0.0;
       public static final double KD = 0.0;
@@ -98,7 +98,7 @@ public class Constants {
       public static final boolean SMART_PID_ENABLED = false;
     }
 
-    public class VelocityControlMode {
+  public class VelocityControlMode {
       public static final double KP = 0.0;
       public static final double KI = 0.0;
       public static final double KD = 0.0;
