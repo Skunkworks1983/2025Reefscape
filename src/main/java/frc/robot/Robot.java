@@ -61,6 +61,9 @@ public class Robot extends TimedRobot {
       if (climber.isEmpty()) {
         throw new IllegalStateException("Climber not present");
       }
+      if(Constants.Testing.ROBOT == Constants.Testing.Robot.Comp2024) {
+        throw new IllegalStateException("Using 2024 drivebase constants");
+      }
     }
 
     if(drivebase.isPresent()) {
