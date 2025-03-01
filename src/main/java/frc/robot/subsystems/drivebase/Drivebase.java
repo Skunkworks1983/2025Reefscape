@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.drivebase;
 
-import static edu.wpi.first.units.Units.Rotation;
-
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;

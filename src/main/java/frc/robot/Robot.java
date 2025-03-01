@@ -6,10 +6,6 @@ package frc.robot;
 
 import java.util.Optional;
 
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,12 +14,9 @@ import frc.robot.utils.error.ErrorCommandGenerator;
 import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.error.DiagnosticSubsystem;
-import frc.robot.commands.AutomatedTests.PoseDeviationsTestDriveForward;
 import frc.robot.constants.Constants;
-import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.drivebase.Drivebase;
-import frc.robot.subsystems.vision.Vision;
 
 public class Robot extends TimedRobot {
 
@@ -80,15 +73,6 @@ public class Robot extends TimedRobot {
         )
       );
     }
-
-    // try {
-    //   new Vision(
-    //     new Vision.VisionConsumer() {
-    //       @Override public void accept(Pose2d estimatedPose, double timestamp, Matrix<N3, N1> stdDevs) {}
-    //     },
-    //     VisionConstants.IOConstants.DoubleMount.VISION_IO_CONSTANTS
-    //   );
-    // } catch (Exception exception) {}
   }
 
   @Override 

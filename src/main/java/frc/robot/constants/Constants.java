@@ -5,8 +5,6 @@
 package frc.robot.constants;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 
@@ -50,6 +48,14 @@ public class Constants {
     // If some subsystems are not created and this value is true, an exeption
     // will be thrown.
     public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = false;
+
+    public static enum Robot {
+      Comp2024,
+      Comp2025
+    }
+  
+    // Change this to test on the 2024 robot's drivebase.
+    public static Robot ROBOT = Robot.Comp2024;
 
     public static final double NUMBER_OF_MOTOR_ROTATIONS_FOR_MODULE_TEST = 1.0;
     public static final double TURN_MOTOR_ROTATION_SPEED = 0.15;
@@ -97,8 +103,8 @@ public class Constants {
   }
 
   public class Drivebase {
-    public static final String CANIVORE_NAME = "1983 Comp Drivebase"; // "Evil Canivore";
-    public static final int PIGEON_ID = 26; // 22;
+    public static final String CANIVORE_NAME = Testing.ROBOT == Testing.Robot.Comp2025 ? "Evil Canivore" : "1983 Comp Drivebase";
+    public static final int PIGEON_ID = Testing.ROBOT == Testing.Robot.Comp2025 ? 22 : 26;
     public static final double MAX_METERS_PER_SECOND = 4.5;
     public static final double MAX_DEGREES_PER_SECOND = 270;
 
@@ -108,27 +114,30 @@ public class Constants {
       public static int BUTTON_STICK_ID = 2;
     }
 
+    
+
     // All modules are at the position (+-MODULE_TO_OFFSET, +-MODULE_TO_OFFSET)
     private static double MODULE_OFFSET = 0.288925;
-
-    // public static SwerveModuleConstants MODULES[] = {
-    //   new SwerveModuleConstants(
-    //     10, 11, 12, -0.337158 + .75, new Translation2d(-MODULE_OFFSET, MODULE_OFFSET), "Back Left"
-    //   ),
-    //   new SwerveModuleConstants(
-    //     13, 14, 15, -0.289795 + .25, new Translation2d(-MODULE_OFFSET, -MODULE_OFFSET), "Back Right"
-    //   ),
-    //   new SwerveModuleConstants(
-    //     16, 17, 18, 0.476318 - .75, new Translation2d(MODULE_OFFSET, MODULE_OFFSET), "Front Left"
-    //   ),
-    //   new SwerveModuleConstants(
-    //     19, 20, 21, -0.353027 + .75, new Translation2d(MODULE_OFFSET, -MODULE_OFFSET), "Front Right"
-    //   )
-    // };
-
+    
+    // For 2024 Robot
     public static final double T_X = 0.925;
     public static final double T_Y = 0.8041666; 
-    public static SwerveModuleConstants MODULES[] = {
+
+    public static SwerveModuleConstants MODULES[] = (Testing.ROBOT == Testing.Robot.Comp2025) ? new SwerveModuleConstants[] {
+      new SwerveModuleConstants(
+        10, 11, 12, -0.337158 + .75, new Translation2d(-MODULE_OFFSET, MODULE_OFFSET), "Back Left"
+      ),
+      new SwerveModuleConstants(
+        13, 14, 15, -0.289795 + .25, new Translation2d(-MODULE_OFFSET, -MODULE_OFFSET), "Back Right"
+      ),
+      new SwerveModuleConstants(
+        16, 17, 18, 0.476318 - .75, new Translation2d(MODULE_OFFSET, MODULE_OFFSET), "Front Left"
+      ),
+      new SwerveModuleConstants(
+        19, 20, 21, -0.353027 + .75, new Translation2d(MODULE_OFFSET, -MODULE_OFFSET), "Front Right"
+      )
+    } :
+    new SwerveModuleConstants[] {
     	new SwerveModuleConstants(18, 16, 17, 0.311035, new Translation2d(T_X, T_Y),
     		"Front Left"),
     	new SwerveModuleConstants(12, 10, 11, -0.415283, new Translation2d(T_X,
@@ -140,7 +149,7 @@ public class Constants {
     };
 
     public class Info {
-      public static final double DRIVE_MOTOR_GEAR_RATIO = 6.75; // 6.12;
+      public static final double DRIVE_MOTOR_GEAR_RATIO = Testing.ROBOT == Testing.Robot.Comp2025 ? 6.12 : 6.75;
       public static final double WHEEL_DIAMETER = 0.0991108;
       public static final double REVS_PER_METER = DRIVE_MOTOR_GEAR_RATIO / (WHEEL_DIAMETER * Math.PI);
       public static final double METERS_PER_REV = 1.0 / REVS_PER_METER;
