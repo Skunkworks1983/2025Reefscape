@@ -32,8 +32,8 @@ public class SmartPIDControllerTalonFX implements SmartPIDBase {
   public Optional<Double> lastKaValue2 = Optional.empty();
   public Optional<Double> lastKsValue2 = Optional.empty();
   public Slot0Configs slot0Configs;
-  public Optional<Slot1Configs> slot1Configs;
-  public Optional<Slot2Configs> slot2Configs;
+  public Optional<Slot1Configs> slot1Configs = Optional.empty();
+  public Optional<Slot2Configs> slot2Configs = Optional.empty();
 
 
   private SmartPIDControllerTalonFX(double kp, double ki, double kd, double kf, Optional<Double> kv, 
