@@ -82,14 +82,14 @@ public class Collector extends SubsystemBase {
     if (rightSpeed != lastRightSpeed) {
       rightMotor.setControl(velocityVoltage
           .withVelocity(rightSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER).withEnableFOC(true));
-      ConditionalSmartDashboard.putNumber("Collector/ Right speed", rightSpeed);
+      ConditionalSmartDashboard.putNumber("Collector/Right speed", rightSpeed);
     }
     lastRightSpeed = rightSpeed;
 
     if (leftSpeed != lastLeftSpeed) {
       leftMotor.setControl(velocityVoltage
           .withVelocity(leftSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER).withEnableFOC(true));
-      ConditionalSmartDashboard.putNumber("Collector/ Left speed", leftSpeed);
+      ConditionalSmartDashboard.putNumber("Collector/Left speed", leftSpeed);
     }
     lastLeftSpeed = leftSpeed;
   }
@@ -98,9 +98,9 @@ public class Collector extends SubsystemBase {
     leftMotorController.updatePID();
     rightMotorController.updatePID();
     
-    ConditionalSmartDashboard.putNumber("Collector/ Right motor current", rightMotor.getSupplyCurrent().getValueAsDouble());
-    ConditionalSmartDashboard.putNumber("Collector/ Left motor current", leftMotor.getSupplyCurrent().getValueAsDouble());
-    ConditionalSmartDashboard.putBoolean("Collector/ Beambreak collector", !beambreak.get());
+    ConditionalSmartDashboard.putNumber("Collector/Right motor current", rightMotor.getSupplyCurrent().getValueAsDouble());
+    ConditionalSmartDashboard.putNumber("Collector/Left motor current", leftMotor.getSupplyCurrent().getValueAsDouble());
+    ConditionalSmartDashboard.putBoolean("Collector/Beambreak collector", !beambreak.get());
   }
   
   public Command rotateCoralCommand() {
@@ -108,8 +108,8 @@ public class Collector extends SubsystemBase {
       () -> {
         setCollectorSpeeds(Constants.Collector.Speeds.CORAL_INTAKE_SLOW_SPEED, 
         Constants.Collector.Speeds.CORAL_INTAKE_FAST_SPEED);
-        ConditionalSmartDashboard.putNumber("Collector/ right collector current speed", getRightMotorVelocity());
-        ConditionalSmartDashboard.putNumber("Collector/ left collector current speed", getLeftMotorVelocity());
+        ConditionalSmartDashboard.putNumber("Collector/Right collector current speed", getRightMotorVelocity());
+        ConditionalSmartDashboard.putNumber("Collector/Left collector current speed", getLeftMotorVelocity());
       }, 
       () -> {
         setCollectorSpeeds(0, 0);
@@ -136,8 +136,8 @@ public class Collector extends SubsystemBase {
       }
     ).until(
       () -> {
-        ConditionalSmartDashboard.putNumber("Collector/ amp cut off right", rightMotor.getSupplyCurrent().getValueAsDouble());
-        ConditionalSmartDashboard.putNumber("Collector/ amp cut off left", leftMotor.getSupplyCurrent().getValueAsDouble());
+        ConditionalSmartDashboard.putNumber("Collector/Amp cut off right", rightMotor.getSupplyCurrent().getValueAsDouble());
+        ConditionalSmartDashboard.putNumber("Collector/Amp cut off left", leftMotor.getSupplyCurrent().getValueAsDouble());
         if (rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF ||
             leftMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF ||
             rightMotor.getSupplyCurrent().getValueAsDouble() < 0 ||
