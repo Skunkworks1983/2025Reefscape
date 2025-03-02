@@ -76,7 +76,7 @@ public class Collector extends SubsystemBase {
         Constants.Collector.VelocityControlMode.KF, Constants.Collector.VelocityControlMode.KV,
         Constants.Collector.VelocityControlMode.KA, Constants.Collector.VelocityControlMode.KS,
         "left motor",
-        Constants.Collector.PIDs.SMART_PID_ENABLED, leftMotor);
+        Constants.Collector.SMART_PID_ENABLED, leftMotor);
     
         beambreak = new DigitalInput(Constants.Collector.IDs.DIGITAL_INPUT_CHANNEL);
   }
@@ -199,6 +199,16 @@ public class Collector extends SubsystemBase {
       }
     );
 
+  }
+
+  public Command holdPositionCommand(){
+    return startEnd(
+      () -> {
+        setCollectorSetPoint(getRightMotorPosition(), getLeftMotorPosition());
+      }, () -> {
+
+      }
+    );
   }
 
   public Command intakeAlgaeCommand(
