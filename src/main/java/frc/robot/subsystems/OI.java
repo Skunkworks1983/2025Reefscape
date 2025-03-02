@@ -7,10 +7,12 @@ package frc.robot.subsystems;
 import java.util.Optional;
 import java.util.function.DoubleFunction;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants.EndEffectorSetpoints;
 import frc.robot.constants.Constants.OI.LIMITS;
+import frc.robot.constants.EndEffectorSetpointConstants;
 import frc.robot.commands.MoveEndEffector;
 import frc.robot.commands.funnel.MoveFunnelToSetpoint;
 import frc.robot.subsystems.drivebase.Drivebase;
@@ -104,6 +106,21 @@ public class OI {
     if(optionalElevator.isPresent() && optionalWrist.isPresent()) {
       Elevator elevator = optionalElevator.get();
       Wrist wrist = optionalWrist.get();
+
+      new JoystickButton(buttonJoystick, Buttons.END_EFFECTOR_TUNING).whileTrue(
+        Commands.run(
+          () -> { 
+            new MoveEndEffector(
+              elevator,
+              wrist,
+              new EndEffectorSetpointConstants(
+                rotationJoystick.getY(),
+                translationJoystick.getY()
+              )
+            ).schedule();
+          }
+        )
+      );
 
       JoystickButton endEffectorGround = new JoystickButton(buttonJoystick, Buttons.GOTO_GROUND);
       JoystickButton endEffectorStow = new JoystickButton(buttonJoystick, Buttons.GOTO_STOW);

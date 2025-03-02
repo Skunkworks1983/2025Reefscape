@@ -420,6 +420,8 @@ public class Constants {
 
         public static final int FUNNEL_GO_TO_MAX = 0;
         public static final int FUNNEL_GO_TO_MIN = 0;
+
+        public static final int END_EFFECTOR_TUNING = 0;
       }
     }
   }
