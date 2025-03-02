@@ -228,37 +228,6 @@ public class Collector extends SubsystemBase {
     );
   }
 
-  public Command rotateThenIntakeCommand() {
-    //if the coral is in werid this will turn it then intake it to where its ment to be so it can be scored
-    return Commands.runEnd(
-      () -> {
-        if(!beambreak.get()) {
-          setCollectorSpeeds(Constants.Collector.CORAL_INTAKE_FAST_SPEED, 
-          Constants.Collector.CORAL_INTAKE_FAST_SPEED);
-        }
-        else {
-          setCollectorSpeeds(Constants.Collector.CORAL_INTAKE_FAST_SPEED, 
-          Constants.Collector.CORAL_INTAKE_FAST_SPEED);
-        }
-      },
-      () -> {
-        setCollectorSpeeds(0.0, 0.0);
-      }
-    ).until(
-      () -> {
-        if (rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF &&
-        leftMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF) 
-        {
-          endCount[0]++;
-        }
-        else
-        {
-          endCount[0] = 0;
-        }
-        return endCount[0] > Constants.Collector.END_COUNT_TICK_COUNTER;
-      }
-    );
-  }
   public Command expelCoral(boolean stopOnEnd)
   {
     return runEnd(
