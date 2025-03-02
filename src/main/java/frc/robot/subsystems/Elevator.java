@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.CurrentLimits;
@@ -14,6 +15,7 @@ import frc.robot.utils.PIDControllers.SmartPIDControllerTalonFX;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -77,6 +79,18 @@ public class Elevator extends SubsystemBase {
   // Reminder: all positions are measured in meters
   public double getElevatorPosition() {
     return motorRight.getPosition().getValueAsDouble() * Constants.Elevator.MOTOR_ROTATIONS_TO_METERS;
+  }
+
+  public Command follow() {
+    return startEnd(
+      () -> {
+        System.out.println("Follower command starting");
+        motorLeft.setControl(new Follower(Constants.Elevator.MOTOR_RIGHT_ID, true));
+        motorRight.setControl(new DutyCycleOut(.025));
+      }, () -> {
+        motorRight.setControl(new DutyCycleOut(0));
+      }
+    );
   }
 
   // Reminder: all velocities are measured in meters/second

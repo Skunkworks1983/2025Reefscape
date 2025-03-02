@@ -23,8 +23,8 @@ public class Robot extends TimedRobot {
   // subsystems. ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
 
   Optional<Drivebase> drivebase = Optional.ofNullable(null);
-  Optional<Elevator> elevator = Optional.ofNullable(null);
-  Optional<Collector> collector = Optional.of(new Collector());
+  Optional<Elevator> elevator = Optional.of(new Elevator());
+  Optional<Collector> collector = Optional.ofNullable(null);
   Optional<Wrist> wrist = Optional.ofNullable(null);
   Optional<Climber> climber = Optional.ofNullable(null);
   Optional<Funnel> funnel = Optional.ofNullable(null);

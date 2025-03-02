@@ -101,7 +101,7 @@ public class OI {
       );
     }
 
-    if(optionalElevator.isPresent() && optionalWrist.isPresent()) {
+    if(optionalElevator.isPresent() && true) {
       Elevator elevator = optionalElevator.get();
       Wrist wrist = optionalWrist.get();
 
@@ -111,7 +111,9 @@ public class OI {
       JoystickButton endEffectorToL2 = new JoystickButton(buttonJoystick, Buttons.GOTO_L2);
       JoystickButton endEffectorToL3 = new JoystickButton(buttonJoystick, Buttons.GOTO_L3);
       JoystickButton endEffectorToScoreHigh = new JoystickButton(buttonJoystick, Buttons.GOTO_SCORE_HIGH);
+      
 
+      new JoystickButton(buttonJoystick, 12).whileTrue(elevator.follow());
       // Algae mode
       endEffectorGround.and(algaeToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.algaeGround)
