@@ -6,6 +6,9 @@ package frc.robot.subsystems;
 
 import java.util.Optional;
 import java.util.function.DoubleFunction;
+
+import com.ctre.phoenix6.controls.PositionVoltage;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -107,20 +110,32 @@ public class OI {
       Elevator elevator = optionalElevator.get();
       Wrist wrist = optionalWrist.get();
 
+
+
+      PositionVoltage positionVoltageWrist = new PositionVoltage(0);
+      PositionVoltage positionVoltageElevator = new PositionVoltage(0);
+      double[] elevatorPosition = {0};
+      double[] wristPosition = {0};
       new JoystickButton(buttonJoystick, Buttons.END_EFFECTOR_TUNING).whileTrue(
         Commands.run(
           () -> { 
-            new MoveEndEffector(
-              elevator,
-              wrist,
-              new EndEffectorSetpointConstants(
-                rotationJoystick.getY(),
-                translationJoystick.getY()
-              )
-            ).schedule();
-          }
-        )
+            wristPosition[0] += applyDeadband.apply(translationJoystick.getY()) * .02;
+            elevatorPosition[0] += applyDeadband.apply(rotationJoystick.getY()) * .02;
+            positionVoltageWrist.Position = wristPosition[0];
+
+            positionVoltageElevator.Position = elevatorPosition[0];
+
+            elevator.motorRight.setControl(positionVoltageElevator.withLimitForwardMotion(elevator.getTopLimitSwitch())
+      .withLimitReverseMotion(elevator.getBottomLimitSwitch()).withEnableFOC(true));
+
+            elevator.motorRight.setControl(positionVoltageWrist.withLimitForwardMotion(wrist.getTopMagnetSensor())
+      .withLimitReverseMotion(wrist.getTopMagnetSensor()).withEnableFOC(true));
+
+          }, wrist, elevator)
       );
+
+
+
 
       JoystickButton endEffectorGround = new JoystickButton(buttonJoystick, Buttons.GOTO_GROUND);
       JoystickButton endEffectorStow = new JoystickButton(buttonJoystick, Buttons.GOTO_STOW);
