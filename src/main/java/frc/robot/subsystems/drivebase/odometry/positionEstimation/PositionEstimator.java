@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.Phoenix6DrivebaseState;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.Phoenix6SwerveModuleState;
 
-/** Add your docs here. */
 public class PositionEstimator {
 
   public SwerveDriveKinematics swerveDriveKinematics;
@@ -55,7 +54,6 @@ public class PositionEstimator {
       new Pose2d()
     );
 
-   // reset(new Pose2d(20, 0, new Rotation2d()));
     SmartDashboard.putData("Swerve Drive Odometry", swerveOdometryField2d);
     swerveOdometryField2d.setRobotPose(new Pose2d());
 
