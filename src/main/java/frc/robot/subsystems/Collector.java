@@ -156,78 +156,12 @@ public class Collector extends SubsystemBase {
     );
   }
 
-  public Command scoreCoralCommand() {
-    return runEnd(
-      () -> {
-        setCollectorSpeeds(Constants.Collector.CORAL_INTAKE_FAST_SPEED, 
-          Constants.Collector.CORAL_INTAKE_FAST_SPEED);
-      },
-      () -> {
-        setCollectorSpeeds(0, 0);
-      }
-    ).until(
-      () -> {
-        if (rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF &&
-        leftMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF) 
-        {
-          endCount[0]++;
-        }
-        else
-        {
-          endCount[0] = 0;
-        }
-        return endCount[0] > Constants.Collector.END_COUNT_TICK_COUNTER;
-      }
-    );
-  }
-
-  public Command waitAfterCatchPieceCommand() {
-    return Commands.sequence(
-      intakeCoralCommand(false),
-      Commands.race(
-        scoreCoralCommand(),
-        Commands.waitSeconds(Constants.Collector.SECONDS_BEFORE_CUTTOF)
-      )
-    );
-  }
-
-  public Command rotateThenIntakeCommand() {
-    //if the coral is in werid this will turn it then intake it to where its ment to be so it can be scored
-    return Commands.runEnd(
-      () -> {
-        if(!beambreak.get()) {
-          setCollectorSpeeds(Constants.Collector.CORAL_INTAKE_FAST_SPEED, 
-          Constants.Collector.CORAL_INTAKE_FAST_SPEED);
-        }
-        else {
-          setCollectorSpeeds(Constants.Collector.CORAL_INTAKE_FAST_SPEED, 
-          Constants.Collector.CORAL_INTAKE_FAST_SPEED);
-        }
-      },
-      () -> {
-        setCollectorSpeeds(0.0, 0.0);
-      }
-    ).until(
-      () -> {
-        if (rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF &&
-        leftMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF) 
-        {
-          endCount[0]++;
-        }
-        else
-        {
-          endCount[0] = 0;
-        }
-        return endCount[0] > Constants.Collector.END_COUNT_TICK_COUNTER;
-      }
-    );
-  }
   public Command expelCoral(boolean stopOnEnd)
   {
     return runEnd(
       () -> {
-        setCollectorSpeeds(Constants.Collector.COLLECTOR_REVERSE, 
-          Constants.Collector.COLLECTOR_REVERSE);
+        setCollectorSpeeds(Constants.Collector.CORAL_EXPELL_SLOW_SPEED, 
+          Constants.Collector.CORAL_EXPELL_SLOW_SPEED);
       },
       () -> {
         if(stopOnEnd) {
@@ -242,8 +176,8 @@ public class Collector extends SubsystemBase {
   ) {
     return runEnd(
       () -> {
-        setCollectorSpeeds(Constants.Collector.ALGAE_INTAKE, 
-          Constants.Collector.ALGAE_INTAKE);
+        setCollectorSpeeds(Constants.Collector.ALGAE_INTAKE_SPEED, 
+          Constants.Collector.ALGAE_INTAKE_SPEED);
       },
       () -> {
         if(stopOnEnd) {
@@ -271,8 +205,8 @@ public class Collector extends SubsystemBase {
   ) {
     return runEnd(
       () -> {
-        setCollectorSpeeds(Constants.Collector.ALGAE_EXPEL, 
-          Constants.Collector.ALGAE_EXPEL);
+        setCollectorSpeeds(Constants.Collector.ALGAE_EXPEL_SPEED, 
+          Constants.Collector.ALGAE_EXPEL_SPEED);
       },
       () -> {
         if(stopOnEnd) {

@@ -69,12 +69,13 @@ public class Constants {
 
     public static final double CORAL_INTAKE_SLOW_SPEED = 8.0; //meters per sec
     public static final double CORAL_INTAKE_FAST_SPEED = 18.0; //meters per sec 
-    public static final double SPEED_MULIPILER_LEFT = 0.75;
 
-    public static final double COLLECTOR_REVERSE = 0;
-    
-    public static final double ALGAE_INTAKE = 5;
-    public static final double ALGAE_EXPEL = 5;
+    public static final double CORAL_EXPELL_SLOW_SPEED = 8.0; //meters per sec
+    public static final double CORAL_EXPELL_FAST_SPEED = 18.0; //meters per sec 
+
+    public static final double ALGAE_INTAKE_SPEED = 5;
+    public static final double ALGAE_EXPEL_SPEED = -5;
+    public static final double SPEED_MULIPILER_LEFT = 0.75;
 
     public static final double END_COUNT_TICK_COUNTER = 1;
     public static final int DIGITAL_INPUT_CHANNEL = 8;
