@@ -162,15 +162,6 @@ public class OI {
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.coralL4)
       );
     }
-
-    if(optionalFunnel.isPresent()){
-      Funnel funnel = optionalFunnel.get();
-      new JoystickButton(translationJoystick, Constants.OI.IDs.Buttons.FUNNEL_GO_TO_MAX)
-        .onTrue(new MoveFunnelToSetpoint(funnel, Constants.Funnel.FUNNEL_POSITION_HIGH_CONVERTED));
-      new JoystickButton(translationJoystick, Constants.OI.IDs.Buttons.FUNNEL_GO_TO_MIN)
-        .onTrue(new MoveFunnelToSetpoint(funnel, Constants.Funnel.FUNNEL_POSITION_LOW_CONVERTED));
-    }
-
   }
 
   public double getInstructedXMetersPerSecond() {
