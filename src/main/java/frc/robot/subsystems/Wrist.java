@@ -12,6 +12,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.utils.ConditionalSmartDashboard;
@@ -47,9 +48,9 @@ public class Wrist extends SubsystemBase {
   public void periodic() {
     
     ConditionalSmartDashboard.putNumber("Wrist/Wrist velocity (rotations per second)", getWristVelocity());
-    ConditionalSmartDashboard.putNumber("Wrist/Wrist motor position(rotations)", getPosition());
-    ConditionalSmartDashboard.putBoolean("Wrist/Bottom wrist magnet state", getBottomMagnetSensor());
-    ConditionalSmartDashboard.putBoolean("Wrist/Top wrist magnet state", getTopMagnetSensor());
+    SmartDashboard.putNumber("Wrist/Wrist motor position(rotations)", getPosition());
+    SmartDashboard.putBoolean("Wrist/Bottom wrist magnet state", getBottomMagnetSensor());
+    SmartDashboard.putBoolean("Wrist/Top wrist magnet state", getTopMagnetSensor());
 
     if (getTopMagnetSensor()) {
       wristMotor.setPosition(Constants.Wrist.WRIST_MAX_ROTATIONS);

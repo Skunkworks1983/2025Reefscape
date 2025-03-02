@@ -56,7 +56,7 @@ public class Funnel extends SubsystemBase implements DiagnosticSubsystem{
 
   @Override
   public void periodic() {
-    ConditionalSmartDashboard.putNumber("Funnel/Motor Pos (revs)", getPos());
+    SmartDashboard.putNumber("Funnel/Motor Pos (revs)", getPos());
     ConditionalSmartDashboard.putNumber("Funnel/Set point (revs)", setpoint);
     ConditionalSmartDashboard.putBoolean("Funnel/At Set Point", isAtSetpoint());
     ConditionalSmartDashboard.putNumber("Funnel/Motor Current", getCurrent());

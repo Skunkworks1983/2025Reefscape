@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.utils.ConditionalSmartDashboard;
@@ -123,12 +124,12 @@ public class Elevator extends SubsystemBase {
     ConditionalSmartDashboard.putNumber("Elevator/Desired position in meters", targetPosition);
     ConditionalSmartDashboard.putNumber("Elevator/Desired position in rotations", targetPosition * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
     ConditionalSmartDashboard.putNumber("Elevator/Actual velocity in mps", motorRight.getVelocity().getValueAsDouble());
-    ConditionalSmartDashboard.putNumber("Elevator/Actual position in meters", currentPos * Constants.Elevator.MOTOR_ROTATIONS_TO_METERS);
+    SmartDashboard.putNumber("Elevator/Actual position in meters", currentPos * Constants.Elevator.MOTOR_ROTATIONS_TO_METERS);
     ConditionalSmartDashboard.putNumber("Elevator/Actual position in rotations", currentPos);
     ConditionalSmartDashboard.putNumber("Elevator/Final setpoint in meters", finalTargetPosition);
     ConditionalSmartDashboard.putNumber("Elevator/Final setpoint in rotations", finalTargetPosition * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
-    ConditionalSmartDashboard.putBoolean("Elevator/Bottom limit switch", getBottomLimitSwitch());
-    ConditionalSmartDashboard.putBoolean("Elevator/Top limit switch", getTopLimitSwitch());
+    SmartDashboard.putBoolean("Elevator/Bottom limit switch", getBottomLimitSwitch());
+    SmartDashboard.putBoolean("Elevator/Top limit switch", getTopLimitSwitch());
 
   }
 }

@@ -96,7 +96,7 @@ public class Collector extends SubsystemBase {
   public void periodic() {
     ConditionalSmartDashboard.putNumber("Collector/ Right motor current", rightMotor.getSupplyCurrent().getValueAsDouble());
     ConditionalSmartDashboard.putNumber("Collector/ Left motor current", leftMotor.getSupplyCurrent().getValueAsDouble());
-    ConditionalSmartDashboard.putBoolean("Collector/ Beambreak collector", !beambreak.get());
+    SmartDashboard.putBoolean("Collector/ Beambreak collector", !beambreak.get());
   }
   
   public Command rotateCoralCommand() {

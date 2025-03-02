@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.utils.error.ErrorCommandGenerator;
 import frc.robot.utils.error.ErrorGroup;
@@ -22,12 +23,14 @@ public class Robot extends TimedRobot {
   // replace subsystem with Optional.empty() when you do not wish to use add all
   // subsystems. ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
 
-  Optional<Drivebase> drivebase = Optional.of(new Drivebase());
-  Optional<Elevator> elevator = Optional.of(new Elevator());
-  Optional<Collector> collector = Optional.of(new Collector());
-  Optional<Wrist> wrist = Optional.of(new Wrist());
-  Optional<Climber> climber = Optional.of(new Climber());
-  Optional<Funnel> funnel = Optional.of(new Funnel());
+  
+
+  Optional<Drivebase> drivebase = Optional.empty();
+  Optional<Elevator> elevator = Optional.empty();
+  Optional<Collector> collector = Optional.empty();
+  Optional<Wrist> wrist = Optional.empty();
+  Optional<Climber> climber = Optional.empty();
+  Optional<Funnel> funnel = Optional.empty();
 
   OI oi = new OI( 
     elevator,
@@ -80,6 +83,27 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
     ConditionalSmartDashboard.updateConditions();
+
+    SmartDashboard.putNumber("Swerve Drive Odometry", 1);
+
+    SmartDashboard.putNumber("Gyro Position", 1);
+    SmartDashboard.putNumber("Drivebase/Swerve Module orientation",1);
+
+    SmartDashboard.putNumber("Climber/Motor position", 1);
+    SmartDashboard.putBoolean("Climber/Magnet Sensor 1", true);
+    SmartDashboard.putBoolean("Climber/Magnet Sensor 2", true);
+
+    SmartDashboard.putBoolean("Collector/ Beambreak collector", true);
+
+    SmartDashboard.putNumber("Elevator/Actual position in meters", 1);
+    SmartDashboard.putBoolean("Elevator/Bottom limit switch", true);
+    SmartDashboard.putBoolean("Elevator/Top limit switch", true);
+
+    SmartDashboard.putNumber("Funnel/Motor Pos (revs)", 1);
+
+    SmartDashboard.putNumber("Wrist/Wrist motor position(rotations)", 1);
+    SmartDashboard.putBoolean("Wrist/Bottom wrist magnet state", true);
+    SmartDashboard.putBoolean("Wrist/Top wrist magnet state", true);
   }
 
   @Override
