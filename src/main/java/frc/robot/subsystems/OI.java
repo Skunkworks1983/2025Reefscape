@@ -78,27 +78,12 @@ public class OI {
         .onTrue(climber.goToPositionAfterMagnetSensor(Constants.Climber.CLIMBER_MIN));
     }
 
-    if(optionalFunnel.isPresent()) {
+    if(optionalFunnel.isPresent()){
       Funnel funnel = optionalFunnel.get();
-
-      JoystickButton raiseFunnel = new JoystickButton(
-        buttonJoystick,
-        Constants.OI.IDs.Buttons.RAISE_FUNNEL_TOGGLE
-      );
-
-      raiseFunnel.whileTrue(
-        new MoveFunnelToSetpoint(
-          funnel,
-          Constants.Funnel.FUNNEL_POSITION_HIGH_CONVERTED
-        )
-      );
-
-      raiseFunnel.whileFalse(
-        new MoveFunnelToSetpoint(
-          funnel,
-          Constants.Funnel.FUNNEL_POSITION_LOW_CONVERTED
-        )
-      );
+      new JoystickButton(translationJoystick, Constants.OI.IDs.Buttons.FUNNEL_GO_TO_MAX)
+        .onTrue(new MoveFunnelToSetpoint(funnel, Constants.Funnel.FUNNEL_POSITION_HIGH_CONVERTED));
+      new JoystickButton(translationJoystick, Constants.OI.IDs.Buttons.FUNNEL_GO_TO_MIN)
+        .onTrue(new MoveFunnelToSetpoint(funnel, Constants.Funnel.FUNNEL_POSITION_LOW_CONVERTED));
     }
 
     if(optionalElevator.isPresent() && optionalWrist.isPresent()) {
