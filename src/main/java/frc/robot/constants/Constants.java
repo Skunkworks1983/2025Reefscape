@@ -4,6 +4,8 @@
 
 package frc.robot.constants;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -12,6 +14,37 @@ import edu.wpi.first.math.util.Units;
 
 // TODO: add all robot constant values when they have been decided
 public class Constants {
+
+  public class CurrentLimits {
+
+    // Measured in amps
+    public static final double KRAKEN_CURRENT_LIMIT_VALUE = 90.0;
+    public static final double MINI_KRAKEN_CURRENT_LIMIT_VALUE = 70.0;
+    public static final int NEO_550_CURRENT_LIMIT_VALUE = 25; // not used
+
+    public static final CurrentLimitsConfigs KRAKEN_CURRENT_LIMIT_CONFIG;
+    public static final CurrentLimitsConfigs MINI_KRAKEN_CURRENT_LIMIT_CONFIG;
+
+    static {
+      KRAKEN_CURRENT_LIMIT_CONFIG = new CurrentLimitsConfigs();
+      KRAKEN_CURRENT_LIMIT_CONFIG.StatorCurrentLimit 
+        = KRAKEN_CURRENT_LIMIT_CONFIG.SupplyCurrentLimit
+        = KRAKEN_CURRENT_LIMIT_VALUE;
+
+      KRAKEN_CURRENT_LIMIT_CONFIG.StatorCurrentLimitEnable 
+        = KRAKEN_CURRENT_LIMIT_CONFIG.SupplyCurrentLimitEnable
+        = true;
+
+      MINI_KRAKEN_CURRENT_LIMIT_CONFIG = new CurrentLimitsConfigs();
+      MINI_KRAKEN_CURRENT_LIMIT_CONFIG.StatorCurrentLimit 
+        = MINI_KRAKEN_CURRENT_LIMIT_CONFIG.SupplyCurrentLimit
+        = MINI_KRAKEN_CURRENT_LIMIT_VALUE;
+
+      MINI_KRAKEN_CURRENT_LIMIT_CONFIG.StatorCurrentLimitEnable 
+        = MINI_KRAKEN_CURRENT_LIMIT_CONFIG.SupplyCurrentLimitEnable
+        = true;
+    };
+  }
 
   public class Testing {
     // if ENSURE_COMPETITION_READY_SUBSYSTEMS is true, all subystems
@@ -29,26 +62,27 @@ public class Constants {
   }
 
   public class Collector {
-    public static final int RIGHT_MOTOR = 42; //42 is the real id
-    public static final int LEFT_MOTOR = 11;
+
+    public class IDs {
+      public static final int RIGHT_MOTOR = 42; //42 is the real id
+      public static final int LEFT_MOTOR = 11;
+      public static final int DIGITAL_INPUT_CHANNEL = 8;
+    }
+
+    public class Speeds {
+      public static final double CORAL_INTAKE_SLOW_SPEED = 8.0; //meters per sec
+      public static final double CORAL_INTAKE_FAST_SPEED = 18.0; //meters per sec 
+      public static final double CORAL_EXPEL_SLOW_SPEED = 8.0; //meters per sec
+      public static final double CORAL_EXPEL_FAST_SPEED = 18.0; //meters per sec 
+      public static final double ALGAE_INTAKE_SPEED = 5.0; //meters per sec
+      public static final double ALGAE_EXPEL_SPEED = -5.0; //meters per sec
+
+      public static final double SPEED_MULIPILER_LEFT = 0.75;
+    }
 
     public static final double COLLECTOR_ROTATIONS_PER_METER = 0.0762 * Math.PI;
-
-    public static final double CORAL_INTAKE_SLOW_SPEED = 8.0; //meters per sec
-    public static final double CORAL_INTAKE_FAST_SPEED = 18.0; //meters per sec 
-    public static final double SPEED_MULIPILER_LEFT = 0.75;
-
-    public static final double COLLECTOR_REVERSE = 0;
-    
-    public static final double ALGAE_INTAKE = 5;
-    public static final double ALGAE_EXPEL = 5;
-
-    public static final double END_COUNT_TICK_COUNTER = 1;
-    public static final int DIGITAL_INPUT_CHANNEL = 8;
-
+    public static final double END_COUNT_TICK_COUNTER = 3;
     public static final double COLLECTOR_AMPS_BEFORE_CUTTOF = 5.0;
-    public static final double SECONDS_BEFORE_CUTTOF = 0.5;
-
     public static final double ALGAE_AMP_CUT_OFF = 6.0;
 
     public class PIDs {
@@ -60,7 +94,7 @@ public class Constants {
       public static final double KA = 0.0;
       public static final double KS = 0.0;
 
-      public static final boolean SMART_PID_ENABLED = true;
+      public static final boolean SMART_PID_ENABLED = false;
 
     }
   }
@@ -125,9 +159,9 @@ public class Constants {
       public static final double PID_LOW_LIMIT = -0.8;
       public static final double PID_HIGH_LIMIT = 0.8;
 
-      public static final boolean SMART_PID_ENABLED = true;
-      public static final boolean SMART_PID_TURN_ENABLED = true;
-      public static final boolean SMART_PID_DRIVE_ENABLED = true;
+      public static final boolean SMART_PID_ENABLED = false;
+      public static final boolean SMART_PID_TURN_ENABLED = false;
+      public static final boolean SMART_PID_DRIVE_ENABLED = false;
     }
 
     public class FieldTarget {
@@ -200,7 +234,7 @@ public class Constants {
       public static final double FUNNEL_KI = 0.0;
       public static final double FUNNEL_KF = 0.0;
 
-      public static final boolean FUNNEL_SMARTPID_ACTIVE = true;
+      public static final boolean FUNNEL_SMARTPID_ACTIVE = false;
     }
 
     public static final double PIVOT_MOTOR_GEAR_RATIO = 1.0 / 100.0;
@@ -270,41 +304,44 @@ public class Constants {
       public static final boolean WRIST_SMARTPID_ACTIVE = false;
     }
 
-    public static final double WRIST_VELOCITY = 1; 
+    public static final double WRIST_MAX_VELOCITY = 1;
+    public static final double WRIST_MAX_ACCELERATION = 1; 
 
     public static final double WRIST_TOLERANCE = 0.5;
 
-    public static final double WRIST_MIDPOINT_ROTATIONS = 2.5; //TODO figure out postitions
+    public static final double WRIST_MIDPOINT_ROTATIONS = 45; //TODO figure out postitions
     public static final double WRIST_MIN_ROTATIONS = 0;
-    public static final double WRIST_MAX_ROTATIONS = 5;
+    public static final double WRIST_MAX_ROTATIONS = 90;
+
+    public static final int WRIST_GEAR_RATIO = 56; //56 motor rotations to 1 wrist rotation
   }
   
   // TODO: add end effector setpoints
   public class EndEffectorSetpoints {
-    public static final EndEffectorSetpointConstants algaeGround = 
+    public static final EndEffectorSetpointConstants ALGAE_GROUND = 
       new EndEffectorSetpointConstants(0.0, 0.0);
-    public static final EndEffectorSetpointConstants algaeStow = 
+    public static final EndEffectorSetpointConstants ALGAE_STOW = 
       new EndEffectorSetpointConstants(0.0, 0.0);
-    public static final EndEffectorSetpointConstants algaeProcessor = 
+    public static final EndEffectorSetpointConstants ALGAE_PROCESSOR = 
       new EndEffectorSetpointConstants(0.0, 0.0);
-    public static final EndEffectorSetpointConstants algaeL2 = 
+    public static final EndEffectorSetpointConstants ALGAE_L2 = 
       new EndEffectorSetpointConstants(0.0, 0.0);
-    public static final EndEffectorSetpointConstants algaeL3 = 
+    public static final EndEffectorSetpointConstants ALGAE_L3 = 
       new EndEffectorSetpointConstants(0.0, 0.0);
-    public static final EndEffectorSetpointConstants algaeNet = 
+    public static final EndEffectorSetpointConstants ALGAE_NET = 
       new EndEffectorSetpointConstants(0.0, 0.0);
 
-    public static final EndEffectorSetpointConstants coralGround = 
+    public static final EndEffectorSetpointConstants CORAL_GROUND = 
       new EndEffectorSetpointConstants(0.0, 0.0);
-    public static final EndEffectorSetpointConstants coralStow = 
+    public static final EndEffectorSetpointConstants CORAL_STOW = 
       new EndEffectorSetpointConstants(0.0, 0.0);
-    public static final EndEffectorSetpointConstants coralL1 = 
+    public static final EndEffectorSetpointConstants CORAL_L1 = 
       new EndEffectorSetpointConstants(0.0, 0.0);
-    public static final EndEffectorSetpointConstants coralL2 = 
+    public static final EndEffectorSetpointConstants CORAL_L2 = 
       new EndEffectorSetpointConstants(0.0, 0.0);
-    public static final EndEffectorSetpointConstants coralL3 = 
+    public static final EndEffectorSetpointConstants CORAL_L3 = 
       new EndEffectorSetpointConstants(0.0, 0.0);
-    public static final EndEffectorSetpointConstants coralL4 = 
+    public static final EndEffectorSetpointConstants CORAL_L4 = 
       new EndEffectorSetpointConstants(0.0, 0.0);
   };
 

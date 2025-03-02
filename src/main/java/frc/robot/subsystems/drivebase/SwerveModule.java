@@ -5,6 +5,7 @@
 package frc.robot.subsystems.drivebase;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -26,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.AutomatedTests.TestModuleComponentsConnection;
 import frc.robot.commands.AutomatedTests.TestTurnMotorAndEncoderOnModule;
 import frc.robot.constants.Constants;
+import frc.robot.constants.Constants.CurrentLimits;
 import frc.robot.constants.SwerveModuleConstants;
 import frc.robot.utils.PIDControllers.SmartPIDController;
 import frc.robot.utils.PIDControllers.SmartPIDControllerTalonFX;
@@ -91,6 +93,7 @@ public class SwerveModule extends SubsystemBase {
 
     TalonFXConfiguration driveConfig = new TalonFXConfiguration();
     driveConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    driveConfig.CurrentLimits = CurrentLimits.KRAKEN_CURRENT_LIMIT_CONFIG;
     driveMotor.getConfigurator().apply(driveConfig);
 
     driveController = new SmartPIDControllerTalonFX(
@@ -108,6 +111,7 @@ public class SwerveModule extends SubsystemBase {
 
     TalonFXConfiguration turnConfig = new TalonFXConfiguration();
     turnConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    turnConfig.CurrentLimits = CurrentLimits.KRAKEN_CURRENT_LIMIT_CONFIG;
     turnMotor.getConfigurator().apply(turnConfig);
 
     CANcoderConfiguration encoder = new CANcoderConfiguration();

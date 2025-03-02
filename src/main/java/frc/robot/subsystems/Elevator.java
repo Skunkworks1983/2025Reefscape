@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
+import frc.robot.constants.Constants.CurrentLimits;
+import frc.robot.utils.PIDControllers.SmartPIDController;
 import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.PIDControllers.SmartPIDControllerTalonFX;
 
@@ -23,7 +25,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 // all accelerations are stored in meters/second/second.
 public class Elevator extends SubsystemBase {
 
-  private TalonFX motorRight = new TalonFX(Constants.Elevator.MOTOR_RIGHT_ID);
+  public TalonFX motorRight = new TalonFX(Constants.Elevator.MOTOR_RIGHT_ID);
   private TalonFX motorLeft = new TalonFX(Constants.Elevator.MOTOR_LEFT_ID);
 
   private DigitalInput bottomLimitSwitch = new DigitalInput(Constants.Elevator.BOTTOM_LIMIT_SWITCH_ID);
@@ -37,6 +39,7 @@ public class Elevator extends SubsystemBase {
 
   public Elevator() {
     TalonFXConfiguration config = new TalonFXConfiguration();
+    config.CurrentLimits = CurrentLimits.KRAKEN_CURRENT_LIMIT_CONFIG;
     motorRight.getConfigurator().apply(config);
     motorLeft.getConfigurator().apply(config);
     
@@ -63,6 +66,7 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
+    smartPIDController.updatePID();
     if(getBottomLimitSwitch()) {
       motorRight.setPosition(0.0);
     } else if(getTopLimitSwitch()) {
@@ -100,7 +104,7 @@ public class Elevator extends SubsystemBase {
 
     motorRight.setControl(positionVoltage
       .withLimitForwardMotion(getTopLimitSwitch())
-      .withLimitReverseMotion(getBottomLimitSwitch())
+      .withLimitReverseMotion(getBottomLimitSwitch()).withEnableFOC(true)
     );
   }
 

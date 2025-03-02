@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
+import frc.robot.constants.Constants.CurrentLimits;
 import frc.robot.utils.ConditionalSmartDashboard;
 
 public class Wrist extends SubsystemBase {
@@ -32,9 +33,9 @@ public class Wrist extends SubsystemBase {
     bottomMagnetSensor = new DigitalInput(Constants.Wrist.IDs.WRIST_BOTTOM_MAGNET_SENSOR);
 
     TalonFXConfiguration config = new TalonFXConfiguration();
-
+    config.CurrentLimits = CurrentLimits.KRAKEN_CURRENT_LIMIT_CONFIG;
     wristMotor.getConfigurator().apply(config);
-    
+
     Slot0Configs slot0Configs = new Slot0Configs();
     slot0Configs.kP = Constants.Wrist.PIDs.WRIST_KP;
     slot0Configs.kI = Constants.Wrist.PIDs.WRIST_KI;
@@ -78,10 +79,10 @@ public class Wrist extends SubsystemBase {
     return wristMotor.getVelocity().getValueAsDouble();
   }
   
-  public void setWristMotorControl(PositionVoltage setWristMotorSpeed) {
-    wristMotor.setControl(setWristMotorSpeed
+  public void setWristMotorControl(PositionVoltage setWristMotorControl) {
+    wristMotor.setControl(setWristMotorControl
       .withLimitForwardMotion(getTopMagnetSensor())
-      .withLimitReverseMotion(getBottomMagnetSensor())
+      .withLimitReverseMotion(getBottomMagnetSensor()).withEnableFOC(true)
     );
   }
   

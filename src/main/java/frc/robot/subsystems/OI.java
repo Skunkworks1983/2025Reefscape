@@ -59,7 +59,7 @@ public class OI {
 
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.EXPEL)
         .and(coralToggle)
-        .whileTrue(collector.expelCoral(true));
+        .whileTrue(collector.expelCoralCommand(true));
 
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.INTAKE)
         .and(algaeToggle)
@@ -114,52 +114,52 @@ public class OI {
 
       // Algae mode
       endEffectorGround.and(algaeToggle).onTrue(
-        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.algaeGround)
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_GROUND)
       );
 
       endEffectorStow.and(algaeToggle).onTrue(
-        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.algaeStow)
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_STOW)
       );
 
       endEffectorToScoreLow.and(algaeToggle).onTrue(
-        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.algaeProcessor)
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_PROCESSOR)
       );
 
       endEffectorToL2.and(algaeToggle).onTrue(
-        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.algaeL2)
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_L2)
       );
 
       endEffectorToL3.and(algaeToggle).onTrue(
-        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.algaeL3)
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_L3)
       );
 
       endEffectorToScoreHigh.and(algaeToggle).onTrue(
-        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.algaeNet)
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_NET)
       );
 
       // Coral mode
       endEffectorGround.and(coralToggle).onTrue(
-        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.coralGround)
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_GROUND)
       );
 
       endEffectorStow.and(coralToggle).onTrue(
-        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.coralStow)
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_STOW)
       );
 
       endEffectorToScoreLow.and(coralToggle).onTrue(
-        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.coralL1)
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L1)
       );
 
       endEffectorToL2.and(coralToggle).onTrue(
-        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.coralL2)
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L2)
       );
 
       endEffectorToL3.and(coralToggle).onTrue(
-        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.coralL3)
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L3)
       );
 
       endEffectorToScoreHigh.and(coralToggle).onTrue(
-        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.coralL4)
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L4)
       );
     }
 
@@ -170,6 +170,7 @@ public class OI {
       new JoystickButton(translationJoystick, Constants.OI.IDs.Buttons.FUNNEL_GO_TO_MIN)
         .onTrue(new MoveFunnelToSetpoint(funnel, Constants.Funnel.FUNNEL_POSITION_LOW_CONVERTED));
     }
+
   }
 
   public double getInstructedXMetersPerSecond() {
