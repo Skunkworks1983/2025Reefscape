@@ -33,7 +33,7 @@ import frc.robot.utils.ConditionalSmartDashboard;
 public class Vision extends SubsystemBase {
 
   private VisionConsumer consumer;
-  private LinkedList<VisionIO> io;
+  private LinkedList<VisionIO> io = new LinkedList<VisionIO>();
   private List<Field2d> field2ds = new LinkedList<Field2d>();
   private final AprilTagFieldLayout aprilTagLayout = 
     AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);

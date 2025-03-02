@@ -56,7 +56,6 @@ public class PositionEstimator {
 
     SmartDashboard.putData("Swerve Drive Odometry", swerveOdometryField2d);
     swerveOdometryField2d.setRobotPose(new Pose2d());
-
   }
   
   /**

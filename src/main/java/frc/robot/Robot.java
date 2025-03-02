@@ -14,6 +14,7 @@ import frc.robot.utils.error.ErrorCommandGenerator;
 import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.error.DiagnosticSubsystem;
+import frc.robot.commands.AutomatedTests.AutomatedVisionMountTest;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.drivebase.Drivebase;
@@ -40,7 +41,7 @@ public class Robot extends TimedRobot {
   );
 
   ErrorGroup errorGroup = new ErrorGroup();
-  Command poseDeviationsTestCommand;
+  Command automatedVisionMountTest;
 
   public Robot() {
     DataLogManager.start();
@@ -61,8 +62,8 @@ public class Robot extends TimedRobot {
       if (climber.isEmpty()) {
         throw new IllegalStateException("Climber not present");
       }
-      if(Constants.Testing.ROBOT == Constants.Testing.Robot.Comp2024) {
-        throw new IllegalStateException("Using 2024 drivebase constants!");
+      if (Constants.Testing.ROBOT == Constants.Testing.Robot.Comp2024) {
+        throw new IllegalStateException("Using 2024 drivebase constants! Change to 2025 (Constants.Testing.ROBOT)");
       }
     }
 
@@ -75,6 +76,8 @@ public class Robot extends TimedRobot {
           true
         )
       );
+
+      automatedVisionMountTest = new AutomatedVisionMountTest(drivebase.get());
     }
   }
 
@@ -89,7 +92,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    // poseDeviationsTestCommand.schedule();
   }
 
   @Override
