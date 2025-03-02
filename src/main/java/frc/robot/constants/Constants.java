@@ -51,7 +51,7 @@ public class Constants {
     // must be constructed and assigned to the correct variable in Robot.java.
     // If some subsystems are not created and this value is true, an exeption
     // will be thrown.
-    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = false;
+    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = true;
 
     public static final double NUMBER_OF_MOTOR_ROTATIONS_FOR_MODULE_TEST = 1.0;
     public static final double TURN_MOTOR_ROTATION_SPEED = 0.15;
@@ -62,8 +62,8 @@ public class Constants {
   }
 
   public class Collector {
-      public static final int RIGHT_MOTOR = 12; //42 is the real id
-      public static final int LEFT_MOTOR = 7;
+      public static final int RIGHT_MOTOR = 42; //42 is the real id
+      public static final int LEFT_MOTOR = 11;
 
       public static final double COLLECTOR_ROTATIONS_PER_METER = 0.0762 * Math.PI;
 
@@ -418,8 +418,8 @@ public class Constants {
 
         // The effects of these buttons may change depending on algae or coral mode.
         // Will also change for different positions (e.g. net)
-        public static final int INTAKE = 11;
-        public static final int EXPEL = 12;
+        public static final int INTAKE = 0;
+        public static final int EXPEL = 0;
 
         public static final int CLIMBER_GOTO_MAX = 0;
         public static final int CLIMBER_GOTO_MIN = 0;
