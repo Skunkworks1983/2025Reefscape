@@ -22,12 +22,12 @@ public class Robot extends TimedRobot {
   // replace subsystem with Optional.empty() when you do not wish to use add all
   // subsystems. ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
 
-  Optional<Drivebase> drivebase = Optional.ofNullable(null);
-  Optional<Elevator> elevator = Optional.ofNullable(null);
+  Optional<Drivebase> drivebase = Optional.of(new Drivebase());
+  Optional<Elevator> elevator = Optional.of(new Elevator());
   Optional<Collector> collector = Optional.of(new Collector());
-  Optional<Wrist> wrist = Optional.ofNullable(null);
-  Optional<Climber> climber = Optional.ofNullable(null);
-  Optional<Funnel> funnel = Optional.ofNullable(null);
+  Optional<Wrist> wrist = Optional.of(new Wrist());
+  Optional<Climber> climber = Optional.of(new Climber());
+  Optional<Funnel> funnel = Optional.of(new Funnel());
 
   OI oi = new OI( 
     elevator,
@@ -43,23 +43,23 @@ public class Robot extends TimedRobot {
   public Robot() {
     DataLogManager.start();
 
-    // if(Constants.Testing.ENSURE_COMPETITION_READY_SUBSYSTEMS) {
-    //   if(drivebase.isEmpty()) {
-    //     throw new IllegalStateException("Drivebase not present");
-    //   }
-    //   if (collector.isEmpty()) {
-    //     throw new IllegalStateException("Collector not present");
-    //   }
-    //   if (elevator.isEmpty()) {
-    //     throw new IllegalStateException("Elevator not present");
-    //   }
-    //   if (wrist.isEmpty()) {
-    //     throw new IllegalStateException("Wrist not present");
-    //   }
-    //   if (climber.isEmpty()) {
-    //     throw new IllegalStateException("Climber not present");
-    //   }
-    //}
+    if(Constants.Testing.ENSURE_COMPETITION_READY_SUBSYSTEMS) {
+      if(drivebase.isEmpty()) {
+        throw new IllegalStateException("Drivebase not present");
+      }
+      if (collector.isEmpty()) {
+        throw new IllegalStateException("Collector not present");
+      }
+      if (elevator.isEmpty()) {
+        throw new IllegalStateException("Elevator not present");
+      }
+      if (wrist.isEmpty()) {
+        throw new IllegalStateException("Wrist not present");
+      }
+      if (climber.isEmpty()) {
+        throw new IllegalStateException("Climber not present");
+      }
+    }
 
     if(drivebase.isPresent()) {
       drivebase.get().setDefaultCommand(

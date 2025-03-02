@@ -87,15 +87,13 @@ public class Constants {
       public static final boolean SMART_PID_ENABLED = false;
 
   public class PositionControlMode {
-      public static final double KP = 0.01;
+      public static final double KP = 5.0;
       public static final double KI = 0.0;
       public static final double KD = 0.0;
       public static final double KF = 0.0;
       public static final double KV = 1.3;
       public static final double KA = 0.0;
       public static final double KS = 0.0;
-
-      public static final boolean SMART_PID_ENABLED = false;
     }
 
   public class VelocityControlMode {

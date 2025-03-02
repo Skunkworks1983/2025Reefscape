@@ -134,8 +134,6 @@ public class Collector extends SubsystemBase {
   }
 
   public void setCollectorSetPoint(double newRightSetpoint, double newLeftSetpoint) {
-    collectorRightSetpoint = newRightSetpoint;
-    collectorLeftSetPoint = newLeftSetpoint;
     rightMotor.setControl(
         positionVoltage.withPosition(newRightSetpoint).withSlot(1));
     leftMotor.setControl(
