@@ -24,7 +24,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 // all accelerations are stored in meters/second/second.
 public class Elevator extends SubsystemBase {
 
-  private TalonFX motorRight = new TalonFX(Constants.Elevator.MOTOR_RIGHT_ID);
+  public TalonFX motorRight = new TalonFX(Constants.Elevator.MOTOR_RIGHT_ID);
   private TalonFX motorLeft = new TalonFX(Constants.Elevator.MOTOR_LEFT_ID);
 
   private DigitalInput bottomLimitSwitch = new DigitalInput(Constants.Elevator.BOTTOM_LIMIT_SWITCH_ID);

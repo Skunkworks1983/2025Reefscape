@@ -10,9 +10,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.CurrentLimits;
@@ -47,8 +45,8 @@ public class Collector extends SubsystemBase {
 
   /** Creates a new Collector. */
   public Collector() {
-   rightMotor = new TalonFX(Constants.Collector.RIGHT_MOTOR);
-   leftMotor = new TalonFX(Constants.Collector.LEFT_MOTOR);
+   rightMotor = new TalonFX(Constants.Collector.IDs.RIGHT_MOTOR);
+   leftMotor = new TalonFX(Constants.Collector.IDs.LEFT_MOTOR);
 
    leftMotor.setInverted(true);
    
@@ -76,7 +74,7 @@ public class Collector extends SubsystemBase {
         "left motor",
         Constants.Collector.PIDs.SMART_PID_ENABLED, leftMotor);
     
-        beambreak = new DigitalInput(Constants.Collector.DIGITAL_INPUT_CHANNEL);
+        beambreak = new DigitalInput(Constants.Collector.IDs.DIGITAL_INPUT_CHANNEL);
   }
 
   // meters per sec 
@@ -108,8 +106,8 @@ public class Collector extends SubsystemBase {
   public Command rotateCoralCommand() {
     return runEnd(
       () -> {
-        setCollectorSpeeds(Constants.Collector.CORAL_INTAKE_SLOW_SPEED, 
-        Constants.Collector.CORAL_INTAKE_FAST_SPEED);
+        setCollectorSpeeds(Constants.Collector.Speeds.CORAL_INTAKE_SLOW_SPEED, 
+        Constants.Collector.Speeds.CORAL_INTAKE_FAST_SPEED);
         ConditionalSmartDashboard.putNumber("Collector/ right collector current speed", getRightMotorVelocity());
         ConditionalSmartDashboard.putNumber("Collector/ left collector current speed", getLeftMotorVelocity());
       }, 
@@ -119,17 +117,17 @@ public class Collector extends SubsystemBase {
     );
   }
 
-  int endCount [] = {0}; // This value needs to be effectivly final 
 
   // Rrue if you want it to stop the motor when the command ends
   // it should almost always be true unless there will be a following command right after that will end it
   public Command intakeCoralCommand(
     boolean stopOnEnd
   ) {
+    int endCount [] = {0}; // This value needs to be effectivly final 
     return runEnd(
       () -> {
-        setCollectorSpeeds(Constants.Collector.CORAL_INTAKE_FAST_SPEED, 
-          Constants.Collector.CORAL_INTAKE_FAST_SPEED * Constants.Collector.SPEED_MULIPILER_LEFT);
+        setCollectorSpeeds(Constants.Collector.Speeds.CORAL_INTAKE_FAST_SPEED, 
+          Constants.Collector.Speeds.CORAL_INTAKE_FAST_SPEED * Constants.Collector.Speeds.SPEED_MULIPILER_LEFT);
       },
       () -> {
         if(stopOnEnd) {
@@ -156,78 +154,12 @@ public class Collector extends SubsystemBase {
     );
   }
 
-  public Command scoreCoralCommand() {
-    return runEnd(
-      () -> {
-        setCollectorSpeeds(Constants.Collector.CORAL_INTAKE_FAST_SPEED, 
-          Constants.Collector.CORAL_INTAKE_FAST_SPEED);
-      },
-      () -> {
-        setCollectorSpeeds(0, 0);
-      }
-    ).until(
-      () -> {
-        if (rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF &&
-        leftMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF) 
-        {
-          endCount[0]++;
-        }
-        else
-        {
-          endCount[0] = 0;
-        }
-        return endCount[0] > Constants.Collector.END_COUNT_TICK_COUNTER;
-      }
-    );
-  }
-
-  public Command waitAfterCatchPieceCommand() {
-    return Commands.sequence(
-      intakeCoralCommand(false),
-      Commands.race(
-        scoreCoralCommand(),
-        Commands.waitSeconds(Constants.Collector.SECONDS_BEFORE_CUTTOF)
-      )
-    );
-  }
-
-  public Command rotateThenIntakeCommand() {
-    //if the coral is in werid this will turn it then intake it to where its ment to be so it can be scored
-    return Commands.runEnd(
-      () -> {
-        if(!beambreak.get()) {
-          setCollectorSpeeds(Constants.Collector.CORAL_INTAKE_FAST_SPEED, 
-          Constants.Collector.CORAL_INTAKE_FAST_SPEED);
-        }
-        else {
-          setCollectorSpeeds(Constants.Collector.CORAL_INTAKE_FAST_SPEED, 
-          Constants.Collector.CORAL_INTAKE_FAST_SPEED);
-        }
-      },
-      () -> {
-        setCollectorSpeeds(0.0, 0.0);
-      }
-    ).until(
-      () -> {
-        if (rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF &&
-        leftMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF) 
-        {
-          endCount[0]++;
-        }
-        else
-        {
-          endCount[0] = 0;
-        }
-        return endCount[0] > Constants.Collector.END_COUNT_TICK_COUNTER;
-      }
-    );
-  }
-  public Command expelCoral(boolean stopOnEnd)
+  public Command expelCoralCommand(boolean stopOnEnd)
   {
     return runEnd(
       () -> {
-        setCollectorSpeeds(Constants.Collector.COLLECTOR_REVERSE, 
-          Constants.Collector.COLLECTOR_REVERSE);
+        setCollectorSpeeds(Constants.Collector.Speeds.CORAL_EXPEL_SLOW_SPEED, 
+          Constants.Collector.Speeds.CORAL_EXPEL_SLOW_SPEED);
       },
       () -> {
         if(stopOnEnd) {
@@ -240,10 +172,11 @@ public class Collector extends SubsystemBase {
   public Command intakeAlgaeCommand(
     boolean stopOnEnd
   ) {
+    int endCount [] = {0}; // This value needs to be effectivly final 
     return runEnd(
       () -> {
-        setCollectorSpeeds(Constants.Collector.ALGAE_INTAKE, 
-          Constants.Collector.ALGAE_INTAKE);
+        setCollectorSpeeds(Constants.Collector.Speeds.ALGAE_INTAKE_SPEED, 
+          Constants.Collector.Speeds.ALGAE_INTAKE_SPEED);
       },
       () -> {
         if(stopOnEnd) {
@@ -271,8 +204,8 @@ public class Collector extends SubsystemBase {
   ) {
     return runEnd(
       () -> {
-        setCollectorSpeeds(Constants.Collector.ALGAE_EXPEL, 
-          Constants.Collector.ALGAE_EXPEL);
+        setCollectorSpeeds(Constants.Collector.Speeds.ALGAE_EXPEL_SPEED, 
+          Constants.Collector.Speeds.ALGAE_EXPEL_SPEED);
       },
       () -> {
         if(stopOnEnd) {
