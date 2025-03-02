@@ -62,25 +62,27 @@ public class Collector extends SubsystemBase {
     rightMotor.getConfigurator().apply(talonConfigCollectorMotor);
     leftMotor.getConfigurator().apply(talonConfigCollectorMotor);
 
-    rightMotorController = new SmartPIDControllerTalonFX(Constants.Collector.VelocityControlMode.KP,
+    //Dual Pids with two slots, one for velocity and one for position
+    rightMotorController = new SmartPIDControllerTalonFX(Constants.Collector.VelocityControlMode.KP, //VELOCITY
         Constants.Collector.VelocityControlMode.KI, Constants.Collector.VelocityControlMode.KD,
         Constants.Collector.VelocityControlMode.KF, Constants.Collector.VelocityControlMode.KV,
         Constants.Collector.VelocityControlMode.KA, Constants.Collector.VelocityControlMode.KS,
         "right motor",
         Constants.Collector.SMART_PID_ENABLED, rightMotor);
-    rightMotorController.AddSlot1Configs(Constants.Collector.PositionControlMode.KP,
+    rightMotorController.AddSlot1Configs(Constants.Collector.PositionControlMode.KP, //POSITION
         Constants.Collector.PositionControlMode.KI, Constants.Collector.PositionControlMode.KD,
         Constants.Collector.PositionControlMode.KF, Constants.Collector.PositionControlMode.KV,
         Constants.Collector.PositionControlMode.KA, Constants.Collector.PositionControlMode.KS);
 
-    leftMotorController = new SmartPIDControllerTalonFX(Constants.Collector.VelocityControlMode.KP,
+    leftMotorController = new SmartPIDControllerTalonFX(Constants.Collector.VelocityControlMode.KP, //VELOCITY
         Constants.Collector.VelocityControlMode.KI,
         Constants.Collector.VelocityControlMode.KD,
         Constants.Collector.VelocityControlMode.KF, Constants.Collector.VelocityControlMode.KV,
         Constants.Collector.VelocityControlMode.KA, Constants.Collector.VelocityControlMode.KS,
         "left motor",
         Constants.Collector.SMART_PID_ENABLED, leftMotor);
-    leftMotorController.AddSlot1Configs(Constants.Collector.PositionControlMode.KP,
+
+    leftMotorController.AddSlot1Configs(Constants.Collector.PositionControlMode.KP, //POSITION
         Constants.Collector.PositionControlMode.KI, Constants.Collector.PositionControlMode.KD,
         Constants.Collector.PositionControlMode.KF, Constants.Collector.PositionControlMode.KV,
         Constants.Collector.PositionControlMode.KA, Constants.Collector.PositionControlMode.KS);
@@ -156,9 +158,13 @@ public class Collector extends SubsystemBase {
 
   int endCount[] = { 0 }; // This value needs to be effectivly final
 
-  // Rrue if you want it to stop the motor when the command ends
-  // it should almost always be true unless there will be a following command
-  // right after that will end it
+  /*
+    The intakeCoralCommand is intended to generally be used in a sequential command group 
+    where it is immediately followed by the waitAfterCatchPieceCommand.
+    When used in the sequential command group in that way, the stopOnEnd parameter should be false. 
+    The stopOnEnd parameter should be true if the waitAfterCatchPiece command is not in a sequential 
+    command group with intakeCoralCommand." 
+   */
   public Command intakeCoralCommand(
       boolean stopOnEnd) {
     return runEnd(
