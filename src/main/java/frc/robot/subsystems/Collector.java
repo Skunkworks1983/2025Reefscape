@@ -154,7 +154,7 @@ public class Collector extends SubsystemBase {
     );
   }
 
-  public Command expelCoralCoral(boolean stopOnEnd)
+  public Command expelCoralCommand(boolean stopOnEnd)
   {
     return runEnd(
       () -> {

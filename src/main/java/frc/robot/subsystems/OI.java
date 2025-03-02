@@ -59,7 +59,7 @@ public class OI {
 
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.EXPEL)
         .and(coralToggle)
-        .whileTrue(collector.expelCoralCoral(true));
+        .whileTrue(collector.expelCoralCommand(true));
 
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.INTAKE)
         .and(algaeToggle)
