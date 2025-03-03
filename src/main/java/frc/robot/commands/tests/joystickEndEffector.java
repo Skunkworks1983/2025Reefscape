@@ -48,11 +48,8 @@ public class joystickEndEffector extends Command {
     positionVoltageElevator.Position = elevatorPosition;
     positionVoltageWrist.Position = wristPosition;
 
-    elevator.motorRight.setControl(positionVoltageElevator.withLimitForwardMotion(elevator.getTopLimitSwitch())
-.withLimitReverseMotion(elevator.getBottomLimitSwitch()).withEnableFOC(true));
-
-    wrist.setWristMotorControl(positionVoltageWrist.withLimitForwardMotion(wrist.getTopMagnetSensor())
-.withLimitReverseMotion(wrist.getTopMagnetSensor()).withEnableFOC(true));
+    elevator.setElevatorMotorControl(positionVoltageElevator);
+    wrist.setWristMotorControl(positionVoltageWrist);
   }
 
   @Override

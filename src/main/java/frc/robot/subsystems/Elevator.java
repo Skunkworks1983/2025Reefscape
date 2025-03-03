@@ -135,4 +135,17 @@ public class Elevator extends SubsystemBase {
     ConditionalSmartDashboard.putBoolean("Elevator/Top limit switch", getTopLimitSwitch());
 
   }
+
+
+  public void setElevatorMotorControl(PositionVoltage setElevatorMotorControl) {
+    motorLeft.setControl(setElevatorMotorControl
+      .withLimitForwardMotion(getTopLimitSwitch())
+      .withLimitReverseMotion(getBottomLimitSwitch()).withEnableFOC(true)
+    );
+
+    motorRight.setControl(setElevatorMotorControl
+      .withLimitForwardMotion(getTopLimitSwitch())
+      .withLimitReverseMotion(getBottomLimitSwitch()).withEnableFOC(true)
+    );
+  }
 }
