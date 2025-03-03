@@ -6,8 +6,10 @@ package frc.robot;
 
 import java.util.Optional;
 
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.utils.error.ErrorCommandGenerator;
 import frc.robot.utils.error.ErrorGroup;
@@ -22,12 +24,12 @@ public class Robot extends TimedRobot {
   // replace subsystem with Optional.empty() when you do not wish to use add all
   // subsystems. ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
 
-  Optional<Drivebase> drivebase = Optional.of(new Drivebase());
-  Optional<Elevator> elevator = Optional.of(new Elevator());
-  Optional<Collector> collector = Optional.of(new Collector());
-  Optional<Wrist> wrist = Optional.of(new Wrist());
-  Optional<Climber> climber = Optional.of(new Climber());
-  Optional<Funnel> funnel = Optional.of(new Funnel());
+  Optional<Drivebase> drivebase = Optional.ofNullable(null);
+  Optional<Elevator> elevator = Optional.ofNullable(null);
+  Optional<Collector> collector = Optional.ofNullable(null);
+  Optional<Wrist> wrist = Optional.ofNullable(null);
+  Optional<Climber> climber = Optional.ofNullable(null);
+  Optional<Funnel> funnel = Optional.ofNullable(null);
 
   OI oi = new OI( 
     elevator,
@@ -39,6 +41,11 @@ public class Robot extends TimedRobot {
   );
   
   ErrorGroup errorGroup = new ErrorGroup();
+
+  //ultra sonic sensors to aid alignmment to reef pipes
+  private AnalogInput leftUtraSonic;
+  private AnalogInput rightUtraSonic;
+
 
   public Robot() {
     DataLogManager.start();
@@ -61,6 +68,11 @@ public class Robot extends TimedRobot {
       }
     }
 
+    //set up ultra sonic sensors
+    leftUtraSonic = new AnalogInput(0);
+    rightUtraSonic = new AnalogInput(1);
+
+
     if(drivebase.isPresent()) {
       drivebase.get().setDefaultCommand(
         drivebase.get().getSwerveCommand(
@@ -80,6 +92,15 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
     ConditionalSmartDashboard.updateConditions();
+
+    double leftSensorValue = leftUtraSonic.getVoltage();
+    double rightSensorValue = rightUtraSonic.getVoltage();
+    final double scaleFactor = 1/(5./512.); //scale converting voltage to distance
+    double leftDistance = 5*leftSensorValue*scaleFactor;
+    double rightDistance = 5*rightSensorValue*scaleFactor;
+
+    SmartDashboard.putNumber("left ultra sonic", leftDistance); 
+    SmartDashboard.putNumber("right ultra sonic", rightDistance); 
   }
 
   @Override

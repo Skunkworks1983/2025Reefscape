@@ -23,9 +23,11 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -48,6 +50,10 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   private PositionEstimator positionEstimator;
   final private Phoenix6DrivebaseState state;
 
+  // //ultra sonic sensors to aid alignmment to reef pipes
+  // private AnalogInput leftUtraSonic;
+  // private AnalogInput rightUtraSonic;
+
   private SwerveModule swerveModules[] = new SwerveModule[Constants.Drivebase.MODULES.length];
 
   private PIDController headingController = new PIDController(
@@ -66,6 +72,10 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     // directly by the drivebase. A pheonix 6 pro state is a class to store all
     // of a subsystems pheonix 6 pro sensor inputs
     state = phoenix6Odometry.registerDrivebase(gyro);
+
+    // //set up ultra sonic sensors
+    // leftUtraSonic = new AnalogInput(0);
+    // rightUtraSonic = new AnalogInput(1);
 
     Translation2d[] moduleLocations = new Translation2d[Constants.Drivebase.MODULES.length];
 
@@ -118,6 +128,15 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
   @Override
   public void periodic() {
+    // double leftSensorValue = leftUtraSonic.getVoltage();
+    // double rightSensorValue = rightUtraSonic.getVoltage();
+    // final double scaleFactor = 1/(5./512.); //scale converting voltage to distance
+    // double leftDistance = 5*leftSensorValue*scaleFactor;
+    // double rightDistance = 5*rightSensorValue*scaleFactor;
+
+    // SmartDashboard.putNumber("left ultra sonic", leftDistance); 
+    // SmartDashboard.putNumber("right ultra sonic", rightDistance); 
+ //convert the voltage to distance SmartDashboard.putNumber("DB/Slider 0", distance); //write the value to the LabVIEW Driverstation
   }
 
   /**
