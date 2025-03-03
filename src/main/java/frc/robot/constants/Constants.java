@@ -85,7 +85,19 @@ public class Constants {
     public static final double COLLECTOR_AMPS_BEFORE_CUTTOF = 5.0;
     public static final double ALGAE_AMP_CUT_OFF = 6.0;
 
-    public class PIDs {
+      public static final boolean SMART_PID_ENABLED = false;
+
+  public class PositionControlMode {
+      public static final double KP = 5.0;
+      public static final double KI = 0.0;
+      public static final double KD = 0.0;
+      public static final double KF = 0.0;
+      public static final double KV = 1.3;
+      public static final double KA = 0.0;
+      public static final double KS = 0.0;
+    }
+
+  public class VelocityControlMode {
       public static final double KP = 0.0;
       public static final double KI = 0.0;
       public static final double KD = 0.0;
@@ -93,9 +105,6 @@ public class Constants {
       public static final double KV = 1.3;
       public static final double KA = 0.0;
       public static final double KS = 0.0;
-
-      public static final boolean SMART_PID_ENABLED = false;
-
     }
   }
 
@@ -291,6 +300,7 @@ public class Constants {
       public static final int WRIST_KRAKEN_MOTOR_ID = 12; // !! all ID's are just for the test board !!
       public static final int WRIST_TOP_MAGNET_SENSOR = 4;
       public static final int WRIST_BOTTOM_MAGNET_SENSOR = 5;
+
     }
     
     public class PIDs {
