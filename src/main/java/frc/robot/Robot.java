@@ -40,8 +40,6 @@ public class Robot extends TimedRobot {
 
   private SendableChooser<Command> autoChooser;
 
-  private final Field2d field;
-
   OI oi = new OI( 
     elevator,
     collector,
@@ -82,15 +80,11 @@ public class Robot extends TimedRobot {
           oi::getInstructedDegreesPerSecond,
           true
         )
-      ); // add a set translation controls function. Create a curried function that creates
-      // a getSwerveTeleopCommand function. getSwerveTeleopRotationCommand
+      );
     }
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
-
-    field = new Field2d();
-    SmartDashboard.putData("field", field);
   }
 
   @Override 
@@ -139,14 +133,14 @@ public class Robot extends TimedRobot {
     NamedCommands.registerCommand("Funnel to up pos",
       new MoveFunnelToSetpoint(funnel.get(), Constants.Funnel.FUNNEL_POSITION_HIGH_CONVERTED));
 
-    //Collector 
+    // Collector 
     NamedCommands.registerCommand("Expel Coral", collector.get().expelCoral(isAutonomous()));
 
-    NamedCommands.registerCommand("Expel Algea",collector.get().expelAlgaeCommand(isAutonomous()));
+    NamedCommands.registerCommand("Expel Algae",collector.get().expelAlgaeCommand(isAutonomous()));
 
     NamedCommands.registerCommand("Intake Coral", collector.get().intakeCoralCommand(isAutonomous()));
 
-    NamedCommands.registerCommand("Intake Algea", collector.get().intakeAlgaeCommand(isAutonomous()));
+    NamedCommands.registerCommand("Intake Algae ", collector.get().intakeAlgaeCommand(isAutonomous()));
 
     }
   }
