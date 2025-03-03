@@ -110,33 +110,6 @@ public class OI {
       Elevator elevator = optionalElevator.get();
       Wrist wrist = optionalWrist.get();
 
-
-
-      PositionVoltage positionVoltageWrist = new PositionVoltage(0);
-      PositionVoltage positionVoltageElevator = new PositionVoltage(0);
-      double[] elevatorPosition = {0};
-      double[] wristPosition = {0};
-      new JoystickButton(buttonJoystick, Buttons.END_EFFECTOR_TUNING).whileTrue(
-        Commands.run(
-          () -> { 
-            wristPosition[0] += applyDeadband.apply(translationJoystick.getY()) * .02;
-            elevatorPosition[0] += applyDeadband.apply(rotationJoystick.getY()) * .02;
-            positionVoltageWrist.Position = wristPosition[0];
-
-            positionVoltageElevator.Position = elevatorPosition[0];
-
-            elevator.motorRight.setControl(positionVoltageElevator.withLimitForwardMotion(elevator.getTopLimitSwitch())
-      .withLimitReverseMotion(elevator.getBottomLimitSwitch()).withEnableFOC(true));
-
-            elevator.motorRight.setControl(positionVoltageWrist.withLimitForwardMotion(wrist.getTopMagnetSensor())
-      .withLimitReverseMotion(wrist.getTopMagnetSensor()).withEnableFOC(true));
-
-          }, wrist, elevator)
-      );
-
-
-
-
       JoystickButton endEffectorGround = new JoystickButton(buttonJoystick, Buttons.GOTO_GROUND);
       JoystickButton endEffectorStow = new JoystickButton(buttonJoystick, Buttons.GOTO_STOW);
       JoystickButton endEffectorToScoreLow = new JoystickButton(buttonJoystick, Buttons.GOTO_SCORE_LOW);

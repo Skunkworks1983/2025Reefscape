@@ -8,6 +8,7 @@ import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.controls.PositionVoltage;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
@@ -23,6 +24,7 @@ public class joystickEndEffector extends Command {
 
   Wrist wrist;
   Elevator elevator;
+  double time;
 
   public joystickEndEffector(
     Wrist wrist,
@@ -38,10 +40,14 @@ public class joystickEndEffector extends Command {
   }
 
   @Override
-  public void initialize() {}
+  public void initialize() {
+    time = Timer.getFPGATimestamp();
+  }
 
   @Override
   public void execute() {
+    double deltaTime = Timer.getFPGATimestamp() - time;
+    time = Timer.getFPGATimestamp();
     wristPosition += wristPositionChange.getAsDouble();
     elevatorPosition += elevatorPositionChange.getAsDouble();
 
