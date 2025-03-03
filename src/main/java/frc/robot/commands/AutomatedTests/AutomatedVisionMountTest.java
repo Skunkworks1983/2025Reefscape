@@ -1,11 +1,17 @@
 package frc.robot.commands.AutomatedTests;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drivebase.Drivebase;
+import frc.robot.subsystems.vision.PoseDeviations.PoseWrapper;
+import frc.robot.subsystems.vision.Vision;
 
 public class AutomatedVisionMountTest extends Command {
 
@@ -28,14 +34,14 @@ public class AutomatedVisionMountTest extends Command {
 
   private static final TrapezoidProfile xProfile = new TrapezoidProfile(
     new Constraints(
-      .5,
+      1,
       5.0
     )
   );
 
   private static final TrapezoidProfile yProfile = new TrapezoidProfile(
     new Constraints(
-      .5,
+      1,
       5.0
     )
   );
@@ -55,10 +61,32 @@ public class AutomatedVisionMountTest extends Command {
 
   private final Timer timeElapsed = new Timer();
   Drivebase drivebase;
+  FileWriter writer;
+
+  private final String filePath = "/home/lvuser/vision_pose_devs.txt";
 
   public AutomatedVisionMountTest(Drivebase drivebase) {
     this.drivebase = drivebase;
     addRequirements(drivebase);
+    try {
+      File file = new File(filePath);
+      writer = new FileWriter(file, true);
+
+    } catch (NullPointerException e){
+      System.err.println("Null pointer exception creating File");
+      e.printStackTrace();
+    } catch (IOException e) {
+      System.err.print("IO exception creating FileWriter");
+      e.printStackTrace();
+    }
+  }
+
+  public void writeLine(String line) {
+    try {
+      writer.write(line + System.lineSeparator());
+    } catch (IOException e) {
+      System.out.println("io error");
+    }
   }
 
   @Override
@@ -72,7 +100,11 @@ public class AutomatedVisionMountTest extends Command {
     State x = xProfile.calculate(timeElapsed.get(), startPose.x, endPose.x);
     State y = yProfile.calculate(timeElapsed.get(), startPose.y, endPose.y);
     State rot = rotProfile.calculate(timeElapsed.get(), startPose.rot, endPose.rot);
-    drivebase.drive(x.velocity, y.velocity, -45, true);
+    drivebase.drive(x.velocity, y.velocity, -30, true);
+
+    PoseWrapper stdDevs = Vision.getCalculateStdDevs();
+    String line = "X:" + stdDevs.x + "   Y:" + stdDevs.y + "   Rot:" + stdDevs.rot;
+    writeLine(line);
   }
 
   @Override
@@ -80,10 +112,16 @@ public class AutomatedVisionMountTest extends Command {
     System.out.println("Drive To Pos Command End");
     timeElapsed.stop();
     timeElapsed.reset();
+    try {
+      writer.close();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
 
   @Override
   public boolean isFinished() {
-    return false;
+    return timeElapsed.get() > Math.max(xProfile.totalTime(), yProfile.totalTime());
   }
 }

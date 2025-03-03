@@ -6,6 +6,7 @@ package frc.robot.subsystems.vision;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -19,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.VisionConstants;
 import frc.robot.constants.visionIOConstants.VisionIOConstants;
+import frc.robot.subsystems.vision.PoseDeviations.PoseWrapper;
 import frc.robot.subsystems.vision.VisionIO.PoseObservation;
 import frc.robot.subsystems.vision.VisionIO.VisionIOData;
 import frc.robot.utils.ConditionalSmartDashboard;
@@ -37,66 +39,70 @@ public class Vision extends SubsystemBase {
   private List<Field2d> field2ds = new LinkedList<Field2d>();
   private final AprilTagFieldLayout aprilTagLayout = 
     AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
-  private PoseDeviations poseDeviations = new PoseDeviations();
-
-  public Vision(VisionConsumer consumer, VisionIOConstants... ioConstants) {
-    this.consumer = consumer;
-
-    for (VisionIOConstants i : ioConstants) {
-      try {
-        VisionIO inited = i.init();
-        io.add(inited);
-        Field2d field = new Field2d();
-        SmartDashboard.putData(inited.getName() + " Odometry", field);
-        field2ds.add(field);
-      } catch (Exception e) {
-        System.err.println("A Vision IO failed to initialize");
-        e.printStackTrace();
-        continue;
-      }      
-    }
-  }
-
-  @Override
-  public void periodic() {
-
-    for (int i = 0; i < io.size(); i++) {
-      VisionIOData data = io.get(i).getLatestData();
-      for (PoseObservation observation : data.poseObservations) {
-
-        ConditionalSmartDashboard.putNumber(io.get(i).getName() + " Latest Ambiguity", observation.ambiguity());
-        ConditionalSmartDashboard.putNumber(io.get(i).getName() + " Latest Z Error", observation.estimatedPose().getZ());
-        ConditionalSmartDashboard.putNumber(io.get(i).getName() + " Average Tag Distance", observation.averageTagDistance());
-
-        boolean rejectPose = 
-          observation.tagCount() == 0 ||
-          observation.ambiguity() > VisionConstants.MAX_AMBIGUITY ||
-          observation.estimatedPose().getZ() > VisionConstants.MAX_Z_ERROR ||
-          observation.estimatedPose().getX() < 0.0 ||
-          observation.estimatedPose().getX() > aprilTagLayout.getFieldLength() ||
-          observation.estimatedPose().getY() < 0.0 ||
-          observation.estimatedPose().getY() > aprilTagLayout.getFieldWidth() ||
-          observation.averageTagDistance() > VisionConstants.MAX_AVERAGE_TAG_DISTANCE;
-
-        if (rejectPose) {
+  private static PoseDeviations poseDeviations = new PoseDeviations();
+  
+    public Vision(VisionConsumer consumer, VisionIOConstants... ioConstants) {
+      this.consumer = consumer;
+  
+      for (VisionIOConstants i : ioConstants) {
+        try {
+          VisionIO inited = i.init();
+          io.add(inited);
+          Field2d field = new Field2d();
+          SmartDashboard.putData(inited.getName() + " Odometry", field);
+          field2ds.add(field);
+        } catch (Exception e) {
+          System.err.println("A Vision IO failed to initialize");
+          e.printStackTrace();
           continue;
-        }
-
-        // If the pose is being added, then add to the measurements list.
-        poseDeviations.updateMeasurements(observation.estimatedPose().toPose2d());
-
-        double stdDevFactor = Math.pow(observation.averageTagDistance(), 2.0) / observation.tagCount();
-        double linearStdDev = VisionConstants.LINEAR_STD_DEV_BASELINE * stdDevFactor;
-        double angularStdDev = VisionConstants.ANGULAR_STD_DEV_BASELINE * stdDevFactor;
-
-        consumer.accept(
-            observation.estimatedPose().toPose2d(),
-            observation.timestamp(),
-            VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
-
-        field2ds.get(i).setRobotPose(observation.estimatedPose().toPose2d());
+        }      
       }
     }
+  
+    @Override
+    public void periodic() {
+  
+      for (int i = 0; i < io.size(); i++) {
+        VisionIOData data = io.get(i).getLatestData();
+        for (PoseObservation observation : data.poseObservations) {
+  
+          ConditionalSmartDashboard.putNumber(io.get(i).getName() + " Latest Ambiguity", observation.ambiguity());
+          ConditionalSmartDashboard.putNumber(io.get(i).getName() + " Latest Z Error", observation.estimatedPose().getZ());
+          ConditionalSmartDashboard.putNumber(io.get(i).getName() + " Average Tag Distance", observation.averageTagDistance());
+  
+          boolean rejectPose = 
+            observation.tagCount() == 0 ||
+            observation.ambiguity() > VisionConstants.MAX_AMBIGUITY ||
+            observation.estimatedPose().getZ() > VisionConstants.MAX_Z_ERROR ||
+            observation.estimatedPose().getX() < 0.0 ||
+            observation.estimatedPose().getX() > aprilTagLayout.getFieldLength() ||
+            observation.estimatedPose().getY() < 0.0 ||
+            observation.estimatedPose().getY() > aprilTagLayout.getFieldWidth() ||
+            observation.averageTagDistance() > VisionConstants.MAX_AVERAGE_TAG_DISTANCE;
+  
+          if (rejectPose) {
+            continue;
+          }
+  
+          // If the pose is being added, then add to the measurements list.
+          poseDeviations.updateMeasurements(observation.estimatedPose().toPose2d());
+  
+          double stdDevFactor = Math.pow(observation.averageTagDistance(), 2.0) / observation.tagCount();
+          double linearStdDev = VisionConstants.LINEAR_STD_DEV_BASELINE * stdDevFactor;
+          double angularStdDev = VisionConstants.ANGULAR_STD_DEV_BASELINE * stdDevFactor;
+  
+          consumer.accept(
+              observation.estimatedPose().toPose2d(),
+              observation.timestamp(),
+              VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
+  
+          field2ds.get(i).setRobotPose(observation.estimatedPose().toPose2d());
+        }
+      }
+    }
+  
+  public static PoseWrapper getCalculateStdDevs() {
+    return poseDeviations.calculateStdDevs();
   }
 
   @FunctionalInterface
