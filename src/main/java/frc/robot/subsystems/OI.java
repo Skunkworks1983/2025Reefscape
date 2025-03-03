@@ -6,16 +6,11 @@ package frc.robot.subsystems;
 
 import java.util.Optional;
 import java.util.function.DoubleFunction;
-
-import com.ctre.phoenix6.controls.PositionVoltage;
-
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants.EndEffectorSetpoints;
 import frc.robot.constants.Constants.OI.LIMITS;
-import frc.robot.constants.EndEffectorSetpointConstants;
 import frc.robot.commands.MoveEndEffector;
 import frc.robot.commands.funnel.MoveFunnelToSetpoint;
 import frc.robot.subsystems.drivebase.Drivebase;
