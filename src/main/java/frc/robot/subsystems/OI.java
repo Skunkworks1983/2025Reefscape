@@ -85,17 +85,17 @@ public class OI {
 
       targetCommand.addRequirements(drivebase);
 
-      Command goToLeftBranch = drivebase.getAutoLineupToReefCommand(BranchSide.LEFT);
-      goToLeftBranch.addRequirements(drivebase);
+      // Command goToLeftBranch = drivebase.getAutoLineupToReefCommand(BranchSide.LEFT);
+      // goToLeftBranch.addRequirements(drivebase);
 
-      Command goToRightBranch = drivebase.getAutoLineupToReefCommand(BranchSide.RIGHT);
-      goToRightBranch.addRequirements(drivebase);
+      // Command goToRightBranch = drivebase.getAutoLineupToReefCommand(BranchSide.RIGHT);
+      // goToRightBranch.addRequirements(drivebase);
 
       new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.Drivebase.TARGET_REEF_BUTTON)
           .whileTrue(targetCommand);
 
-      new JoystickButton(translationJoystick, 0).whileTrue(goToLeftBranch);
-      new JoystickButton(translationJoystick, 0).whileTrue(goToRightBranch);
+      // new JoystickButton(translationJoystick, 0).whileTrue(goToLeftBranch);
+      // new JoystickButton(translationJoystick, 0).whileTrue(goToRightBranch);
     }
 
     if (optionalWrist.isPresent())  {

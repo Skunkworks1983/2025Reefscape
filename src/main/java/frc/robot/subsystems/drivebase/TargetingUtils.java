@@ -13,8 +13,8 @@ import frc.robot.constants.Constants.Drivebase.FieldTarget;
 public class TargetingUtils {
 
   /**
-   * @param target the field location to point at.
-   * @return the heading needed for the robot to point at the target.
+   * @param target The field location to point at.
+   * @return The heading needed for the robot to point at the target.
    */
   public static Rotation2d getTargetingAngle(Translation2d target, Supplier<Pose2d> getRobotPose) {
     Pose2d robotPose = getRobotPose.get();
