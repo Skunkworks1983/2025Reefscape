@@ -70,7 +70,7 @@ public class Wrist extends SubsystemBase {
   }
 
   public double getPosition() {
-    return wristMotor.getPosition().getValueAsDouble();
+    return wristMotor.getPosition().getValueAsDouble() / Constants.Wrist.WRIST_GEAR_RATIO;
   }
 
   public double getWristVelocity() {
