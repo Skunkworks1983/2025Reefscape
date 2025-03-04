@@ -14,7 +14,6 @@ import frc.robot.utils.error.ErrorCommandGenerator;
 import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.error.DiagnosticSubsystem;
-import frc.robot.commands.AutomatedTests.AutomatedVisionMountTest;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.drivebase.Drivebase;
@@ -25,11 +24,11 @@ public class Robot extends TimedRobot {
   // subsystems. ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
 
   Optional<Drivebase> drivebase = Optional.of(new Drivebase());
-  Optional<Elevator> elevator = Optional.empty();//of(new Elevator());
-  Optional<Collector> collector = Optional.empty();//of(new Collector());
-  Optional<Wrist> wrist = Optional.empty();//of(new Wrist());
-  Optional<Climber> climber = Optional.empty();//of(new Climber());
-  Optional<Funnel> funnel = Optional.empty();//of(new Funnel());
+  Optional<Elevator> elevator = Optional.empty();
+  Optional<Collector> collector = Optional.empty();
+  Optional<Wrist> wrist = Optional.empty();
+  Optional<Climber> climber = Optional.empty();
+  Optional<Funnel> funnel = Optional.empty();
 
   OI oi = new OI( 
     elevator,
@@ -76,8 +75,6 @@ public class Robot extends TimedRobot {
           true
         )
       );
-
-      automatedVisionMountTest = new AutomatedVisionMountTest(drivebase.get());
     }
   }
 
@@ -92,7 +89,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    automatedVisionMountTest.schedule();
   }
 
   @Override

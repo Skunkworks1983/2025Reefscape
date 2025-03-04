@@ -31,7 +31,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.drivebase.AutoDriveToPositionTrapezoidProfile;
+import frc.robot.commands.drivebase.DriveToPos;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.Drivebase.FieldTarget;
 import frc.robot.constants.VisionConstants;
@@ -396,7 +396,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       return new InstantCommand();
     }
 
-    return new AutoDriveToPositionTrapezoidProfile(this::drive, this::getEstimatedRobotPose, goalPose);
+    return new DriveToPos(this::drive, this::getEstimatedRobotPose, goalPose);
   }
 
   public Phoenix6DrivebaseState getState() {

@@ -1,6 +1,8 @@
 
 package frc.robot.subsystems.drivebase;
 
+import static edu.wpi.first.units.Units.Rotation;
+
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -26,7 +28,7 @@ public class TargetingUtils {
   public static Rotation2d getPointAtReefFaceAngle(Supplier<Pose2d> getRobotPose) {
     double angleDegrees = getTargetingAngle(getReefCenter(), getRobotPose).getDegrees();
     // Using Math.floor() here because Math.round() is unintuitive when the value is in the middle, like .5
-    return Rotation2d.fromDegrees(Math.floor((angleDegrees + 30) / 60) * 60);
+    return Rotation2d.fromDegrees(Math.floor((angleDegrees + 30) / 60) * 60).rotateBy(Rotation2d.k180deg);
   }
 
   /**

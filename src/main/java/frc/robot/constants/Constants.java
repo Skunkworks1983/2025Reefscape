@@ -5,8 +5,6 @@
 package frc.robot.constants;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
@@ -184,7 +182,7 @@ public class Constants {
       public static final double SWERVE_MODULE_DRIVE_KA = 0.0;
       public static final double SWERVE_MODULE_DRIVE_KS = 0.0;
 
-      public static final double HEADING_CONTROL_kP = 3.00;
+      public static final double HEADING_CONTROL_kP = 2.00;
       public static final double HEADING_CONTROL_kI = 0.0;
       public static final double HEADING_CONTROL_kD = 0.0;
       
@@ -199,8 +197,8 @@ public class Constants {
     public class FieldTarget {
       public static final Translation2d REEF_BLUE = new Translation2d(4.0259, 4.48945);
       public static final Translation2d REEF_RED = new Translation2d(FIELD_X_LENGTH-4.0259, 4.48945);
-      public static final Rotation2d LEFT_CORAL_STATION_ANGLE = Rotation2d.fromDegrees(0);
-      public static final Rotation2d RIGHT_CORAL_STATION_ANGLE = Rotation2d.fromDegrees(0);
+      public static final Rotation2d LEFT_CORAL_STATION_ANGLE = Rotation2d.fromDegrees(-45);
+      public static final Rotation2d RIGHT_CORAL_STATION_ANGLE = Rotation2d.fromDegrees(45);
     }
 
     public static final double FIELD_X_LENGTH = 17.55; // Meters
@@ -403,7 +401,8 @@ public class Constants {
         public static final int CLIMBER_GOTO_MAX = 0;
         public static final int CLIMBER_GOTO_MIN = 0;
 
-        public static final int TARGET_REEF_BUTTON = 0;
+        public static final int TARGET_REEF_BUTTON = 1;
+        public static final int TARGET_CORAL_STATION = 2;
 
         public static final int RAISE_FUNNEL_TOGGLE = 0;
 
