@@ -3,12 +3,12 @@ package frc.robot.constants;
 import edu.wpi.first.math.geometry.Translation2d;
 
 public class SwerveModuleConstants {
-    public int turnMotorId;
-    public int driveMotorId;
-    public int turnEncoderId;
-    public double turnEncoderOffset;
-    public Translation2d moduleLocation;
-    public String moduleName;
+    public final int turnMotorId;
+    public final int driveMotorId;
+    public final int turnEncoderId;
+    public final double turnEncoderOffset;
+    public final Translation2d moduleLocation;
+    public final String moduleName;
     public SwerveModuleConstants(
       int turnMotorId, 
       int driveMotorId, 

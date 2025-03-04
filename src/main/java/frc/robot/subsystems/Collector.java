@@ -139,8 +139,8 @@ public class Collector extends SubsystemBase {
       () -> {
         setCollectorSpeeds(Constants.Collector.Speeds.CORAL_INTAKE_SLOW_SPEED, 
         Constants.Collector.Speeds.CORAL_INTAKE_FAST_SPEED);
-        ConditionalSmartDashboard.putNumber("Collector/ right collector current speed", getRightMotorVelocity());
-        ConditionalSmartDashboard.putNumber("Collector/ left collector current speed", getLeftMotorVelocity());
+        ConditionalSmartDashboard.putNumber("Collector/Right collector current speed", getRightMotorVelocity());
+        ConditionalSmartDashboard.putNumber("Collector/Left collector current speed", getLeftMotorVelocity());
       }, 
       () -> {
         setCollectorSpeeds(0, 0);
@@ -167,8 +167,8 @@ public class Collector extends SubsystemBase {
       }
     ).until(
       () -> {
-        ConditionalSmartDashboard.putNumber("Collector/ amp cut off right", rightMotor.getSupplyCurrent().getValueAsDouble());
-        ConditionalSmartDashboard.putNumber("Collector/ amp cut off left", leftMotor.getSupplyCurrent().getValueAsDouble());
+        ConditionalSmartDashboard.putNumber("Collector/Amp cut off right", rightMotor.getSupplyCurrent().getValueAsDouble());
+        ConditionalSmartDashboard.putNumber("Collector/Amp cut off left", leftMotor.getSupplyCurrent().getValueAsDouble());
         if (rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF ||
             leftMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF ||
             rightMotor.getSupplyCurrent().getValueAsDouble() < 0 ||

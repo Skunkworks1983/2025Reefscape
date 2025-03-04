@@ -27,8 +27,6 @@ public class Elevator extends SubsystemBase {
   private DigitalInput bottomLimitSwitch = new DigitalInput(Constants.Elevator.BOTTOM_LIMIT_SWITCH_ID);
   private DigitalInput topLimitSwitch = new DigitalInput(Constants.Elevator.TOP_LIMIT_SWITCH_ID);
 
-  private double targetPosition;
-  private double targetVelocity;
   private double finalTargetPosition;
 
   private SmartPIDControllerTalonFX smartPIDController;
@@ -55,7 +53,6 @@ public class Elevator extends SubsystemBase {
     motorRight.setNeutralMode(NeutralModeValue.Brake);
     motorLeft.setNeutralMode(NeutralModeValue.Brake);
 
-    targetPosition = getElevatorPosition();
     // True means that the motor will be spinning opposite of the one it is following 
     motorLeft.setControl(new Follower(Constants.Elevator.MOTOR_RIGHT_ID, true));
   }
@@ -95,8 +92,8 @@ public class Elevator extends SubsystemBase {
     PositionVoltage positionVoltage = new PositionVoltage(0).withSlot(0);
     positionVoltage.Position = position;
     positionVoltage.Velocity = velocity;
-    targetPosition = position;
-    targetVelocity = velocity;
+    logTargetPosition(position);
+    logTargetVelocity(velocity);
 
     motorRight.setControl(positionVoltage
       .withLimitForwardMotion(getTopLimitSwitch())
@@ -104,25 +101,30 @@ public class Elevator extends SubsystemBase {
     );
   }
 
-  public boolean isAtSetpoint() {
+  public boolean isAtSetpoint(double targetPosition) {
     return Math.abs(getElevatorPosition() - targetPosition) 
       < Constants.Elevator.TOLORENCE_METERS_FOR_SETPOINT;
   }
 
-  public void setTargetPosition(double newTargetPosition) {
-    targetPosition = newTargetPosition;
+  public void logTargetPosition(double targetPosition) {
+    ConditionalSmartDashboard.putNumber(
+      "Elevator/Desired position in meters",
+      targetPosition
+    );
+
+    ConditionalSmartDashboard.putNumber(
+      "Elevator/Desired position in rotations", 
+      targetPosition * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS
+    );
   }
 
-  public void setFinalTargetPosition(double newFinalTargetPosition) {
-    finalTargetPosition = newFinalTargetPosition;
+  public void logTargetVelocity(double targetVelocity) {
+    ConditionalSmartDashboard.putNumber("Elevator/Desired velocity in mps", targetVelocity);
   }
 
   public void putInfoSmartDashboard() {
     double currentPos = motorRight.getPosition().getValueAsDouble();
 
-    ConditionalSmartDashboard.putNumber("Elevator/Desired velocity in mps", targetVelocity);
-    ConditionalSmartDashboard.putNumber("Elevator/Desired position in meters", targetPosition);
-    ConditionalSmartDashboard.putNumber("Elevator/Desired position in rotations", targetPosition * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
     ConditionalSmartDashboard.putNumber("Elevator/Actual velocity in mps", motorRight.getVelocity().getValueAsDouble());
     ConditionalSmartDashboard.putNumber("Elevator/Actual position in meters", currentPos * Constants.Elevator.MOTOR_ROTATIONS_TO_METERS);
     ConditionalSmartDashboard.putNumber("Elevator/Actual position in rotations", currentPos);
