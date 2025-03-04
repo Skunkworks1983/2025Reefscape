@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import java.util.function.Consumer;
 
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -18,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.AutomatedTests.RunClimberMotorTest;
 import frc.robot.constants.Constants;
+import frc.robot.constants.Constants.CurrentLimits;
 import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.PIDControllers.SmartPIDControllerTalonFX;
 import frc.robot.utils.error.DiagnosticSubsystem;
@@ -33,22 +35,26 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
 
   private SmartPIDControllerTalonFX climberSmartPID;
   private PositionVoltage positionVoltage = new PositionVoltage(0);
-  private double climberSetPoint = Constants.ClimberIDs.CLIMBER_MIN;
+  private double climberSetPoint = Constants.Climber.CLIMBER_MIN;
 
   public Climber() {
-    climbMotor = new TalonFX(Constants.ClimberIDs.CLIMBER_KRAKEN_MOTOR);
+    climbMotor = new TalonFX(Constants.Climber.IDs.CLIMBER_KRAKEN_MOTOR);
     climbMotor.setPosition(0.0);
 
-    magnetSensor1 = new DigitalInput(Constants.ClimberIDs.CLIMBER_MAGNET_SENSOR_1);
-    magnetSensor2 = new DigitalInput(Constants.ClimberIDs.CLIMBER_MAGNET_SENSOR_2);
+    magnetSensor1 = new DigitalInput(Constants.Climber.IDs.CLIMBER_MAGNET_SENSOR_1);
+    magnetSensor2 = new DigitalInput(Constants.Climber.IDs.CLIMBER_MAGNET_SENSOR_2);
+
+    TalonFXConfiguration config = new TalonFXConfiguration();
+    config.CurrentLimits = CurrentLimits.MINI_KRAKEN_CURRENT_LIMIT_CONFIG;
+    climbMotor.getConfigurator().apply(config);
 
     climberSmartPID = new SmartPIDControllerTalonFX(
-      Constants.ClimberIDs.CLIMBER_KP,
-      Constants.ClimberIDs.CLIMBER_KI,
-      Constants.ClimberIDs.CLIMBER_KD,
-      Constants.ClimberIDs.CLIMBER_KF,
+      Constants.Climber.PIDs.CLIMBER_KP,
+      Constants.Climber.PIDs.CLIMBER_KI,
+      Constants.Climber.PIDs.CLIMBER_KD,
+      Constants.Climber.PIDs.CLIMBER_KF,
       "Climb Motor",
-      Constants.ClimberIDs.CLIMBER_SMARTPID_ACTIVE,
+      Constants.Climber.CLIMBER_SMARTPID_ACTIVE,
       climbMotor
     );
   }
@@ -56,19 +62,27 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    climberSmartPID.updatePID();
+    ConditionalSmartDashboard.putNumber("Climber/Motor position", getHeight());
+    ConditionalSmartDashboard.putBoolean("Climber/Motor Connected", isMotorConnected());
+    ConditionalSmartDashboard.putNumber("Climber/Motor Current", getCimbMotorCurrent());
+    ConditionalSmartDashboard.putBoolean("Climber/Magnet Sensor 1", magnetSensor1Tripped());
+    ConditionalSmartDashboard.putBoolean("Climber/Magnet Sensor 2", magnetSensor2Tripped());
+    ConditionalSmartDashboard.putNumber("Climber/Set Point", getSetPoint());
+    ConditionalSmartDashboard.putBoolean("Climber/At Set Point", isAtSetpoint());
   }
 
-  public boolean getMagnetSensor1() {
+  public boolean magnetSensor1Tripped() {
     return !magnetSensor1.get();
   }
 
-  public boolean getMagnetSensor2() {
+  public boolean magnetSensor2Tripped() {
     return !magnetSensor2.get();
   }
 
   // returns in meters
   public double getHeight() {
-    return climbMotor.getPosition().getValueAsDouble() * Constants.ClimberIDs.CLIMBER_MOTOR_ROTATIONS_TO_CLIMBER_HEIGHT;
+    return climbMotor.getPosition().getValueAsDouble() * Constants.Climber.CLIMBER_MOTOR_ROTATIONS_TO_CLIMBER_HEIGHT;
   }
 
   public boolean isMotorConnected() {
@@ -78,7 +92,7 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
   public void setClimberSetPoint(double newSetPoint) {
     climberSetPoint = newSetPoint;
     climbMotor.setControl(
-        positionVoltage.withPosition(newSetPoint / Constants.ClimberIDs.CLIMBER_MOTOR_ROTATIONS_TO_CLIMBER_HEIGHT));
+        positionVoltage.withPosition(newSetPoint / Constants.Climber.CLIMBER_MOTOR_ROTATIONS_TO_CLIMBER_HEIGHT).withEnableFOC(true));
     ConditionalSmartDashboard.putNumber("Motor position", getHeight());
   }
 
@@ -92,14 +106,14 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
   }
 
   public boolean isAtSetpoint() {
-    return approxEquals(getHeight(), climberSetPoint, Constants.ClimberIDs.CLIMBER_TOLERANCE); 
+    return approxEquals(getHeight(), climberSetPoint, Constants.Climber.CLIMBER_TOLERANCE); 
   }
     
-      public double getCurrent() {
+  public double getCimbMotorCurrent() {
     return climbMotor.getSupplyCurrent().getValueAsDouble();
   }
 
-  public Command waitUntilMagnetSensorsAreTrueThenGoToPos(double position) {
+  public Command goToPositionAfterMagnetSensor(double position) {
     return Commands.startEnd(
         () -> {
           waitUntilMagnetSensorsAreTrue().finallyDo(
@@ -118,7 +132,7 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
   public Command waitUntilMagnetSensorsAreTrue() {
     return Commands.waitUntil(
       () -> {
-        return getMagnetSensor1() && getMagnetSensor2();
+        return magnetSensor1Tripped() && magnetSensor2Tripped();
       }
     );
   }

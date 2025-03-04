@@ -8,11 +8,13 @@ import java.util.Optional;
 
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.utils.error.ErrorCommandGenerator;
 import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.error.DiagnosticSubsystem;
+import frc.robot.commands.AutomatedTests.AutomatedVisionMountTest;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.drivebase.Drivebase;
@@ -23,20 +25,23 @@ public class Robot extends TimedRobot {
   // subsystems. ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
 
   Optional<Drivebase> drivebase = Optional.of(new Drivebase());
-  Optional<Elevator> elevator = Optional.of(new Elevator());
-  Optional<Collector> collector = Optional.of(new Collector());
-  Optional<Wrist> wrist = Optional.of(new Wrist());
-  Optional<Climber> climber = Optional.of(new Climber());
+  Optional<Elevator> elevator = Optional.empty();//of(new Elevator());
+  Optional<Collector> collector = Optional.empty();//of(new Collector());
+  Optional<Wrist> wrist = Optional.empty();//of(new Wrist());
+  Optional<Climber> climber = Optional.empty();//of(new Climber());
+  Optional<Funnel> funnel = Optional.empty();//of(new Funnel());
 
   OI oi = new OI( 
     elevator,
     collector,
     wrist,
     climber,
-    drivebase
+    drivebase,
+    funnel
   );
-  
+
   ErrorGroup errorGroup = new ErrorGroup();
+  Command automatedVisionMountTest;
 
   public Robot() {
     DataLogManager.start();
@@ -57,6 +62,9 @@ public class Robot extends TimedRobot {
       if (climber.isEmpty()) {
         throw new IllegalStateException("Climber not present");
       }
+      if (Constants.Testing.ROBOT == Constants.Testing.Robot.Comp2024) {
+        throw new IllegalStateException("Using 2024 drivebase constants! Change to 2025 (Constants.Testing.ROBOT)");
+      }
     }
 
     if(drivebase.isPresent()) {
@@ -68,6 +76,8 @@ public class Robot extends TimedRobot {
           true
         )
       );
+
+      automatedVisionMountTest = new AutomatedVisionMountTest(drivebase.get());
     }
   }
 
@@ -81,7 +91,9 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousInit() {}
+  public void autonomousInit() {
+    automatedVisionMountTest.schedule();
+  }
 
   @Override
   public void autonomousPeriodic() {}

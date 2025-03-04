@@ -30,42 +30,54 @@ public class Funnel extends SubsystemBase implements DiagnosticSubsystem{
 
   private SmartPIDControllerCANSparkMax pivotMotorSpeedController;
 
-  double setPoint;
+  double setpoint;
 
   public Funnel() {
-    pivotMotor = new SparkMax(Constants.Funnel.PIVOT_MOTOR_ID,  MotorType.kBrushless);
+    pivotMotor = new SparkMax(Constants.Funnel.IDs.PIVOT_MOTOR_ID,  MotorType.kBrushless);
     SparkMaxConfig config = new SparkMaxConfig();
     config.closedLoop
-      .p(Constants.Funnel.FUNNEL_KP)
-      .i(Constants.Funnel.FUNNEL_KI)
-      .d(Constants.Funnel.FUNNEL_KD);
+      .p(Constants.Funnel.PIDs.FUNNEL_KP)
+      .i(Constants.Funnel.PIDs.FUNNEL_KI)
+      .d(Constants.Funnel.PIDs.FUNNEL_KD);
+    pivotMotor.getEncoder().setPosition(0);
+
+    // NOTE: we are intentionally not setting a current limit because this subsystem
+    // is rarely used and will likely not exceed a reasonable current.
 
     pivotMotorSpeedController = new frc.robot.utils.PIDControllers.SmartPIDControllerCANSparkMax(
-      Constants.Funnel.FUNNEL_KP,
-      Constants.Funnel.FUNNEL_KI,
-      Constants.Funnel.FUNNEL_KD,
-      Constants.Funnel.FUNNEL_KF,
+      Constants.Funnel.PIDs.FUNNEL_KP,
+      Constants.Funnel.PIDs.FUNNEL_KI,
+      Constants.Funnel.PIDs.FUNNEL_KD,
+      Constants.Funnel.PIDs.FUNNEL_KF,
       "Funnel Pivot Motor",
-      Constants.Funnel.FUNNEL_SMARTPID_ACTIVE,
+      Constants.Funnel.PIDs.FUNNEL_SMARTPID_ACTIVE,
       pivotMotor
     );
   }
 
   @Override
   public void periodic() {
-    ConditionalSmartDashboard.putNumber("Funnel Pos (revs)", getPos());
+    pivotMotorSpeedController.updatePID();
+    ConditionalSmartDashboard.putNumber("Funnel/Motor Pos (revs)", getPos());
+    ConditionalSmartDashboard.putNumber("Funnel/Set point (revs)", setpoint);
+    ConditionalSmartDashboard.putBoolean("Funnel/At Set Point", isAtSetpoint());
+    ConditionalSmartDashboard.putNumber("Funnel/Motor Current", getCurrent());
   }
 
   public double getPos(){
     return pivotMotor.getEncoder().getPosition();
   }
 
-  public double getSetPoint(){
-    return setPoint;
+  public double getSetpoint(){
+    return setpoint;
   }
 
   public boolean isMotorConnected(){
-    return pivotMotor.getFirmwareVersion() != 00;
+    return pivotMotor.getFirmwareVersion() != 0;
+  }
+
+  public double getCurrent(){
+    return pivotMotor.getOutputCurrent();
   }
 
   public boolean approxEquals(double value1, double value2, double tolerance) {
@@ -73,27 +85,17 @@ public class Funnel extends SubsystemBase implements DiagnosticSubsystem{
   }
 
   public boolean isAtSetpoint() {
-    return approxEquals(getPos(), getSetPoint(), Constants.ClimberIDs.CLIMBER_TOLERANCE); 
+    return approxEquals(getPos(), getSetpoint(), Constants.Climber.CLIMBER_TOLERANCE); 
+  }
+
+  public double getVelocity(){
+    return pivotMotor.getEncoder().getVelocity();
   }
 
   public void setFunnelSetPoint(double revs){
-    setPoint = getPos() - revs;
-    ConditionalSmartDashboard.putNumber("set point (revs)", setPoint);
+    setpoint = revs;
     SparkClosedLoopController FunnelLoopController = pivotMotor.getClosedLoopController();
-    FunnelLoopController.setReference(setPoint, ControlType.kPosition);
-  }
-
-  public Command goToPos(double position) {
-    return Commands.startEnd(
-      () -> {
-        setFunnelSetPoint(position);
-      }, () -> {
-
-      }).until(
-        () -> {
-          return isAtSetpoint();
-        }
-      );
+    FunnelLoopController.setReference(getSetpoint(), ControlType.kPosition);
   }
 
   public Command hardwareConnectionTest(Consumer<TestResult> addTest,

@@ -33,15 +33,14 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.drivebase.AutoDriveToPositionTrapezoidProfile;
 import frc.robot.constants.Constants;
-import frc.robot.constants.Constants.VisionConstants;
 import frc.robot.constants.Constants.Drivebase.FieldTarget;
+import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.drivebase.odometry.OdometryThread;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.Phoenix6Odometry;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.Phoenix6DrivebaseState;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.Phoenix6SwerveModuleState;
 import frc.robot.subsystems.drivebase.odometry.positionEstimation.PositionEstimator;
 import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.error.DiagnosticSubsystem;
 
@@ -91,6 +90,16 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
         phoenix6Odometry::setReadLock,
         moduleLocations);
 
+    
+    // Reset the heading of the pose estimator to the correct side of the field. 
+    // This ensures that camera heading estimates and swerve drive pose estimator estimates 
+    // are ~ the same, so the robot doesn't spiral off the field.
+    positionEstimator.reset(
+      (DriverStation.getAlliance().isPresent()
+        && DriverStation.getAlliance().get() == Alliance.Red) ? 
+          new Pose2d(new Translation2d(), Rotation2d.k180deg) : 
+          new Pose2d());
+
     Pigeon2Configuration gyroConfiguration = new Pigeon2Configuration();
     gyroConfiguration.MountPose.MountPoseYaw = 0;
     gyro.getConfigurator().apply(gyroConfiguration);
@@ -98,25 +107,10 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
     odometryThread = new OdometryThread(phoenix6Odometry, positionEstimator);
 
-    Pigeon2Configuration gConfiguration = new Pigeon2Configuration();
-    gConfiguration.MountPose.MountPoseYaw = 0;
-    gyro.getConfigurator().apply(gConfiguration);
-    resetGyroHeading();
-
-    // Ensure robot code won't crash if the vision subsystem fails to initialize.
-    try {
-      new Vision(
-          positionEstimator::addVisionMeasurement,
-          new VisionIOPhotonVision(
-              VisionConstants.FRONT_CAMERA_NAME,
-              VisionConstants.ROBOT_TO_FRONT_CAMERA),
-          new VisionIOPhotonVision(
-              VisionConstants.SIDE_CAMERA_NAME,
-              VisionConstants.ROBOT_TO_SIDE_CAMERA));
-    } catch (Exception exception) {
-      System.out.println("Vision subsystem failed to initialize. See the below stacktrace for more details: ");
-      exception.printStackTrace();
-    }
+    new Vision(
+      positionEstimator::addVisionMeasurement,
+      VisionConstants.SwerveModuleMount.VISION_IO_CONSTANTS
+    );
 
     headingController.enableContinuousInput(0, 360);
     odometryThread.startThread();
@@ -131,7 +125,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
    * Mitigate the skew resulting from rotating and driving simaltaneously.
    * @param speeds The chassis speeds inputs. This function modifies those speeds.
    */
-  public void mitigateSkew(ChassisSpeeds speeds) {
+  private void mitigateSkew(ChassisSpeeds speeds) {
     double cX = speeds.vxMetersPerSecond;
     double cY = speeds.vyMetersPerSecond;
     double cRot = speeds.omegaRadiansPerSecond;
