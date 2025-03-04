@@ -125,7 +125,10 @@ public class Robot extends TimedRobot {
   }
   
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    oi.putRotationJoystickToSmartDashboard();
+    oi.putTranslationJoystickToSmartDashboard();
+  }
 
   @Override
   public void disabledPeriodic() {}
