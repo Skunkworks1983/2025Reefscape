@@ -66,7 +66,7 @@ public class Constants {
     public class IDs {
       public static final int RIGHT_MOTOR = 42; //42 is the real id
       public static final int LEFT_MOTOR = 11;
-      public static final int DIGITAL_INPUT_CHANNEL = 8;
+      public static final int DIGITAL_INPUT_CHANNEL = 0;
     }
 
     public class Speeds {
@@ -256,8 +256,8 @@ public class Constants {
     // For determining right and left, look at the elevator from the side paralel to the one that the elevator is on
     public static final int MOTOR_RIGHT_ID = 7; // Temp id
     public static final int MOTOR_LEFT_ID = 7; // Temp id
-    public static final int BOTTOM_LIMIT_SWITCH_ID = 4; // Temp id
-    public static final int TOP_LIMIT_SWITCH_ID = 5; // Temp id
+    public static final int BOTTOM_LIMIT_SWITCH_ID = 5;
+    public static final int TOP_LIMIT_SWITCH_ID = 6;
 
     // This tolerance value will be used for deciding if the elevator
     // should target to its setpoint or if the setpoint is too far
@@ -298,8 +298,8 @@ public class Constants {
   public class Wrist {
     public class IDs {
       public static final int WRIST_KRAKEN_MOTOR_ID = 12; // !! all ID's are just for the test board !!
-      public static final int WRIST_TOP_MAGNET_SENSOR = 4;
-      public static final int WRIST_BOTTOM_MAGNET_SENSOR = 5;
+      public static final int WRIST_TOP_MAGNET_SENSOR = 1;
+      public static final int WRIST_BOTTOM_MAGNET_SENSOR = 2;
 
     }
     
@@ -358,8 +358,8 @@ public class Constants {
   public class Climber {
     public class IDs {
       public static final int CLIMBER_KRAKEN_MOTOR = 12;
-      public static final int CLIMBER_MAGNET_SENSOR_1 = 4;
-      public static final int CLIMBER_MAGNET_SENSOR_2 = 5;
+      public static final int CLIMBER_MAGNET_SENSOR_1 = 3;
+      public static final int CLIMBER_MAGNET_SENSOR_2 = 4;
     }
 
     public class PIDs {
