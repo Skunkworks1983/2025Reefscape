@@ -33,7 +33,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.drivebase.DriveToPos;
 import frc.robot.constants.Constants;
-import frc.robot.constants.Constants.Drivebase.FieldTarget;
+import frc.robot.constants.Constants.Drivebase.TeleopFeature;
 import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.drivebase.odometry.OdometryThread;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.Phoenix6Odometry;
@@ -367,36 +367,29 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     RIGHT
   }
 
-  /** The distance from the center of the reef to any one of the reef sides. */
-  public static final double REEF_SMALL_RADIUS = Units.inchesToMeters(93.50 / 2);
-
-  /** The horizontal offset needed to position the robot in front of one of one of the two branches. */
-  public static final double BRANCH_LINEUP_HORIZONTAL_OFFSET = 1.0;
-  public static final double BRANCH_LINEUP_DIST_FROM_REEF = 1.0;
-  public static final double MAX_DIST_FROM_REEF_CENTER = 1.0;
-
+  
   /** 
    * @param branchSide The branch (left or right) of the nearest Reef face that's being aligned to. 
    *    This command should be bound by two buttons in OI: one for left and one for right.
    */
   public Command getAutoLineupToReefCommand(BranchSide branchSide) {
-    Rotation2d angle = TargetingUtils.getPointAtReefFaceAngle(this::getEstimatedRobotPose);
-    Pose2d originToReefCenter = new Pose2d(FieldTarget.REEF_BLUE, angle);
-    Transform2d reefCenterToRobot =
+    Rotation2d angle = TeleopFeatureUtils.getPointAtReefFaceAngle(this::getEstimatedRobotPose);
+    Pose2d originToReefCenter = new Pose2d(TeleopFeatureUtils.getReefCenter(), angle);
+    Transform2d reefCenterToGoalPose =
       new Transform2d(
         // The small radius of the reef plus some length so the robot doesn't collide.
-        REEF_SMALL_RADIUS + BRANCH_LINEUP_DIST_FROM_REEF,
+        TeleopFeature.REEF_SMALL_RADIUS + TeleopFeature.BRANCH_LINEUP_DIST_FROM_REEF,
         // Positive or negative offset depending on the branch side.
-        branchSide == BranchSide.LEFT ? BRANCH_LINEUP_HORIZONTAL_OFFSET : -BRANCH_LINEUP_HORIZONTAL_OFFSET, 
+        branchSide == BranchSide.LEFT ? TeleopFeature.BRANCH_LINEUP_HORIZONTAL_OFFSET : -TeleopFeature.BRANCH_LINEUP_HORIZONTAL_OFFSET, 
         new Rotation2d()
       );
-    Pose2d goalPose = originToReefCenter.plus(reefCenterToRobot);
+    Pose2d goalPose = originToReefCenter.plus(reefCenterToGoalPose);
 
-    if (TargetingUtils.distToReefCenter(this::getEstimatedRobotPose) > MAX_DIST_FROM_REEF_CENTER) {
+    if (TeleopFeatureUtils.distToReefCenter(this::getEstimatedRobotPose) > TeleopFeature.MAX_DIST_FROM_REEF_CENTER) {
       return new InstantCommand();
     }
 
-    return new DriveToPos(this::drive, this::getEstimatedRobotPose, goalPose);
+    return new DriveToPos(this::getEstimatedRobotPose, goalPose, this::drive);
   }
 
   public Phoenix6DrivebaseState getState() {

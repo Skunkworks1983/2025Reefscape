@@ -13,21 +13,23 @@ public class DriveToPos extends Command {
     public void apply(A xMetersPerSecond, B yMetersPerSecond, C degreesPerSecond, D fieldRelative);
   }
 
-  DriveFunction<Double, Double, Double, Boolean> drive;
   PIDController xController = new PIDController(.01, 0, 0);
   PIDController yController = new PIDController(.01, 0, 0);
   PIDController rotController = new PIDController(.01, 0, 0);
-  Pose2d goalPose;
+
   Supplier<Pose2d> getRobotPose;
+  Pose2d goalPose;
+  DriveFunction<Double, Double, Double, Boolean> runDrive;
 
   public DriveToPos(
-      DriveFunction<Double, Double, Double, Boolean> drive, 
-      Supplier<Pose2d> getEstimatedRobotPose,
-      Pose2d position) {
+      Supplier<Pose2d> getRobotPose,
+      Pose2d goalPose,
+      DriveFunction<Double, Double, Double, Boolean> runDrive
+    ) {
     
-    this.drive = drive;
-    this.goalPose = position;
-    this.getRobotPose = getEstimatedRobotPose;
+    this.getRobotPose = getRobotPose;
+    this.runDrive = runDrive;
+    this.goalPose = goalPose;
 
     xController.setTolerance(.1);
     yController.setTolerance(.1);
@@ -44,7 +46,7 @@ public class DriveToPos extends Command {
   @Override
   public void execute() {
     Pose2d robotPose = getRobotPose.get();
-    drive.apply(
+    runDrive.apply(
       xController.calculate(robotPose.getX()), 
       yController.calculate(robotPose.getY()), 
       rotController.calculate(robotPose.getRotation().getDegrees()), true);

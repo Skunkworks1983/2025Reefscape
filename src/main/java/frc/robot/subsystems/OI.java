@@ -17,7 +17,7 @@ import frc.robot.constants.Constants.OI.LIMITS;
 import frc.robot.commands.MoveEndEffector;
 import frc.robot.commands.funnel.MoveFunnelToSetpoint;
 import frc.robot.subsystems.drivebase.Drivebase;
-import frc.robot.subsystems.drivebase.TargetingUtils;
+import frc.robot.subsystems.drivebase.TeleopFeatureUtils;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.OI.IDs.Buttons;
 import frc.robot.constants.Constants.OI.IDs.Joysticks;
@@ -80,7 +80,7 @@ public class OI {
           this::getInstructedXMetersPerSecond,
           this::getInstructedYMetersPerSecond,
           (Supplier<Rotation2d>) () -> 
-            TargetingUtils.getPointAtReefFaceAngle(drivebase::getEstimatedRobotPose),
+            TeleopFeatureUtils.getPointAtReefFaceAngle(drivebase::getEstimatedRobotPose),
           true);
 
       targetCommand.addRequirements(drivebase);
@@ -89,7 +89,7 @@ public class OI {
           this::getInstructedXMetersPerSecond,
           this::getInstructedYMetersPerSecond,
           (Supplier<Rotation2d>) () -> 
-            TargetingUtils.getPointAtCoralStationAngle(drivebase::getEstimatedRobotPose),
+            TeleopFeatureUtils.getPointAtCoralStationAngle(drivebase::getEstimatedRobotPose),
           true);
 
       targetCoralStationCommand.addRequirements(drivebase);

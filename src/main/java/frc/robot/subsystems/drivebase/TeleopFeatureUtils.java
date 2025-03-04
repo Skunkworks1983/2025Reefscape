@@ -10,9 +10,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.constants.Constants.Drivebase.FieldTarget;
+import frc.robot.constants.Constants.Drivebase.TeleopFeature;
 
-public class TargetingUtils {
+public class TeleopFeatureUtils {
 
   /**
    * @param target The field location to point at.
@@ -40,7 +40,7 @@ public class TargetingUtils {
       getReefCenter(),
       getRobotPose
     ).getDegrees() > 0 ?  
-      FieldTarget.LEFT_CORAL_STATION_ANGLE : FieldTarget.RIGHT_CORAL_STATION_ANGLE;
+      TeleopFeature.LEFT_CORAL_STATION_ANGLE : TeleopFeature.RIGHT_CORAL_STATION_ANGLE;
   }
 
   /** The distance between the robot's current field position and the center of the Reef. */
@@ -54,8 +54,8 @@ public class TargetingUtils {
     return dist;
   }
 
-  private static Translation2d getReefCenter() {
+  public static Translation2d getReefCenter() {
     return (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) ? 
-      FieldTarget.REEF_RED : FieldTarget.REEF_BLUE;
+      TeleopFeature.REEF_RED : TeleopFeature.REEF_BLUE;
   }
 }
