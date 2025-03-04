@@ -69,29 +69,42 @@ public class Constants {
   }
 
   public class Collector {
-    public static final int RIGHT_MOTOR = 42; //42 is the real id
-    public static final int LEFT_MOTOR = 11;
+
+    public class IDs {
+      public static final int RIGHT_MOTOR = 42; //42 is the real id
+      public static final int LEFT_MOTOR = 11;
+      public static final int DIGITAL_INPUT_CHANNEL = 8;
+    }
+
+    public class Speeds {
+      public static final double CORAL_INTAKE_SLOW_SPEED = 8.0; //meters per sec
+      public static final double CORAL_INTAKE_FAST_SPEED = 18.0; //meters per sec 
+      public static final double CORAL_EXPEL_SLOW_SPEED = 8.0; //meters per sec
+      public static final double CORAL_EXPEL_FAST_SPEED = 18.0; //meters per sec 
+      public static final double ALGAE_INTAKE_SPEED = 5.0; //meters per sec
+      public static final double ALGAE_EXPEL_SPEED = -5.0; //meters per sec
+
+      public static final double SPEED_MULIPILER_LEFT = 0.75;
+    }
 
     public static final double COLLECTOR_ROTATIONS_PER_METER = 0.0762 * Math.PI;
-
-    public static final double CORAL_INTAKE_SLOW_SPEED = 8.0; //meters per sec
-    public static final double CORAL_INTAKE_FAST_SPEED = 18.0; //meters per sec 
-    public static final double SPEED_MULIPILER_LEFT = 0.75;
-
-    public static final double COLLECTOR_REVERSE = 0;
-    
-    public static final double ALGAE_INTAKE = 5;
-    public static final double ALGAE_EXPEL = 5;
-
-    public static final double END_COUNT_TICK_COUNTER = 1;
-    public static final int DIGITAL_INPUT_CHANNEL = 8;
-
+    public static final double END_COUNT_TICK_COUNTER = 3;
     public static final double COLLECTOR_AMPS_BEFORE_CUTTOF = 5.0;
-    public static final double SECONDS_BEFORE_CUTTOF = 0.5;
-
     public static final double ALGAE_AMP_CUT_OFF = 6.0;
 
-    public class PIDs {
+      public static final boolean SMART_PID_ENABLED = false;
+
+  public class PositionControlMode {
+      public static final double KP = 5.0;
+      public static final double KI = 0.0;
+      public static final double KD = 0.0;
+      public static final double KF = 0.0;
+      public static final double KV = 1.3;
+      public static final double KA = 0.0;
+      public static final double KS = 0.0;
+    }
+
+  public class VelocityControlMode {
       public static final double KP = 0.0;
       public static final double KI = 0.0;
       public static final double KD = 0.0;
@@ -99,9 +112,6 @@ public class Constants {
       public static final double KV = 1.3;
       public static final double KA = 0.0;
       public static final double KS = 0.0;
-
-      public static final boolean SMART_PID_ENABLED = false;
-
     }
   }
 
@@ -268,6 +278,7 @@ public class Constants {
       public static final int WRIST_KRAKEN_MOTOR_ID = 12; // !! all ID's are just for the test board !!
       public static final int WRIST_TOP_MAGNET_SENSOR = 4;
       public static final int WRIST_BOTTOM_MAGNET_SENSOR = 5;
+
     }
     
     public class PIDs {
@@ -295,30 +306,30 @@ public class Constants {
   
   // TODO: add end effector setpoints
   public class EndEffectorSetpoints {
-    public static final EndEffectorSetpointConstants algaeGround = 
+    public static final EndEffectorSetpointConstants ALGAE_GROUND = 
       new EndEffectorSetpointConstants(0.0, 0.0);
-    public static final EndEffectorSetpointConstants algaeStow = 
+    public static final EndEffectorSetpointConstants ALGAE_STOW = 
       new EndEffectorSetpointConstants(0.0, 0.0);
-    public static final EndEffectorSetpointConstants algaeProcessor = 
+    public static final EndEffectorSetpointConstants ALGAE_PROCESSOR = 
       new EndEffectorSetpointConstants(0.0, 0.0);
-    public static final EndEffectorSetpointConstants algaeL2 = 
+    public static final EndEffectorSetpointConstants ALGAE_L2 = 
       new EndEffectorSetpointConstants(0.0, 0.0);
-    public static final EndEffectorSetpointConstants algaeL3 = 
+    public static final EndEffectorSetpointConstants ALGAE_L3 = 
       new EndEffectorSetpointConstants(0.0, 0.0);
-    public static final EndEffectorSetpointConstants algaeNet = 
+    public static final EndEffectorSetpointConstants ALGAE_NET = 
       new EndEffectorSetpointConstants(0.0, 0.0);
 
-    public static final EndEffectorSetpointConstants coralGround = 
+    public static final EndEffectorSetpointConstants CORAL_GROUND = 
       new EndEffectorSetpointConstants(0.0, 0.0);
-    public static final EndEffectorSetpointConstants coralStow = 
+    public static final EndEffectorSetpointConstants CORAL_STOW = 
       new EndEffectorSetpointConstants(0.0, 0.0);
-    public static final EndEffectorSetpointConstants coralL1 = 
+    public static final EndEffectorSetpointConstants CORAL_L1 = 
       new EndEffectorSetpointConstants(0.0, 0.0);
-    public static final EndEffectorSetpointConstants coralL2 = 
+    public static final EndEffectorSetpointConstants CORAL_L2 = 
       new EndEffectorSetpointConstants(0.0, 0.0);
-    public static final EndEffectorSetpointConstants coralL3 = 
+    public static final EndEffectorSetpointConstants CORAL_L3 = 
       new EndEffectorSetpointConstants(0.0, 0.0);
-    public static final EndEffectorSetpointConstants coralL4 = 
+    public static final EndEffectorSetpointConstants CORAL_L4 = 
       new EndEffectorSetpointConstants(0.0, 0.0);
   };
 
