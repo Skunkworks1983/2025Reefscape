@@ -103,7 +103,7 @@ public class AutomatedVisionMountTest extends Command {
     drivebase.drive(x.velocity, y.velocity, -30, true);
 
     PoseWrapper stdDevs = Vision.getCalculateStdDevs();
-    String line = "X:" + stdDevs.x + "   Y:" + stdDevs.y + "   Rot:" + stdDevs.rot;
+    String line = timeElapsed.get() + "| X:" + stdDevs.x + "   Y:" + stdDevs.y + "   Rot:" + stdDevs.rot;
     writeLine(line);
   }
 
