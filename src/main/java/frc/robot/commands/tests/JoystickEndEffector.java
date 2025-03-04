@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
 
-public class joystickEndEffector extends Command {
+public class JoystickEndEffector extends Command {
   double wristPosition = 0.0;
   double elevatorPosition = 0.0;
   DoubleSupplier wristPositionChange;
@@ -26,7 +26,7 @@ public class joystickEndEffector extends Command {
   Elevator elevator;
   double time;
 
-  public joystickEndEffector(
+  public JoystickEndEffector(
     Wrist wrist,
     Elevator elevator,
     DoubleSupplier wristPositionChange,
@@ -48,8 +48,8 @@ public class joystickEndEffector extends Command {
   public void execute() {
     double deltaTime = Timer.getFPGATimestamp() - time;
     time = Timer.getFPGATimestamp();
-    wristPosition += wristPositionChange.getAsDouble();
-    elevatorPosition += elevatorPositionChange.getAsDouble();
+    wristPosition += wristPositionChange.getAsDouble() * deltaTime;
+    elevatorPosition += elevatorPositionChange.getAsDouble() * deltaTime;
 
     positionVoltageElevator.Position = elevatorPosition;
     positionVoltageWrist.Position = wristPosition;
