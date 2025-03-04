@@ -298,8 +298,8 @@ public class Constants {
   public class Wrist {
     public class IDs {
       public static final int WRIST_KRAKEN_MOTOR_ID = 12; // !! all ID's are just for the test board !!
-      public static final int WRIST_TOP_MAGNET_SENSOR = 6;
-      public static final int WRIST_BOTTOM_MAGNET_SENSOR = 5;
+      public static final int WRIST_TOP_MAGNET_SENSOR = 1;
+      public static final int WRIST_BOTTOM_MAGNET_SENSOR = 2;
 
     }
     
