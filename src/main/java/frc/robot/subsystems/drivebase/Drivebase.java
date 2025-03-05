@@ -21,6 +21,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
@@ -367,6 +368,49 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     RIGHT
   }
 
+  public void configurePathPlanner() {
+    RobotConfig config = new RobotConfig(
+      Constants.PathPlanner.ROBOT_MASS, 
+      Constants.PathPlanner.MOMENT_OF_INERTIA, 
+      new ModuleConfig(
+        Constants.Drivebase.Info.WHEEL_DIAMETER / 2, 
+        Constants.Drivebase.Info.MAX_MODULE_SPEED, 
+        1, 
+        DCMotor.getKrakenX60(1).withReduction(Constants.Drivebase.Info.DRIVE_MOTOR_GEAR_RATIO), 
+        Constants.Drivebase.DRIVE_CURRENT_LIMIT,
+        Constants.Drivebase.MODULES.length
+        ),
+      Constants.Drivebase.MODULE_OFFSET);
+      positionEstimator.stateLock.readLock().lock();
+    AutoBuilder.configure(
+      positionEstimator::getPose,positionEstimator::reset,
+      this::getRobotRelativeSpeeds, (speeds, feedforwards) -> driveRobotRelative(speeds), 
+      new PPHolonomicDriveController( 
+        new PIDConstants(
+          Constants.PathPlanner.PATHPLANNER_DRIVE_KP, 
+          Constants.PathPlanner.PATHPLANNER_DRIVE_KI, 
+          Constants.PathPlanner.PATHPLANNER_DRIVE_KD),
+        new PIDConstants(
+          Constants.PathPlanner.PATHPLANNER_TURN_KP, 
+          Constants.PathPlanner.PATHPLANNER_TURN_KI, 
+          Constants.PathPlanner.PATHPLANNER_TURN_KD),
+          Constants.PathPlanner.UPDATE_PERIOD
+      ),
+      config,
+      () -> {
+        Optional<Alliance> alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+          return alliance.get() == DriverStation.Alliance.Red;
+        }
+        return false;
+      },
+      this
+    );
+    positionEstimator.stateLock.readLock().unlock();
+    setAllModulesTurnPidActive();
+  }
+
+  }
   
   /** 
    * @param branchSide The branch (left or right) of the nearest Reef face that's being aligned to. 
