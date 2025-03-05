@@ -11,6 +11,7 @@ import frc.robot.constants.Constants.CurrentLimits;
 import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.PIDControllers.SmartPIDControllerTalonFX;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -60,10 +61,12 @@ public class Elevator extends SubsystemBase {
   @Override
   public void periodic() {
     smartPIDController.updatePID();
-    if(getBottomLimitSwitch()) {
+
+    // Setposition counts as a config update, try and do this sparingly
+    if(getBottomLimitSwitch() && Math.abs(motorRight.getPosition().getValueAsDouble()) > .001) {
       motorRight.setPosition(0.0);
     } else if(getTopLimitSwitch()) {
-      motorRight.setPosition(Constants.Elevator.MAX_HEIGHT_CARRIAGE * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
+      //motorRight.setPosition(Constants.Elevator.MAX_HEIGHT_CARRIAGE * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
     }
     putInfoSmartDashboard();
   }
@@ -142,6 +145,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public void setSpeeds(double speed) {
-    motorRight.set(speed);
+    motorRight.setControl(new DutyCycleOut(speed));
+    //motorLeft.setControl(new DutyCycleOut(-speed));
   }
 }

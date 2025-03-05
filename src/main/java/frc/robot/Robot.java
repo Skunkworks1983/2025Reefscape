@@ -22,12 +22,12 @@ public class Robot extends TimedRobot {
   // replace subsystem with Optional.empty() when you do not wish to use add all
   // subsystems. ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
 
-  Optional<Drivebase> drivebase = Optional.of(new Drivebase());
+  Optional<Drivebase> drivebase = Optional.empty();
   Optional<Elevator> elevator = Optional.of(new Elevator());
   Optional<Collector> collector = Optional.of(new Collector());
   Optional<Wrist> wrist = Optional.of(new Wrist());
-  Optional<Climber> climber = Optional.of(new Climber());
-  Optional<Funnel> funnel = Optional.of(new Funnel());
+  Optional<Climber> climber = Optional.empty();
+  Optional<Funnel> funnel = Optional.empty();
 
   OI oi = new OI( 
     elevator,
@@ -90,14 +90,15 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() { 
-    if(drivebase.isPresent()) {
-      drivebase.get().getSwerveCommand(
-        oi::getInstructedXMetersPerSecond,
-        oi::getInstructedYMetersPerSecond,
-        oi::getInstructedDegreesPerSecond,
-        true
-      ).schedule();
-    }
+    // if(drivebase.isPresent()) {
+    //   drivebase.get().getSwerveCommand(
+    //     oi::getInstructedXMetersPerSecond,
+    //     oi::getInstructedYMetersPerSecond,
+    //     oi::getInstructedDegreesPerSecond,
+    //     true
+    //   ).schedule();
+    // }
+    //new JoystickElevatorVelocity(elevator.get(), oi::getYrotationStick).schedule();
   }
   
   @Override

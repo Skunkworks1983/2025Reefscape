@@ -44,6 +44,7 @@ public class MoveElevatorToSetpointCommand extends Command {
     startState = new State(elevator.getElevatorPosition() * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS, 0.0);
     isGoingUp = targetState.position > elevator.getElevatorPosition() * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS;
     elevator.logTargetPosition(targetState.position);
+    timeElapsed.reset();
     timeElapsed.start();
   }
 
@@ -61,15 +62,15 @@ public class MoveElevatorToSetpointCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    if(elevator.getBottomLimitSwitch() && !isGoingUp) {
-      elevator.setMotorTrapezoidProfileSafe(0.0, 0.0);
-    }
-    else if(elevator.getTopLimitSwitch() && isGoingUp) {
-      elevator.setMotorTrapezoidProfileSafe(
-        Constants.EndEffectorSetpoints.CORAL_L4.elevatorSetpoint,
-        0.0
-      );
-    }
+    // if(elevator.getBottomLimitSwitch() && !isGoingUp) {
+    //   elevator.setMotorTrapezoidProfileSafe(0.0, 0.0);
+    // }
+    // else if(elevator.getTopLimitSwitch() && isGoingUp) {
+    //   elevator.setMotorTrapezoidProfileSafe(
+    //     Constants.EndEffectorSetpoints.CORAL_L4.elevatorSetpoint,
+    //     0.0
+    //   );
+    // }
   }
 
   @Override

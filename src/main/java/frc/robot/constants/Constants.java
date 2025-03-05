@@ -51,7 +51,7 @@ public class Constants {
     // must be constructed and assigned to the correct variable in Robot.java.
     // If some subsystems are not created and this value is true, an exeption
     // will be thrown.
-    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = true;
+    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = false;
 
     public static final double NUMBER_OF_MOTOR_ROTATIONS_FOR_MODULE_TEST = 1.0;
     public static final double TURN_MOTOR_ROTATION_SPEED = 0.15;
@@ -67,7 +67,7 @@ public class Constants {
     public class IDs {
       public static final int RIGHT_MOTOR = 42; //42 is the real id
       public static final int LEFT_MOTOR = 11;
-      public static final int DIGITAL_INPUT_CHANNEL = 0;
+      public static final int DIGITAL_INPUT_CHANNEL = 1;
     }
 
     public class Speeds {
@@ -169,7 +169,7 @@ public class Constants {
       public static final double PID_LOW_LIMIT = -0.8;
       public static final double PID_HIGH_LIMIT = 0.8;
 
-      public static final boolean SMART_PID_ENABLED = false;
+      public static final boolean SMART_PID_ENABLED = true;
       public static final boolean SMART_PID_TURN_ENABLED = false;
       public static final boolean SMART_PID_DRIVE_ENABLED = false;
     }
@@ -255,8 +255,8 @@ public class Constants {
 
   public class Elevator {
     // For determining right and left, look at the elevator from the side paralel to the one that the elevator is on
-    public static final int MOTOR_RIGHT_ID = 7; // Temp id
-    public static final int MOTOR_LEFT_ID = 7; // Temp id
+    public static final int MOTOR_RIGHT_ID = 27; // Temp id
+    public static final int MOTOR_LEFT_ID = 28; // Temp id
     public static final int BOTTOM_LIMIT_SWITCH_ID = 5;
     public static final int TOP_LIMIT_SWITCH_ID = 6;
 
@@ -274,57 +274,59 @@ public class Constants {
     public static final double STAGE_ONE_TO_CARRIAGE_HEIGHT = MAX_HEIGHT_CARRIAGE / MAX_HEIGHT_STAGE_ONE;
     public static final double GEAR_RATIO = 1.0/6.25;
     public static final double ROTATIONS_TO_METERS = 0.1016 * STAGE_ONE_TO_CARRIAGE_HEIGHT;
-    public static final double MOTOR_ROTATIONS_TO_METERS = GEAR_RATIO * ROTATIONS_TO_METERS;
-    public static final double METERS_TO_MOTOR_ROTATIONS = 1 / MOTOR_ROTATIONS_TO_METERS;
+    public static final double MOTOR_ROTATIONS_TO_METERS = 1;
+    public static final double METERS_TO_MOTOR_ROTATIONS = 1;
 
 
     public class PIDs {
-      public static final double ELEVATOR_kP = 1.25;
+      public static final double ELEVATOR_kP = 0.75;
       public static final double ELEVATOR_kI = 0.0;
-      public static final double ELEVATOR_kD = 0.15;
-      public static final double ELEVATOR_kF = 0.0;
+      public static final double ELEVATOR_kD = 0.0;
+      public static final double ELEVATOR_kF = 0.7;
       public static final double ELEVATOR_kV = 0.0;
       public static final double ELEVATOR_kA = 0.0;
       public static final double ELEVATOR_kS = 0.0;
 
-      public static final boolean SMART_PID_ENABLED = false;
+      public static final boolean SMART_PID_ENABLED = true;
     }
 
     public class Profile {
-      public static final double MAX_VELOCITY = 60.0;
-      public static final double MAX_ACCELERATION = 80.0;
+      public static final double MAX_VELOCITY = 7;
+      public static final double MAX_ACCELERATION = 15.0;
     }
   }
 
   public class Wrist {
     public class IDs {
-      public static final int WRIST_KRAKEN_MOTOR_ID = 12; // !! all ID's are just for the test board !!
-      public static final int WRIST_TOP_MAGNET_SENSOR = 1;
+      public static final int WRIST_KRAKEN_MOTOR_ID = 4; // !! all ID's are just for the test board !!
+      public static final int WRIST_TOP_MAGNET_SENSOR = 0;
       public static final int WRIST_BOTTOM_MAGNET_SENSOR = 2;
 
     }
     
     public class PIDs {
+      public static final double WRIST_KA = 0.0;
       public static final double WRIST_KS = 0.0;
-      public static final double WRIST_KV = 0.12;
-      public static final double WRIST_KP = 1.0;
-      public static final double WRIST_KD = 0.1;
+      public static final double WRIST_KV = 0.0;
+      public static final double WRIST_KP = 3.0;
+      public static final double WRIST_KD = 0.0;
       public static final double WRIST_KI = 0.0;
       public static final double WRIST_KF = 0.0;
 
       public static final boolean WRIST_SMARTPID_ACTIVE = false;
     }
 
-    public static final double WRIST_MAX_VELOCITY = 1;
-    public static final double WRIST_MAX_ACCELERATION = 1; 
+    public static final double WRIST_MAX_VELOCITY = 0.5;
+    public static final double WRIST_MAX_ACCELERATION = 0.5; 
 
-    public static final double WRIST_TOLERANCE = 0.5;
-
-    public static final double WRIST_MIDPOINT_ROTATIONS = 45; //TODO figure out postitions
-    public static final double WRIST_MIN_ROTATIONS = 0;
-    public static final double WRIST_MAX_ROTATIONS = 90;
+    public static final double WRIST_TOLERANCE = 0.01;
 
     public static final int WRIST_GEAR_RATIO = 56; //56 motor rotations to 1 wrist rotation
+
+    public static final double WRIST_MIDPOINT_ROTATIONS = 0.2 * WRIST_GEAR_RATIO; //TODO figure out postitions
+    public static final double WRIST_MIN_ROTATIONS = 0;
+    public static final double WRIST_MAX_ROTATIONS = 0.4 * WRIST_GEAR_RATIO;
+
   }
   
   // TODO: add end effector setpoints
@@ -408,7 +410,7 @@ public class Constants {
 
         // Switch being off corresponds to coral
         // Switch being on corresponds to algae
-        public static final int ALGAE_TOGGLE = 0;
+        public static final int ALGAE_TOGGLE = 10;
 
         // The following buttons depend on ALGAE_TOGGLE
         public static final int GOTO_SCORE_LOW = 0; // either L1 or proccesor on ALGAE_TOGGLE
@@ -420,8 +422,8 @@ public class Constants {
 
         // The effects of these buttons may change depending on algae or coral mode.
         // Will also change for different positions (e.g. net)
-        public static final int INTAKE = 0;
-        public static final int EXPEL = 0;
+        public static final int INTAKE = 11;
+        public static final int EXPEL = 15;
 
         public static final int CLIMBER_GOTO_MAX = 0;
         public static final int CLIMBER_GOTO_MIN = 0;

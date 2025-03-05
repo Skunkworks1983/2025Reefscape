@@ -9,12 +9,16 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.CurrentLimits;
 import frc.robot.utils.ConditionalSmartDashboard;
+import frc.robot.utils.PIDControllers.SmartPIDController;
+import frc.robot.utils.PIDControllers.SmartPIDControllerTalonFX;
 
 public class Wrist extends SubsystemBase {
   TalonFX wristMotor;
@@ -23,8 +27,12 @@ public class Wrist extends SubsystemBase {
   private DigitalInput topMagnetSensor;
   private DigitalInput bottomMagnetSensor;
 
+  private SmartPIDControllerTalonFX smartPIDController;
+
   public Wrist() {
-    wristMotor = new TalonFX(Constants.Wrist.IDs.WRIST_KRAKEN_MOTOR_ID);
+    //setDefaultCommand(holdPositionCommand());
+    wristMotor = new TalonFX(Constants.Wrist.IDs.WRIST_KRAKEN_MOTOR_ID, "Collector 2025");
+    
     wristMotor.setPosition(0.0);
 
     topMagnetSensor = new DigitalInput(Constants.Wrist.IDs.WRIST_TOP_MAGNET_SENSOR);
@@ -33,6 +41,20 @@ public class Wrist extends SubsystemBase {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.CurrentLimits = CurrentLimits.KRAKEN_CURRENT_LIMIT_CONFIG;
     wristMotor.getConfigurator().apply(config);
+    wristMotor.setNeutralMode(NeutralModeValue.Brake);
+
+    smartPIDController = new SmartPIDControllerTalonFX(
+      Constants.Wrist.PIDs.WRIST_KP,
+      Constants.Wrist.PIDs.WRIST_KI,
+      Constants.Wrist.PIDs.WRIST_KD,
+      Constants.Wrist.PIDs.WRIST_KF,
+      Constants.Wrist.PIDs.WRIST_KV,
+      Constants.Wrist.PIDs.WRIST_KA,
+      Constants.Wrist.PIDs.WRIST_KS,
+      "Wrist", 
+      true, 
+      wristMotor
+    );
 
     Slot0Configs slot0Configs = new Slot0Configs();
     slot0Configs.kP = Constants.Wrist.PIDs.WRIST_KP;
@@ -51,12 +73,13 @@ public class Wrist extends SubsystemBase {
     ConditionalSmartDashboard.putBoolean("Wrist/Bottom wrist magnet state", getBottomMagnetSensor());
     ConditionalSmartDashboard.putBoolean("Wrist/Top wrist magnet state", getTopMagnetSensor());
 
-    if (getTopMagnetSensor()) {
-      wristMotor.setPosition(Constants.Wrist.WRIST_MAX_ROTATIONS);
+    // Setposition counts as a config update, try and do this sparingly
+    if (getTopMagnetSensor() && Math.abs(wristMotor.getPosition().getValueAsDouble() - Constants.Wrist.WRIST_MAX_ROTATIONS) > .001) {
+      //wristMotor.setPosition(Constants.Wrist.WRIST_MAX_ROTATIONS);
     }
 
-    if (getBottomMagnetSensor()) {
-      wristMotor.setPosition(Constants.Wrist.WRIST_MIN_ROTATIONS);
+    if (getBottomMagnetSensor() && Math.abs(wristMotor.getPosition().getValueAsDouble() - Constants.Wrist.WRIST_MIN_ROTATIONS) > .001) {
+      //wristMotor.setPosition(Constants.Wrist.WRIST_MIN_ROTATIONS);
     }
   }
 
@@ -74,13 +97,14 @@ public class Wrist extends SubsystemBase {
   }
 
   public double getWristVelocity() {
-    return wristMotor.getVelocity().getValueAsDouble();
+    return wristMotor.getVelocity().getValueAsDouble() / Constants.Wrist.WRIST_GEAR_RATIO;
   }
   
   public void setWristMotorControl(PositionVoltage setWristMotorControl) {
     wristMotor.setControl(setWristMotorControl
-      .withLimitForwardMotion(getTopMagnetSensor())
-      .withLimitReverseMotion(getBottomMagnetSensor()).withEnableFOC(true)
+      //.withLimitForwardMotion(getTopMagnetSensor())
+      //.withLimitReverseMotion(getBottomMagnetSensor())
+      .withEnableFOC(true)
     );
   }
   
