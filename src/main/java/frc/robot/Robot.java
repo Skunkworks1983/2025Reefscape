@@ -83,27 +83,6 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
     ConditionalSmartDashboard.updateConditions();
-
-    SmartDashboard.putNumber("Swerve Drive Odometry", 1);
-
-    SmartDashboard.putNumber("Gyro Position", 1);
-    SmartDashboard.putNumber("Drivebase/Swerve Module orientation",1);
-
-    SmartDashboard.putNumber("Climber/Motor position", 1);
-    SmartDashboard.putBoolean("Climber/Magnet Sensor 1", true);
-    SmartDashboard.putBoolean("Climber/Magnet Sensor 2", true);
-
-    SmartDashboard.putBoolean("Collector/ Beambreak collector", true);
-
-    SmartDashboard.putNumber("Elevator/Actual position in meters", 1);
-    SmartDashboard.putBoolean("Elevator/Bottom limit switch", true);
-    SmartDashboard.putBoolean("Elevator/Top limit switch", true);
-
-    SmartDashboard.putNumber("Funnel/Motor Pos (revs)", 1);
-
-    SmartDashboard.putNumber("Wrist/Wrist motor position(rotations)", 1);
-    SmartDashboard.putBoolean("Wrist/Bottom wrist magnet state", true);
-    SmartDashboard.putBoolean("Wrist/Top wrist magnet state", true);
   }
 
   @Override
