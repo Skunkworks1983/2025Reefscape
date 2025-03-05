@@ -236,6 +236,7 @@ public class Constants {
     public static final double FIELD_X_LENGTH = 17.55; // Meters
     public static final double FIELD_Y_LENGTH = 8.05; // Meters
     public static final double SKEW_PROPORTIONAL = .027;
+    public static final double CURRENT_LIMIT = 100.0;
   }
 
   public class Funnel {
@@ -448,4 +449,3 @@ public class Constants {
     public static final double updatesPerSecond = 100.0;
   }
 }
-
