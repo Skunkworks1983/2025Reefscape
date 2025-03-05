@@ -389,28 +389,33 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     AutoBuilder.configure(
       positionEstimator::getPose,positionEstimator::reset,
       this::getRobotRelativeSpeeds, (speeds, feedforwards) -> driveRobotRelative(speeds), 
-      new PPHolonomicDriveController( 
-        new PIDConstants(
-          Constants.PathPlanner.PATHPLANNER_DRIVE_KP, 
-          Constants.PathPlanner.PATHPLANNER_DRIVE_KI, 
-          Constants.PathPlanner.PATHPLANNER_DRIVE_KD),
-        new PIDConstants(
-          Constants.PathPlanner.PATHPLANNER_TURN_KP, 
-          Constants.PathPlanner.PATHPLANNER_TURN_KI, 
-          Constants.PathPlanner.PATHPLANNER_TURN_KD),
-          Constants.PathPlanner.PERIOD
-      ),
-      config,
-      () -> 
-        DriverStation.getAlliance().isPresent() &&
-        DriverStation.getAlliance().get() == DriverStation.Alliance.Red,
-      this
-    );
-    positionEstimator.stateLock.readLock().unlock();
-    setAllModulesTurnPidActive();
-  }
-
-  }
+            new PPHolonomicDriveController( 
+              new PIDConstants(
+                Constants.PathPlanner.PATHPLANNER_DRIVE_KP, 
+                Constants.PathPlanner.PATHPLANNER_DRIVE_KI, 
+                Constants.PathPlanner.PATHPLANNER_DRIVE_KD),
+              new PIDConstants(
+                Constants.PathPlanner.PATHPLANNER_TURN_KP, 
+                Constants.PathPlanner.PATHPLANNER_TURN_KI, 
+                Constants.PathPlanner.PATHPLANNER_TURN_KD),
+                Constants.PathPlanner.PERIOD
+            ),
+            config,
+            () -> 
+              DriverStation.getAlliance().isPresent() &&
+              DriverStation.getAlliance().get() == DriverStation.Alliance.Red,
+            this
+          );
+          positionEstimator.stateLock.readLock().unlock();
+          setAllModulesTurnPidActive();
+        }
+      
+        private Object driveRobotRelative(ChassisSpeeds speeds) {
+          // TODO Auto-generated method stub
+          throw new UnsupportedOperationException("Unimplemented method 'driveRobotRelative'");
+        }
+      
+        }
   
   /** 
    * @param branchSide The branch (left or right) of the nearest Reef face that's being aligned to. 
