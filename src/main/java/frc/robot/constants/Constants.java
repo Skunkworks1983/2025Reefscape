@@ -12,6 +12,34 @@ import edu.wpi.first.math.util.Units;
 // TODO: add all robot constant values when they have been decided
 public class Constants {
 
+  public class PathPlanner
+  {
+    public static final double PATHPLANNER_DRIVE_KP = .0;
+    public static final double PATHPLANNER_DRIVE_KD = .0;
+    public static final double PATHPLANNER_DRIVE_KI = .0;
+    public static final double PATHPLANNER_DRIVE_KF = .0;
+
+    public static final double PATHPLANNER_TURN_KP = .0;
+    public static final double PATHPLANNER_TURN_KD = .0;
+    public static final double PATHPLANNER_TURN_KI = .0;
+    public static final double PATHPLANNER_TURN_KF = .0;
+
+    public static final double ROBOT_LENGTH = 0.864; //in meters with bumpers
+    public static final double ROBOT_WIDTH = 0.864; // in meters with bumpers
+
+    public static final double MODULE_OFFSETS = Constants.Drivebase.MODULE_OFFSET;
+
+    public static final double ROBOT_MASS = 67.1317; //kilograms
+    public static final double MOI = 1.0/12.0 * (ROBOT_MASS)*(Math.sqrt(ROBOT_WIDTH) + Math.sqrt(ROBOT_LENGTH));
+
+    public static final double PATHPLANNER_MAX_METERS_PER_SECOND = .0;
+
+    // distance from center to wheel
+    public static final double PATHPLANNER_DRIVEBASE_RADIUS_METERS = 0.;
+
+    public static final double PERIOD = .02; //seconds
+  }
+
   public class CurrentLimits {
 
     // Measured in amps
