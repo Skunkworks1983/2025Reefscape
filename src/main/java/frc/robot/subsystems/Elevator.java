@@ -133,7 +133,8 @@ public class Elevator extends SubsystemBase {
     ConditionalSmartDashboard.putNumber("Elevator/Final setpoint in rotations", finalTargetPosition * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
     SmartDashboard.putBoolean("Elevator/Bottom limit switch", getBottomLimitSwitch());
     SmartDashboard.putBoolean("Elevator/Top limit switch", getTopLimitSwitch());
-
+  }
+  
   public void setElevatorMotorControl(PositionVoltage setElevatorMotorControl) {
     motorRight.setControl(setElevatorMotorControl
       .withLimitForwardMotion(getTopLimitSwitch())
