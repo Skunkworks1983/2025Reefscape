@@ -64,8 +64,8 @@ public class Constants {
   public class Collector {
 
     public class IDs {
-      public static final int RIGHT_MOTOR = 42; //42 is the real id
-      public static final int LEFT_MOTOR = 11;
+      public static final int RIGHT_MOTOR = 25; //42 is the real id
+      public static final int LEFT_MOTOR = 24;
       public static final int DIGITAL_INPUT_CHANNEL = 0;
     }
 
@@ -134,7 +134,7 @@ public class Constants {
         16, 17, 18, 0.476318 - .75, new Translation2d(MODULE_OFFSET, MODULE_OFFSET), "Front Left"
       ),
       new SwerveModuleConstants(
-        19, 20, 21, -0.353027 + .75, new Translation2d(MODULE_OFFSET, -MODULE_OFFSET), "Front Right"
+        20, 19, 21, -0.353027 + .75, new Translation2d(MODULE_OFFSET, -MODULE_OFFSET), "Front Right"
       )
     };
 
@@ -257,7 +257,7 @@ public class Constants {
     public static final int MOTOR_RIGHT_ID = 7; // Temp id
     public static final int MOTOR_LEFT_ID = 7; // Temp id
     public static final int BOTTOM_LIMIT_SWITCH_ID = 5;
-    public static final int TOP_LIMIT_SWITCH_ID = 6;
+    public static final int TOP_LIMIT_SWITCH_ID = 9;
 
     // This tolerance value will be used for deciding if the elevator
     // should target to its setpoint or if the setpoint is too far
@@ -297,7 +297,7 @@ public class Constants {
 
   public class Wrist {
     public class IDs {
-      public static final int WRIST_KRAKEN_MOTOR_ID = 12; // !! all ID's are just for the test board !!
+      public static final int WRIST_KRAKEN_MOTOR_ID = 26;
       public static final int WRIST_TOP_MAGNET_SENSOR = 1;
       public static final int WRIST_BOTTOM_MAGNET_SENSOR = 2;
 

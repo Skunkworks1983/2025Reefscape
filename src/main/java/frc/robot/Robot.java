@@ -22,12 +22,12 @@ public class Robot extends TimedRobot {
   // replace subsystem with Optional.empty() when you do not wish to use add all
   // subsystems. ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
 
-  Optional<Drivebase> drivebase = Optional.of(new Drivebase());
+  Optional<Drivebase> drivebase = Optional.empty();// Optional.of(new Drivebase());
   Optional<Elevator> elevator = Optional.of(new Elevator());
-  Optional<Collector> collector = Optional.of(new Collector());
+  Optional<Collector> collector = Optional.empty();//Optional.of(new Collector());
   Optional<Wrist> wrist = Optional.of(new Wrist());
-  Optional<Climber> climber = Optional.of(new Climber());
-  Optional<Funnel> funnel = Optional.of(new Funnel());
+  Optional<Climber> climber = Optional.empty();//Optional.of(new Climber());
+  Optional<Funnel> funnel = Optional.empty();//Optional.of(new Funnel());
 
   OI oi = new OI( 
     elevator,
