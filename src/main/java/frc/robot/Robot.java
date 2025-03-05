@@ -7,6 +7,7 @@ package frc.robot;
 import java.util.Optional;
 
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.utils.error.ErrorCommandGenerator;
@@ -22,12 +23,12 @@ public class Robot extends TimedRobot {
   // replace subsystem with Optional.empty() when you do not wish to use add all
   // subsystems. ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
 
-  Optional<Drivebase> drivebase = Optional.of(new Drivebase());
-  Optional<Elevator> elevator = Optional.of(new Elevator());
-  Optional<Collector> collector = Optional.of(new Collector());
-  Optional<Wrist> wrist = Optional.of(new Wrist());
-  Optional<Climber> climber = Optional.of(new Climber());
-  Optional<Funnel> funnel = Optional.of(new Funnel());
+  Optional<Drivebase> drivebase = Optional.empty();
+  Optional<Elevator> elevator = Optional.empty();
+  Optional<Collector> collector = Optional.empty();
+  Optional<Wrist> wrist = Optional.empty();
+  Optional<Climber> climber = Optional.empty();
+  Optional<Funnel> funnel = Optional.empty();
 
   OI oi = new OI( 
     elevator,
@@ -39,6 +40,9 @@ public class Robot extends TimedRobot {
   );
   
   ErrorGroup errorGroup = new ErrorGroup();
+
+  PWM lazerRight;
+  PWM lazerLeft;
 
   public Robot() {
     DataLogManager.start();
@@ -71,6 +75,9 @@ public class Robot extends TimedRobot {
         )
       );
     }
+
+    lazerRight = new PWM(0);
+    lazerLeft = new PWM(1);
   }
 
   @Override 
@@ -78,6 +85,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
+
     CommandScheduler.getInstance().run();
     ConditionalSmartDashboard.updateConditions();
   }
@@ -90,14 +98,14 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() { 
-    if(drivebase.isPresent()) {
-      drivebase.get().getSwerveCommand(
-        oi::getInstructedXMetersPerSecond,
-        oi::getInstructedYMetersPerSecond,
-        oi::getInstructedDegreesPerSecond,
-        true
-      ).schedule();
-    }
+    // if(drivebase.isPresent()) {
+    //   drivebase.get().getSwerveCommand(
+    //     oi::getInstructedXMetersPerSecond,
+    //     oi::getInstructedYMetersPerSecond,
+    //     oi::getInstructedDegreesPerSecond,
+    //     true
+    //   ).schedule();
+    // }
   }
   
   @Override
