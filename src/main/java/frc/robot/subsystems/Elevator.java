@@ -140,4 +140,8 @@ public class Elevator extends SubsystemBase {
       .withLimitReverseMotion(getBottomLimitSwitch()).withEnableFOC(true)
     );
   }
+
+  public void setSpeeds(double speed) {
+    motorRight.set(speed);
+  }
 }

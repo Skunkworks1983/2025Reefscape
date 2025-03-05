@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
 
-public class JoystickEndEffector extends Command {
+public class JoystickEndEffectorPosition extends Command {
   double wristPosition = 0.0;
   double elevatorPosition = 0.0;
   DoubleSupplier wristPositionChange;
@@ -26,7 +26,7 @@ public class JoystickEndEffector extends Command {
   Elevator elevator;
   double time;
 
-  public JoystickEndEffector(
+  public JoystickEndEffectorPosition(
     Wrist wrist,
     Elevator elevator,
     DoubleSupplier wristPositionChange,

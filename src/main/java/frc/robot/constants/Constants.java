@@ -59,6 +59,7 @@ public class Constants {
 
     public static final double CLIMBER_HEIGHT_CHANGE = 0.05;
     public static final double CLIMBER_CURRENT_TOLERANCE = 10; //TODO find tolerance
+    public static final double ELEVATOR_MAX_SPEED = .08;
   }
 
   public class Collector {
