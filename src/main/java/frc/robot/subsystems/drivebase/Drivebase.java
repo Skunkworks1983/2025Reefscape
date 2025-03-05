@@ -12,6 +12,9 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -397,13 +400,9 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
           Constants.PathPlanner.UPDATE_PERIOD
       ),
       config,
-      () -> {
-        Optional<Alliance> alliance = DriverStation.getAlliance();
-        if (alliance.isPresent()) {
-          return alliance.get() == DriverStation.Alliance.Red;
-        }
-        return false;
-      },
+      () -> 
+        DriverStation.getAlliance().isPresent() &&
+        DriverStation.getAlliance().get() == DriverStation.Alliance.Red,
       this
     );
     positionEstimator.stateLock.readLock().unlock();

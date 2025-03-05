@@ -128,7 +128,7 @@ public class Constants {
     
 
     // All modules are at the position (+-MODULE_TO_OFFSET, +-MODULE_TO_OFFSET)
-    private static double MODULE_OFFSET = 0.288925;
+    public static double MODULE_OFFSET = 0.288925;
     
     // For 2024 Robot
     public static final double T_X = 0.925;
