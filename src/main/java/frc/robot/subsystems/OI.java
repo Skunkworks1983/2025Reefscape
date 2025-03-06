@@ -103,17 +103,17 @@ public class OI {
       // JoystickButton endEffectorToL3 = new JoystickButton(buttonJoystick, Buttons.GOTO_L3);
       // JoystickButton endEffectorToScoreHigh = new JoystickButton(buttonJoystick, Buttons.GOTO_SCORE_HIGH);
 
-      // Algae mode
-      // endEffectorGround.and(algaeToggle).onTrue(
-      //   new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_GROUND)
-      // );
-
       elevatorTop.onTrue(new MoveElevatorToSetpointCommand(elevator, 39));
       elevatorBottom.onTrue(new MoveElevatorToSetpointCommand(elevator, 0.0));
       wristDown.onTrue(new MoveWristToSetpoint(wrist, 0.1441));
       wristUp.onTrue(new MoveWristToSetpoint(wrist, 0.0));
 
       endEffectorButton.whileTrue(new JoystickEndEffectorPosition(wrist, elevator, this::getYrotationStick, this::getYtranslationStick));
+
+      // // Algae mode
+      // endEffectorGround.and(algaeToggle).onTrue(
+      //   new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_GROUND)
+      // );
 
       // endEffectorStow.and(algaeToggle).onTrue(
       //   new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_STOW)

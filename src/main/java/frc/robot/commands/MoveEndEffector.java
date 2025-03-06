@@ -4,7 +4,7 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.elevator.MoveElevatorToSetpointCommand;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
@@ -12,15 +12,32 @@ import frc.robot.commands.wrist.MoveWristToSetpoint;
 import frc.robot.constants.EndEffectorSetpointConstants;
 
 // Moves wrist and elevator
-public class MoveEndEffector extends ParallelCommandGroup {
+public class MoveEndEffector extends SequentialCommandGroup {
+  boolean wristUp;
+  boolean elevatorUp;
   public MoveEndEffector(
     Elevator elevator,
     Wrist wrist,
     EndEffectorSetpointConstants setpoint
   ) {
+    wristUp = false;
+    elevatorUp = false;
     addCommands(
-      new MoveWristToSetpoint(wrist, setpoint.wristSetpoint),
-      new MoveElevatorToSetpointCommand(elevator, setpoint.elevatorSetpoint)
+      new MoveWristToSetpoint(wrist, setpoint.stowSetpoint).finallyDo(b -> {
+        wristUp = !b;
+      }),
+      new MoveElevatorToSetpointCommand(elevator, setpoint.elevatorSetpoint).beforeStarting(() -> {
+        if(!wristUp) {
+          this.cancel();
+        }
+      }).finallyDo(b -> {
+        elevatorUp = !b;
+      }),
+      new MoveWristToSetpoint(wrist, setpoint.wristSetpoint).beforeStarting(() -> {
+        if(elevatorUp && wristUp) {
+          this.cancel();
+        }
+      })
     );
   }
 }
