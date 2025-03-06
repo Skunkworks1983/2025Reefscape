@@ -6,7 +6,6 @@ package frc.robot.subsystems.vision;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Supplier;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -20,7 +19,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.VisionConstants;
 import frc.robot.constants.visionIOConstants.VisionIOConstants;
-import frc.robot.subsystems.vision.PoseDeviations.PoseWrapper;
 import frc.robot.subsystems.vision.VisionIO.PoseObservation;
 import frc.robot.subsystems.vision.VisionIO.VisionIOData;
 import frc.robot.utils.ConditionalSmartDashboard;
@@ -39,7 +37,6 @@ public class Vision extends SubsystemBase {
   private List<Field2d> field2ds = new LinkedList<Field2d>();
   private final AprilTagFieldLayout aprilTagLayout = 
     AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
-  private static PoseDeviations poseDeviations = new PoseDeviations();
   
     public Vision(VisionConsumer consumer, VisionIOConstants... ioConstants) {
       this.consumer = consumer;
@@ -83,10 +80,7 @@ public class Vision extends SubsystemBase {
           if (rejectPose) {
             continue;
           }
-  
-          // If the pose is being added, then add to the measurements list.
-          poseDeviations.updateMeasurements(observation.estimatedPose().toPose2d());
-  
+    
           double stdDevFactor = Math.pow(observation.averageTagDistance(), 2.0) / observation.tagCount();
           double linearStdDev = VisionConstants.LINEAR_STD_DEV_BASELINE * stdDevFactor;
           double angularStdDev = VisionConstants.ANGULAR_STD_DEV_BASELINE * stdDevFactor;
@@ -100,10 +94,6 @@ public class Vision extends SubsystemBase {
         }
       }
     }
-  
-  public static PoseWrapper getCalculateStdDevs() {
-    return poseDeviations.calculateStdDevs();
-  }
 
   @FunctionalInterface
   public static interface VisionConsumer {

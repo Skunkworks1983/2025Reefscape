@@ -63,7 +63,7 @@ public class Robot extends TimedRobot {
       if (climber.isEmpty()) {
         throw new IllegalStateException("Climber not present");
       }
-      if (Constants.Testing.ROBOT == Constants.Testing.Robot.Comp2024) {
+      if (Constants.Testing.ROBOT != Constants.Testing.Robot.Comp2025) {
         throw new IllegalStateException("Using 2024 drivebase constants! Change to 2025 (Constants.Testing.ROBOT)");
       }
     }
