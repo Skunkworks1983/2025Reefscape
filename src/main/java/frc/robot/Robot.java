@@ -23,6 +23,8 @@ public class Robot extends TimedRobot {
   // replace subsystem with Optional.empty() when you do not wish to use add all
   // subsystems. ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
 
+  
+
   Optional<Drivebase> drivebase = Optional.of(new Drivebase());
   Optional<Elevator> elevator = Optional.empty();
   Optional<Collector> collector = Optional.empty();
@@ -107,7 +109,10 @@ public class Robot extends TimedRobot {
   }
   
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    oi.putRotationJoystickToSmartDashboard();
+    oi.putTranslationJoystickToSmartDashboard();
+  }
 
   @Override
   public void disabledPeriodic() {}
