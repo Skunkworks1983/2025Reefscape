@@ -355,9 +355,9 @@ public class Constants {
     public static final EndEffectorSetpointConstants CORAL_L1 = 
     new EndEffectorSetpointConstants(0.0, 0.0, WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_L2 = 
-    new EndEffectorSetpointConstants(0.0, 0.0, WRIST_STOW_POSITION_CORAL);
+    new EndEffectorSetpointConstants(13.756, 0.0, WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_L3 = 
-    new EndEffectorSetpointConstants(0.0, 0.0, WRIST_STOW_POSITION_CORAL);
+    new EndEffectorSetpointConstants(24.914, 0.0, WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_L4 = 
     new EndEffectorSetpointConstants(0.0, 0.0, WRIST_STOW_POSITION_CORAL);
   };
@@ -417,17 +417,17 @@ public class Constants {
         public static final int ALGAE_TOGGLE = 10;
 
         // The following buttons depend on ALGAE_TOGGLE
-        public static final int GOTO_SCORE_LOW = 0; // either L1 or proccesor on ALGAE_TOGGLE
-        public static final int GOTO_L2 = 0; // either place coral L2 or remove algae L2
-        public static final int GOTO_L3 = 0; // either place coral L3 or remove algae L4
-        public static final int GOTO_SCORE_HIGH = 0; // either L4 or net depending on ALGAE_TOGGLE
-        public static final int GOTO_STOW = 0; 
-        public static final int GOTO_GROUND = 0;
+        public static final int GOTO_SCORE_LOW = 15; // either L1 or proccesor on ALGAE_TOGGLE
+        public static final int GOTO_L2 = 13; // either place coral L2 or remove algae L2
+        public static final int GOTO_L3 = 12; // either place coral L3 or remove algae L4
+        public static final int GOTO_SCORE_HIGH = 11; // either L4 or net depending on ALGAE_TOGGLE
+        public static final int GOTO_STOW = 23; 
+        public static final int GOTO_GROUND = 22;
 
         // The effects of these buttons may change depending on algae or coral mode.
         // Will also change for different positions (e.g. net)
-        public static final int INTAKE = 11;
-        public static final int EXPEL = 15;
+        public static final int INTAKE = 17;
+        public static final int EXPEL = 24;
 
         public static final int CLIMBER_GOTO_MAX = 0;
         public static final int CLIMBER_GOTO_MIN = 0;
