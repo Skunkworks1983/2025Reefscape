@@ -36,8 +36,6 @@ public class Robot extends TimedRobot {
   Optional<Elevator> elevator = Optional.of(new Elevator());
   Optional<Collector> collector = Optional.of(new Collector());
   Optional<Wrist> wrist = Optional.of(new Wrist());
-  Optional<Climber> climber = Optional.empty();
-  Optional<Funnel> funnel = Optional.empty();
   Optional<Climber> climber = Optional.of(new Climber());
   Optional<Funnel> funnel = Optional.of(new Funnel());
 
@@ -96,38 +94,38 @@ public class Robot extends TimedRobot {
 
     //move to pos coral 
     NamedCommands.registerCommand("Coral to L4",
-      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.coralL4));
+      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_L4));
     
     NamedCommands.registerCommand("Coral to L3", 
-      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.coralL3));
+      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_L3));
 
     NamedCommands.registerCommand("Coral to L2", 
-      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.coralL2));
+      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_L2));
 
     NamedCommands.registerCommand("Coral to L1", 
-      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.coralL1));
+      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_L1));
 
     NamedCommands.registerCommand("Coral to Ground", 
-      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.coralGround));
+      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_GROUND));
 
     NamedCommands.registerCommand("Coral to Stow ", 
-    new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.coralStow));
+    new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_STOW));
 
     // move to pos Algae
     NamedCommands.registerCommand("Algae to L2 ", 
-    new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.algaeL2));
+    new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_L2));
 
     NamedCommands.registerCommand("Algae to L3", 
-      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.algaeL3));
+      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_L3));
 
     NamedCommands.registerCommand("Algae to Ground", 
-      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.algaeGround));
+      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_GROUND));
 
     NamedCommands.registerCommand("Algae to Processor", 
-      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.algaeProcessor));
+      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_PROCESSOR));
     
     NamedCommands.registerCommand("Algea to Stow", 
-      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.algaeStow));
+      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_STOW));
 
     // funnel 
     NamedCommands.registerCommand("Funnel to Station", 
@@ -137,7 +135,7 @@ public class Robot extends TimedRobot {
       new MoveFunnelToSetpoint(funnel.get(), Constants.Funnel.FUNNEL_POSITION_HIGH_CONVERTED));
 
     // Collector 
-    NamedCommands.registerCommand("Expel Coral", collector.get().expelCoral(isAutonomous()));
+    NamedCommands.registerCommand("Expel Coral", collector.get().expelAlgaeCommand(isAutonomous()));
 
     NamedCommands.registerCommand("Expel Algae",collector.get().expelAlgaeCommand(isAutonomous()));
 
@@ -157,7 +155,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
      Command currentAutonomousCommand = autoChooser.getSelected();
-    if (currentAutonomousCommand != new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.algaeL2)) {
+    if (currentAutonomousCommand != new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_L2)) {
       currentAutonomousCommand.schedule();
     }
   }
