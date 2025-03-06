@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.utils.error.ErrorCommandGenerator;
 import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.ConditionalSmartDashboard;
+import frc.robot.utils.Lidar;
 import frc.robot.utils.error.DiagnosticSubsystem;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.*;
@@ -95,40 +96,15 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {}
 
-  Counter lidar = new Counter(1);
-  DigitalOutput output = new DigitalOutput(0);
   @Override
-  public void teleopInit() { 
-    output.set(true);
-    lidar.setMaxPeriod(1.0);
-    lidar.setSemiPeriodMode(true);
-    lidar.reset();
-    t.reset();
-  }
+  public void teleopInit() {}
 
-  Timer t = new Timer();
+  Lidar lidar = new Lidar(1, 0, 40);
   @Override
   public void teleopPeriodic() {
-    /*
-    if(t.get() > 1.0) {
-      t.reset();
-      output.set(false);
-    }
-    else {
-      output.set(true);
-    }
-    */
-    double dist;
-    double v = lidar.getPeriod();
-    if(lidar.get() < 1){
-      dist = 0;
-    }
-    else {
-      dist = v * 1000000.0 / 10.0;
-    }
-      SmartDashboard.putNumber("ALocation:", dist);
-      SmartDashboard.putNumber("Avalue:", v);
-      System.out.println(v);
+
+    SmartDashboard.putNumber("ALocation", lidar.getDistance());
+    SmartDashboard.putBoolean("Lidar tripped", lidar.isTripped());
     /*
     oi.putRotationJoystickToSmartDashboard();
     oi.putTranslationJoystickToSmartDashboard();
