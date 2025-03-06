@@ -6,9 +6,14 @@ package frc.robot;
 
 import java.util.Optional;
 
+import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.utils.error.ErrorCommandGenerator;
 import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.ConditionalSmartDashboard;
@@ -24,12 +29,12 @@ public class Robot extends TimedRobot {
 
   
 
-  Optional<Drivebase> drivebase = Optional.of(new Drivebase());
-  Optional<Elevator> elevator = Optional.of(new Elevator());
-  Optional<Collector> collector = Optional.of(new Collector());
-  Optional<Wrist> wrist = Optional.of(new Wrist());
-  Optional<Climber> climber = Optional.of(new Climber());
-  Optional<Funnel> funnel = Optional.of(new Funnel());
+  Optional<Drivebase> drivebase = Optional.empty();// Optional.of(new Drivebase());
+  Optional<Elevator> elevator = Optional.empty();//Optional.of(new Elevator());
+  Optional<Collector> collector = Optional.empty();//Optional.of(new Collector());
+  Optional<Wrist> wrist = Optional.empty();//Optional.of(new Wrist());
+  Optional<Climber> climber = Optional.empty();//Optional.of(new Climber());
+  Optional<Funnel> funnel = Optional.empty();//Optional.of(new Funnel());
 
   OI oi = new OI( 
     elevator,
@@ -90,22 +95,44 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {}
 
+  Counter lidar = new Counter(1);
+  DigitalOutput output = new DigitalOutput(0);
   @Override
   public void teleopInit() { 
-    if(drivebase.isPresent()) {
-      drivebase.get().getSwerveCommand(
-        oi::getInstructedXMetersPerSecond,
-        oi::getInstructedYMetersPerSecond,
-        oi::getInstructedDegreesPerSecond,
-        true
-      ).schedule();
-    }
+    output.set(true);
+    lidar.setMaxPeriod(1.0);
+    lidar.setSemiPeriodMode(true);
+    lidar.reset();
+    t.reset();
   }
-  
+
+  Timer t = new Timer();
   @Override
   public void teleopPeriodic() {
+    /*
+    if(t.get() > 1.0) {
+      t.reset();
+      output.set(false);
+    }
+    else {
+      output.set(true);
+    }
+    */
+    double dist;
+    double v = lidar.getPeriod();
+    if(lidar.get() < 1){
+      dist = 0;
+    }
+    else {
+      dist = v * 1000000.0 / 10.0;
+    }
+      SmartDashboard.putNumber("ALocation:", dist);
+      SmartDashboard.putNumber("Avalue:", v);
+      System.out.println(v);
+    /*
     oi.putRotationJoystickToSmartDashboard();
     oi.putTranslationJoystickToSmartDashboard();
+    */
   }
 
   @Override
