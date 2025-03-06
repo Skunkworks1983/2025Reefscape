@@ -40,17 +40,6 @@ public class TeleopFeatureUtils {
       TeleopFeature.LEFT_CORAL_STATION_ANGLE : TeleopFeature.RIGHT_CORAL_STATION_ANGLE;
   }
 
-  /** The distance between the robot's current field position and the center of the Reef. */
-  public static double distToReefCenter(Supplier<Pose2d> getRobotPose) {
-    Translation2d reefCenter = getReefCenter();
-    Pose2d robotPose = getRobotPose.get();
-    double x = reefCenter.getX() - robotPose.getX();
-    double y = reefCenter.getY() - robotPose.getY();
-    double dist = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-    
-    return dist;
-  }
-
   public static Translation2d getReefCenter() {
     return (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) ? 
       TeleopFeature.REEF_RED : TeleopFeature.REEF_BLUE;

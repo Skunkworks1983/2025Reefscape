@@ -18,7 +18,6 @@ import frc.robot.commands.MoveEndEffector;
 import frc.robot.commands.funnel.MoveFunnelToSetpoint;
 import frc.robot.subsystems.drivebase.Drivebase;
 import frc.robot.subsystems.drivebase.TeleopFeatureUtils;
-import frc.robot.subsystems.drivebase.Drivebase.BranchSide;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.OI.IDs.Buttons;
 import frc.robot.constants.Constants.OI.IDs.Joysticks;
@@ -95,22 +94,11 @@ public class OI {
 
       targetCoralStationCommand.addRequirements(drivebase);
 
-      Optional<Command> c = drivebase.getAutoLineupToReefCommand(BranchSide.LEFT);
-
-      if (c.isPresent()) 
-      // Command goToLeftBranch = drivebase.getAutoLineupToReefCommand(BranchSide.LEFT);
-      // goToLeftBranch.addRequirements(drivebase);
-
-      // Command goToRightBranch = drivebase.getAutoLineupToReefCommand(BranchSide.RIGHT);
-      // goToRightBranch.addRequirements(drivebase);
-
       new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_REEF_BUTTON)
           .whileTrue(targetCommand);
 
       new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_CORAL_STATION)
           .whileTrue(targetCoralStationCommand);
-      // new JoystickButton(translationJoystick, 0).whileTrue(goToLeftBranch);
-      // new JoystickButton(translationJoystick, 0).whileTrue(goToRightBranch);
     } 
 
     if(optionalClimber.isPresent()){
