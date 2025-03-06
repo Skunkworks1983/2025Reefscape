@@ -200,8 +200,10 @@ public class Constants {
       public static final Translation2d APPROXIMATE_RED_START_POSE = FIELD_CENTER.plus(new Translation2d(0.0, 1.5));
       public static final Translation2d REEF_BLUE = new Translation2d(4.0259, 4.48945);
       public static final Translation2d REEF_RED = new Translation2d(FIELD_X_LENGTH-4.0259, 4.48945);
-      public static final Rotation2d LEFT_CORAL_STATION_ANGLE = Rotation2d.fromDegrees(-45);
-      public static final Rotation2d RIGHT_CORAL_STATION_ANGLE = Rotation2d.fromDegrees(45);
+      public static final Rotation2d BLUE_LEFT_CORAL_STATION_ANGLE = Rotation2d.fromDegrees(-45);
+      public static final Rotation2d BLUE_RIGHT_CORAL_STATION_ANGLE = Rotation2d.fromDegrees(45);
+      public static final Rotation2d RED_LEFT_CORAL_STATION_ANGLE = Rotation2d.fromDegrees(135);
+      public static final Rotation2d RED_RIGHT_CORAL_STATION_ANGLE = Rotation2d.fromDegrees(-135);
       public static final double REEF_SMALL_RADIUS = Units.inchesToMeters(93.50 / 2);
       public static final double BRANCH_LINEUP_HORIZONTAL_OFFSET = 1.0;
       public static final double BRANCH_LINEUP_DIST_FROM_REEF = 1.0;

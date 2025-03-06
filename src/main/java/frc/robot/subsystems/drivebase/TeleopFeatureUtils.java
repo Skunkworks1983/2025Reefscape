@@ -26,10 +26,7 @@ public class TeleopFeatureUtils {
     double angleDegrees = getTargetingAngle(getReefCenter(), getRobotPose).getDegrees();
 
     // Rounding to the nearest 60 degrees (the reef is hexagontal)
-    return Rotation2d.fromDegrees(Math.round(angleDegrees / 60.0) * 60.0).rotateBy(
-      (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) ? 
-      Rotation2d.k180deg : new Rotation2d()
-    );
+    return Rotation2d.fromDegrees(Math.round(angleDegrees / 60.0) * 60.0);
   }
 
   /**
@@ -41,13 +38,13 @@ public class TeleopFeatureUtils {
       return getTargetingAngle(
         getReefCenter(),
         getRobotPose
-      ).getDegrees() > 0.0 ? TeleopFeature.LEFT_CORAL_STATION_ANGLE : TeleopFeature.RIGHT_CORAL_STATION_ANGLE;
+      ).getDegrees() > 0.0 ? TeleopFeature.RED_LEFT_CORAL_STATION_ANGLE : TeleopFeature.RED_RIGHT_CORAL_STATION_ANGLE;
 
     } else {
       return getTargetingAngle(
         getReefCenter(),
         getRobotPose
-      ).getDegrees() < 0.0 ? TeleopFeature.LEFT_CORAL_STATION_ANGLE : TeleopFeature.RIGHT_CORAL_STATION_ANGLE;
+      ).getDegrees() < 0.0 ? TeleopFeature.BLUE_LEFT_CORAL_STATION_ANGLE : TeleopFeature.BLUE_RIGHT_CORAL_STATION_ANGLE;
     }
   }
 

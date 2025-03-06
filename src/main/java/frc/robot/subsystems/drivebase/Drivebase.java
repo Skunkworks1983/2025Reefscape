@@ -177,6 +177,10 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
   public void resetGyroHeading() {
     gyro.reset();
+    Optional<Alliance> alliance = DriverStation.getAlliance();
+    if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
+      gyro.setYaw(180);
+    }
   }
 
   public void setAllDriveMotorBreakMode(boolean breakMode) {
