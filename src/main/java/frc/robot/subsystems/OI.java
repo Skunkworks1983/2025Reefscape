@@ -91,8 +91,8 @@ public class OI {
       Elevator elevator = optionalElevator.get();
       Wrist wrist = optionalWrist.get();
 
-      JoystickButton endEffectorGround = new JoystickButton(buttonJoystick, 23);
-      JoystickButton endEffectorStow = new JoystickButton(buttonJoystick, 22);
+      JoystickButton elevatorTop = new JoystickButton(buttonJoystick, 23);
+      JoystickButton elevatorBottom = new JoystickButton(buttonJoystick, 22);
       // JoystickButton endEffectorToScoreLow = new JoystickButton(buttonJoystick, Buttons.GOTO_SCORE_LOW);
       // JoystickButton endEffectorToL2 = new JoystickButton(buttonJoystick, Buttons.GOTO_L2);
       // JoystickButton endEffectorToL3 = new JoystickButton(buttonJoystick, Buttons.GOTO_L3);
@@ -103,8 +103,8 @@ public class OI {
       //   new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_GROUND)
       // );
 
-      endEffectorGround.onTrue(new MoveWristToSetpoint(wrist, 0.2));
-      endEffectorStow.onTrue(new MoveWristToSetpoint(wrist, 0.0));
+      elevatorTop.onTrue(new MoveElevatorToSetpointCommand(elevator, 39));
+      elevatorBottom.onTrue(new MoveElevatorToSetpointCommand(elevator, 0.0));
 
       // endEffectorStow.and(algaeToggle).onTrue(
       //   new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_STOW)

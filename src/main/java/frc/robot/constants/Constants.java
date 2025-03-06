@@ -279,20 +279,20 @@ public class Constants {
 
 
     public class PIDs {
-      public static final double ELEVATOR_kP = 0.75;
-      public static final double ELEVATOR_kI = 0.0;
+      public static final double ELEVATOR_kP = 1.1;
+      public static final double ELEVATOR_kI = 0.1;
       public static final double ELEVATOR_kD = 0.0;
-      public static final double ELEVATOR_kF = 0.7;
+      public static final double ELEVATOR_kF = 0.0;
       public static final double ELEVATOR_kV = 0.0;
       public static final double ELEVATOR_kA = 0.0;
-      public static final double ELEVATOR_kS = 0.0;
+      public static final double ELEVATOR_kS = 0.225;
 
       public static final boolean SMART_PID_ENABLED = true;
     }
 
     public class Profile {
-      public static final double MAX_VELOCITY = 7;
-      public static final double MAX_ACCELERATION = 15.0;
+      public static final double MAX_VELOCITY = 65;
+      public static final double MAX_ACCELERATION = 130;
     }
   }
 

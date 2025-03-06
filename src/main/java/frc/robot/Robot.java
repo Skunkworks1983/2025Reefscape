@@ -13,6 +13,7 @@ import frc.robot.utils.error.ErrorCommandGenerator;
 import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.error.DiagnosticSubsystem;
+import frc.robot.commands.tests.JoystickElevatorVelocity;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.drivebase.Drivebase;
@@ -98,7 +99,7 @@ public class Robot extends TimedRobot {
     //     true
     //   ).schedule();
     // }
-    //new JoystickElevatorVelocity(elevator.get(), oi::getYrotationStick).schedule();
+    new JoystickElevatorVelocity(elevator.get(), oi::getYrotationStick).schedule();
   }
   
   @Override
