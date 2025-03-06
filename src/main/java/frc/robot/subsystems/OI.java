@@ -109,7 +109,7 @@ public class OI {
       Command AlineCoralRightCommand = drivebase.getSwerveAlineCoral(
           this::getInstructedXMetersPerSecond,
           this::getInstructedYMetersPerSecond,
-          alignSpeed,
+          -alignSpeed,
           true
       );
 
