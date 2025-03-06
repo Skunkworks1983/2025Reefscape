@@ -230,7 +230,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
    *  (a local variable of the drivebase, updated by {@code cacheEstimatedRobotPose} 
    *  once per loop in periodic)
    */
-  public Pose2d getEstimatedRobotPose() {
+  public Pose2d getCachedEstimatedRobotPose() {
     return cachedEstimatedRobotPose;
   }
 

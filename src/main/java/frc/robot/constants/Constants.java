@@ -48,7 +48,7 @@ public class Constants {
     // must be constructed and assigned to the correct variable in Robot.java.
     // If some subsystems are not created and this value is true, an exeption
     // will be thrown.
-    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = true;
+    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = false;
 
     public static enum Robot {
       Comp2024,
@@ -196,6 +196,8 @@ public class Constants {
 
     public class TeleopFeature {
       public static final Translation2d FIELD_CENTER = new Translation2d(FIELD_X_LENGTH / 2.0, FIELD_Y_LENGTH / 2.0);
+      public static final Translation2d APPROXIMATE_BLUE_START_POSE = FIELD_CENTER.plus(new Translation2d(0.0, -1.5));
+      public static final Translation2d APPROXIMATE_RED_START_POSE = FIELD_CENTER.plus(new Translation2d(0.0, 1.5));
       public static final Translation2d REEF_BLUE = new Translation2d(4.0259, 4.48945);
       public static final Translation2d REEF_RED = new Translation2d(FIELD_X_LENGTH-4.0259, 4.48945);
       public static final Rotation2d LEFT_CORAL_STATION_ANGLE = Rotation2d.fromDegrees(-45);

@@ -94,14 +94,14 @@ public class OI {
           this::getInstructedXMetersPerSecond,
           this::getInstructedYMetersPerSecond,
           (Supplier<Rotation2d>) () -> 
-            TeleopFeatureUtils.getPointAtReefFaceAngle(drivebase::getEstimatedRobotPose),
+            TeleopFeatureUtils.getPointAtReefFaceAngle(drivebase::getCachedEstimatedRobotPose),
           true);
 
       Command targetCoralStationCommand = drivebase.getSwerveHeadingCorrected(
           this::getInstructedXMetersPerSecond,
           this::getInstructedYMetersPerSecond,
           (Supplier<Rotation2d>) () -> 
-            TeleopFeatureUtils.getPointAtCoralStationAngle(drivebase::getEstimatedRobotPose),
+            TeleopFeatureUtils.getPointAtCoralStationAngle(drivebase::getCachedEstimatedRobotPose),
           true);
 
       new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_REEF_BUTTON)
