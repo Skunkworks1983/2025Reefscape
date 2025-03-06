@@ -343,7 +343,8 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     } else {
       fieldOrientationMultiplier = -1;
     }
-    return runEnd(
+
+    Command command = runEnd(
         () -> {
           drive(
               xMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
@@ -357,7 +358,12 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
             () -> {
               setAllModulesTurnPidActive();
             });
+
+    command.addRequirements(this);
+    
+    return command;
   }
+
   public Phoenix6DrivebaseState getState() {
     return state;
   }
