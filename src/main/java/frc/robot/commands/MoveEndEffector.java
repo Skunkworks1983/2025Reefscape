@@ -12,22 +12,29 @@ import frc.robot.commands.wrist.MoveWristToSetpoint;
 import frc.robot.constants.EndEffectorSetpointConstants;
 
 // Moves wrist and elevator
-public class MoveEndEffectorDown extends SequentialCommandGroup {
+public class MoveEndEffector extends SequentialCommandGroup {
   boolean wristUp;
   boolean elevatorUp;
-  public MoveEndEffectorDown(
+  public MoveEndEffector(
     Elevator elevator,
     Wrist wrist,
-    EndEffectorSetpointConstants setpoint,
-    double stowSetpoint
+    EndEffectorSetpointConstants setpoint
   ) {
     wristUp = false;
+    elevatorUp = false;
     addCommands(
-      new MoveWristToSetpoint(wrist, stowSetpoint).finallyDo(b -> {
+      new MoveWristToSetpoint(wrist, setpoint.stowSetpoint).finallyDo(b -> {
         wristUp = !b;
       }),
       new MoveElevatorToSetpointCommand(elevator, setpoint.elevatorSetpoint).beforeStarting(() -> {
         if(!wristUp) {
+          this.cancel();
+        }
+      }).finallyDo(b -> {
+        elevatorUp = !b;
+      }),
+      new MoveWristToSetpoint(wrist, setpoint.wristSetpoint).beforeStarting(() -> {
+        if(elevatorUp && wristUp) {
           this.cancel();
         }
       })
