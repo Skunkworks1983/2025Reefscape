@@ -356,6 +356,9 @@ public class Constants {
       new EndEffectorSetpointConstants(0.0, 0.0);
     public static final EndEffectorSetpointConstants CORAL_L4 = 
       new EndEffectorSetpointConstants(0.0, 0.0);
+
+    public static final double WRIST_STOW_POSITION_CORAL = 0.0;
+    public static final double WRIST_STOW_POSITION_ALGAE = 0.05;
   };
 
   public class Climber {
