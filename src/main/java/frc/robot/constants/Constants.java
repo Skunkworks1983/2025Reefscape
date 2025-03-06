@@ -4,12 +4,9 @@
 
 package frc.robot.constants;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 
 // TODO: add all robot constant values when they have been decided
@@ -51,7 +48,15 @@ public class Constants {
     // must be constructed and assigned to the correct variable in Robot.java.
     // If some subsystems are not created and this value is true, an exeption
     // will be thrown.
-    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = true;
+    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = false;
+
+    public static enum Robot {
+      Comp2024,
+      Comp2025
+    }
+  
+    // Change this to test on the 2024 robot's drivebase.
+    public static Robot ROBOT = Robot.Comp2024;
 
     public static final double NUMBER_OF_MOTOR_ROTATIONS_FOR_MODULE_TEST = 1.0;
     public static final double TURN_MOTOR_ROTATION_SPEED = 0.15;
@@ -109,8 +114,8 @@ public class Constants {
   }
 
   public class Drivebase {
-    public static final String CANIVORE_NAME = "Evil Canivore";
-    public static final int PIGEON_ID = 22;
+    public static final String CANIVORE_NAME = Testing.ROBOT == Testing.Robot.Comp2025 ? "Evil Canivore" : "1983 Comp Drivebase";
+    public static final int PIGEON_ID = Testing.ROBOT == Testing.Robot.Comp2025 ? 22 : 26;
     public static final double MAX_METERS_PER_SECOND = 4.5;
     public static final double MAX_DEGREES_PER_SECOND = 270;
 
@@ -120,10 +125,16 @@ public class Constants {
       public static int BUTTON_STICK_ID = 2;
     }
 
-    // All modules are at the position (+-MODULE_TO_OFFSET, +-MODULE_TO_OFFSET)
-    private static double MODULE_OFFSET = 0.288925;
+    
 
-    public static SwerveModuleConstants MODULES[] = {
+    // All modules are at the position (+-MODULE_TO_OFFSET, +-MODULE_TO_OFFSET)
+    public static double MODULE_OFFSET = 0.288925;
+    
+    // For 2024 Robot
+    public static final double T_X = 0.925;
+    public static final double T_Y = 0.8041666; 
+
+    public static SwerveModuleConstants MODULES[] = (Testing.ROBOT == Testing.Robot.Comp2025) ? new SwerveModuleConstants[] {
       new SwerveModuleConstants(
         10, 11, 12, -0.337158 + .75, new Translation2d(-MODULE_OFFSET, MODULE_OFFSET), "Back Left"
       ),
@@ -136,10 +147,20 @@ public class Constants {
       new SwerveModuleConstants(
         19, 20, 21, -0.353027 + .75, new Translation2d(MODULE_OFFSET, -MODULE_OFFSET), "Front Right"
       )
+    } :
+    new SwerveModuleConstants[] {
+    	new SwerveModuleConstants(18, 16, 17, 0.311035, new Translation2d(T_X, T_Y),
+    		"Front Left"),
+    	new SwerveModuleConstants(12, 10, 11, -0.415283, new Translation2d(T_X,
+    		-T_Y), "Front Right"),
+    	new SwerveModuleConstants(23, 25, 24, -0.205566, new Translation2d(-T_X,
+    		T_Y), "Back Left"),
+    	new SwerveModuleConstants(20, 22, 21, 0.308838, new Translation2d(-T_X,
+    		-T_Y), "Back Right")
     };
 
     public class Info {
-      public static final double DRIVE_MOTOR_GEAR_RATIO = 6.12;
+      public static final double DRIVE_MOTOR_GEAR_RATIO = Testing.ROBOT == Testing.Robot.Comp2025 ? 6.12 : 6.75;
       public static final double WHEEL_DIAMETER = 0.0991108;
       public static final double REVS_PER_METER = DRIVE_MOTOR_GEAR_RATIO / (WHEEL_DIAMETER * Math.PI);
       public static final double METERS_PER_REV = 1.0 / REVS_PER_METER;
@@ -161,7 +182,7 @@ public class Constants {
       public static final double SWERVE_MODULE_DRIVE_KA = 0.0;
       public static final double SWERVE_MODULE_DRIVE_KS = 0.0;
 
-      public static final double HEADING_CONTROL_kP = 3.00;
+      public static final double HEADING_CONTROL_kP = 2.00;
       public static final double HEADING_CONTROL_kI = 0.0;
       public static final double HEADING_CONTROL_kD = 0.0;
       
@@ -173,61 +194,26 @@ public class Constants {
       public static final boolean SMART_PID_DRIVE_ENABLED = false;
     }
 
-    public class FieldTarget {
+    public class TeleopFeature {
+      public static final Translation2d FIELD_CENTER = new Translation2d(FIELD_X_LENGTH / 2.0, FIELD_Y_LENGTH / 2.0);
+      public static final Translation2d APPROXIMATE_BLUE_START_POSE = FIELD_CENTER.plus(new Translation2d(0.0, -1.5));
+      public static final Translation2d APPROXIMATE_RED_START_POSE = FIELD_CENTER.plus(new Translation2d(0.0, 1.5));
       public static final Translation2d REEF_BLUE = new Translation2d(4.0259, 4.48945);
       public static final Translation2d REEF_RED = new Translation2d(FIELD_X_LENGTH-4.0259, 4.48945);
+      public static final Rotation2d BLUE_LEFT_CORAL_STATION_ANGLE = Rotation2d.fromDegrees(-45);
+      public static final Rotation2d BLUE_RIGHT_CORAL_STATION_ANGLE = Rotation2d.fromDegrees(45);
+      public static final Rotation2d RED_LEFT_CORAL_STATION_ANGLE = Rotation2d.fromDegrees(135);
+      public static final Rotation2d RED_RIGHT_CORAL_STATION_ANGLE = Rotation2d.fromDegrees(-135);
+      public static final double REEF_SMALL_RADIUS = Units.inchesToMeters(93.50 / 2);
+      public static final double BRANCH_LINEUP_HORIZONTAL_OFFSET = 1.0;
+      public static final double BRANCH_LINEUP_DIST_FROM_REEF = 1.0;
+      public static final double MAX_DIST_FROM_REEF_CENTER = 3.0;
     }
 
     public static final double FIELD_X_LENGTH = 17.55; // Meters
     public static final double FIELD_Y_LENGTH = 8.05; // Meters
     public static final double SKEW_PROPORTIONAL = .027;
-  }
-
-  public class VisionConstants {
-
-    public static final String FRONT_CAMERA_NAME = "Camera_0";
-    public static final String SIDE_CAMERA_NAME = "Camera_1";
-
-    private static final Transform3d MOUNT_TO_FRONT_CAMERA = new Transform3d(
-        new Translation3d(
-            Units.inchesToMeters(1.351),
-            Units.inchesToMeters(-1.268),
-            Units.inchesToMeters(-0.81)),
-        new Rotation3d(
-            Units.degreesToRadians(0.0),
-            Units.degreesToRadians(-19.27),
-            Units.degreesToRadians(-15.0)));
-
-    private static final Transform3d MOUNT_TO_SIDE_CAMERA = new Transform3d(
-        new Translation3d(
-            Units.inchesToMeters(-1.050),
-            Units.inchesToMeters(1.365078),
-            Units.inchesToMeters(-0.762394)),
-        new Rotation3d(
-            Units.degreesToRadians(0.0),
-            Units.degreesToRadians(-27.225),
-            Units.degreesToRadians(97.0)));
-
-    private static final Transform3d ROBOT_TO_MOUNT =
-      new Transform3d(
-        new Translation3d( // TODO: check these transformation estimations
-          .305,
-          .305,
-          Units.inchesToMeters(8.25)
-        ),
-        new Rotation3d(
-            0.0,
-            0.0,
-            0.0));
-
-    public static final Transform3d ROBOT_TO_FRONT_CAMERA = ROBOT_TO_MOUNT.plus(MOUNT_TO_FRONT_CAMERA);
-    public static final Transform3d ROBOT_TO_SIDE_CAMERA = ROBOT_TO_MOUNT.plus(MOUNT_TO_SIDE_CAMERA);
-
-    public static final double MAX_AMBIGUITY = 0.3;
-    public static final double LINEAR_STD_DEV_BASELINE = 0.02;
-    public static final double ANGULAR_STD_DEV_BASELINE = 0.06;
-    public static final double MAX_Z_ERROR = 3.0;
-    public static final double MAX_AVERAGE_TAG_DISTANCE = 3.0; // Meters
+    public static final double CURRENT_LIMIT = 100.0;
   }
 
   public class Funnel {
@@ -425,7 +411,8 @@ public class Constants {
         public static final int CLIMBER_GOTO_MAX = 0;
         public static final int CLIMBER_GOTO_MIN = 0;
 
-        public static final int TARGET_REEF_BUTTON = 0;
+        public static final int TARGET_REEF_BUTTON = 1;
+        public static final int TARGET_CORAL_STATION_BUTTON = 2;
 
         public static final int RAISE_FUNNEL_TOGGLE = 0;
 
@@ -439,4 +426,3 @@ public class Constants {
     public static final double updatesPerSecond = 100.0;
   }
 }
-

@@ -31,14 +31,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
-import frc.robot.constants.Constants.VisionConstants;
+import frc.robot.constants.VisionConstants;
+import frc.robot.constants.Constants.Drivebase.TeleopFeature;
 import frc.robot.subsystems.drivebase.odometry.OdometryThread;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.Phoenix6Odometry;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.Phoenix6DrivebaseState;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.Phoenix6SwerveModuleState;
 import frc.robot.subsystems.drivebase.odometry.positionEstimation.PositionEstimator;
 import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.error.DiagnosticSubsystem;
 
@@ -61,6 +61,8 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       .getStructArrayTopic("Desired swervestate", SwerveModuleState.struct).publish();
   private StructArrayPublisher<SwerveModuleState> actualSwervestate = NetworkTableInstance.getDefault()
       .getStructArrayTopic("Actual swervestate", SwerveModuleState.struct).publish();
+
+  private Pose2d cachedEstimatedRobotPose = new Pose2d();
 
   public Drivebase() {
     // Creates a pheonix 6 pro state based on the gyro -- the only sensor owned
@@ -86,6 +88,16 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
         phoenix6Odometry::setReadLock,
         moduleLocations);
 
+    
+    // Reset the heading of the pose estimator to the correct side of the field. 
+    // This ensures that camera heading estimates and swerve drive pose estimator estimates 
+    // are ~ the same, so the robot doesn't spiral off the field.
+    positionEstimator.reset(
+      (DriverStation.getAlliance().isPresent()
+        && DriverStation.getAlliance().get() == Alliance.Red) ? 
+          new Pose2d(TeleopFeature.FIELD_CENTER, Rotation2d.k180deg) : 
+          new Pose2d(TeleopFeature.FIELD_CENTER, new Rotation2d()));
+
     Pigeon2Configuration gyroConfiguration = new Pigeon2Configuration();
     gyroConfiguration.MountPose.MountPoseYaw = 0;
     gyro.getConfigurator().apply(gyroConfiguration);
@@ -93,25 +105,10 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
     odometryThread = new OdometryThread(phoenix6Odometry, positionEstimator);
 
-    Pigeon2Configuration gConfiguration = new Pigeon2Configuration();
-    gConfiguration.MountPose.MountPoseYaw = 0;
-    gyro.getConfigurator().apply(gConfiguration);
-    resetGyroHeading();
-
-    // Ensure robot code won't crash if the vision subsystem fails to initialize.
-    try {
-      new Vision(
-          positionEstimator::addVisionMeasurement,
-          new VisionIOPhotonVision(
-              VisionConstants.FRONT_CAMERA_NAME,
-              VisionConstants.ROBOT_TO_FRONT_CAMERA),
-          new VisionIOPhotonVision(
-              VisionConstants.SIDE_CAMERA_NAME,
-              VisionConstants.ROBOT_TO_SIDE_CAMERA));
-    } catch (Exception exception) {
-      System.out.println("Vision subsystem failed to initialize. See the below stacktrace for more details: ");
-      exception.printStackTrace();
-    }
+    new Vision(
+      positionEstimator::addVisionMeasurement,
+      VisionConstants.SwerveModuleMount.VISION_IO_CONSTANTS
+    );
 
     headingController.enableContinuousInput(0, 360);
     odometryThread.startThread();
@@ -119,15 +116,15 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
   @Override
   public void periodic() {
+    cacheEstimatedRobotPose();
     SmartDashboard.putNumber("Gyro Position", gyro.getYaw().getValueAsDouble());
   }
 
   /**
    * Mitigate the skew resulting from rotating and driving simaltaneously.
-   * 
    * @param speeds The chassis speeds inputs. This function modifies those speeds.
    */
-  public void mitigateSkew(ChassisSpeeds speeds) {
+  private void mitigateSkew(ChassisSpeeds speeds) {
     double cX = speeds.vxMetersPerSecond;
     double cY = speeds.vyMetersPerSecond;
     double cRot = speeds.omegaRadiansPerSecond;
@@ -143,7 +140,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
    * the a desired translation, a desired rotation, and isFieldReletave boolean.
    * This function should be excecuted once every tick for smooth movement.
    */
-  private void drive(double xMetersPerSecond, double yMetersPerSecond,
+  public void drive(double xMetersPerSecond, double yMetersPerSecond,
       double degreesPerSecond, boolean isFieldRelative) {
     ChassisSpeeds chassisSpeeds;
     double radiansPerSecond = Units.degreesToRadians(degreesPerSecond);
@@ -180,6 +177,10 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
   public void resetGyroHeading() {
     gyro.reset();
+    Optional<Alliance> alliance = DriverStation.getAlliance();
+    if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
+      gyro.setYaw(180);
+    }
   }
 
   public void setAllDriveMotorBreakMode(boolean breakMode) {
@@ -215,6 +216,28 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     }
   }
 
+  /** 
+   * Cache the latest estimate of the robot's pose a local variable.
+   * Should only be called in Drivebase periodic, which runs every loop. Doing this so that 
+   * lock and unlock don't get called too frequently on the position estimator.
+   */
+  private void cacheEstimatedRobotPose() {
+    positionEstimator.getReadLock().lock();
+    cachedEstimatedRobotPose = positionEstimator.swerveDrivePoseEstimator.getEstimatedPosition();
+    positionEstimator.getReadLock().unlock();
+  }
+
+  /**
+   * 
+   * @return 
+   *  The latest field-relative robot pose estimated by the position estimator
+   *  (a local variable of the drivebase, updated by {@code cacheEstimatedRobotPose} 
+   *  once per loop in periodic)
+   */
+  public Pose2d getCachedEstimatedRobotPose() {
+    return cachedEstimatedRobotPose;
+  }
+
   @Override
   public Command getErrorCommand(
       ErrorGroup errorGroupHandler) {
@@ -225,25 +248,13 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     return Commands.parallel(swerveModuleCommandArray);
   }
 
-  /**
-   * Bound in OI.
-   * 
-   * @param target the field location to point at.
-   * @return the heading needed for the robot to point at the target.
-   */
-  public Rotation2d getTargetingAngle(Translation2d target) {
-    positionEstimator.getReadLock().lock();
-    Pose2d robotPose = positionEstimator.swerveDrivePoseEstimator.getEstimatedPosition();
-    positionEstimator.getReadLock().unlock();
-    Rotation2d angle = new Rotation2d(target.getX() - robotPose.getX(), target.getY() - robotPose.getY());
-
-    return angle;
+  public static Alliance getAlliance() {
+    Optional<Alliance> alliance = DriverStation.getAlliance();
+    return alliance.isPresent() ? alliance.get() : Alliance.Blue;
   }
 
   /**
-   * @return The swerve drive command to be used in Teleop. Heading is corrected
-   *         with
-   *         PID.
+   * @return The swerve drive command to be used in Teleop. Heading is corrected with PID.
    */
   public Command getSwerveCommand(
       DoubleSupplier getXMetersPerSecond,
@@ -288,7 +299,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   }
 
   /**
-   * Intented to be used for position targeting exclusively.
+   * Intented to be used for targeting features exclusively.
    */
   public Command getSwerveHeadingCorrected(
       DoubleSupplier getXMetersPerSecond,
@@ -337,7 +348,8 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     } else {
       fieldOrientationMultiplier = -1;
     }
-    return runEnd(
+
+    Command command = runEnd(
         () -> {
           drive(
               xMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
@@ -351,6 +363,10 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
             () -> {
               setAllModulesTurnPidActive();
             });
+
+    command.addRequirements(this);
+
+    return command;
   }
 
   public Phoenix6DrivebaseState getState() {

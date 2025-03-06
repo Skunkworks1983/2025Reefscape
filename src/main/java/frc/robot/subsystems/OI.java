@@ -6,7 +6,10 @@ package frc.robot.subsystems;
 
 import java.util.Optional;
 import java.util.function.DoubleFunction;
+import java.util.function.Supplier;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -15,6 +18,7 @@ import frc.robot.constants.Constants.OI.LIMITS;
 import frc.robot.commands.MoveEndEffector;
 import frc.robot.commands.funnel.MoveFunnelToSetpoint;
 import frc.robot.subsystems.drivebase.Drivebase;
+import frc.robot.subsystems.drivebase.TeleopFeatureUtils;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.OI.IDs.Buttons;
 import frc.robot.constants.Constants.OI.IDs.Joysticks;
@@ -83,7 +87,31 @@ public class OI {
           .whileTrue(collector.expelAlgaeCommand(true));
     }
 
-    if (optionalClimber.isPresent()) {
+    if (optionalDrivebase.isPresent()) {
+      Drivebase drivebase = optionalDrivebase.get();
+
+      Command targetCommand = drivebase.getSwerveHeadingCorrected(
+          this::getInstructedXMetersPerSecond,
+          this::getInstructedYMetersPerSecond,
+          (Supplier<Rotation2d>) () -> 
+            TeleopFeatureUtils.getPointAtReefFaceAngle(drivebase::getCachedEstimatedRobotPose),
+          true);
+
+      Command targetCoralStationCommand = drivebase.getSwerveHeadingCorrected(
+          this::getInstructedXMetersPerSecond,
+          this::getInstructedYMetersPerSecond,
+          (Supplier<Rotation2d>) () -> 
+            TeleopFeatureUtils.getPointAtCoralStationAngle(drivebase::getCachedEstimatedRobotPose),
+          true);
+
+      new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_REEF_BUTTON)
+          .whileTrue(targetCommand);
+
+      new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_CORAL_STATION_BUTTON)
+          .whileTrue(targetCoralStationCommand);
+    } 
+
+    if(optionalClimber.isPresent()){
       Climber climber = optionalClimber.get();
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.CLIMBER_GOTO_MAX)
           .onTrue(climber.goToPositionAfterMagnetSensor(Constants.Climber.CLIMBER_MAX));
@@ -167,7 +195,7 @@ public class OI {
     return joystickToMetersPerSecond.apply(
         // X and Y are flipped because the joysticks' coordinate system is different
         // from the field
-        applyDeadband.apply(translationJoystick.getY()));
+        applyDeadband.apply(-translationJoystick.getY()));
   }
 
   public double getInstructedYMetersPerSecond() {
@@ -175,7 +203,7 @@ public class OI {
     return joystickToMetersPerSecond.apply(
         // X and Y are flipped because the joysticks' coordinate system is different
         // from the field
-        applyDeadband.apply(translationJoystick.getX()));
+        applyDeadband.apply(-translationJoystick.getX()));
   }
 
   public double getInstructedDegreesPerSecond() {
