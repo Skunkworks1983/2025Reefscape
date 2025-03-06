@@ -25,7 +25,7 @@ public class TeleopFeatureUtils {
   public static Rotation2d getPointAtReefFaceAngle(Supplier<Pose2d> getRobotPose) {
     double angleDegrees = getTargetingAngle(getReefCenter(), getRobotPose).getDegrees();
     // Using Math.floor() here because Math.round() is unintuitive when the value is in the middle, like .5
-    return Rotation2d.fromDegrees(Math.floor((angleDegrees + 30) / 60) * 60).rotateBy(Rotation2d.k180deg);
+    return Rotation2d.fromDegrees(Math.floor((angleDegrees + 30) / 60) * 60);
   }
 
   /**
@@ -33,11 +33,11 @@ public class TeleopFeatureUtils {
    *  to the side of the field the robot is on.
    */
   public static Rotation2d getPointAtCoralStationAngle(Supplier<Pose2d> getRobotPose) {
-    return getTargetingAngle(
+    return (getTargetingAngle(
       getReefCenter(),
       getRobotPose
     ).getDegrees() > 0 ?  
-      TeleopFeature.LEFT_CORAL_STATION_ANGLE : TeleopFeature.RIGHT_CORAL_STATION_ANGLE;
+      TeleopFeature.LEFT_CORAL_STATION_ANGLE : TeleopFeature.RIGHT_CORAL_STATION_ANGLE).rotateBy(Rotation2d.k180deg);
   }
 
   public static Translation2d getReefCenter() {
