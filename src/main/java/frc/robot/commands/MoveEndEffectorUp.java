@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.commands.elevator.MoveElevatorToSetpointCommand;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
@@ -29,14 +28,14 @@ public class MoveEndEffectorUp extends SequentialCommandGroup {
         wristUp = !b;
       }),
       new MoveElevatorToSetpointCommand(elevator, setpoint.elevatorSetpoint).beforeStarting(() -> {
-        if(wristUp == false) {
+        if(!wristUp) {
           this.cancel();
         }
-      }, new Subsystem[0]).finallyDo(b -> {
+      }).finallyDo(b -> {
         elevatorUp = !b;
       }),
       new MoveWristToSetpoint(wrist, setpoint.wristSetpoint).beforeStarting(() -> {
-        if(elevatorUp == false || wristUp == false) {
+        if(elevatorUp && wristUp) {
           this.cancel();
         }
       })
