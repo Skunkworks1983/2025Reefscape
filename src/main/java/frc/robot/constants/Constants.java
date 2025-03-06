@@ -279,13 +279,13 @@ public class Constants {
 
 
     public class PIDs {
-      public static final double ELEVATOR_kP = 1.1;
+      public static final double ELEVATOR_kP = 1.5;
       public static final double ELEVATOR_kI = 0.1;
       public static final double ELEVATOR_kD = 0.0;
       public static final double ELEVATOR_kF = 0.0;
       public static final double ELEVATOR_kV = 0.0;
       public static final double ELEVATOR_kA = 0.0;
-      public static final double ELEVATOR_kS = 0.225;
+      public static final double ELEVATOR_kS = 0.55;
 
       public static final boolean SMART_PID_ENABLED = true;
     }
@@ -316,8 +316,8 @@ public class Constants {
       public static final boolean WRIST_SMARTPID_ACTIVE = false;
     }
 
-    public static final double WRIST_MAX_VELOCITY = 0.5;
-    public static final double WRIST_MAX_ACCELERATION = 0.5; 
+    public static final double WRIST_MAX_VELOCITY = 1;
+    public static final double WRIST_MAX_ACCELERATION = 2; 
 
     public static final double WRIST_TOLERANCE = 0.01;
 
