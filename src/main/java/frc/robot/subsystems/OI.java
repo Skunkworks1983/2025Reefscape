@@ -14,6 +14,7 @@ import frc.robot.constants.Constants.OI.LIMITS;
 import frc.robot.commands.MoveEndEffector;
 import frc.robot.commands.elevator.MoveElevatorToSetpointCommand;
 import frc.robot.commands.funnel.MoveFunnelToSetpoint;
+import frc.robot.commands.tests.JoystickEndEffectorPosition;
 import frc.robot.commands.wrist.MoveWristToSetpoint;
 import frc.robot.subsystems.drivebase.Drivebase;
 import frc.robot.constants.Constants;
@@ -91,20 +92,28 @@ public class OI {
       Elevator elevator = optionalElevator.get();
       Wrist wrist = optionalWrist.get();
 
-      JoystickButton endEffectorGround = new JoystickButton(buttonJoystick, 23);
-      JoystickButton endEffectorStow = new JoystickButton(buttonJoystick, 22);
+      JoystickButton elevatorTop = new JoystickButton(buttonJoystick, 23);
+      JoystickButton elevatorBottom = new JoystickButton(buttonJoystick, 22);
+      JoystickButton wristUp = new JoystickButton(buttonJoystick, 17);
+      JoystickButton wristDown = new JoystickButton(buttonJoystick, 24);
+
+      JoystickButton endEffectorButton = new JoystickButton(buttonJoystick, 9);
       // JoystickButton endEffectorToScoreLow = new JoystickButton(buttonJoystick, Buttons.GOTO_SCORE_LOW);
       // JoystickButton endEffectorToL2 = new JoystickButton(buttonJoystick, Buttons.GOTO_L2);
       // JoystickButton endEffectorToL3 = new JoystickButton(buttonJoystick, Buttons.GOTO_L3);
       // JoystickButton endEffectorToScoreHigh = new JoystickButton(buttonJoystick, Buttons.GOTO_SCORE_HIGH);
-
-      endEffectorGround.onTrue(new MoveWristToSetpoint(wrist, 0.2));
-      endEffectorStow.onTrue(new MoveWristToSetpoint(wrist, 0.0));
       
       // // Algae mode
       // endEffectorGround.and(algaeToggle).onTrue(
       //   new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_GROUND)
       // );
+
+      elevatorTop.onTrue(new MoveElevatorToSetpointCommand(elevator, 39));
+      elevatorBottom.onTrue(new MoveElevatorToSetpointCommand(elevator, 0.0));
+      wristDown.onTrue(new MoveWristToSetpoint(wrist, 0.1441));
+      wristUp.onTrue(new MoveWristToSetpoint(wrist, 0.0));
+
+      endEffectorButton.whileTrue(new JoystickEndEffectorPosition(wrist, elevator, this::getYrotationStick, this::getYtranslationStick));
 
       // endEffectorStow.and(algaeToggle).onTrue(
       //   new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_STOW)
@@ -177,5 +186,9 @@ public class OI {
 
   public double getYrotationStick() {
     return applyDeadband.apply(-rotationJoystick.getY());
+  }
+
+  public double getYtranslationStick() {
+    return applyDeadband.apply(-translationJoystick.getY());
   }
 }

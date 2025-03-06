@@ -48,8 +48,8 @@ public class JoystickEndEffectorPosition extends Command {
   public void execute() {
     double deltaTime = Timer.getFPGATimestamp() - time;
     time = Timer.getFPGATimestamp();
-    wristPosition += wristPositionChange.getAsDouble() * deltaTime;
-    elevatorPosition += elevatorPositionChange.getAsDouble() * deltaTime;
+    wristPosition += wristPositionChange.getAsDouble() * deltaTime * 1.5;
+    elevatorPosition += elevatorPositionChange.getAsDouble() * deltaTime * 1.5;
 
     positionVoltageElevator.Position = elevatorPosition;
     positionVoltageWrist.Position = wristPosition;
