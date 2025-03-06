@@ -195,6 +195,7 @@ public class Constants {
     }
 
     public class TeleopFeature {
+      public static final Translation2d FIELD_CENTER = new Translation2d(FIELD_X_LENGTH / 2.0, FIELD_Y_LENGTH / 2.0);
       public static final Translation2d REEF_BLUE = new Translation2d(4.0259, 4.48945);
       public static final Translation2d REEF_RED = new Translation2d(FIELD_X_LENGTH-4.0259, 4.48945);
       public static final Rotation2d LEFT_CORAL_STATION_ANGLE = Rotation2d.fromDegrees(-45);
