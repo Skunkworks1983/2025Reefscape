@@ -5,6 +5,7 @@
 package frc.robot.subsystems.drivebase;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -12,6 +13,15 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -21,6 +31,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
@@ -29,9 +40,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.drivebase.DriveToPos;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.Drivebase.TeleopFeature;
 import frc.robot.constants.VisionConstants;
@@ -367,12 +377,64 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     RIGHT
   }
 
+  public void configurePathPlanner() {
+    RobotConfig config = new RobotConfig(
+      Constants.PathPlanner.ROBOT_MASS, 
+      Constants.PathPlanner.MOI, 
+      new ModuleConfig(
+        Constants.Drivebase.Info.WHEEL_DIAMETER / 2, 
+        Constants.Drivebase.Info.MAX_MODULE_SPEED, 
+        1, 
+        DCMotor.getKrakenX60(1).withReduction(Constants.Drivebase.Info.DRIVE_MOTOR_GEAR_RATIO), 
+        Constants.Drivebase.CURRENT_LIMIT,
+        Constants.Drivebase.MODULES.length
+        ),
+      Constants.Drivebase.MODULE_OFFSET
+    );
+
+    positionEstimator.stateLock.readLock().lock();
+
+    AutoBuilder.configure(
+      positionEstimator::getPose,
+      positionEstimator::reset,
+      this::getRobotRelativeSpeeds, 
+      (speeds, feedforwards) -> driveRobotRelative(speeds), 
+      new PPHolonomicDriveController( 
+        new PIDConstants(
+          Constants.PathPlanner.PATHPLANNER_DRIVE_KP, 
+          Constants.PathPlanner.PATHPLANNER_DRIVE_KI, 
+          Constants.PathPlanner.PATHPLANNER_DRIVE_KD),
+        new PIDConstants(
+          Constants.PathPlanner.PATHPLANNER_TURN_KP, 
+          Constants.PathPlanner.PATHPLANNER_TURN_KI, 
+          Constants.PathPlanner.PATHPLANNER_TURN_KD),
+          Constants.PathPlanner.PERIOD
+      ),
+      config,
+      () -> 
+        DriverStation.getAlliance().isPresent() &&
+        DriverStation.getAlliance().get() == DriverStation.Alliance.Red,
+      this
+    );
+
+    positionEstimator.stateLock.readLock().unlock();
+    setAllModulesTurnPidActive();
+  }
+      
+  private void driveRobotRelative(ChassisSpeeds speeds) {
+    drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, false);
+  }
   
   /** 
    * @param branchSide The branch (left or right) of the nearest Reef face that's being aligned to. 
-   *    This command should be bound by two buttons in OI: one for left and one for right.
+   *    This command should be bound by two buttons in OI: one for left and one for right. Returns optional.empty if too far away from the reef.
    */
-  public Command getAutoLineupToReefCommand(BranchSide branchSide) {
+  public void getAutoLineupToReefCommand(BranchSide branchSide, JoystickButton button) {
+
+    if (TeleopFeatureUtils.distToReefCenter(this::getEstimatedRobotPose) > TeleopFeature.MAX_DIST_FROM_REEF_CENTER) {
+      return;
+    }
+
     Rotation2d angle = TeleopFeatureUtils.getPointAtReefFaceAngle(this::getEstimatedRobotPose);
     Pose2d originToReefCenter = new Pose2d(TeleopFeatureUtils.getReefCenter(), angle);
     Transform2d reefCenterToGoalPose =
@@ -385,11 +447,29 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       );
     Pose2d goalPose = originToReefCenter.plus(reefCenterToGoalPose);
 
-    if (TeleopFeatureUtils.distToReefCenter(this::getEstimatedRobotPose) > TeleopFeature.MAX_DIST_FROM_REEF_CENTER) {
-      return new InstantCommand();
-    }
+    Command lineUp = autoDriveToPosAsap(goalPose);
+    lineUp.addRequirements(this);
+    
+  }
 
-    return new DriveToPos(this::getEstimatedRobotPose, goalPose, this::drive);
+  /** Drive to a position using pathplanner, as direct as possible */
+  public Command autoDriveToPosAsap(Pose2d goalPose) {
+    List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+      goalPose
+    );
+
+    PathConstraints constraints = new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI);
+
+    PathPlannerPath path = new PathPlannerPath(
+      waypoints,
+      constraints,
+      null,
+      new GoalEndState(0.0, goalPose.getRotation())
+    );
+
+    path.preventFlipping = true;
+
+    return AutoBuilder.followPath(path);
   }
 
   public Phoenix6DrivebaseState getState() {
