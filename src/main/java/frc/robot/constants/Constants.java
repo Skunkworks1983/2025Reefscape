@@ -407,7 +407,7 @@ public class Constants {
         public static final int CLIMBER_GOTO_MIN = 0;
 
         public static final int TARGET_REEF_BUTTON = 1;
-        public static final int TARGET_CORAL_STATION = 2;
+        public static final int TARGET_CORAL_STATION_BUTTON = 2;
 
         public static final int RAISE_FUNNEL_TOGGLE = 0;
 
