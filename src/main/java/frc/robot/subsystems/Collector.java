@@ -5,14 +5,14 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.CurrentLimits;
@@ -21,97 +21,126 @@ import frc.robot.utils.PIDControllers.SmartPIDControllerTalonFX;
 
 public class Collector extends SubsystemBase {
 
-  private TalonFX rightMotor; 
-  private TalonFX leftMotor; 
+  private TalonFX rightMotor;
+  private TalonFX leftMotor;
 
   private final VelocityVoltage velocityVoltage = new VelocityVoltage(0);
   private double lastRightSpeed;
   private double lastLeftSpeed;
 
   // Neither of these smart PIDs are 'used' after they are constructed because the
-  // PID controller is built into the motor (we don't have to call .calculate like we
+  // PID controller is built into the motor (we don't have to call .calculate like
+  // we
   // do with the PIDController class).
   @SuppressWarnings("unused")
   private SmartPIDControllerTalonFX rightMotorController;
   @SuppressWarnings("unused")
   private SmartPIDControllerTalonFX leftMotorController;
 
-  private double getLeftMotorVelocity() {
-    return leftMotor.getVelocity().getValueAsDouble();
-  }
-  private double getRightMotorVelocity() {
-    return rightMotor.getVelocity().getValueAsDouble();
-  }
-
   private DigitalInput beambreak;
+
+  double collectorRightSetpoint;
+  double collectorLeftSetPoint;
+  private PositionVoltage positionVoltage = new PositionVoltage(0);
 
   /** Creates a new Collector. */
   public Collector() {
-   rightMotor = new TalonFX(Constants.Collector.RIGHT_MOTOR);
-   leftMotor = new TalonFX(Constants.Collector.LEFT_MOTOR);
+   rightMotor = new TalonFX(Constants.Collector.IDs.RIGHT_MOTOR, "Collector 2025");
+   leftMotor = new TalonFX(Constants.Collector.IDs.LEFT_MOTOR, "Collector 2025");
 
-   leftMotor.setInverted(true);
-   
-    
+    setDefaultCommand(holdPositionCommand());
+
     TalonFXConfiguration talonConfigCollectorMotor = new TalonFXConfiguration();
     talonConfigCollectorMotor.CurrentLimits = CurrentLimits.KRAKEN_CURRENT_LIMIT_CONFIG;
 
-
     talonConfigCollectorMotor.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    rightMotor.getConfigurator().apply(talonConfigCollectorMotor);
+    talonConfigCollectorMotor.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    leftMotor.getConfigurator().apply(talonConfigCollectorMotor);
 
-   rightMotor.getConfigurator().apply(talonConfigCollectorMotor);
-   leftMotor.getConfigurator().apply(talonConfigCollectorMotor);
+    //Dual Pids with two slots, one for velocity and one for position
+    rightMotorController = new SmartPIDControllerTalonFX(Constants.Collector.VelocityControlMode.KP, //VELOCITY
+        Constants.Collector.VelocityControlMode.KI, Constants.Collector.VelocityControlMode.KD,
+        Constants.Collector.VelocityControlMode.KF, Constants.Collector.VelocityControlMode.KV,
+        Constants.Collector.VelocityControlMode.KA, Constants.Collector.VelocityControlMode.KS,
+        "right motor",
+        Constants.Collector.SMART_PID_ENABLED, rightMotor);
+    rightMotorController.AddSlot1Configs(Constants.Collector.PositionControlMode.KP, //POSITION
+        Constants.Collector.PositionControlMode.KI, Constants.Collector.PositionControlMode.KD,
+        Constants.Collector.PositionControlMode.KF, Constants.Collector.PositionControlMode.KV,
+        Constants.Collector.PositionControlMode.KA, Constants.Collector.PositionControlMode.KS);
 
-   rightMotorController = new SmartPIDControllerTalonFX(Constants.Collector.PIDs.KP,
-        Constants.Collector.PIDs.KI, Constants.Collector.PIDs.KD,
-        Constants.Collector.PIDs.KF, Constants.Collector.PIDs.KV,
-        Constants.Collector.PIDs.KA, Constants.Collector.PIDs.KS,
-         "right motor",
-        Constants.Collector.PIDs.SMART_PID_ENABLED, rightMotor);
-
-    leftMotorController = new SmartPIDControllerTalonFX(Constants.Collector.PIDs.KP,
-        Constants.Collector.PIDs.KI, Constants.Collector.PIDs.KD,
-        Constants.Collector.PIDs.KF, Constants.Collector.PIDs.KV,
-        Constants.Collector.PIDs.KA, Constants.Collector.PIDs.KS,
+    leftMotorController = new SmartPIDControllerTalonFX(Constants.Collector.VelocityControlMode.KP, //VELOCITY
+        Constants.Collector.VelocityControlMode.KI,
+        Constants.Collector.VelocityControlMode.KD,
+        Constants.Collector.VelocityControlMode.KF, Constants.Collector.VelocityControlMode.KV,
+        Constants.Collector.VelocityControlMode.KA, Constants.Collector.VelocityControlMode.KS,
         "left motor",
-        Constants.Collector.PIDs.SMART_PID_ENABLED, leftMotor);
+        Constants.Collector.SMART_PID_ENABLED, leftMotor);
     
-        beambreak = new DigitalInput(Constants.Collector.DIGITAL_INPUT_CHANNEL);
+        beambreak = new DigitalInput(Constants.Collector.IDs.DIGITAL_INPUT_CHANNEL);
   }
 
-  // meters per sec 
-  private void setCollectorSpeeds(double rightSpeed, double leftSpeed){
+  // meters per sec
+  private void setCollectorSpeeds(double rightSpeed, double leftSpeed) {
     if (rightSpeed != lastRightSpeed) {
       rightMotor.setControl(velocityVoltage
-          .withVelocity(rightSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER).withEnableFOC(true));
-      ConditionalSmartDashboard.putNumber("Collector/ Right speed", rightSpeed);
+          .withVelocity(rightSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER).withEnableFOC(true)
+          .withSlot(0));
+      ConditionalSmartDashboard.putNumber("Collector/Right speed", rightSpeed);
     }
     lastRightSpeed = rightSpeed;
 
     if (leftSpeed != lastLeftSpeed) {
       leftMotor.setControl(velocityVoltage
-          .withVelocity(leftSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER).withEnableFOC(true));
-      ConditionalSmartDashboard.putNumber("Collector/ Left speed", leftSpeed);
+          .withVelocity(leftSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER).withEnableFOC(true).withSlot(0));
+      ConditionalSmartDashboard.putNumber("Collector/Left speed", leftSpeed);
     }
     lastLeftSpeed = leftSpeed;
   }
+
   @Override
   public void periodic() {
     leftMotorController.updatePID();
     rightMotorController.updatePID();
-    
-    ConditionalSmartDashboard.putNumber("Collector/ Right motor current", rightMotor.getSupplyCurrent().getValueAsDouble());
-    ConditionalSmartDashboard.putNumber("Collector/ Left motor current", leftMotor.getSupplyCurrent().getValueAsDouble());
-    ConditionalSmartDashboard.putBoolean("Collector/ Beambreak collector", !beambreak.get());
+
+    ConditionalSmartDashboard.putNumber("Collector/Right motor current",
+        rightMotor.getSupplyCurrent().getValueAsDouble());
+    ConditionalSmartDashboard.putNumber("Collector/Left motor current",
+        leftMotor.getSupplyCurrent().getValueAsDouble());
+    ConditionalSmartDashboard.putBoolean("Collector/Beambreak collector", !beambreak.get());
   }
-  
+
+  public double getLeftMotorVelocity() {
+    return leftMotor.getVelocity().getValueAsDouble();
+  }
+
+  public double getRightMotorVelocity() {
+    return rightMotor.getVelocity().getValueAsDouble();
+  }
+
+  public double getRightMotorPosition() {
+    return rightMotor.getPosition().getValueAsDouble();
+  }
+
+  public double getLeftMotorPosition() {
+    return leftMotor.getPosition().getValueAsDouble();
+  }
+
+  public void setCollectorSetPoint(double newRightSetpoint, double newLeftSetpoint) {
+    rightMotor.setControl(
+        positionVoltage.withPosition(newRightSetpoint).withSlot(1));
+    leftMotor.setControl(
+        positionVoltage.withPosition(newLeftSetpoint).withSlot(1));
+  }
+
   public Command rotateCoralCommand() {
     return runEnd(
       () -> {
-        setCollectorSpeeds(Constants.Collector.CORAL_INTAKE_SLOW_SPEED, 
-        Constants.Collector.CORAL_INTAKE_FAST_SPEED);
-        ConditionalSmartDashboard.putNumber("Collector/ right collector current speed", getRightMotorVelocity());
-        ConditionalSmartDashboard.putNumber("Collector/ left collector current speed", getLeftMotorVelocity());
+        setCollectorSpeeds(Constants.Collector.Speeds.CORAL_INTAKE_SLOW_SPEED, 
+        Constants.Collector.Speeds.CORAL_INTAKE_FAST_SPEED);
+        ConditionalSmartDashboard.putNumber("Collector/Right collector current speed", getRightMotorVelocity());
+        ConditionalSmartDashboard.putNumber("Collector/Left collector current speed", getLeftMotorVelocity());
       }, 
       () -> {
         setCollectorSpeeds(0, 0);
@@ -119,17 +148,17 @@ public class Collector extends SubsystemBase {
     );
   }
 
-  int endCount [] = {0}; // This value needs to be effectivly final 
 
   // Rrue if you want it to stop the motor when the command ends
   // it should almost always be true unless there will be a following command right after that will end it
   public Command intakeCoralCommand(
     boolean stopOnEnd
   ) {
+    int endCount [] = {0}; // This value needs to be effectivly final 
     return runEnd(
       () -> {
-        setCollectorSpeeds(Constants.Collector.CORAL_INTAKE_FAST_SPEED, 
-          Constants.Collector.CORAL_INTAKE_FAST_SPEED * Constants.Collector.SPEED_MULIPILER_LEFT);
+        setCollectorSpeeds(Constants.Collector.Speeds.CORAL_INTAKE_SLOW_SPEED, 
+          Constants.Collector.Speeds.CORAL_INTAKE_SLOW_SPEED * Constants.Collector.Speeds.SPEED_MULIPILER_LEFT);
       },
       () -> {
         if(stopOnEnd) {
@@ -138,12 +167,9 @@ public class Collector extends SubsystemBase {
       }
     ).until(
       () -> {
-        ConditionalSmartDashboard.putNumber("Collector/ amp cut off right", rightMotor.getSupplyCurrent().getValueAsDouble());
-        ConditionalSmartDashboard.putNumber("Collector/ amp cut off left", leftMotor.getSupplyCurrent().getValueAsDouble());
-        if (rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF ||
-            leftMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF ||
-            rightMotor.getSupplyCurrent().getValueAsDouble() < 0 ||
-            leftMotor.getSupplyCurrent().getValueAsDouble() < 0) 
+        ConditionalSmartDashboard.putNumber("Collector/Amp cut off right", rightMotor.getSupplyCurrent().getValueAsDouble());
+        ConditionalSmartDashboard.putNumber("Collector/Amp cut off left", leftMotor.getSupplyCurrent().getValueAsDouble());
+        if (!beambreak.get()) 
         {
           endCount[0]++;
         }
@@ -151,83 +177,17 @@ public class Collector extends SubsystemBase {
         {
           endCount[0] = 0;
         }
-        return endCount[0] >= Constants.Collector.END_COUNT_TICK_COUNTER;
+        return endCount[0] >= 2;
       }
     );
   }
 
-  public Command scoreCoralCommand() {
-    return runEnd(
-      () -> {
-        setCollectorSpeeds(Constants.Collector.CORAL_INTAKE_FAST_SPEED, 
-          Constants.Collector.CORAL_INTAKE_FAST_SPEED);
-      },
-      () -> {
-        setCollectorSpeeds(0, 0);
-      }
-    ).until(
-      () -> {
-        if (rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF &&
-        leftMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF) 
-        {
-          endCount[0]++;
-        }
-        else
-        {
-          endCount[0] = 0;
-        }
-        return endCount[0] > Constants.Collector.END_COUNT_TICK_COUNTER;
-      }
-    );
-  }
-
-  public Command waitAfterCatchPieceCommand() {
-    return Commands.sequence(
-      intakeCoralCommand(false),
-      Commands.race(
-        scoreCoralCommand(),
-        Commands.waitSeconds(Constants.Collector.SECONDS_BEFORE_CUTTOF)
-      )
-    );
-  }
-
-  public Command rotateThenIntakeCommand() {
-    //if the coral is in werid this will turn it then intake it to where its ment to be so it can be scored
-    return Commands.runEnd(
-      () -> {
-        if(!beambreak.get()) {
-          setCollectorSpeeds(Constants.Collector.CORAL_INTAKE_FAST_SPEED, 
-          Constants.Collector.CORAL_INTAKE_FAST_SPEED);
-        }
-        else {
-          setCollectorSpeeds(Constants.Collector.CORAL_INTAKE_FAST_SPEED, 
-          Constants.Collector.CORAL_INTAKE_FAST_SPEED);
-        }
-      },
-      () -> {
-        setCollectorSpeeds(0.0, 0.0);
-      }
-    ).until(
-      () -> {
-        if (rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF &&
-        leftMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF) 
-        {
-          endCount[0]++;
-        }
-        else
-        {
-          endCount[0] = 0;
-        }
-        return endCount[0] > Constants.Collector.END_COUNT_TICK_COUNTER;
-      }
-    );
-  }
-  public Command expelCoral(boolean stopOnEnd)
+  public Command expelCoralCommand(boolean stopOnEnd)
   {
     return runEnd(
       () -> {
-        setCollectorSpeeds(Constants.Collector.COLLECTOR_REVERSE, 
-          Constants.Collector.COLLECTOR_REVERSE);
+        setCollectorSpeeds(Constants.Collector.Speeds.CORAL_EXPEL_SLOW_SPEED, 
+          Constants.Collector.Speeds.CORAL_EXPEL_SLOW_SPEED);
       },
       () -> {
         if(stopOnEnd) {
@@ -237,13 +197,25 @@ public class Collector extends SubsystemBase {
     );
 
   }
+
+  public Command holdPositionCommand(){
+    return startEnd(
+      () -> {
+        setCollectorSetPoint(getRightMotorPosition(), getLeftMotorPosition());
+      }, () -> {
+
+      }
+    );
+  }
+
   public Command intakeAlgaeCommand(
     boolean stopOnEnd
   ) {
+    int endCount [] = {0}; // This value needs to be effectivly final 
     return runEnd(
       () -> {
-        setCollectorSpeeds(Constants.Collector.ALGAE_INTAKE, 
-          Constants.Collector.ALGAE_INTAKE);
+        setCollectorSpeeds(Constants.Collector.Speeds.ALGAE_INTAKE_SPEED, 
+          Constants.Collector.Speeds.ALGAE_INTAKE_SPEED);
       },
       () -> {
         if(stopOnEnd) {
@@ -267,12 +239,11 @@ public class Collector extends SubsystemBase {
   }
 
   public Command expelAlgaeCommand(
-    boolean stopOnEnd
-  ) {
+      boolean stopOnEnd) {
     return runEnd(
       () -> {
-        setCollectorSpeeds(Constants.Collector.ALGAE_EXPEL, 
-          Constants.Collector.ALGAE_EXPEL);
+        setCollectorSpeeds(Constants.Collector.Speeds.ALGAE_EXPEL_SPEED, 
+          Constants.Collector.Speeds.ALGAE_EXPEL_SPEED);
       },
       () -> {
         if(stopOnEnd) {
@@ -281,5 +252,5 @@ public class Collector extends SubsystemBase {
       }
     );
   }
-  
+
 }

@@ -10,6 +10,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Wrist;
@@ -46,8 +47,8 @@ public class MoveWristToSetpoint extends Command {
     timePassed.reset(); 
     timePassed.start();
 
-    double circlePortion = setPoint / 360.0;
-    double newSetPoint = circlePortion * Constants.Wrist.WRIST_GEAR_RATIO;
+    double newSetPoint = setPoint;
+    
 
     goal = new TrapezoidProfile.State(newSetPoint,0);
     positionVoltage = new PositionVoltage(0);
@@ -57,17 +58,16 @@ public class MoveWristToSetpoint extends Command {
   @Override
   public void execute() {
     State positionGoal = profile.calculate(timePassed.get(), startPosition, goal);
-    positionVoltage.Position = positionGoal.position;
-    positionVoltage.Velocity = positionGoal.velocity;
+    positionVoltage.Position = positionGoal.position * Constants.Wrist.WRIST_GEAR_RATIO;
+    //positionVoltage.Velocity = positionGoal.velocity;
     wrist.setWristMotorControl(positionVoltage);
 
-    ConditionalSmartDashboard.putNumber("Wrist position goal (motor rotations)", positionGoal.position);
-    ConditionalSmartDashboard.putNumber("Wrist velocity goal (motor rotations per second)", positionGoal.velocity);
+    SmartDashboard.putNumber("Wrist position goal (motor rotations)", positionGoal.position);
+    SmartDashboard.putNumber("Wrist velocity goal (motor rotations per second)", positionGoal.velocity);
   }
   
   @Override
   public void end(boolean interrupted) {
-    wrist.setWristMotorSpeed(0);
     DataLogManager.log("MoveWristToSetpoint command ended");
   }
   

@@ -22,6 +22,7 @@ import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.error.DiagnosticSubsystem;
 import frc.robot.commands.MoveEndEffector;
 import frc.robot.commands.funnel.MoveFunnelToSetpoint;
+import frc.robot.commands.tests.JoystickElevatorVelocity;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.drivebase.Drivebase;
@@ -31,10 +32,12 @@ public class Robot extends TimedRobot {
   // replace subsystem with Optional.empty() when you do not wish to use add all
   // subsystems. ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
 
-  Optional<Drivebase> drivebase = Optional.of(new Drivebase());
+  Optional<Drivebase> drivebase = Optional.empty();
   Optional<Elevator> elevator = Optional.of(new Elevator());
   Optional<Collector> collector = Optional.of(new Collector());
   Optional<Wrist> wrist = Optional.of(new Wrist());
+  Optional<Climber> climber = Optional.empty();
+  Optional<Funnel> funnel = Optional.empty();
   Optional<Climber> climber = Optional.of(new Climber());
   Optional<Funnel> funnel = Optional.of(new Funnel());
 
@@ -165,14 +168,15 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() { 
-    if(drivebase.isPresent()) {
-      drivebase.get().getSwerveCommand(
-        oi::getInstructedXMetersPerSecond,
-        oi::getInstructedYMetersPerSecond,
-        oi::getInstructedDegreesPerSecond,
-        true
-      ).schedule();
-    }
+    // if(drivebase.isPresent()) {
+    //   drivebase.get().getSwerveCommand(
+    //     oi::getInstructedXMetersPerSecond,
+    //     oi::getInstructedYMetersPerSecond,
+    //     oi::getInstructedDegreesPerSecond,
+    //     true
+    //   ).schedule();
+    // }
+    new JoystickElevatorVelocity(elevator.get(), oi::getYrotationStick).schedule();
   }
   
   @Override
