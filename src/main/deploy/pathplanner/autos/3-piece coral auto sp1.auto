@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "SP3 to face 2"
+                  "pathName": "SP 1 to Face 5"
                 }
               },
               {
@@ -55,7 +55,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "face 2 to coral station"
+                  "pathName": "face 5 to top coral station "
                 }
               },
               {
@@ -99,13 +99,101 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "coral station to face 3"
+                  "pathName": "Top coral station to face 5 (rename)"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Coral to L3"
+                  "name": "Coral to L2"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 3.0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Expel Coral"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 2.0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "face 5 to top coral station "
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Coral to L1"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 3.0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Expel Coral"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 2.0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Top coral station to face 5 (rename)"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Coral to L1"
                 }
               },
               {
@@ -140,6 +228,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "2 piece autos",
+  "folder": null,
   "choreoAuto": false
 }

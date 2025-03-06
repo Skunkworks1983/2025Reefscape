@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.404,
-        "y": 7.213
+        "x": 7.12725000000302,
+        "y": 7.262000000002046
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.369253279927208,
-        "y": 6.482004331004782
+        "x": 5.362762947868776,
+        "y": 6.413327341299784
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.79275,
-        "y": 5.49725
+        "x": 3.861,
+        "y": 5.546
       },
       "prevControl": {
-        "x": 2.9542488192589764,
-        "y": 6.121248413376116
+        "x": 5.216230174761734,
+        "y": 6.216485109916045
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -58.78159723565369
+    "rotation": -62.87869659584148
   },
   "reversed": false,
-  "folder": "2- piece coral auto sp1",
+  "folder": "3-piece coral auto sp1",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -53.80992890500997
+    "rotation": -63.434948822922074
   },
   "useDefaultConstraints": true
 }

@@ -4,13 +4,15 @@
   "holonomicMode": true,
   "pathFolders": [
     "2 - piece coral auto sp 3",
-    "2- piece coral auto sp1",
     "2 piece coral auto sp2",
+    "2- piece coral auto sp1",
+    "3-piece coral auto sp1",
     "drive out paths"
   ],
   "autoFolders": [
+    "2 piece autos",
     "Drive Out Autos",
-    "2 piece autos"
+    "1 piece autos"
   ],
   "defaultMaxVel": 5.0,
   "defaultMaxAccel": 5.0,

@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.6245,
-        "y": 7.38875
+        "x": 7.432377049180327,
+        "y": 0.8542520491803282
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.7665,
-        "y": 6.66725
+        "x": 6.526440233252739,
+        "y": 1.624894703506293
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.440499999999999,
-        "y": 5.312
+        "x": 5.346516393442624,
+        "y": 2.6404200819672123
       },
       "prevControl": {
-        "x": 6.15225,
-        "y": 6.0335
+        "x": 5.8911738530464035,
+        "y": 2.206693005332313
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -121.60750224624873
+    "rotation": 120.06858282186253
   },
   "reversed": false,
-  "folder": "2- piece coral auto sp1",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -125.27242144859848
+    "rotation": 123.3106308245608
   },
   "useDefaultConstraints": true
 }
