@@ -76,7 +76,7 @@ public class Constants {
     // must be constructed and assigned to the correct variable in Robot.java.
     // If some subsystems are not created and this value is true, an exeption
     // will be thrown.
-    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = false;
+    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = true;
 
     public static enum Robot {
       Comp2024,
