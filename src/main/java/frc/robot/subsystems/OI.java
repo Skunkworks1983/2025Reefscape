@@ -106,14 +106,14 @@ public class OI {
             TeleopFeatureUtils.getPointAtCoralStationAngle(drivebase::getCachedEstimatedRobotPose),
           true);
 
-      Command AlineCoralRightCommand = drivebase.getSwerveAlineCoral(
+      Command AlineCoralRightCommand = drivebase.getSwerveAlignCoral(
           this::getInstructedXMetersPerSecond,
           this::getInstructedYMetersPerSecond,
           -alignSpeed,
           true
       );
 
-      Command AlineCoralLeftCommand = drivebase.getSwerveAlineCoral(
+      Command AlineCoralLeftCommand = drivebase.getSwerveAlignCoral(
           this::getInstructedXMetersPerSecond,
           this::getInstructedYMetersPerSecond,
           alignSpeed,

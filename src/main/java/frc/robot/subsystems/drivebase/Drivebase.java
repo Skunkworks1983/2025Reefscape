@@ -301,7 +301,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
         .repeatedly();
   }
 
-  public Command getSwerveAlineCoral(
+  public Command getSwerveAlignCoral(
       DoubleSupplier getXMetersPerSecond,
       DoubleSupplier getYMetersPerSecond,
       double alignSpeed,
