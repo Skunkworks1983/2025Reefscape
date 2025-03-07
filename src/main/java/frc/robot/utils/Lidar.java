@@ -35,7 +35,7 @@ public class Lidar {
 
   public double getDistance() {
     double currentTime = Timer.getFPGATimestamp();
-    if(currentTime - lastTime < 0.01) {
+    if(currentTime - lastTime < 0.02) {
       return dist;
     }
     lastTime = currentTime;
