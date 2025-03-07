@@ -95,19 +95,23 @@ public class OI {
 
       double alignSpeed = 3;
 
-      Command targetCommand = drivebase.getSwerveHeadingCorrected(
+      Command targetReefCommand = 
+        drivebase.getSwerveHeadingCorrected(
           this::getInstructedXMetersPerSecond,
           this::getInstructedYMetersPerSecond,
           (Supplier<Rotation2d>) () -> 
-            TeleopFeatureUtils.getPointAtReefFaceAngle(drivebase::getCachedEstimatedRobotPose),
-          true);
+            TeleopFeatureUtils.getPointAtReefFaceAngle(drivebase.getCachedEstimatedRobotPose()),
+          true
+        );
 
-      Command targetCoralStationCommand = drivebase.getSwerveHeadingCorrected(
+      Command targetCoralStationCommand = 
+        drivebase.getSwerveHeadingCorrected(
           this::getInstructedXMetersPerSecond,
           this::getInstructedYMetersPerSecond,
           (Supplier<Rotation2d>) () -> 
-            TeleopFeatureUtils.getPointAtCoralStationAngle(drivebase::getCachedEstimatedRobotPose),
-          true);
+            TeleopFeatureUtils.getPointAtCoralStationAngle(drivebase.getCachedEstimatedRobotPose()),
+          true
+        );
 
       Command AlignCoralRightCommand = drivebase.getSwerveAlignCoral(
           this::getInstructedXMetersPerSecond,
@@ -124,7 +128,7 @@ public class OI {
       );
 
       new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_REEF_BUTTON)
-          .whileTrue(targetCommand);
+          .whileTrue(targetReefCommand);
 
       new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_CORAL_STATION_BUTTON)
           .whileTrue(targetCoralStationCommand);
@@ -134,7 +138,23 @@ public class OI {
 
       new JoystickButton(translationJoystick, 4)
           .whileTrue(AlignCoralRightCommand);
-    } 
+    }
+
+    if(optionalDrivebase.isPresent()) {
+      // Collector collector = optionalCollector.get();
+      Drivebase drivebase = optionalDrivebase.get();
+      Command targetCoralCycleAngleNoOdometry = 
+        drivebase.getSwerveHeadingCorrected(
+          this::getInstructedXMetersPerSecond,
+          this::getInstructedYMetersPerSecond,
+          (Supplier<Rotation2d>) () -> 
+            TeleopFeatureUtils.getCoralCycleAngleNoOdometry(false, drivebase.getCachedGyroHeading()),
+          true
+        );
+
+      new JoystickButton(rotationJoystick, Buttons.TARGET_CORAL_CYCLE_NO_ODOMETRY_BUTTON)
+        .whileTrue(targetCoralCycleAngleNoOdometry);
+    }
 
     if(optionalClimber.isPresent()){
       Climber climber = optionalClimber.get();

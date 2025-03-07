@@ -66,6 +66,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       .getStructArrayTopic("Actual swervestate", SwerveModuleState.struct).publish();
 
   private Pose2d cachedEstimatedRobotPose = new Pose2d();
+  private Rotation2d cachedGyroHeading = new Rotation2d();
 
   public Drivebase() {
     // Creates a pheonix 6 pro state based on the gyro -- the only sensor owned
@@ -120,6 +121,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   @Override
   public void periodic() {
     cacheEstimatedRobotPose();
+    cacheGyroHeading();
     SmartDashboard.putNumber("Gyro Position", gyro.getYaw().getValueAsDouble());
     SmartDashboard.putBoolean("Lidar Left", lidarLeft.isTripped());
     SmartDashboard.putBoolean("Lidar Right", lidarRight.isTripped());
@@ -150,13 +152,12 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     ChassisSpeeds chassisSpeeds;
     double radiansPerSecond = Units.degreesToRadians(degreesPerSecond);
     if (isFieldRelative) {
-      state.getReadLock().lock();
       chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
           xMetersPerSecond,
           yMetersPerSecond,
           radiansPerSecond,
-          state.getGyroAngle());
-      state.getReadLock().unlock();
+          getCachedGyroHeading()
+        );
     } else {
       chassisSpeeds = new ChassisSpeeds(xMetersPerSecond, yMetersPerSecond, radiansPerSecond);
     }
@@ -232,6 +233,12 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     positionEstimator.getReadLock().unlock();
   }
 
+  private void cacheGyroHeading() {
+    phoenix6Odometry.setReadLock(true);
+    cachedGyroHeading = state.getGyroAngle();
+    phoenix6Odometry.setReadLock(false);
+  }
+
   /**
    * 
    * @return 
@@ -241,6 +248,10 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
    */
   public Pose2d getCachedEstimatedRobotPose() {
     return cachedEstimatedRobotPose;
+  }
+
+  public Rotation2d getCachedGyroHeading() {
+    return cachedGyroHeading;
   }
 
   @Override
@@ -292,9 +303,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
             (Supplier<Rotation2d>) () -> lastRecordedHeading[0],
             true).beforeStarting(
                 () -> {
-                  phoenix6Odometry.setReadLock(true);
-                  lastRecordedHeading[0] = state.getGyroAngle();
-                  phoenix6Odometry.setReadLock(false);
+                  lastRecordedHeading[0] = getCachedGyroHeading();
                 }
             )
             .until(
@@ -319,7 +328,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
             true
     ).beforeStarting(
       () -> {
-        targetHeading[0] = TeleopFeatureUtils.getPointAtReefFaceAngle(this::getCachedEstimatedRobotPose);
+        targetHeading[0] = TeleopFeatureUtils.getCoralCycleAngleNoOdometry(true, cachedGyroHeading);
       }
     ).until(
       () -> {
@@ -348,12 +357,10 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
         getYMetersPerSecond,
         (DoubleSupplier) () -> {
 
-          phoenix6Odometry.setReadLock(true);
           double rotSpeed = headingController.calculate(
-            state.getGyroAngle().getDegrees(),
+            getCachedGyroHeading().getDegrees(),
             getDesiredHeading.get().getDegrees()
           );
-          phoenix6Odometry.setReadLock(false);
 
           return rotSpeed;
         },
