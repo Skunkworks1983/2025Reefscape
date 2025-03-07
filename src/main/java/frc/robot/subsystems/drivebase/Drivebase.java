@@ -40,6 +40,7 @@ import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.P
 import frc.robot.subsystems.drivebase.odometry.positionEstimation.PositionEstimator;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.utils.error.ErrorGroup;
+import frc.robot.utils.Lidar;
 import frc.robot.utils.error.DiagnosticSubsystem;
 
 public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
@@ -57,6 +58,8 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       Constants.Drivebase.PIDs.HEADING_CONTROL_kD);
 
   private Pigeon2 gyro = new Pigeon2(Constants.Drivebase.PIGEON_ID, Constants.Drivebase.CANIVORE_NAME);
+  private Lidar lidarRight = new Lidar(Constants.Drivebase.LIDAR_RIGHT_DATA_PORT, Constants.Drivebase.LIDAR_RIGHT_TRIGGER_PORT, Constants.Drivebase.LIDAR_TRIGGER_DISTANCE);
+  private Lidar lidarLeft = new Lidar(Constants.Drivebase.LIDAR_LEFT_DATA_PORT, Constants.Drivebase.LIDAR_LEFT_TRIGGER_PORT, Constants.Drivebase.LIDAR_TRIGGER_DISTANCE);
   private StructArrayPublisher<SwerveModuleState> desiredSwervestate = NetworkTableInstance.getDefault()
       .getStructArrayTopic("Desired swervestate", SwerveModuleState.struct).publish();
   private StructArrayPublisher<SwerveModuleState> actualSwervestate = NetworkTableInstance.getDefault()
@@ -107,7 +110,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
     new Vision(
       positionEstimator::addVisionMeasurement,
-      VisionConstants.SwerveModuleMount.VISION_IO_CONSTANTS
+      VisionConstants.Comp2025Mount.VISION_IO_CONSTANTS
     );
 
     headingController.enableContinuousInput(0, 360);
@@ -118,6 +121,8 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   public void periodic() {
     cacheEstimatedRobotPose();
     SmartDashboard.putNumber("Gyro Position", gyro.getYaw().getValueAsDouble());
+    SmartDashboard.putBoolean("Lidar Left", lidarLeft.isTripped());
+    SmartDashboard.putBoolean("Lidar Right", lidarRight.isTripped());
   }
 
   /**
@@ -296,6 +301,37 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
                 (BooleanSupplier) () -> Math.abs(getOmegaDegreesPerSecond.getAsDouble()) > 0.0)
         )
         .repeatedly();
+  }
+
+  public Command getSwerveAlignCoral(
+      DoubleSupplier getXMetersPerSecond,
+      DoubleSupplier getYMetersPerSecond,
+      double alignSpeed,
+      boolean goingRight) {
+
+    double newAlignSpeed = alignSpeed * (goingRight ? -1 : 1);
+    Rotation2d[] targetHeading = new Rotation2d[0];
+
+    return getSwerveHeadingCorrected(
+            () -> {return (getXMetersPerSecond.getAsDouble() * 0.5) + TeleopFeatureUtils.getReefFaceSpeedX(targetHeading[0], newAlignSpeed);},
+            () -> {return (getYMetersPerSecond.getAsDouble() * 0.5) + TeleopFeatureUtils.getReefFaceSpeedY(targetHeading[0], newAlignSpeed);},
+            () -> targetHeading[0],
+            true
+    ).beforeStarting(
+      () -> {
+        targetHeading[0] = TeleopFeatureUtils.getPointAtReefFaceAngle(this::getCachedEstimatedRobotPose);
+      }
+    ).until(
+      () -> {
+        if(goingRight) {
+          return lidarRight.isTripped();
+        }
+        else {
+          return lidarLeft.isTripped();
+        }
+      }
+    );
+  
   }
 
   /**
