@@ -166,6 +166,10 @@ public class Collector extends SubsystemBase {
           setCollectorSpeeds(0, 0);
         }
       }
+    ).beforeStarting(
+      () -> {
+        endCount[0] = 0;
+      }
     ).until(
       () -> {
         ConditionalSmartDashboard.putNumber("Collector/Amp cut off right", rightMotor.getSupplyCurrent().getValueAsDouble());
@@ -178,7 +182,7 @@ public class Collector extends SubsystemBase {
         {
           endCount[0] = 0;
         }
-        return endCount[0] >= 2;
+        return endCount[0] >= Constants.Collector.END_COUNT_TICK_COUNTER_CORAL;
       }
     );
   }
@@ -223,6 +227,10 @@ public class Collector extends SubsystemBase {
           setCollectorSpeeds(0, 0);
         }
       }
+    ).beforeStarting(
+      () -> {
+        endCount[0] = 0;
+      }
     ).until(
       () -> {
         if (rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.ALGAE_AMP_CUT_OFF &&
@@ -234,7 +242,7 @@ public class Collector extends SubsystemBase {
         {
           endCount[0] = 0;
         }
-        return endCount[0] > Constants.Collector.END_COUNT_TICK_COUNTER;
+        return endCount[0] > Constants.Collector.END_COUNT_TICK_COUNTER_ALGAE;
       }
     );
   }

@@ -87,7 +87,8 @@ public class Constants {
     }
 
     public static final double COLLECTOR_ROTATIONS_PER_METER = 0.0762 * Math.PI;
-    public static final double END_COUNT_TICK_COUNTER = 3;
+    public static final double END_COUNT_TICK_COUNTER_ALGAE = 3;
+    public static final double END_COUNT_TICK_COUNTER_CORAL = 2;
     public static final double COLLECTOR_AMPS_BEFORE_CUTTOF = 5.0;
     public static final double ALGAE_AMP_CUT_OFF = 6.0;
 
