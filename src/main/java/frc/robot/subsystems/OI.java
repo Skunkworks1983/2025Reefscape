@@ -90,6 +90,8 @@ public class OI {
     if (optionalDrivebase.isPresent()) {
       Drivebase drivebase = optionalDrivebase.get();
 
+      double alignSpeed = 3;
+
       Command targetReefCommand = 
         drivebase.getSwerveHeadingCorrected(
           this::getInstructedXMetersPerSecond,
@@ -108,11 +110,45 @@ public class OI {
           true
         );
 
+      Command AlignCoralRightCommand = drivebase.getSwerveAlignCoral(
+          this::getInstructedXMetersPerSecond,
+          this::getInstructedYMetersPerSecond,
+          -alignSpeed,
+          /*goingRight=*/true
+      );
+
+      Command AlignCoralLeftCommand = drivebase.getSwerveAlignCoral(
+          this::getInstructedXMetersPerSecond,
+          this::getInstructedYMetersPerSecond,
+          alignSpeed,
+          /*goingRight=*/false
+      );
+
+      Command AlignCoralRightCommand = drivebase.getSwerveAlignCoral(
+          this::getInstructedXMetersPerSecond,
+          this::getInstructedYMetersPerSecond,
+          -alignSpeed,
+          /*goingRight=*/true
+      );
+
+      Command AlignCoralLeftCommand = drivebase.getSwerveAlignCoral(
+          this::getInstructedXMetersPerSecond,
+          this::getInstructedYMetersPerSecond,
+          alignSpeed,
+          /*goingRight=*/false
+      );
+
       new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_REEF_BUTTON)
           .whileTrue(targetReefCommand);
 
       new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_CORAL_STATION_BUTTON)
           .whileTrue(targetCoralStationCommand);
+
+      new JoystickButton(translationJoystick, 4)
+          .whileTrue(AlignCoralRightCommand);
+
+      new JoystickButton(translationJoystick, 5)
+          .whileTrue(AlignCoralRightCommand);
     }
 
     if(optionalDrivebase.isPresent()) {

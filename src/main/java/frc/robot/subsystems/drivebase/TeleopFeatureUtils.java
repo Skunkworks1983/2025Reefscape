@@ -54,6 +54,24 @@ public class TeleopFeatureUtils {
       TeleopFeature.REEF_RED : TeleopFeature.REEF_BLUE;
   }
 
+  public static double getReefFaceSpeedX(Rotation2d targetingAngle, double speed) {
+    if(Math.abs(targetingAngle.getDegrees()) > 90) {
+      return -Math.sin(targetingAngle.getDegrees()) * speed;
+    }
+    else {
+      return Math.sin(targetingAngle.getDegrees()) * speed;
+    }
+  }
+
+  public static double getReefFaceSpeedY(Rotation2d targetingAngle, double speed) {
+    if(Math.abs(targetingAngle.getDegrees()) > 90) {
+      return -Math.cos(targetingAngle.getDegrees()) * speed;
+    }
+    else {
+      return Math.cos(targetingAngle.getDegrees()) * speed;
+    }
+  }
+
   public static Rotation2d getCoralCycleAngleNoOdometry(boolean isHoldingCoral, Rotation2d gyroHeading) {
 
     if(isHoldingCoral) {
