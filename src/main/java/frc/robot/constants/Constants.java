@@ -323,7 +323,7 @@ public class Constants {
     public static final double WRIST_STOW_POSITION_ALGAE = 0.1;
 
     public static final EndEffectorSetpointConstants ALGAE_GROUND = 
-      new EndEffectorSetpointConstants(0.0, 0.0, WRIST_STOW_POSITION_ALGAE);
+      new EndEffectorSetpointConstants(0.0, 0.3941, WRIST_STOW_POSITION_ALGAE);
     public static final EndEffectorSetpointConstants ALGAE_STOW = 
       new EndEffectorSetpointConstants(0.0, WRIST_STOW_POSITION_ALGAE, WRIST_STOW_POSITION_ALGAE);
     public static final EndEffectorSetpointConstants ALGAE_PROCESSOR = 
@@ -342,7 +342,7 @@ public class Constants {
     public static final EndEffectorSetpointConstants CORAL_L1 = 
       new EndEffectorSetpointConstants(0.0, 0.0, WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_L2 = 
-      new EndEffectorSetpointConstants(13.756, 0.0, WRIST_STOW_POSITION_CORAL);
+      new EndEffectorSetpointConstants(13.756, 0.1441, WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_L3 = 
       new EndEffectorSetpointConstants(24.914, 0.0, WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_L4 = 
