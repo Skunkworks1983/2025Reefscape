@@ -54,17 +54,9 @@ public class Wrist extends SubsystemBase {
       Constants.Wrist.PIDs.WRIST_KA,
       Constants.Wrist.PIDs.WRIST_KS,
       "Wrist", 
-      true, 
+      Constants.Wrist.PIDs.WRIST_SMARTPID_ACTIVE, 
       wristMotor
     );
-
-    Slot0Configs slot0Configs = new Slot0Configs();
-    slot0Configs.kP = Constants.Wrist.PIDs.WRIST_KP;
-    slot0Configs.kI = Constants.Wrist.PIDs.WRIST_KI;
-    slot0Configs.kD = Constants.Wrist.PIDs.WRIST_KD;
-    slot0Configs.kV = Constants.Wrist.PIDs.WRIST_KV;
-    slot0Configs.kS = Constants.Wrist.PIDs.WRIST_KS;
-    wristMotor.getConfigurator().apply(slot0Configs);
   }
 
   @Override

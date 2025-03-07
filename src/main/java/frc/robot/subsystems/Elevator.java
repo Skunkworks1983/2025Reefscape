@@ -149,6 +149,5 @@ public class Elevator extends SubsystemBase {
 
   public void setSpeeds(double speed) {
     motorRight.setControl(new DutyCycleOut(speed));
-    //motorLeft.setControl(new DutyCycleOut(-speed));
   }
 }
