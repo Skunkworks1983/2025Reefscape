@@ -55,19 +55,19 @@ public class TeleopFeatureUtils {
 
   public static double getReefFaceSpeedX(Rotation2d targetingAngle, double speed) {
     if(Math.abs(targetingAngle.getDegrees()) > 100) {
-      return Math.sin(targetingAngle.getDegrees()) * speed;
+      return -Math.sin(targetingAngle.getDegrees()) * speed;
     }
     else {
-      return -Math.sin(targetingAngle.getDegrees()) * speed;
+      return Math.sin(targetingAngle.getDegrees()) * speed;
     }
   }
 
   public static double getReefFaceSpeedY(Rotation2d targetingAngle, double speed) {
     if(Math.abs(targetingAngle.getDegrees()) > 100) {
-      return Math.cos(targetingAngle.getDegrees()) * speed;
+      return -Math.cos(targetingAngle.getDegrees()) * speed;
     }
     else {
-      return -Math.cos(targetingAngle.getDegrees()) * speed;
+      return Math.cos(targetingAngle.getDegrees()) * speed;
     }
   }
 }
