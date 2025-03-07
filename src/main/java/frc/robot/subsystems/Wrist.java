@@ -25,8 +25,9 @@ public class Wrist extends SubsystemBase {
   TalonFX wristMotor;
   StatusSignal<Angle> wristPos;
 
-  private DigitalInput topMagnetSensor;
-  private DigitalInput bottomMagnetSensor;
+  // We do not currently have working limit switches on the wrist
+  // private DigitalInput topMagnetSensor;
+  // private DigitalInput bottomMagnetSensor;
 
   private SmartPIDControllerTalonFX smartPIDController;
 
@@ -36,8 +37,8 @@ public class Wrist extends SubsystemBase {
     
     wristMotor.setPosition(0.0);
 
-    topMagnetSensor = new DigitalInput(Constants.Wrist.IDs.WRIST_TOP_MAGNET_SENSOR);
-    bottomMagnetSensor = new DigitalInput(Constants.Wrist.IDs.WRIST_BOTTOM_MAGNET_SENSOR);
+    // topMagnetSensor = new DigitalInput(Constants.Wrist.IDs.WRIST_TOP_MAGNET_SENSOR);
+    // bottomMagnetSensor = new DigitalInput(Constants.Wrist.IDs.WRIST_BOTTOM_MAGNET_SENSOR);
 
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.CurrentLimits = CurrentLimits.KRAKEN_CURRENT_LIMIT_CONFIG;
@@ -86,11 +87,13 @@ public class Wrist extends SubsystemBase {
 
   // magnet outputs reversed so that they are true when triggered
   public boolean getTopMagnetSensor() { 
-    return !topMagnetSensor.get();
+    // return !topMagnetSensor.get();
+    return false;
   }
 
   public boolean getBottomMagnetSensor() {
-    return !bottomMagnetSensor.get();
+    // return !bottomMagnetSensor.get();
+    return false;
   }
 
   public double getPosition() {

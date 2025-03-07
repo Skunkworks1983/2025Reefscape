@@ -26,8 +26,9 @@ public class Elevator extends SubsystemBase {
   public TalonFX motorRight = new TalonFX(Constants.Elevator.MOTOR_RIGHT_ID);
   private TalonFX motorLeft = new TalonFX(Constants.Elevator.MOTOR_LEFT_ID);
 
+  // We do not currently have working limit switches on the wrist
   private DigitalInput bottomLimitSwitch = new DigitalInput(Constants.Elevator.BOTTOM_LIMIT_SWITCH_ID);
-  private DigitalInput topLimitSwitch = new DigitalInput(Constants.Elevator.TOP_LIMIT_SWITCH_ID);
+  // private DigitalInput topLimitSwitch = new DigitalInput(Constants.Elevator.TOP_LIMIT_SWITCH_ID);
 
   private double finalTargetPosition;
 
@@ -89,7 +90,8 @@ public class Elevator extends SubsystemBase {
 
   // Inverted because limit switches return true until tripped
   public boolean getTopLimitSwitch() {
-    return !topLimitSwitch.get();
+    // return !topLimitSwitch.get();
+    return false;
   }
 
   public void setMotorTrapezoidProfileSafe(double position, double velocity) {

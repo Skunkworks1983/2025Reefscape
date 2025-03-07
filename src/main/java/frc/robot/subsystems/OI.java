@@ -134,74 +134,75 @@ public class OI {
       Elevator elevator = optionalElevator.get();
       Wrist wrist = optionalWrist.get();
 
-      //JoystickButton wristUp = new JoystickButton(buttonJoystick, 17);
-      //JoystickButton wristDown = new JoystickButton(buttonJoystick, 24);
+      // JoystickButton wristUp = new JoystickButton(buttonJoystick, 17);
+      // JoystickButton wristDown = new JoystickButton(buttonJoystick, 24);
+      // JoystickButton endEffectorButton = new JoystickButton(buttonJoystick, 18); // Temp id for testing
 
-      JoystickButton endEffectorButton = new JoystickButton(buttonJoystick, 18);
-      // JoystickButton endEffectorToScoreLow = new JoystickButton(buttonJoystick, Buttons.GOTO_SCORE_LOW);
+      JoystickButton endEffectorGround = new JoystickButton(buttonJoystick, Buttons.GOTO_GROUND);
       JoystickButton endEffectorStow = new JoystickButton(buttonJoystick, Buttons.GOTO_STOW);
+      JoystickButton endEffectorToScoreLow = new JoystickButton(buttonJoystick, Buttons.GOTO_SCORE_LOW);
       JoystickButton endEffectorToL2 = new JoystickButton(buttonJoystick, Buttons.GOTO_L2);
       JoystickButton endEffectorToL3 = new JoystickButton(buttonJoystick, Buttons.GOTO_L3);
       JoystickButton endEffectorToScoreHigh = new JoystickButton(buttonJoystick, Buttons.GOTO_SCORE_HIGH);
 
-      endEffectorToScoreHigh.onTrue(new MoveElevatorToSetpointCommand(elevator, 39));
-      endEffectorToL2.onTrue(new MoveElevatorToSetpointCommand(elevator, EndEffectorSetpoints.CORAL_L2.elevatorSetpoint));
-      endEffectorToL3.onTrue(new MoveElevatorToSetpointCommand(elevator, EndEffectorSetpoints.CORAL_L3.elevatorSetpoint));
-      endEffectorStow.onTrue(new MoveElevatorToSetpointCommand(elevator, 0.0));
-      //wristDown.onTrue(new MoveWristToSetpoint(wrist, 0.1441));
-      //wristUp.onTrue(new MoveWristToSetpoint(wrist, 0.0));
+      // endEffectorToL2.onTrue(new MoveElevatorToSetpointCommand(elevator, EndEffectorSetpoints.CORAL_L2.elevatorSetpoint));
+      // endEffectorToL3.onTrue(new MoveElevatorToSetpointCommand(elevator, EndEffectorSetpoints.CORAL_L3.elevatorSetpoint));
+      // endEffectorToScoreHigh.onTrue(new MoveElevatorToSetpointCommand(elevator, EndEffectorSetpoints.CORAL_L4.elevatorSetpoint));
+      // endEffectorStow.onTrue(new MoveElevatorToSetpointCommand(elevator, EndEffectorSetpoints.CORAL_STOW.elevatorSetpoint));
+      // wristDown.onTrue(new MoveWristToSetpoint(wrist, 0.1441));
+      // wristUp.onTrue(new MoveWristToSetpoint(wrist, 0.0));
 
-      endEffectorButton.whileTrue(new JoystickEndEffectorPosition(wrist, elevator, this::getYrotationStick, this::getYtranslationStick));
+      // endEffectorButton.whileTrue(new JoystickEndEffectorPosition(wrist, elevator, this::getYrotationStick, this::getYtranslationStick));
 
-      // // Algae mode
-      // endEffectorGround.and(algaeToggle).onTrue(
-      //   new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_GROUND)
-      // );
+      // Algae mode
+      endEffectorGround.and(algaeToggle).onTrue(
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_GROUND)
+      );
 
-      // endEffectorStow.and(algaeToggle).onTrue(
-      //   new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_STOW)
-      // );
+      endEffectorStow.and(algaeToggle).onTrue(
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_STOW)
+      );
 
-      // endEffectorToScoreLow.and(algaeToggle).onTrue(
-      //   new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_PROCESSOR)
-      // );
+      endEffectorToScoreLow.and(algaeToggle).onTrue(
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_PROCESSOR)
+      );
 
-      // endEffectorToL2.and(algaeToggle).onTrue(
-      //   new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_L2)
-      // );
+      endEffectorToL2.and(algaeToggle).onTrue(
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_L2)
+      );
 
-      // endEffectorToL3.and(algaeToggle).onTrue(
-      //   new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_L3)
-      // );
+      endEffectorToL3.and(algaeToggle).onTrue(
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_L3)
+      );
 
-      // endEffectorToScoreHigh.and(algaeToggle).onTrue(
-      //   new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_NET)
-      // );
+      endEffectorToScoreHigh.and(algaeToggle).onTrue(
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_NET)
+      );
 
-      // // Coral mode
-      // endEffectorGround.and(coralToggle).onTrue(
-      //   new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_GROUND)
-      // );
+      // Coral mode
+      endEffectorGround.and(coralToggle).onTrue(
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_GROUND)
+      );
 
-      // endEffectorStow.and(coralToggle).onTrue(
-      //   new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_STOW)
-      // );
+      endEffectorStow.and(coralToggle).onTrue(
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_STOW)
+      );
 
-      // endEffectorToScoreLow.and(coralToggle).onTrue(
-      //   new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L1)
-      // );
+      endEffectorToScoreLow.and(coralToggle).onTrue(
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L1)
+      );
 
-      // endEffectorToL2.and(coralToggle).onTrue(
-      //   new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L2)
-      // );
+      endEffectorToL2.and(coralToggle).onTrue(
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L2)
+      );
 
-      // endEffectorToL3.and(coralToggle).onTrue(
-      //   new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L3)
-      // );
+      endEffectorToL3.and(coralToggle).onTrue(
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L3)
+      );
 
-      // endEffectorToScoreHigh.and(coralToggle).onTrue(
-      //   new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L4)
-      // );
+      endEffectorToScoreHigh.and(coralToggle).onTrue(
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L4)
+      );
     }
   }
 

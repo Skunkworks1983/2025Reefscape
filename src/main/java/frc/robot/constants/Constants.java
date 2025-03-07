@@ -48,7 +48,7 @@ public class Constants {
     // must be constructed and assigned to the correct variable in Robot.java.
     // If some subsystems are not created and this value is true, an exeption
     // will be thrown.
-    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = false;
+    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = true;
 
     public static enum Robot {
       Comp2024,
@@ -190,7 +190,7 @@ public class Constants {
       public static final double PID_LOW_LIMIT = -0.8;
       public static final double PID_HIGH_LIMIT = 0.8;
 
-      public static final boolean SMART_PID_ENABLED = true;
+      public static final boolean SMART_PID_ENABLED = false;
       public static final boolean SMART_PID_TURN_ENABLED = false;
       public static final boolean SMART_PID_DRIVE_ENABLED = false;
     }
@@ -241,8 +241,8 @@ public class Constants {
 
   public class Elevator {
     // For determining right and left, look at the elevator from the side paralel to the one that the elevator is on
-    public static final int MOTOR_RIGHT_ID = 27; // Temp id
-    public static final int MOTOR_LEFT_ID = 28; // Temp id
+    public static final int MOTOR_RIGHT_ID = 27;
+    public static final int MOTOR_LEFT_ID = 28;
     public static final int BOTTOM_LIMIT_SWITCH_ID = 5;
     public static final int TOP_LIMIT_SWITCH_ID = 6;
 
@@ -261,7 +261,7 @@ public class Constants {
     public static final double GEAR_RATIO = 1.0/6.25;
     public static final double ROTATIONS_TO_METERS = 0.1016 * STAGE_ONE_TO_CARRIAGE_HEIGHT;
     public static final double MOTOR_ROTATIONS_TO_METERS = 1;
-    public static final double METERS_TO_MOTOR_ROTATIONS = 1;
+    public static final double METERS_TO_MOTOR_ROTATIONS = 1; // We need to fix Transforms after Competition
 
 
     public class PIDs {
@@ -273,7 +273,7 @@ public class Constants {
       public static final double ELEVATOR_kA = 0.0;
       public static final double ELEVATOR_kS = 0.55;
 
-      public static final boolean SMART_PID_ENABLED = true;
+      public static final boolean SMART_PID_ENABLED = false;
     }
 
     public class Profile {
@@ -284,8 +284,8 @@ public class Constants {
 
   public class Wrist {
     public class IDs {
-      public static final int WRIST_KRAKEN_MOTOR_ID = 4; // !! all ID's are just for the test board !!
-      public static final int WRIST_TOP_MAGNET_SENSOR = 0;
+      public static final int WRIST_KRAKEN_MOTOR_ID = 4;
+      public static final int WRIST_TOP_MAGNET_SENSOR = 0; // Magnet Sensor ids are currently not working
       public static final int WRIST_BOTTOM_MAGNET_SENSOR = 2;
 
     }
@@ -307,9 +307,9 @@ public class Constants {
 
     public static final double WRIST_TOLERANCE = 0.01;
 
-    public static final int WRIST_GEAR_RATIO = 56; //56 motor rotations to 1 wrist rotation
+    public static final int WRIST_GEAR_RATIO = 56; // 56 motor rotations to 1 wrist rotation
 
-    public static final double WRIST_MIDPOINT_ROTATIONS = 0.2 * WRIST_GEAR_RATIO; //TODO figure out postitions
+    public static final double WRIST_MIDPOINT_ROTATIONS = 0.2 * WRIST_GEAR_RATIO; // TODO: figure out postitions
     public static final double WRIST_MIN_ROTATIONS = 0;
     public static final double WRIST_MAX_ROTATIONS = 0.4 * WRIST_GEAR_RATIO;
 
@@ -345,7 +345,7 @@ public class Constants {
     public static final EndEffectorSetpointConstants CORAL_L3 = 
     new EndEffectorSetpointConstants(24.914, 0.0, WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_L4 = 
-    new EndEffectorSetpointConstants(0.0, 0.0, WRIST_STOW_POSITION_CORAL);
+    new EndEffectorSetpointConstants(39.0, 0.0, WRIST_STOW_POSITION_CORAL);
   };
 
   public class Climber {
