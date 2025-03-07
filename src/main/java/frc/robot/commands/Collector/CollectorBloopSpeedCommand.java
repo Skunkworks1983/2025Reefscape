@@ -23,7 +23,7 @@ public class CollectorBloopSpeedCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    collector.setCollectorSpeeds(speed, speed * Constants.Collector.Speeds.SPEED_MULIPILER_LEFT);
+    collector.setCollectorSpeeds(speed, speed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

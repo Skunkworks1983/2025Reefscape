@@ -347,6 +347,11 @@ public class Constants {
     new EndEffectorSetpointConstants(24.914, 0.0, WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_L4 = 
     new EndEffectorSetpointConstants(39.0, 0.0, WRIST_STOW_POSITION_CORAL);
+
+    public static final double BLOOP_TICKS = 0.0; //TODO figure out these
+    public static final double BLOOP_SPEED = 0.0;
+    public static final EndEffectorSetpointConstants BLOOP_POS = 
+    new EndEffectorSetpointConstants(39.0, 0.0, WRIST_STOW_POSITION_CORAL);
   };
 
   public class Climber {

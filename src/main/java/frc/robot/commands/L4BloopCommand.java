@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.Collector.CollectorBloopSpeedCommand;
+import frc.robot.constants.Constants;
 import frc.robot.constants.EndEffectorSetpointConstants;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Elevator;
@@ -21,11 +22,9 @@ public class L4BloopCommand extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      Commands.parallel(
-        new MoveEndEffector(elevator, wrist, position),
-        collector.intakeCoralCommand(true)
-      ),
-      new CollectorBloopSpeedCommand(collector, 0.0)
+      new MoveEndEffector(elevator, wrist, position),
+      collector.intakeCoralCommand(true, Constants.EndEffectorSetpoints.BLOOP_TICKS),
+      new CollectorBloopSpeedCommand(collector, Constants.EndEffectorSetpoints.BLOOP_SPEED)
     );
   }
 }

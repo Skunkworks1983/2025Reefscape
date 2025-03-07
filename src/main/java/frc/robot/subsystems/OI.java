@@ -75,7 +75,7 @@ public class OI {
 
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.INTAKE)
           .and(coralToggle)
-          .whileTrue(collector.intakeCoralCommand(true));
+          .whileTrue(collector.intakeCoralCommand(true, Constants.Collector.END_COUNT_TICK_COUNTER_CORAL));
 
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.EXPEL)
         .and(coralToggle)

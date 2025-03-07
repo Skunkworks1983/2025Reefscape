@@ -153,13 +153,14 @@ public class Collector extends SubsystemBase {
   // Rrue if you want it to stop the motor when the command ends
   // it should almost always be true unless there will be a following command right after that will end it
   public Command intakeCoralCommand(
-    boolean stopOnEnd
+    boolean stopOnEnd,
+    double tick
   ) {
     int endCount [] = {0}; // This value needs to be effectivly final 
     return runEnd(
       () -> {
         setCollectorSpeeds(Constants.Collector.Speeds.CORAL_INTAKE_SLOW_SPEED, 
-          Constants.Collector.Speeds.CORAL_INTAKE_SLOW_SPEED * Constants.Collector.Speeds.SPEED_MULIPILER_LEFT);
+          Constants.Collector.Speeds.CORAL_INTAKE_SLOW_SPEED);
       },
       () -> {
         if(stopOnEnd) {
@@ -182,7 +183,7 @@ public class Collector extends SubsystemBase {
         {
           endCount[0] = 0;
         }
-        return endCount[0] >= Constants.Collector.END_COUNT_TICK_COUNTER_CORAL;
+        return endCount[0] >= tick;
       }
     );
   }
