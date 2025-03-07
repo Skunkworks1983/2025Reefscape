@@ -67,9 +67,10 @@ public class Elevator extends SubsystemBase {
     // Setposition counts as a config update, try and do this sparingly
     if(getBottomLimitSwitch() && Math.abs(motorRight.getPosition().getValueAsDouble()) > .001) {
       motorRight.setPosition(0.0);
-    } else if(getTopLimitSwitch()) {
-      //motorRight.setPosition(Constants.Elevator.MAX_HEIGHT_CARRIAGE * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
-    }
+    } 
+    // else if(getTopLimitSwitch()) {
+    //   motorRight.setPosition(Constants.Elevator.MAX_HEIGHT_CARRIAGE * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
+    // }
     putInfoSmartDashboard();
   }
 
@@ -89,10 +90,9 @@ public class Elevator extends SubsystemBase {
   }
 
   // Inverted because limit switches return true until tripped
-  public boolean getTopLimitSwitch() {
-    // return !topLimitSwitch.get();
-    return false;
-  }
+  // public boolean getTopLimitSwitch() {
+  //   !topLimitSwitch.get();
+  // }
 
   public void setMotorTrapezoidProfileSafe(double position, double velocity) {
     PositionVoltage positionVoltage = new PositionVoltage(0).withSlot(0);
@@ -102,8 +102,9 @@ public class Elevator extends SubsystemBase {
     logTargetVelocity(velocity);
 
     motorRight.setControl(positionVoltage
-      .withLimitForwardMotion(getTopLimitSwitch())
-      .withLimitReverseMotion(getBottomLimitSwitch()).withEnableFOC(true)
+    //  .withLimitForwardMotion(getTopLimitSwitch())
+    //  .withLimitReverseMotion(getBottomLimitSwitch())
+      .withEnableFOC(true)
     );
   }
 
@@ -132,18 +133,19 @@ public class Elevator extends SubsystemBase {
     double currentPos = motorRight.getPosition().getValueAsDouble();
 
     ConditionalSmartDashboard.putNumber("Elevator/Actual velocity in mps", motorRight.getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("Elevator/Actual position in meters", currentPos * Constants.Elevator.MOTOR_ROTATIONS_TO_METERS);
+    ConditionalSmartDashboard.putNumber("Elevator/Actual position in meters", currentPos * Constants.Elevator.MOTOR_ROTATIONS_TO_METERS);
     ConditionalSmartDashboard.putNumber("Elevator/Actual position in rotations", currentPos);
     ConditionalSmartDashboard.putNumber("Elevator/Final setpoint in meters", finalTargetPosition);
     ConditionalSmartDashboard.putNumber("Elevator/Final setpoint in rotations", finalTargetPosition * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
-    SmartDashboard.putBoolean("Elevator/Bottom limit switch", getBottomLimitSwitch());
-    SmartDashboard.putBoolean("Elevator/Top limit switch", getTopLimitSwitch());
+    ConditionalSmartDashboard.putBoolean("Elevator/Bottom limit switch", getBottomLimitSwitch());
+    //ConditionalSmartDashboard.putBoolean("Elevator/Top limit switch", getTopLimitSwitch());
   }
   
   public void setElevatorMotorControl(PositionVoltage setElevatorMotorControl) {
     motorRight.setControl(setElevatorMotorControl
-      .withLimitForwardMotion(getTopLimitSwitch())
-      .withLimitReverseMotion(getBottomLimitSwitch()).withEnableFOC(true)
+    //  .withLimitForwardMotion(getTopLimitSwitch())
+    //  .withLimitReverseMotion(getBottomLimitSwitch())
+    .withEnableFOC(true)
     );
   }
 

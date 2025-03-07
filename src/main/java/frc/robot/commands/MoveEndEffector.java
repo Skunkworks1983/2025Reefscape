@@ -23,15 +23,15 @@ public class MoveEndEffector extends SequentialCommandGroup {
     wristUp = false;
     elevatorUp = false;
     addCommands(
-      new MoveWristToSetpoint(wrist, setpoint.stowSetpoint).finallyDo(b -> {
-        wristUp = !b;
+      new MoveWristToSetpoint(wrist, setpoint.stowSetpoint).finallyDo(interrupted -> {
+        wristUp = !interrupted;
       }),
       new MoveElevatorToSetpointCommand(elevator, setpoint.elevatorSetpoint).beforeStarting(() -> {
         if(!wristUp) {
           this.cancel();
         }
-      }).finallyDo(b -> {
-        elevatorUp = !b;
+      }).finallyDo(interrupted -> {
+        elevatorUp = !interrupted;
       }),
       new MoveWristToSetpoint(wrist, setpoint.wristSetpoint).beforeStarting(() -> {
         if(elevatorUp && wristUp) {

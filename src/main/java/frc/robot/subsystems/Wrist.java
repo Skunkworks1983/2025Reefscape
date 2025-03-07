@@ -64,29 +64,27 @@ public class Wrist extends SubsystemBase {
     
     ConditionalSmartDashboard.putNumber("Wrist/Wrist velocity (rotations per second)", getWristVelocity());
     SmartDashboard.putNumber("Wrist/Wrist motor position(rotations)", getPosition());
-    SmartDashboard.putBoolean("Wrist/Bottom wrist magnet state", getBottomMagnetSensor());
-    SmartDashboard.putBoolean("Wrist/Top wrist magnet state", getTopMagnetSensor());
+    // SmartDashboard.putBoolean("Wrist/Bottom wrist magnet state", getBottomMagnetSensor());
+    // SmartDashboard.putBoolean("Wrist/Top wrist magnet state", getTopMagnetSensor());
 
     // Setposition counts as a config update, try and do this sparingly
-    if (getTopMagnetSensor() && Math.abs(wristMotor.getPosition().getValueAsDouble() - Constants.Wrist.WRIST_MAX_ROTATIONS) > .001) {
-      //wristMotor.setPosition(Constants.Wrist.WRIST_MAX_ROTATIONS);
-    }
+    // if (getTopMagnetSensor() && Math.abs(wristMotor.getPosition().getValueAsDouble() - Constants.Wrist.WRIST_MAX_ROTATIONS) > .001) {
+    //   wristMotor.setPosition(Constants.Wrist.WRIST_MAX_ROTATIONS);
+    // }
 
-    if (getBottomMagnetSensor() && Math.abs(wristMotor.getPosition().getValueAsDouble() - Constants.Wrist.WRIST_MIN_ROTATIONS) > .001) {
-      //wristMotor.setPosition(Constants.Wrist.WRIST_MIN_ROTATIONS);
-    }
+    // if (getBottomMagnetSensor() && Math.abs(wristMotor.getPosition().getValueAsDouble() - Constants.Wrist.WRIST_MIN_ROTATIONS) > .001) {
+    //   wristMotor.setPosition(Constants.Wrist.WRIST_MIN_ROTATIONS);
+    // }
   }
 
   // magnet outputs reversed so that they are true when triggered
-  public boolean getTopMagnetSensor() { 
-    // return !topMagnetSensor.get();
-    return false;
-  }
+  // public boolean getTopMagnetSensor() { 
+  //   return !topMagnetSensor.get();
+  // }
 
-  public boolean getBottomMagnetSensor() {
-    // return !bottomMagnetSensor.get();
-    return false;
-  }
+  // public boolean getBottomMagnetSensor() {
+  //   return !bottomMagnetSensor.get();
+  // }
 
   public double getPosition() {
     return wristMotor.getPosition().getValueAsDouble() / Constants.Wrist.WRIST_GEAR_RATIO;

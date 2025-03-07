@@ -64,8 +64,8 @@ public class Robot extends TimedRobot {
       if (climber.isPresent()) {
         throw new IllegalStateException("Climber is present"); // Climber will not be part of our robot in our first match
       }
-      if (wrist.isPresent()) {
-        throw new IllegalStateException("Climber is present"); // Wrist will not be part of our robot in our first match
+      if (funnel.isPresent()) {
+        throw new IllegalStateException("Funnel is present"); // Funnel will not be part of our robot in our first match
       }
       if (Constants.Testing.ROBOT != Constants.Testing.Robot.Comp2025) {
         throw new IllegalStateException("Using 2024 drivebase constants! Change to 2025 (Constants.Testing.ROBOT)");

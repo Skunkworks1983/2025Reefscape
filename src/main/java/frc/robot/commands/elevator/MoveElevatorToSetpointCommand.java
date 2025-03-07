@@ -72,8 +72,8 @@ public class MoveElevatorToSetpointCommand extends Command {
     return (Constants.Elevator.TOLERENCE_METERS_FOR_MOVE_TO_POSITION > 
       Math.abs(targetState.position - elevator.getElevatorPosition())) ||
       (
-        (elevator.getBottomLimitSwitch() && !isGoingUp) ||
-        (elevator.getTopLimitSwitch() && isGoingUp)
+        (elevator.getBottomLimitSwitch() && !isGoingUp)
+        // || (elevator.getTopLimitSwitch() && isGoingUp)
       );
   }
 }
