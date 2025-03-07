@@ -60,9 +60,10 @@ public class TeleopFeatureUtils {
       return Rotation2d.fromDegrees(Math.round(gyroHeading.getDegrees() / 60.0) * 60.0);
     } else {
       if(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
-        return
-          Math.abs(TeleopFeature.RED_LEFT_CORAL_STATION_ANGLE.minus(gyroHeading).getDegrees()) <
-          Math.abs(TeleopFeature.RED_RIGHT_CORAL_STATION_ANGLE.minus(gyroHeading).getDegrees()) ?
+        return Rotation2d.fromDegrees(Math.min(
+          TeleopFeature.RED_LEFT_CORAL_STATION_ANGLE.minus(gyroHeading).getDegrees(), 
+          TeleopFeature.RED_RIGHT_CORAL_STATION_ANGLE.minus(gyroHeading).getDegrees()
+        ));
       } else {
         return Rotation2d.fromDegrees(Math.min(
           TeleopFeature.BLUE_LEFT_CORAL_STATION_ANGLE.minus(gyroHeading).getDegrees(),
