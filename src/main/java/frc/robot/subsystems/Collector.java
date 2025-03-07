@@ -129,7 +129,7 @@ public class Collector extends SubsystemBase {
   }
 
   public boolean isHoldingCoral() {
-    return beambreak.get();
+    return !beambreak.get();
   }
 
   public void setCollectorSetPoint(double newRightSetpoint, double newLeftSetpoint) {

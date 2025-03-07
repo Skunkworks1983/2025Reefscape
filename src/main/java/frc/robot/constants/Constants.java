@@ -48,7 +48,7 @@ public class Constants {
     // must be constructed and assigned to the correct variable in Robot.java.
     // If some subsystems are not created and this value is true, an exeption
     // will be thrown.
-    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = false;
+    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = true;
 
     public static enum Robot {
       Comp2024,
@@ -56,7 +56,7 @@ public class Constants {
     }
   
     // Change this to test on the 2024 robot's drivebase.
-    public static Robot ROBOT = Robot.Comp2024;
+    public static Robot ROBOT = Robot.Comp2025;
 
     public static final double NUMBER_OF_MOTOR_ROTATIONS_FOR_MODULE_TEST = 1.0;
     public static final double TURN_MOTOR_ROTATION_SPEED = 0.15;
@@ -78,7 +78,7 @@ public class Constants {
     public class Speeds {
       public static final double CORAL_INTAKE_SLOW_SPEED = 8.0; //meters per sec
       public static final double CORAL_INTAKE_FAST_SPEED = 18.0; //meters per sec 
-      public static final double CORAL_EXPEL_SLOW_SPEED = 8.0; //meters per sec
+      public static final double CORAL_EXPEL_SLOW_SPEED = -50.0; //meters per sec
       public static final double CORAL_EXPEL_FAST_SPEED = 18.0; //meters per sec 
       public static final double ALGAE_INTAKE_SPEED = 5.0; //meters per sec
       public static final double ALGAE_EXPEL_SPEED = -5.0; //meters per sec
@@ -122,7 +122,7 @@ public class Constants {
     public static final int LIDAR_RIGHT_TRIGGER_PORT = 7;
     public static final int LIDAR_LEFT_DATA_PORT = 4;
     public static final int LIDAR_LEFT_TRIGGER_PORT = 3;
-    public static final int LIDAR_TRIGGER_DISTANCE = 40;
+    public static final int LIDAR_TRIGGER_DISTANCE = 60;
     public static final double MAX_METERS_PER_SECOND = 4.5;
     public static final double MAX_DEGREES_PER_SECOND = 270;
 
@@ -189,7 +189,7 @@ public class Constants {
       public static final double SWERVE_MODULE_DRIVE_KA = 0.0;
       public static final double SWERVE_MODULE_DRIVE_KS = 0.0;
 
-      public static final double HEADING_CONTROL_kP = 2.00;
+      public static final double HEADING_CONTROL_kP = 6.00;
       public static final double HEADING_CONTROL_kI = 0.0;
       public static final double HEADING_CONTROL_kD = 0.0;
       
@@ -272,7 +272,7 @@ public class Constants {
 
     public class PIDs {
       public static final double ELEVATOR_kP = 1.5;
-      public static final double ELEVATOR_kI = 0.1;
+      public static final double ELEVATOR_kI = 0.125;
       public static final double ELEVATOR_kD = 0.0;
       public static final double ELEVATOR_kF = 0.0;
       public static final double ELEVATOR_kV = 0.0;
@@ -283,8 +283,8 @@ public class Constants {
     }
 
     public class Profile {
-      public static final double MAX_VELOCITY = 65;
-      public static final double MAX_ACCELERATION = 130;
+      public static final double MAX_VELOCITY = 30;
+      public static final double MAX_ACCELERATION = 65;
     }
   }
 
@@ -341,7 +341,7 @@ public class Constants {
       new EndEffectorSetpointConstants(0.0, 0.0, WRIST_STOW_POSITION_ALGAE);
 
     public static final EndEffectorSetpointConstants CORAL_GROUND = 
-      new EndEffectorSetpointConstants(0.0, 0.0, WRIST_STOW_POSITION_CORAL);
+      new EndEffectorSetpointConstants(0.0, 0.2, WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_STOW = 
       new EndEffectorSetpointConstants(0.0, WRIST_STOW_POSITION_CORAL, WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_L1 = 

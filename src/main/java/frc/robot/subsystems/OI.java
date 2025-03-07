@@ -93,7 +93,7 @@ public class OI {
     if (optionalDrivebase.isPresent()) {
       Drivebase drivebase = optionalDrivebase.get();
 
-      double alignSpeed = 3;
+      double alignSpeed = 0.5;
 
       Command targetReefCommand = 
         drivebase.getSwerveHeadingCorrected(
@@ -116,7 +116,7 @@ public class OI {
       Command AlignCoralRightCommand = drivebase.getSwerveAlignCoral(
           this::getInstructedXMetersPerSecond,
           this::getInstructedYMetersPerSecond,
-          -alignSpeed,
+          alignSpeed,
           /*goingRight=*/true
       );
 
@@ -133,22 +133,22 @@ public class OI {
       new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_CORAL_STATION_BUTTON)
           .whileTrue(targetCoralStationCommand);
 
-      new JoystickButton(translationJoystick, 5)
+      new JoystickButton(rotationJoystick, 5)
           .whileTrue(AlignCoralRightCommand);
 
-      new JoystickButton(translationJoystick, 4)
-          .whileTrue(AlignCoralRightCommand);
+      new JoystickButton(rotationJoystick, 4)
+          .whileTrue(AlignCoralLeftCommand);
     }
 
-    if(optionalDrivebase.isPresent()) {
-      // Collector collector = optionalCollector.get();
+    if(optionalDrivebase.isPresent() && optionalCollector.isPresent()) {
+      Collector collector = optionalCollector.get();
       Drivebase drivebase = optionalDrivebase.get();
       Command targetCoralCycleAngleNoOdometry = 
         drivebase.getSwerveHeadingCorrected(
           this::getInstructedXMetersPerSecond,
           this::getInstructedYMetersPerSecond,
           (Supplier<Rotation2d>) () -> 
-            TeleopFeatureUtils.getCoralCycleAngleNoOdometry(false, drivebase.getCachedGyroHeading()),
+            TeleopFeatureUtils.getCoralCycleAngleNoOdometry(collector.isHoldingCoral(), drivebase.getCachedGyroHeading()),
           true
         );
 

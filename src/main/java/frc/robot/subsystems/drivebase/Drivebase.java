@@ -319,7 +319,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       boolean goingRight) {
 
     double newAlignSpeed = alignSpeed * (goingRight ? -1 : 1);
-    Rotation2d[] targetHeading = new Rotation2d[0];
+    Rotation2d[] targetHeading = new Rotation2d[1];
 
     return getSwerveHeadingCorrected(
             () -> {return (getXMetersPerSecond.getAsDouble() * 0.5) + TeleopFeatureUtils.getReefFaceSpeedX(targetHeading[0], newAlignSpeed);},
@@ -329,6 +329,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     ).beforeStarting(
       () -> {
         targetHeading[0] = TeleopFeatureUtils.getCoralCycleAngleNoOdometry(true, cachedGyroHeading);
+        System.out.println("Target Heading: " + targetHeading[0] + " X: " + TeleopFeatureUtils.getReefFaceSpeedX(targetHeading[0], newAlignSpeed) + " Y: " + TeleopFeatureUtils.getReefFaceSpeedY(targetHeading[0], newAlignSpeed));
       }
     ).until(
       () -> {

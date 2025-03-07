@@ -4,6 +4,8 @@ package frc.robot.subsystems.drivebase;
 import static edu.wpi.first.units.Units.Rotation;
 
 import java.util.function.Supplier;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -55,20 +57,20 @@ public class TeleopFeatureUtils {
   }
 
   public static double getReefFaceSpeedX(Rotation2d targetingAngle, double speed) {
-    if(Math.abs(targetingAngle.getDegrees()) > 90) {
-      return -Math.sin(targetingAngle.getDegrees()) * speed;
+    if(Math.abs(MathUtil.inputModulus(targetingAngle.getDegrees(), -180, 180)) > 90) {
+      return Math.sin(targetingAngle.getRadians()) * speed;
     }
     else {
-      return Math.sin(targetingAngle.getDegrees()) * speed;
+      return -Math.sin(targetingAngle.getRadians()) * speed;
     }
   }
 
   public static double getReefFaceSpeedY(Rotation2d targetingAngle, double speed) {
-    if(Math.abs(targetingAngle.getDegrees()) > 90) {
-      return -Math.cos(targetingAngle.getDegrees()) * speed;
+    if(Math.abs(MathUtil.inputModulus(targetingAngle.getDegrees(), -180, 180)) > 90) {
+      return -Math.cos(targetingAngle.getRadians()) * speed;
     }
     else {
-      return Math.cos(targetingAngle.getDegrees()) * speed;
+      return Math.cos(targetingAngle.getRadians()) * speed;
     }
   }
 
@@ -78,15 +80,25 @@ public class TeleopFeatureUtils {
       return Rotation2d.fromDegrees(Math.round(gyroHeading.getDegrees() / 60.0) * 60.0);
     } else {
       if(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
-        return Rotation2d.fromDegrees(Math.min(
-          TeleopFeature.RED_LEFT_CORAL_STATION_ANGLE.minus(gyroHeading).getDegrees(), 
-          TeleopFeature.RED_RIGHT_CORAL_STATION_ANGLE.minus(gyroHeading).getDegrees()
-        ));
+          if(
+            Math.abs(TeleopFeature.RED_LEFT_CORAL_STATION_ANGLE.minus(gyroHeading).getDegrees()) <
+            Math.abs(TeleopFeature.RED_RIGHT_CORAL_STATION_ANGLE.minus(gyroHeading).getDegrees())
+          ) {
+            return TeleopFeature.RED_LEFT_CORAL_STATION_ANGLE;
+          }
+          else {
+            return TeleopFeature.RED_RIGHT_CORAL_STATION_ANGLE;
+          }
       } else {
-        return Rotation2d.fromDegrees(Math.min(
-          TeleopFeature.BLUE_LEFT_CORAL_STATION_ANGLE.minus(gyroHeading).getDegrees(),
-          TeleopFeature.BLUE_RIGHT_CORAL_STATION_ANGLE.minus(gyroHeading).getDegrees()
-        ));
+        if(
+            Math.abs(TeleopFeature.BLUE_LEFT_CORAL_STATION_ANGLE.minus(gyroHeading).getDegrees()) <
+            Math.abs(TeleopFeature.BLUE_RIGHT_CORAL_STATION_ANGLE.minus(gyroHeading).getDegrees())
+          ) {
+            return TeleopFeature.BLUE_LEFT_CORAL_STATION_ANGLE;
+          }
+          else {
+            return TeleopFeature.BLUE_RIGHT_CORAL_STATION_ANGLE;
+          }
       }
     }
   }
