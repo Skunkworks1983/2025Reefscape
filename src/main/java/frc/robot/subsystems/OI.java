@@ -93,6 +93,8 @@ public class OI {
     if (optionalDrivebase.isPresent()) {
       Drivebase drivebase = optionalDrivebase.get();
 
+      double alignSpeed = 3;
+
       Command targetCommand = drivebase.getSwerveHeadingCorrected(
           this::getInstructedXMetersPerSecond,
           this::getInstructedYMetersPerSecond,
@@ -107,11 +109,31 @@ public class OI {
             TeleopFeatureUtils.getPointAtCoralStationAngle(drivebase::getCachedEstimatedRobotPose),
           true);
 
+      Command AlignCoralRightCommand = drivebase.getSwerveAlignCoral(
+          this::getInstructedXMetersPerSecond,
+          this::getInstructedYMetersPerSecond,
+          -alignSpeed,
+          /*goingRight=*/true
+      );
+
+      Command AlignCoralLeftCommand = drivebase.getSwerveAlignCoral(
+          this::getInstructedXMetersPerSecond,
+          this::getInstructedYMetersPerSecond,
+          alignSpeed,
+          /*goingRight=*/false
+      );
+
       new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_REEF_BUTTON)
           .whileTrue(targetCommand);
 
       new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_CORAL_STATION_BUTTON)
           .whileTrue(targetCoralStationCommand);
+
+      new JoystickButton(translationJoystick, 4)
+          .whileTrue(AlignCoralRightCommand);
+
+      new JoystickButton(translationJoystick, 5)
+          .whileTrue(AlignCoralRightCommand);
     } 
 
     if(optionalClimber.isPresent()){

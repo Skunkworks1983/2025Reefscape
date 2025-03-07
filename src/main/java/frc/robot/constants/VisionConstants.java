@@ -114,18 +114,18 @@ public class VisionConstants {
         Units.degreesToRadians(97.0)));
 
     private static final Transform3d ROBOT_TO_MOUNT =
-        new Transform3d(
-          new Translation3d(
-            0.0,
-            0.0,
-            0.0
-          ),
-          new Rotation3d(
-              0.0,
-              0.0,
-              0.0
-          )
-        );
+      new Transform3d(
+        new Translation3d(
+          0.0,
+          0.0,
+          0.0
+        ),
+        new Rotation3d(
+          0.0,
+          0.0,
+          0.0
+        )
+      );
 
       private static final Transform3d ROBOT_TO_CAMERA_0 = ROBOT_TO_MOUNT.plus(MOUNT_TO_CAMERA_0);
       private static final Transform3d ROBOT_TO_CAMERA_1 = ROBOT_TO_MOUNT.plus(MOUNT_TO_CAMERA_1);
@@ -165,18 +165,18 @@ public class VisionConstants {
           Units.degreesToRadians(0.0)));
 
       private static final Transform3d ROBOT_TO_MOUNT =
-          new Transform3d(
-            new Translation3d(
-              0.0,
-              0.0,
-              0.0
-            ),
-            new Rotation3d(
-                0.0,
-                0.0,
-                0.0
-            )
-          );
+        new Transform3d(
+          new Translation3d(
+            0.0,
+            0.0,
+            0.0
+          ),
+          new Rotation3d(
+            0.0,
+            0.0,
+            0.0
+          )
+        );
 
       private static final Transform3d ROBOT_TO_CAMERA_0 = ROBOT_TO_MOUNT.plus(MOUNT_TO_CAMERA_0);
       private static final Transform3d ROBOT_TO_CAMERA_1 = ROBOT_TO_MOUNT.plus(MOUNT_TO_CAMERA_1);
@@ -184,6 +184,97 @@ public class VisionConstants {
       public static final VisionIOConstants[] VISION_IO_CONSTANTS = {
         new VisionIOConstantsPhotonVision(CAMERA_0_NAME, ROBOT_TO_CAMERA_0),
         new VisionIOConstantsPhotonVision(CAMERA_1_NAME, ROBOT_TO_CAMERA_1)      
+      };
+    }
+
+    public class Comp2025Mount {
+      /*
+      * Camera_0: FRONT RIGHT module
+      * Camera_1: FRONT LEFT module
+      * Camera_2: BACK RIGHT module
+      */
+      private static final String CAMERA_0_NAME = "Camera_0";
+      private static final String CAMERA_1_NAME = "Camera_1";
+      private static final String CAMERA_2_NAME = "Camera_2";
+
+      private static final Transform3d FR_MAGNET_TO_CAMERA_0 = new Transform3d(
+        new Translation3d(
+          Units.inchesToMeters(-0.267),
+          Units.inchesToMeters(0.374),
+          Units.inchesToMeters(-1.995)),
+        new Rotation3d(
+          Units.degreesToRadians(-5.0),
+          Units.degreesToRadians(0.0),
+          Units.degreesToRadians(55.0)));
+
+      private static final Transform3d FL_MAGNET_TO_CAMERA_1 = new Transform3d(
+        new Translation3d(
+          Units.inchesToMeters(-0.375),
+          Units.inchesToMeters(0.415),
+          Units.inchesToMeters(-1.995)),
+        new Rotation3d(
+          Units.degreesToRadians(-5.0),
+          Units.degreesToRadians(0.0),
+          Units.degreesToRadians(-125.0)));
+
+      private static final Transform3d BR_MAGNET_TO_CAMERA_2 =
+        new Transform3d(
+          new Translation3d(
+            Units.inchesToMeters(-1.118),
+            Units.inchesToMeters(0.200),
+            Units.inchesToMeters(-1.995)
+          ),
+          new Rotation3d(
+            Units.degreesToRadians(-5.0),
+            Units.degreesToRadians(0.0),
+            Units.degreesToRadians(-22.402)
+          )
+        );
+
+      private static final Transform3d ROBOT_TO_FR_MAGNET = 
+        new Transform3d(
+          new Translation3d(
+            Units.inchesToMeters(11.375),
+            Units.inchesToMeters(-11.375),
+            Units.inchesToMeters(6.014)
+          ),
+          new Rotation3d(
+            Units.degreesToRadians(0.0),
+            Units.degreesToRadians(0.0),
+            Units.degreesToRadians(0.0)
+          )
+        );
+      private static final Transform3d ROBOT_TO_FL_MAGNET =
+        new Transform3d(
+          new Translation3d(
+            Units.inchesToMeters(11.375),
+            Units.inchesToMeters(11.375),
+            Units.inchesToMeters(6.014)
+          ),
+          new Rotation3d(
+            Units.degreesToRadians(0.0),
+            Units.degreesToRadians(0.0),
+            Units.degreesToRadians(90.0)
+          )
+        );
+      private static final Transform3d ROBOT_TO_BR_MAGNET =
+        new Transform3d(
+          new Translation3d(
+            Units.inchesToMeters(-11.375),
+            Units.inchesToMeters(-11.375),
+            Units.inchesToMeters(6.014)
+          ),
+          new Rotation3d(
+            Units.degreesToRadians(0.0),
+            Units.degreesToRadians(0.0),
+            Units.degreesToRadians(0.0)
+          )
+        );
+
+      public static final VisionIOConstants[] VISION_IO_CONSTANTS = {
+        new VisionIOConstantsPhotonVision(CAMERA_0_NAME, ROBOT_TO_FR_MAGNET.plus(FR_MAGNET_TO_CAMERA_0)),
+        new VisionIOConstantsPhotonVision(CAMERA_1_NAME, ROBOT_TO_FL_MAGNET.plus(FL_MAGNET_TO_CAMERA_1)),
+        new VisionIOConstantsPhotonVision(CAMERA_2_NAME, ROBOT_TO_BR_MAGNET.plus(BR_MAGNET_TO_CAMERA_2))   
       };
     }
 
