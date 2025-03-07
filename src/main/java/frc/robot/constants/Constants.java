@@ -322,24 +322,24 @@ public class Constants {
     public static final double WRIST_STOW_POSITION_ALGAE = 0.1;
 
     public static final EndEffectorSetpointConstants ALGAE_GROUND = 
-      new EndEffectorSetpointConstants(0.0, 0.0, WRIST_STOW_POSITION_ALGAE);
+      new EndEffectorSetpointConstants(0.0, 0.1441, WRIST_STOW_POSITION_ALGAE);
     public static final EndEffectorSetpointConstants ALGAE_STOW = 
       new EndEffectorSetpointConstants(0.0, WRIST_STOW_POSITION_ALGAE, WRIST_STOW_POSITION_ALGAE);
     public static final EndEffectorSetpointConstants ALGAE_PROCESSOR = 
-    new EndEffectorSetpointConstants(0.0, 0.0, WRIST_STOW_POSITION_ALGAE);
+    new EndEffectorSetpointConstants(4.0, 0.1441, WRIST_STOW_POSITION_ALGAE);
     public static final EndEffectorSetpointConstants ALGAE_L2 = 
-    new EndEffectorSetpointConstants(0.0, 0.0, WRIST_STOW_POSITION_ALGAE);
+    new EndEffectorSetpointConstants(15, 0.12, WRIST_STOW_POSITION_ALGAE);
     public static final EndEffectorSetpointConstants ALGAE_L3 = 
-    new EndEffectorSetpointConstants(0.0, 0.0, WRIST_STOW_POSITION_ALGAE);
+    new EndEffectorSetpointConstants(26, 0.12, WRIST_STOW_POSITION_ALGAE);
     public static final EndEffectorSetpointConstants ALGAE_NET = 
-    new EndEffectorSetpointConstants(0.0, 0.0, WRIST_STOW_POSITION_ALGAE);
+    new EndEffectorSetpointConstants(39.0, 0.1, WRIST_STOW_POSITION_ALGAE);
 
     public static final EndEffectorSetpointConstants CORAL_GROUND = 
-    new EndEffectorSetpointConstants(0.0, 0.0, WRIST_STOW_POSITION_CORAL);
+    new EndEffectorSetpointConstants(0.0, 0.17, WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_STOW = 
     new EndEffectorSetpointConstants(0.0, WRIST_STOW_POSITION_CORAL, WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_L1 = 
-    new EndEffectorSetpointConstants(0.0, 0.0, WRIST_STOW_POSITION_CORAL);
+    new EndEffectorSetpointConstants(4.0, 0.0, WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_L2 = 
     new EndEffectorSetpointConstants(13.756, 0.0, WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_L3 = 
