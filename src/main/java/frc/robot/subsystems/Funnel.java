@@ -14,6 +14,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -58,7 +59,7 @@ public class Funnel extends SubsystemBase implements DiagnosticSubsystem{
   @Override
   public void periodic() {
     pivotMotorSpeedController.updatePID();
-    ConditionalSmartDashboard.putNumber("Funnel/Motor Pos (revs)", getPos());
+    SmartDashboard.putNumber("Funnel/Motor Pos (revs)", getPos());
     ConditionalSmartDashboard.putNumber("Funnel/Set point (revs)", setpoint);
     ConditionalSmartDashboard.putBoolean("Funnel/At Set Point", isAtSetpoint());
     ConditionalSmartDashboard.putNumber("Funnel/Motor Current", getCurrent());

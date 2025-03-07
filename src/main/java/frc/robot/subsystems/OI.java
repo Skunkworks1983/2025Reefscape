@@ -6,7 +6,11 @@ package frc.robot.subsystems;
 
 import java.util.Optional;
 import java.util.function.DoubleFunction;
+import java.util.function.Supplier;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants.EndEffectorSetpoints;
@@ -17,6 +21,7 @@ import frc.robot.commands.funnel.MoveFunnelToSetpoint;
 import frc.robot.commands.tests.JoystickEndEffectorPosition;
 import frc.robot.commands.wrist.MoveWristToSetpoint;
 import frc.robot.subsystems.drivebase.Drivebase;
+import frc.robot.subsystems.drivebase.TeleopFeatureUtils;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.OI.IDs.Buttons;
 import frc.robot.constants.Constants.OI.IDs.Joysticks;
@@ -34,14 +39,27 @@ public class OI {
   private DoubleFunction<Double> joystickToDegreesPerSecond = (
       xInput) -> Math.pow(xInput, Constants.OI.AXIS_INPUT_EXPONENT) * LIMITS.MAX_INSTRUCTED_DEGREES_PER_SECOND;
 
+  public void putRotationJoystickToSmartDashboard() {
+    double rotationJoystickAngleRadidans = Math.atan2(rotationJoystick.getY(), rotationJoystick.getX());
+    double rotationJoystickAngleDegrees = Math.toDegrees(rotationJoystickAngleRadidans);
+    SmartDashboard.putNumber("OI/ Rotation Joystick Angle", rotationJoystickAngleDegrees - 90);
+  }
+ 
+  public void putTranslationJoystickToSmartDashboard() {
+    double translationJoystickAngleRadians = Math.atan2(translationJoystick.getY(), translationJoystick.getX());
+    double translationJoystickAngleDegrees = Math.toDegrees(translationJoystickAngleRadians);
+    SmartDashboard.putNumber("OI/ Translation Joystick Angle", translationJoystickAngleDegrees - 90);
+  }
+  
+
   // Input to the function could be x or y axis.
   // Deadband is applied on each axis individually. This might not be desirable.
   // This function uses the ternary operator ("?") to select between two options
   // in a single expression.
   public DoubleFunction<Double> applyDeadband = (axisInput) -> Math.abs(axisInput) < Constants.OI.AXIS_DEADBAND
       ? 0.0
-      : axisInput;
-
+      : axisInput;    
+    
   public OI(
       Optional<Elevator> optionalElevator,
       Optional<Collector> optionalCollector,
@@ -72,7 +90,31 @@ public class OI {
           .whileTrue(collector.expelAlgaeCommand(true));
     }
 
-    if (optionalClimber.isPresent()) {
+    if (optionalDrivebase.isPresent()) {
+      Drivebase drivebase = optionalDrivebase.get();
+
+      Command targetCommand = drivebase.getSwerveHeadingCorrected(
+          this::getInstructedXMetersPerSecond,
+          this::getInstructedYMetersPerSecond,
+          (Supplier<Rotation2d>) () -> 
+            TeleopFeatureUtils.getPointAtReefFaceAngle(drivebase::getCachedEstimatedRobotPose),
+          true);
+
+      Command targetCoralStationCommand = drivebase.getSwerveHeadingCorrected(
+          this::getInstructedXMetersPerSecond,
+          this::getInstructedYMetersPerSecond,
+          (Supplier<Rotation2d>) () -> 
+            TeleopFeatureUtils.getPointAtCoralStationAngle(drivebase::getCachedEstimatedRobotPose),
+          true);
+
+      new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_REEF_BUTTON)
+          .whileTrue(targetCommand);
+
+      new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_CORAL_STATION_BUTTON)
+          .whileTrue(targetCoralStationCommand);
+    } 
+
+    if(optionalClimber.isPresent()){
       Climber climber = optionalClimber.get();
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.CLIMBER_GOTO_MAX)
           .onTrue(climber.goToPositionAfterMagnetSensor(Constants.Climber.CLIMBER_MAX));
@@ -167,7 +209,7 @@ public class OI {
     return joystickToMetersPerSecond.apply(
         // X and Y are flipped because the joysticks' coordinate system is different
         // from the field
-        applyDeadband.apply(translationJoystick.getY()));
+        applyDeadband.apply(-translationJoystick.getY()));
   }
 
   public double getInstructedYMetersPerSecond() {
@@ -175,7 +217,7 @@ public class OI {
     return joystickToMetersPerSecond.apply(
         // X and Y are flipped because the joysticks' coordinate system is different
         // from the field
-        applyDeadband.apply(translationJoystick.getX()));
+        applyDeadband.apply(-translationJoystick.getX()));
   }
 
   public double getInstructedDegreesPerSecond() {
