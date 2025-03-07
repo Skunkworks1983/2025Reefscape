@@ -34,7 +34,7 @@ public class MoveEndEffector extends SequentialCommandGroup {
         elevatorUp = !interrupted;
       }),
       new MoveWristToSetpoint(wrist, setpoint.wristSetpoint).beforeStarting(() -> {
-        if(elevatorUp && wristUp) {
+        if(!(elevatorUp && wristUp)) {
           this.cancel();
         }
       })

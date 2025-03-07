@@ -129,10 +129,10 @@ public class OI {
       new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_CORAL_STATION_BUTTON)
           .whileTrue(targetCoralStationCommand);
 
-      new JoystickButton(translationJoystick, 4)
+      new JoystickButton(translationJoystick, 5)
           .whileTrue(AlignCoralRightCommand);
 
-      new JoystickButton(translationJoystick, 5)
+      new JoystickButton(translationJoystick, 4)
           .whileTrue(AlignCoralRightCommand);
     } 
 

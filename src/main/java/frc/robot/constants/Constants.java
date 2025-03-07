@@ -116,7 +116,7 @@ public class Constants {
   }
 
   public class Drivebase {
-    public static final String CANIVORE_NAME = Testing.ROBOT == Testing.Robot.Comp2025 ? "Evil Canivore" : "1983 Comp Drivebase";
+    public static final String CANIVORE_NAME = Testing.ROBOT == Testing.Robot.Comp2025 ? "Drivebase 2025" : "1983 Comp Drivebase";
     public static final int PIGEON_ID = Testing.ROBOT == Testing.Robot.Comp2025 ? 22 : 26;
     public static final int LIDAR_RIGHT_DATA_PORT = 8;
     public static final int LIDAR_RIGHT_TRIGGER_PORT = 7;
@@ -258,7 +258,7 @@ public class Constants {
     public static final double TOLORENCE_METERS_FOR_SETPOINT = 0.0;
     // This tolerance value will be used for moving to a setpoint
     // using the MoveToPositionCommand.
-    public static final double TOLERENCE_METERS_FOR_MOVE_TO_POSITION = 0.0;
+    public static final double TOLERENCE_METERS_FOR_MOVE_TO_POSITION = 0.25;
 
     // In meters
     public static final double MAX_HEIGHT_CARRIAGE = 1.527175;
@@ -311,7 +311,7 @@ public class Constants {
     public static final double WRIST_MAX_VELOCITY = 1;
     public static final double WRIST_MAX_ACCELERATION = 2; 
 
-    public static final double WRIST_TOLERANCE = 0.01;
+    public static final double WRIST_TOLERANCE = 0.02;
 
     public static final int WRIST_GEAR_RATIO = 56; // 56 motor rotations to 1 wrist rotation
 
