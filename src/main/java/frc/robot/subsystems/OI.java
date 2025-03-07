@@ -110,14 +110,14 @@ public class OI {
           this::getInstructedXMetersPerSecond,
           this::getInstructedYMetersPerSecond,
           -alignSpeed,
-          true
+          /*goingRight=*/true
       );
 
       Command AlineCoralLeftCommand = drivebase.getSwerveAlignCoral(
           this::getInstructedXMetersPerSecond,
           this::getInstructedYMetersPerSecond,
           alignSpeed,
-          false
+          /*goingRight=*/false
       );
 
       new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_REEF_BUTTON)
