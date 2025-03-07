@@ -12,6 +12,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
@@ -108,7 +109,7 @@ public class Collector extends SubsystemBase {
         rightMotor.getSupplyCurrent().getValueAsDouble());
     ConditionalSmartDashboard.putNumber("Collector/Left motor current",
         leftMotor.getSupplyCurrent().getValueAsDouble());
-    ConditionalSmartDashboard.putBoolean("Collector/Beambreak collector", !beambreak.get());
+    SmartDashboard.putBoolean("Collector/Beambreak collector", !beambreak.get());
   }
 
   public double getLeftMotorVelocity() {

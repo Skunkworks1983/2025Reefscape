@@ -32,7 +32,9 @@ public class Robot extends TimedRobot {
   // replace subsystem with Optional.empty() when you do not wish to use add all
   // subsystems. ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
 
-  Optional<Drivebase> drivebase = Optional.empty();
+  
+
+  Optional<Drivebase> drivebase = Optional.of(new Drivebase());
   Optional<Elevator> elevator = Optional.of(new Elevator());
   Optional<Collector> collector = Optional.of(new Collector());
   Optional<Wrist> wrist = Optional.of(new Wrist());
@@ -49,8 +51,9 @@ public class Robot extends TimedRobot {
     drivebase,
     funnel
   );
-  
+
   ErrorGroup errorGroup = new ErrorGroup();
+  Command automatedVisionMountTest;
 
   public Robot() {
     DataLogManager.start();
@@ -70,6 +73,9 @@ public class Robot extends TimedRobot {
       }
       if (climber.isEmpty()) {
         throw new IllegalStateException("Climber not present");
+      }
+      if (Constants.Testing.ROBOT != Constants.Testing.Robot.Comp2025) {
+        throw new IllegalStateException("Using 2024 drivebase constants! Change to 2025 (Constants.Testing.ROBOT)");
       }
     }
 
@@ -160,7 +166,6 @@ public class Robot extends TimedRobot {
     }
   }
 
-
   @Override
   public void autonomousPeriodic() {}
 
@@ -178,7 +183,10 @@ public class Robot extends TimedRobot {
   }
   
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    oi.putRotationJoystickToSmartDashboard();
+    oi.putTranslationJoystickToSmartDashboard();
+  }
 
   @Override
   public void disabledPeriodic() {}

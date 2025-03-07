@@ -13,7 +13,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.Timer;
 
-public class VisionIOPhotonVision implements VisionIO {
+public class VisionIOPhotonVision implements VisionIO{
 
   private final String cameraName;
   private final Transform3d robotToCamera;
