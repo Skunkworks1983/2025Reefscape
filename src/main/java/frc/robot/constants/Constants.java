@@ -116,10 +116,10 @@ public class Constants {
   public class Drivebase {
     public static final String CANIVORE_NAME = Testing.ROBOT == Testing.Robot.Comp2025 ? "Evil Canivore" : "1983 Comp Drivebase";
     public static final int PIGEON_ID = Testing.ROBOT == Testing.Robot.Comp2025 ? 22 : 26;
-    public static final int LIDAR_RIGHT_DATA_PORT = 0;
-    public static final int LIDAR_RIGHT_TRIGGER_PORT = 0;
-    public static final int LIDAR_LEFT_DATA_PORT = 0;
-    public static final int LIDAR_LEFT_TRIGGER_PORT = 0;
+    public static final int LIDAR_RIGHT_DATA_PORT = 8;
+    public static final int LIDAR_RIGHT_TRIGGER_PORT = 7;
+    public static final int LIDAR_LEFT_DATA_PORT = 4;
+    public static final int LIDAR_LEFT_TRIGGER_PORT = 3;
     public static final int LIDAR_TRIGGER_DISTANCE = 40;
     public static final double MAX_METERS_PER_SECOND = 4.5;
     public static final double MAX_DEGREES_PER_SECOND = 270;
