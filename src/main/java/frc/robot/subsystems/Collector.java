@@ -83,7 +83,7 @@ public class Collector extends SubsystemBase {
   }
 
   // meters per sec
-  private void setCollectorSpeeds(double rightSpeed, double leftSpeed) {
+  public void setCollectorSpeeds(double rightSpeed, double leftSpeed) {
     if (rightSpeed != lastRightSpeed) {
       rightMotor.setControl(velocityVoltage
           .withVelocity(rightSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER).withEnableFOC(true)
