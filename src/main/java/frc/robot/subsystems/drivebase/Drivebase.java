@@ -309,11 +309,12 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       double alignSpeed,
       boolean goingRight) {
 
+    double newAlignSpeed = alignSpeed * (goingRight ? -1 : 1);
     Rotation2d[] targetHeading = new Rotation2d[0];
 
     return getSwerveHeadingCorrected(
-            () -> {return (getXMetersPerSecond.getAsDouble() * 0.5) + TeleopFeatureUtils.getReefFaceSpeedX(targetHeading[0], alignSpeed);},
-            () -> {return (getYMetersPerSecond.getAsDouble() * 0.5) + TeleopFeatureUtils.getReefFaceSpeedY(targetHeading[0], alignSpeed);},
+            () -> {return (getXMetersPerSecond.getAsDouble() * 0.5) + TeleopFeatureUtils.getReefFaceSpeedX(targetHeading[0], newAlignSpeed);},
+            () -> {return (getYMetersPerSecond.getAsDouble() * 0.5) + TeleopFeatureUtils.getReefFaceSpeedY(targetHeading[0], newAlignSpeed);},
             () -> targetHeading[0],
             true
     ).beforeStarting(
