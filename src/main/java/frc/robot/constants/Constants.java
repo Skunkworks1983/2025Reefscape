@@ -48,7 +48,7 @@ public class Constants {
     // must be constructed and assigned to the correct variable in Robot.java.
     // If some subsystems are not created and this value is true, an exeption
     // will be thrown.
-    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = true;
+    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = false;
 
     public static enum Robot {
       Comp2024,
@@ -56,7 +56,7 @@ public class Constants {
     }
   
     // Change this to test on the 2024 robot's drivebase.
-    public static Robot ROBOT = Robot.Comp2025;
+    public static Robot ROBOT = Robot.Comp2024;
 
     public static final double NUMBER_OF_MOTOR_ROTATIONS_FOR_MODULE_TEST = 1.0;
     public static final double TURN_MOTOR_ROTATION_SPEED = 0.15;
@@ -413,6 +413,7 @@ public class Constants {
 
         public static final int TARGET_REEF_BUTTON = 1;
         public static final int TARGET_CORAL_STATION_BUTTON = 2;
+        public static final int TARGET_CORAL_CYCLE_NO_ODOMETRY_BUTTON = 3;
 
         public static final int RAISE_FUNNEL_TOGGLE = 0;
 

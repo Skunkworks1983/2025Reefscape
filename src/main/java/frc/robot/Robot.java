@@ -26,11 +26,11 @@ public class Robot extends TimedRobot {
   
 
   Optional<Drivebase> drivebase = Optional.of(new Drivebase());
-  Optional<Elevator> elevator = Optional.of(new Elevator());
-  Optional<Collector> collector = Optional.of(new Collector());
-  Optional<Wrist> wrist = Optional.of(new Wrist());
-  Optional<Climber> climber = Optional.of(new Climber());
-  Optional<Funnel> funnel = Optional.of(new Funnel());
+  Optional<Elevator> elevator = Optional.empty(); // of(new Elevator());
+  Optional<Collector> collector = Optional.empty(); //of(new Collector());
+  Optional<Wrist> wrist = Optional.empty();//.of(new Wrist());
+  Optional<Climber> climber = Optional.empty(); //of(new Climber());
+  Optional<Funnel> funnel = Optional.empty(); // of(new Funnel());
 
   OI oi = new OI( 
     elevator,

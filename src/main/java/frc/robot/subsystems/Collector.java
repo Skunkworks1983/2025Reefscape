@@ -128,6 +128,10 @@ public class Collector extends SubsystemBase {
     return leftMotor.getPosition().getValueAsDouble();
   }
 
+  public boolean isHoldingCoral() {
+    return beambreak.get();
+  }
+
   public void setCollectorSetPoint(double newRightSetpoint, double newLeftSetpoint) {
     rightMotor.setControl(
         positionVoltage.withPosition(newRightSetpoint).withSlot(1));
