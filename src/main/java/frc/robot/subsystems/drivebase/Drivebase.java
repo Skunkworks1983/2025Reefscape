@@ -328,7 +328,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
             true
     ).beforeStarting(
       () -> {
-        targetHeading[0] = TeleopFeatureUtils.getPointAtReefFaceAngle(this::getCachedEstimatedRobotPose);
+        targetHeading[0] = TeleopFeatureUtils.getCoralCycleAngleNoOdometry(true, cachedGyroHeading);
       }
     ).until(
       () -> {
