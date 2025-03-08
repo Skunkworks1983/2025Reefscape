@@ -41,6 +41,8 @@ public class JoystickEndEffectorPosition extends Command {
 
   @Override
   public void initialize() {
+    wristPosition = wrist.getPosition();
+    elevatorPosition = elevator.getElevatorPosition();
     time = Timer.getFPGATimestamp();
   }
 

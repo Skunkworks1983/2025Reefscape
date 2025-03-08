@@ -195,8 +195,8 @@ public class Collector extends SubsystemBase {
   {
     return runEnd(
       () -> {
-        setCollectorSpeeds(Constants.Collector.Speeds.CORAL_EXPEL_SLOW_SPEED, 
-          Constants.Collector.Speeds.CORAL_EXPEL_SLOW_SPEED);
+        setCollectorSpeeds(Constants.Collector.Speeds.CORAL_EXPEL_FAST_SPEED, 
+          Constants.Collector.Speeds.CORAL_EXPEL_FAST_SPEED);
       },
       () -> {
         if(stopOnEnd) {

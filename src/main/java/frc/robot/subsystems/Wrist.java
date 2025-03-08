@@ -26,8 +26,8 @@ public class Wrist extends SubsystemBase {
   StatusSignal<Angle> wristPos;
 
   // We do not currently have working limit switches on the wrist
-  // private DigitalInput topMagnetSensor;
-  // private DigitalInput bottomMagnetSensor;
+  private DigitalInput topMagnetSensor = new DigitalInput(Constants.Wrist.IDs.WRIST_TOP_MAGNET_SENSOR);
+  private DigitalInput bottomMagnetSensor = new DigitalInput(Constants.Wrist.IDs.WRIST_BOTTOM_MAGNET_SENSOR);
 
   private SmartPIDControllerTalonFX smartPIDController;
 
@@ -36,9 +36,6 @@ public class Wrist extends SubsystemBase {
     wristMotor = new TalonFX(Constants.Wrist.IDs.WRIST_KRAKEN_MOTOR_ID, "Collector 2025");
     
     wristMotor.setPosition(0.0);
-
-    // topMagnetSensor = new DigitalInput(Constants.Wrist.IDs.WRIST_TOP_MAGNET_SENSOR);
-    // bottomMagnetSensor = new DigitalInput(Constants.Wrist.IDs.WRIST_BOTTOM_MAGNET_SENSOR);
 
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.CurrentLimits = CurrentLimits.KRAKEN_CURRENT_LIMIT_CONFIG;
@@ -64,8 +61,8 @@ public class Wrist extends SubsystemBase {
     
     ConditionalSmartDashboard.putNumber("Wrist/Wrist velocity (rotations per second)", getWristVelocity());
     SmartDashboard.putNumber("Wrist/Wrist motor position(rotations)", getPosition());
-    // SmartDashboard.putBoolean("Wrist/Bottom wrist magnet state", getBottomMagnetSensor());
-    // SmartDashboard.putBoolean("Wrist/Top wrist magnet state", getTopMagnetSensor());
+    SmartDashboard.putBoolean("Wrist/Bottom wrist magnet state", getBottomMagnetSensor());
+    SmartDashboard.putBoolean("Wrist/Top wrist magnet state", getTopMagnetSensor());
 
     // Setposition counts as a config update, try and do this sparingly
     // if (getTopMagnetSensor() && Math.abs(wristMotor.getPosition().getValueAsDouble() - Constants.Wrist.WRIST_MAX_ROTATIONS) > .001) {
@@ -78,13 +75,13 @@ public class Wrist extends SubsystemBase {
   }
 
   // magnet outputs reversed so that they are true when triggered
-  // public boolean getTopMagnetSensor() { 
-  //   return !topMagnetSensor.get();
-  // }
+  public boolean getTopMagnetSensor() { 
+    return !topMagnetSensor.get();
+  }
 
-  // public boolean getBottomMagnetSensor() {
-  //   return !bottomMagnetSensor.get();
-  // }
+  public boolean getBottomMagnetSensor() {
+    return !bottomMagnetSensor.get();
+  }
 
   public double getPosition() {
     return wristMotor.getPosition().getValueAsDouble() / Constants.Wrist.WRIST_GEAR_RATIO;

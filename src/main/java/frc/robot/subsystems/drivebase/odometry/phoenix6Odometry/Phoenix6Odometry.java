@@ -57,7 +57,7 @@ public class Phoenix6Odometry {
     // Note: waitForAll uses signals as an out param.
     // Using toArray(new BaseStatusSignal[0]) to specify type to be used
     StatusCode status = BaseStatusSignal.waitForAll(
-      1.0 / Constants.Phoenix6Odometry.updatesPerSecond,
+      2.0 / Constants.Phoenix6Odometry.updatesPerSecond,
       getAllSignals().toArray(new BaseStatusSignal[0])
     );
 

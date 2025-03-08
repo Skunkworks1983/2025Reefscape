@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -316,32 +317,40 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       DoubleSupplier getXMetersPerSecond,
       DoubleSupplier getYMetersPerSecond,
       double alignSpeed,
-      boolean goingRight) {
+      boolean goingRight,
+      double backSeconds) {
 
     double newAlignSpeed = alignSpeed * (goingRight ? -1 : 1);
     Rotation2d[] targetHeading = new Rotation2d[1];
 
-    return getSwerveHeadingCorrected(
-            () -> {return (getXMetersPerSecond.getAsDouble() * 0.5) + TeleopFeatureUtils.getReefFaceSpeedX(targetHeading[0], newAlignSpeed);},
-            () -> {return (getYMetersPerSecond.getAsDouble() * 0.5) + TeleopFeatureUtils.getReefFaceSpeedY(targetHeading[0], newAlignSpeed);},
-            () -> targetHeading[0],
-            true
-    ).beforeStarting(
-      () -> {
-        targetHeading[0] = TeleopFeatureUtils.getCoralCycleAngleNoOdometry(true, cachedGyroHeading);
-        System.out.println("Target Heading: " + targetHeading[0] + " X: " + TeleopFeatureUtils.getReefFaceSpeedX(targetHeading[0], newAlignSpeed) + " Y: " + TeleopFeatureUtils.getReefFaceSpeedY(targetHeading[0], newAlignSpeed));
-      }
-    ).until(
-      () -> {
-        if(goingRight) {
-          return lidarRight.isTripped();
+    return Commands.sequence(
+      getSwerveHeadingCorrected(
+              () -> {return (getXMetersPerSecond.getAsDouble() * 0.5) + TeleopFeatureUtils.getReefFaceSpeedX(targetHeading[0], newAlignSpeed);},
+              () -> {return (getYMetersPerSecond.getAsDouble() * 0.5) + TeleopFeatureUtils.getReefFaceSpeedY(targetHeading[0], newAlignSpeed);},
+              () -> targetHeading[0],
+              true
+      ).beforeStarting(
+        () -> {
+          targetHeading[0] = TeleopFeatureUtils.getCoralCycleAngleNoOdometry(true, cachedGyroHeading);
+          System.out.println("Target Heading: " + targetHeading[0] + " X: " + TeleopFeatureUtils.getReefFaceSpeedX(targetHeading[0], newAlignSpeed) + " Y: " + TeleopFeatureUtils.getReefFaceSpeedY(targetHeading[0], newAlignSpeed));
         }
-        else {
-          return lidarLeft.isTripped();
+      ).until(
+        () -> {
+          if(goingRight == (Math.abs(MathUtil.inputModulus(targetHeading[0].getDegrees(), -180, 180)) > 90)) {
+            return lidarRight.isTripped();
+          }
+          else {
+            return lidarLeft.isTripped();
+          }
         }
-      }
+      ),
+      getSwerveHeadingCorrected(
+              () -> {return TeleopFeatureUtils.getReefFaceSpeedX(targetHeading[0], -newAlignSpeed * 0.5);},
+              () -> {return TeleopFeatureUtils.getReefFaceSpeedY(targetHeading[0], -newAlignSpeed * 0.5);},
+              () -> targetHeading[0],
+              true
+      ).withTimeout(backSeconds)
     );
-  
   }
 
   /**
