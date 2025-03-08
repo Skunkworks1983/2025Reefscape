@@ -4,9 +4,14 @@
 
 package frc.robot.commands.drivebase;
 
+import java.util.Optional;
+
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drivebase.Drivebase;
@@ -27,6 +32,15 @@ public class TrapezoidProfileDriveOut extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+
+    Optional<Alliance> alliance = DriverStation.getAlliance();
+    if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Blue) {
+      drivebase.resetGyroHeading(Rotation2d.fromDegrees(180));
+    }
+    else {
+      drivebase.resetGyroHeading(Rotation2d.fromDegrees(0));
+    }
+    
     timeElasped.reset();
     timeElasped.start();
   }

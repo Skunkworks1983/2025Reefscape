@@ -370,7 +370,7 @@ public class Constants {
     public static final EndEffectorSetpointConstants ALGAE_STOW = 
       new EndEffectorSetpointConstants(0.0, WRIST_STOW_POSITION_ALGAE, WRIST_STOW_POSITION_ALGAE);
     public static final EndEffectorSetpointConstants ALGAE_PROCESSOR = 
-      new EndEffectorSetpointConstants(7.0, 0.3941, WRIST_STOW_POSITION_ALGAE);
+      new EndEffectorSetpointConstants(11.0, 0.3941, WRIST_STOW_POSITION_ALGAE);
     public static final EndEffectorSetpointConstants ALGAE_L2 = 
       new EndEffectorSetpointConstants(19.018 + 5, 0.3941, WRIST_STOW_POSITION_ALGAE);
     public static final EndEffectorSetpointConstants ALGAE_L3 = 

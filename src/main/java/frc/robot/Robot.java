@@ -23,6 +23,7 @@ import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.error.DiagnosticSubsystem;
 import frc.robot.commands.MoveEndEffector;
 import frc.robot.commands.drivebase.DeadReckoningDriveOut;
+import frc.robot.commands.drivebase.TrapezoidProfileDriveOut;
 import frc.robot.commands.funnel.MoveFunnelToSetpoint;
 import frc.robot.commands.tests.JoystickElevatorVelocity;
 import frc.robot.constants.Constants;
@@ -58,6 +59,7 @@ public class Robot extends TimedRobot {
   Command automatedVisionMountTest;
 
   Command deadReckoningDriveOut;
+  Command trapezoidProfileDriveOut;
 
   public Robot() {
     DataLogManager.start();
@@ -100,6 +102,7 @@ public class Robot extends TimedRobot {
       );
 
       deadReckoningDriveOut = new DeadReckoningDriveOut(drivebase.get());
+      trapezoidProfileDriveOut = new TrapezoidProfileDriveOut(drivebase.get());
     }
 
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -174,12 +177,12 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     drivebase.get().resetGyroHeading();
-    Command autoCommand = autoChooser.getSelected();
-    if(autoCommand != null) {
-      autoCommand.schedule();
-    }
+    // Command autoCommand = autoChooser.getSelected();
+    // if(autoCommand != null) {
+    //   autoCommand.schedule();
+    // }
 
-    deadReckoningDriveOut.schedule();
+    trapezoidProfileDriveOut.schedule();
   }
 
   @Override
