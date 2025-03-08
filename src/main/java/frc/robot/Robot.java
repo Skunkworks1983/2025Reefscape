@@ -22,6 +22,7 @@ import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.error.DiagnosticSubsystem;
 import frc.robot.commands.MoveEndEffector;
+import frc.robot.commands.drivebase.DeadReckoningDriveOut;
 import frc.robot.commands.funnel.MoveFunnelToSetpoint;
 import frc.robot.commands.tests.JoystickElevatorVelocity;
 import frc.robot.constants.Constants;
@@ -55,6 +56,8 @@ public class Robot extends TimedRobot {
 
   ErrorGroup errorGroup = new ErrorGroup();
   Command automatedVisionMountTest;
+
+  Command deadReckoningDriveOut;
 
   public Robot() {
     DataLogManager.start();
@@ -95,6 +98,8 @@ public class Robot extends TimedRobot {
           true
         )
       );
+
+      deadReckoningDriveOut = new DeadReckoningDriveOut(drivebase.get());
     }
 
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -172,6 +177,8 @@ public class Robot extends TimedRobot {
     if(autoCommand != null) {
       autoCommand.schedule();
     }
+
+    deadReckoningDriveOut.schedule();
   }
 
   @Override
