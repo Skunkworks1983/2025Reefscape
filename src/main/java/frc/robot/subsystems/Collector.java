@@ -8,6 +8,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -45,18 +46,17 @@ public class Collector extends SubsystemBase {
 
   /** Creates a new Collector. */
   public Collector() {
-   rightMotor = new TalonFX(Constants.Collector.IDs.RIGHT_MOTOR);
-   leftMotor = new TalonFX(Constants.Collector.IDs.LEFT_MOTOR);
+   rightMotor = new TalonFX(Constants.Collector.IDs.RIGHT_MOTOR, "Collector 2025");
+   leftMotor = new TalonFX(Constants.Collector.IDs.LEFT_MOTOR, "Collector 2025");
 
-    leftMotor.setInverted(true);
     setDefaultCommand(holdPositionCommand());
 
     TalonFXConfiguration talonConfigCollectorMotor = new TalonFXConfiguration();
     talonConfigCollectorMotor.CurrentLimits = CurrentLimits.KRAKEN_CURRENT_LIMIT_CONFIG;
 
     talonConfigCollectorMotor.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-
     rightMotor.getConfigurator().apply(talonConfigCollectorMotor);
+    talonConfigCollectorMotor.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     leftMotor.getConfigurator().apply(talonConfigCollectorMotor);
 
     //Dual Pids with two slots, one for velocity and one for position
@@ -158,22 +158,23 @@ public class Collector extends SubsystemBase {
     int endCount [] = {0}; // This value needs to be effectivly final 
     return runEnd(
       () -> {
-        setCollectorSpeeds(Constants.Collector.Speeds.CORAL_INTAKE_FAST_SPEED, 
-          Constants.Collector.Speeds.CORAL_INTAKE_FAST_SPEED * Constants.Collector.Speeds.SPEED_MULIPILER_LEFT);
+        setCollectorSpeeds(Constants.Collector.Speeds.CORAL_INTAKE_SLOW_SPEED, 
+          Constants.Collector.Speeds.CORAL_INTAKE_SLOW_SPEED * Constants.Collector.Speeds.SPEED_MULIPILER_LEFT);
       },
       () -> {
         if(stopOnEnd) {
           setCollectorSpeeds(0, 0);
         }
       }
+    ).beforeStarting(
+      () -> {
+        endCount[0] = 0;
+      }
     ).until(
       () -> {
         ConditionalSmartDashboard.putNumber("Collector/Amp cut off right", rightMotor.getSupplyCurrent().getValueAsDouble());
         ConditionalSmartDashboard.putNumber("Collector/Amp cut off left", leftMotor.getSupplyCurrent().getValueAsDouble());
-        if (rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF ||
-            leftMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.COLLECTOR_AMPS_BEFORE_CUTTOF ||
-            rightMotor.getSupplyCurrent().getValueAsDouble() < 0 ||
-            leftMotor.getSupplyCurrent().getValueAsDouble() < 0) 
+        if (!beambreak.get()) 
         {
           endCount[0]++;
         }
@@ -181,7 +182,7 @@ public class Collector extends SubsystemBase {
         {
           endCount[0] = 0;
         }
-        return endCount[0] >= Constants.Collector.END_COUNT_TICK_COUNTER;
+        return endCount[0] >= Constants.Collector.END_COUNT_TICK_COUNTER_CORAL;
       }
     );
   }
@@ -226,6 +227,10 @@ public class Collector extends SubsystemBase {
           setCollectorSpeeds(0, 0);
         }
       }
+    ).beforeStarting(
+      () -> {
+        endCount[0] = 0;
+      }
     ).until(
       () -> {
         if (rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.ALGAE_AMP_CUT_OFF &&
@@ -237,7 +242,7 @@ public class Collector extends SubsystemBase {
         {
           endCount[0] = 0;
         }
-        return endCount[0] > Constants.Collector.END_COUNT_TICK_COUNTER;
+        return endCount[0] > Constants.Collector.END_COUNT_TICK_COUNTER_ALGAE;
       }
     );
   }

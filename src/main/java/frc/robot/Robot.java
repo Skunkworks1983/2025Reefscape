@@ -14,6 +14,7 @@ import frc.robot.utils.error.ErrorCommandGenerator;
 import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.error.DiagnosticSubsystem;
+import frc.robot.commands.tests.JoystickElevatorVelocity;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.drivebase.Drivebase;
@@ -29,8 +30,8 @@ public class Robot extends TimedRobot {
   Optional<Elevator> elevator = Optional.of(new Elevator());
   Optional<Collector> collector = Optional.of(new Collector());
   Optional<Wrist> wrist = Optional.of(new Wrist());
-  Optional<Climber> climber = Optional.of(new Climber());
-  Optional<Funnel> funnel = Optional.of(new Funnel());
+  Optional<Climber> climber = Optional.empty();
+  Optional<Funnel> funnel = Optional.empty();
 
   OI oi = new OI( 
     elevator,
@@ -60,8 +61,11 @@ public class Robot extends TimedRobot {
       if (wrist.isEmpty()) {
         throw new IllegalStateException("Wrist not present");
       }
-      if (climber.isEmpty()) {
-        throw new IllegalStateException("Climber not present");
+      if (climber.isPresent()) {
+        throw new IllegalStateException("Climber is present"); // Climber will not be part of our robot in our first match
+      }
+      if (funnel.isPresent()) {
+        throw new IllegalStateException("Funnel is present"); // Funnel will not be part of our robot in our first match
       }
       if (Constants.Testing.ROBOT != Constants.Testing.Robot.Comp2025) {
         throw new IllegalStateException("Using 2024 drivebase constants! Change to 2025 (Constants.Testing.ROBOT)");
@@ -90,23 +94,13 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousInit() {
-  }
+  public void autonomousInit() {}
 
   @Override
   public void autonomousPeriodic() {}
 
   @Override
-  public void teleopInit() { 
-    if(drivebase.isPresent()) {
-      drivebase.get().getSwerveCommand(
-        oi::getInstructedXMetersPerSecond,
-        oi::getInstructedYMetersPerSecond,
-        oi::getInstructedDegreesPerSecond,
-        true
-      ).schedule();
-    }
-  }
+  public void teleopInit() {}
   
   @Override
   public void teleopPeriodic() {
