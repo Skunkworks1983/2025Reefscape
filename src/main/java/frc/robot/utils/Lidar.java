@@ -13,12 +13,14 @@ public class Lidar {
   private double triggerDistance;
   private double lastTime;
   private double dist;
+  private double triggerCutoff;
 
   private Counter lidar;
   private DigitalOutput output;
 
-  public Lidar(int dataPort, int triggerPort, double triggerDistance) {
+  public Lidar(int dataPort, int triggerPort, double triggerDistance, double triggerCutoff) {
     this.triggerDistance = triggerDistance;
+    this.triggerCutoff = triggerCutoff;
     lidar = new Counter(dataPort);
     output = new DigitalOutput(triggerPort);
 
@@ -35,18 +37,23 @@ public class Lidar {
 
   public double getDistance() {
     double currentTime = Timer.getFPGATimestamp();
-    if(currentTime - lastTime < 0.02) {
+    if(currentTime - lastTime < 0.04) {
       return dist;
     }
     lastTime = currentTime;
     output.set(true);
     double v = lidar.getPeriod();
+    double d;
     if(lidar.get() < 1){
-      dist = 0;
+      d = 0;
     }
     else {
-      dist = v * 1000000.0 / 10.0;
+      d = v * 1000000.0 / 10.0;
     }
+    if(d > triggerCutoff) {
+      d = dist;
+    }
+    dist = d;
     output.set(false);
     return dist;
   }

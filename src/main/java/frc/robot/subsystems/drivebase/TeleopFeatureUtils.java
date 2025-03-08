@@ -102,4 +102,13 @@ public class TeleopFeatureUtils {
       }
     }
   }
+
+  public static boolean isCloseSideOfReef(Rotation2d gyroHeading) {
+    if(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
+      return (Math.abs(MathUtil.inputModulus(gyroHeading.getDegrees(), -180, 180)) > 90);
+    }
+    else {
+      return (Math.abs(MathUtil.inputModulus(gyroHeading.getDegrees(), -180, 180)) < 90);
+    }
+  }
 }

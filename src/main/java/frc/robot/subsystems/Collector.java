@@ -163,7 +163,7 @@ public class Collector extends SubsystemBase {
     return runEnd(
       () -> {
         setCollectorSpeeds(Constants.Collector.Speeds.CORAL_INTAKE_SLOW_SPEED, 
-          Constants.Collector.Speeds.CORAL_INTAKE_SLOW_SPEED * Constants.Collector.Speeds.SPEED_MULIPILER_LEFT);
+          Constants.Collector.Speeds.CORAL_INTAKE_SLOW_SPEED);
       },
       () -> {
         if(stopOnEnd) {

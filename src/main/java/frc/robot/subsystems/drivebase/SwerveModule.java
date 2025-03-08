@@ -133,7 +133,7 @@ public class SwerveModule extends SubsystemBase {
       updateSpeedToSetpointTurn();
     }
 
-    SmartDashboard.putNumber("Drivebase/Swerve Module orientation",getTurnMotorAngle().getDegrees());
+    //SmartDashboard.putNumber("Drivebase/Swerve Module orientation",getTurnMotorAngle().getDegrees());
   }
 
   // only used if we want to run a manual speed on the motor

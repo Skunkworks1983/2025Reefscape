@@ -71,8 +71,8 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       Constants.Drivebase.PIDs.HEADING_CONTROL_kD);
 
   private Pigeon2 gyro = new Pigeon2(Constants.Drivebase.PIGEON_ID, Constants.Drivebase.CANIVORE_NAME);
-  private Lidar lidarRight = new Lidar(Constants.Drivebase.LIDAR_RIGHT_DATA_PORT, Constants.Drivebase.LIDAR_RIGHT_TRIGGER_PORT, Constants.Drivebase.LIDAR_TRIGGER_DISTANCE);
-  private Lidar lidarLeft = new Lidar(Constants.Drivebase.LIDAR_LEFT_DATA_PORT, Constants.Drivebase.LIDAR_LEFT_TRIGGER_PORT, Constants.Drivebase.LIDAR_TRIGGER_DISTANCE);
+  private Lidar lidarRight = new Lidar(Constants.Drivebase.LIDAR_RIGHT_DATA_PORT, Constants.Drivebase.LIDAR_RIGHT_TRIGGER_PORT, Constants.Drivebase.LIDAR_TRIGGER_DISTANCE, 30000);
+  private Lidar lidarLeft = new Lidar(Constants.Drivebase.LIDAR_LEFT_DATA_PORT, Constants.Drivebase.LIDAR_LEFT_TRIGGER_PORT, Constants.Drivebase.LIDAR_TRIGGER_DISTANCE, 30000);
   private StructArrayPublisher<SwerveModuleState> desiredSwervestate = NetworkTableInstance.getDefault()
       .getStructArrayTopic("Desired swervestate", SwerveModuleState.struct).publish();
   private StructArrayPublisher<SwerveModuleState> actualSwervestate = NetworkTableInstance.getDefault()
@@ -103,7 +103,9 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
             .map(module -> module.getState())
             .toArray(Phoenix6SwerveModuleState[]::new),
         phoenix6Odometry::setReadLock,
-        moduleLocations);
+        moduleLocations,
+        this
+      );
 
     
     // Reset the heading of the pose estimator to the correct side of the field. 
@@ -180,6 +182,8 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     SmartDashboard.putNumber("Gyro Position", gyro.getYaw().getValueAsDouble());
     SmartDashboard.putBoolean("Lidar Left", lidarLeft.isTripped());
     SmartDashboard.putBoolean("Lidar Right", lidarRight.isTripped());
+    SmartDashboard.putNumber("Lidar Left pos", lidarLeft.getDistance());
+    SmartDashboard.putNumber("Lidar Right pos", lidarRight.getDistance());
   }
 
   /**
@@ -241,11 +245,20 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   }
 
   public void resetGyroHeading() {
-    gyro.reset();
     Optional<Alliance> alliance = DriverStation.getAlliance();
     if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
-      gyro.setYaw(180);
+      resetGyroHeading(Rotation2d.fromDegrees(180));
     }
+    else {
+      resetGyroHeading(Rotation2d.fromDegrees(0));
+    }
+  }
+
+  public void resetGyroHeading(Rotation2d newHeading) {
+    positionEstimator.stateLock.readLock().lock();
+    gyro.reset();
+    gyro.setYaw(newHeading.getDegrees());
+    positionEstimator.stateLock.readLock().unlock();
   }
 
   public void setAllDriveMotorBreakMode(boolean breakMode) {
@@ -394,7 +407,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
         }
       ).until(
         () -> {
-          if(goingRight == (Math.abs(MathUtil.inputModulus(targetHeading[0].getDegrees(), -180, 180)) > 90)) {
+          if(goingRight == TeleopFeatureUtils.isCloseSideOfReef(targetHeading[0])) {
             return lidarRight.isTripped();
           }
           else {
@@ -502,6 +515,17 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
   public Command followAutoTrajectory(String autoName) {
     return new PathPlannerAuto(autoName);
+  }
+
+  public Command resetGyro() {
+    return Commands.runEnd(
+      () -> {
+        resetGyroHeading();
+      },
+      () -> {
+
+      }
+    );
   }
 
 }

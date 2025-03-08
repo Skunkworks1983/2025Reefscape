@@ -18,6 +18,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.util.function.BooleanConsumer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.subsystems.drivebase.Drivebase;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.Phoenix6DrivebaseState;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.Phoenix6SwerveModuleState;
 
@@ -30,6 +31,7 @@ public class PositionEstimator {
   Phoenix6DrivebaseState drivebaseState;
   Phoenix6SwerveModuleState[] swerveStates;
   BooleanConsumer setPhoenix6OdometryReadLock;
+  Drivebase drivebase;
 
   public ReentrantReadWriteLock stateLock = new ReentrantReadWriteLock(true);
 
@@ -37,11 +39,13 @@ public class PositionEstimator {
     Phoenix6DrivebaseState drivebaseState, 
     Phoenix6SwerveModuleState[] swerveStates,
     BooleanConsumer setPhoenix6OdometryReadLock,
-    Translation2d[] moduleLocations
+    Translation2d[] moduleLocations,
+    Drivebase drivebase
   ) {
     this.drivebaseState = drivebaseState;
     this.swerveStates = swerveStates;
     this.setPhoenix6OdometryReadLock = setPhoenix6OdometryReadLock;
+    this.drivebase = drivebase;
 
     swerveDriveKinematics = new SwerveDriveKinematics(moduleLocations);
 
@@ -87,6 +91,7 @@ public class PositionEstimator {
 
   public void reset(Pose2d newPose) {
     stateLock.writeLock().lock();
+    this.drivebase.resetGyroHeading(newPose.getRotation());
     swerveDrivePoseEstimator.resetPosition(
       drivebaseState.getGyroAngle(),
       Arrays.stream(swerveStates)

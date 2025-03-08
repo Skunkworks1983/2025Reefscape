@@ -142,11 +142,11 @@ public class Robot extends TimedRobot {
       new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_STOW));
 
     // funnel 
-    NamedCommands.registerCommand("Funnel to Station", 
-      new MoveFunnelToSetpoint(funnel.get(), Constants.Funnel.FUNNEL_POSITION_LOW_CONVERTED));
+    // NamedCommands.registerCommand("Funnel to Station", 
+    //   new MoveFunnelToSetpoint(funnel.get(), Constants.Funnel.FUNNEL_POSITION_LOW_CONVERTED));
     
-    NamedCommands.registerCommand("Funnel to up pos",
-      new MoveFunnelToSetpoint(funnel.get(), Constants.Funnel.FUNNEL_POSITION_HIGH_CONVERTED));
+    // NamedCommands.registerCommand("Funnel to up pos",
+    //   new MoveFunnelToSetpoint(funnel.get(), Constants.Funnel.FUNNEL_POSITION_HIGH_CONVERTED));
 
     // Collector 
     NamedCommands.registerCommand("Expel Coral", collector.get().expelCoralCommand(true));

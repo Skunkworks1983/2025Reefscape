@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import java.util.Optional;
+import java.util.concurrent.BlockingDeque;
 import java.util.function.DoubleFunction;
 import java.util.function.Supplier;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -30,6 +31,7 @@ public class OI {
   private Joystick rotationJoystick = new Joystick(Joysticks.ROTATION_JOYSTICK_ID);
   private Joystick translationJoystick = new Joystick(Joysticks.TRANSLATION_JOYSTICK_ID);
   private Joystick buttonJoystick = new Joystick(Joysticks.BUTTON_STICK_ID);
+  boolean isGround = false;
 
   // Input to the function could be x or y axis.
   private DoubleFunction<Double> joystickToMetersPerSecond = (
@@ -118,7 +120,7 @@ public class OI {
           this::getInstructedYMetersPerSecond,
           alignSpeed,
           /*goingRight=*/true,
-          0.375
+          1
       );
 
       Command AlignCoralLeftCommand = drivebase.getSwerveAlignCoral(
@@ -126,20 +128,26 @@ public class OI {
           this::getInstructedYMetersPerSecond,
           alignSpeed,
           /*goingRight=*/false,
-          0.3
+          1
       );
 
-      new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_REEF_BUTTON)
-          .whileTrue(targetReefCommand);
+      Command ResetGyro = drivebase.resetGyro();
 
-      new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_CORAL_STATION_BUTTON)
-          .whileTrue(targetCoralStationCommand);
+      // new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_REEF_BUTTON)
+      //     .whileTrue(targetReefCommand);
+
+      // new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_CORAL_STATION_BUTTON)
+      //     .whileTrue(targetCoralStationCommand);
 
       new JoystickButton(rotationJoystick, 5)
           .whileTrue(AlignCoralRightCommand);
 
       new JoystickButton(rotationJoystick, 4)
           .whileTrue(AlignCoralLeftCommand);
+
+      JoystickButton translationTwo = new JoystickButton(translationJoystick, 2);
+
+      new JoystickButton(translationJoystick, 1).and(translationTwo).onTrue(ResetGyro);
     }
 
     if(optionalDrivebase.isPresent() && optionalCollector.isPresent()) {
@@ -165,7 +173,7 @@ public class OI {
 
       JoystickButton endEffectorButton = new JoystickButton(buttonJoystick, 9);
 
-      endEffectorButton.whileTrue(new JoystickEndEffectorPosition(wrist, elevator, drivebase, this::getYrotationStick, this::getYtranslationStick));
+      // endEffectorButton.whileTrue(new JoystickEndEffectorPosition(wrist, elevator, drivebase, this::getYrotationStick, this::getYtranslationStick));
 
     }
 
@@ -198,23 +206,43 @@ public class OI {
 
       // Algae mode
       endEffectorGround.and(algaeToggle).onTrue(
-        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_GROUND)
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_GROUND).beforeStarting(
+          () -> {
+            isGround = true;
+          }
+        )
       );
 
       endEffectorStow.and(algaeToggle).onTrue(
-        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_STOW)
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_STOW).beforeStarting(
+          () -> {
+            isGround = false;
+          }
+        )
       );
 
       endEffectorToScoreLow.and(algaeToggle).onTrue(
-        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_PROCESSOR)
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_PROCESSOR).beforeStarting(
+          () -> {
+            isGround = false;
+          }
+        )
       );
 
       endEffectorToL2.and(algaeToggle).onTrue(
-        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_L2)
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_L2).beforeStarting(
+          () -> {
+            isGround = false;
+          }
+        )
       );
 
       endEffectorToL3.and(algaeToggle).onTrue(
-        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_L3)
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_L3).beforeStarting(
+          () -> {
+            isGround = false;
+          }
+        )
       );
 
       // endEffectorToScoreHigh.and(algaeToggle).onTrue(
