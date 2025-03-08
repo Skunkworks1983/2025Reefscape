@@ -136,6 +136,17 @@ public class OI {
           .whileTrue(AlignCoralRightCommand);
     } 
 
+    if(optionalDrivebase.isPresent() && optionalElevator.isPresent() && optionalWrist.isPresent()) {
+      Elevator elevator = optionalElevator.get();
+      Wrist wrist = optionalWrist.get();
+      Drivebase drivebase = optionalDrivebase.get();
+
+      JoystickButton endEffectorButton = new JoystickButton(buttonJoystick, 9);
+
+      endEffectorButton.whileTrue(new JoystickEndEffectorPosition(wrist, elevator, drivebase, this::getYrotationStick, this::getYtranslationStick));
+
+    }
+
     if(optionalClimber.isPresent()){
       Climber climber = optionalClimber.get();
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.CLIMBER_GOTO_MAX)
@@ -161,7 +172,6 @@ public class OI {
       JoystickButton wristUp = new JoystickButton(buttonJoystick, 17);
       JoystickButton wristDown = new JoystickButton(buttonJoystick, 24);
 
-      JoystickButton endEffectorButton = new JoystickButton(buttonJoystick, 9);
       // JoystickButton endEffectorToScoreLow = new JoystickButton(buttonJoystick, Buttons.GOTO_SCORE_LOW);
       // JoystickButton endEffectorToL2 = new JoystickButton(buttonJoystick, Buttons.GOTO_L2);
       // JoystickButton endEffectorToL3 = new JoystickButton(buttonJoystick, Buttons.GOTO_L3);
@@ -172,7 +182,6 @@ public class OI {
       wristDown.onTrue(new MoveWristToSetpoint(wrist, 0.1441));
       wristUp.onTrue(new MoveWristToSetpoint(wrist, 0.0));
 
-      endEffectorButton.whileTrue(new JoystickEndEffectorPosition(wrist, elevator, this::getYrotationStick, this::getYtranslationStick));
 
       // // Algae mode
       // endEffectorGround.and(algaeToggle).onTrue(

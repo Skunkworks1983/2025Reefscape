@@ -38,8 +38,8 @@ public class Robot extends TimedRobot {
   Optional<Elevator> elevator = Optional.of(new Elevator());
   Optional<Collector> collector = Optional.of(new Collector());
   Optional<Wrist> wrist = Optional.of(new Wrist());
-  Optional<Climber> climber = Optional.of(new Climber());
-  Optional<Funnel> funnel = Optional.of(new Funnel());
+  Optional<Climber> climber = Optional.empty();
+  Optional<Funnel> funnel = Optional.empty();
 
   private SendableChooser<Command> autoChooser;
 
@@ -71,11 +71,17 @@ public class Robot extends TimedRobot {
       if (wrist.isEmpty()) {
         throw new IllegalStateException("Wrist not present");
       }
-      if (climber.isEmpty()) {
-        throw new IllegalStateException("Climber not present");
+      if (climber.isPresent()) {
+        throw new IllegalStateException("Climber is present");
+      }
+      if (wrist.isPresent()) {
+        throw new IllegalStateException("Wrist is present");
       }
       if (Constants.Testing.ROBOT != Constants.Testing.Robot.Comp2025) {
         throw new IllegalStateException("Using 2024 drivebase constants! Change to 2025 (Constants.Testing.ROBOT)");
+      }
+      if (Constants.Drivebase.PIDs.SMART_PID_ENABLED) {
+        throw new IllegalStateException("Global Smartpid Enabled! (Constants.Drivebase.PIDS.SMART_PID_ENABLED)");
       }
     }
 
