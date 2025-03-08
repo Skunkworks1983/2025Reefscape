@@ -9,6 +9,7 @@ import java.util.Optional;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -98,6 +99,7 @@ public class Robot extends TimedRobot {
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
+    CameraServer.startAutomaticCapture();
   }
 
   @Override 
@@ -147,13 +149,13 @@ public class Robot extends TimedRobot {
       new MoveFunnelToSetpoint(funnel.get(), Constants.Funnel.FUNNEL_POSITION_HIGH_CONVERTED));
 
     // Collector 
-    NamedCommands.registerCommand("Expel Coral", collector.get().expelAlgaeCommand(isAutonomous()));
+    NamedCommands.registerCommand("Expel Coral", collector.get().expelCoralCommand(true));
 
-    NamedCommands.registerCommand("Expel Algae",collector.get().expelAlgaeCommand(isAutonomous()));
+    NamedCommands.registerCommand("Expel Algae",collector.get().expelAlgaeCommand(true));
 
-    NamedCommands.registerCommand("Intake Coral", collector.get().intakeCoralCommand(isAutonomous()));
+    NamedCommands.registerCommand("Intake Coral", collector.get().intakeCoralCommand(true));
 
-    NamedCommands.registerCommand("Intake Algae ", collector.get().intakeAlgaeCommand(isAutonomous()));
+    NamedCommands.registerCommand("Intake Algae ", collector.get().intakeAlgaeCommand(true));
 
     }
   }
@@ -166,6 +168,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    Command autoCommand = autoChooser.getSelected();
+    if(autoCommand != null) {
+      autoCommand.schedule();
+    }
   }
 
   @Override

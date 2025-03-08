@@ -1011,14 +1011,14 @@
             }
           },
           {
-            "title": "Joystick Example",
+            "title": "Turn Joystick",
             "x": 0.0,
             "y": 320.0,
             "width": 320.0,
             "height": 256.0,
             "type": "Radial Gauge",
             "properties": {
-              "topic": "/SmartDashboard/Wrist/Wrist motor position(rotations)",
+              "topic": "/SmartDashboard/OI/ Rotation Joystick Angle",
               "period": 0.06,
               "data_type": "double",
               "start_angle": 0.0,
@@ -1032,14 +1032,14 @@
             }
           },
           {
-            "title": "Joystick Example",
+            "title": "Drive Joystick",
             "x": 320.0,
             "y": 320.0,
             "width": 320.0,
             "height": 256.0,
             "type": "Radial Gauge",
             "properties": {
-              "topic": "/SmartDashboard/Wrist/Wrist motor position(rotations)",
+              "topic": "/SmartDashboard/OI/ Translation Joystick Angle",
               "period": 0.06,
               "data_type": "double",
               "start_angle": -180.0,
