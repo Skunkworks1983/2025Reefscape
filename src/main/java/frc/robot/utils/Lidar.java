@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.Timer;
 public class Lidar {
   private double triggerDistance;
   private double lastTime;
+  private boolean isOn;
   private double dist;
   private double triggerCutoff;
 
@@ -37,11 +38,17 @@ public class Lidar {
 
   public double getDistance() {
     double currentTime = Timer.getFPGATimestamp();
-    if(currentTime - lastTime < 0.04) {
+    if(currentTime - lastTime < 0.02) {
+      return dist;
+    } 
+    else if(!isOn) {
+      lastTime = currentTime;
+      output.set(true);
+      isOn = true;
       return dist;
     }
     lastTime = currentTime;
-    output.set(true);
+    isOn = false;
     double v = lidar.getPeriod();
     double d;
     if(lidar.get() < 1){

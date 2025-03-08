@@ -191,6 +191,41 @@ public class Collector extends SubsystemBase {
     );
   }
 
+  public Command intakeCoralCommandStop(
+    boolean stopOnEnd
+  ) {
+    int endCount [] = {0}; // This value needs to be effectivly final 
+    return runEnd(
+      () -> {
+        setCollectorSpeeds(Constants.Collector.Speeds.CORAL_INTAKE_SLOW_SPEED * 2, 
+          Constants.Collector.Speeds.CORAL_INTAKE_SLOW_SPEED * 2);
+      },
+      () -> {
+        if(stopOnEnd) {
+          setCollectorSpeeds(0, 0);
+        }
+      }
+    ).beforeStarting(
+      () -> {
+        endCount[0] = 0;
+      }
+    ).until(
+      () -> {
+        ConditionalSmartDashboard.putNumber("Collector/Amp cut off right", rightMotor.getSupplyCurrent().getValueAsDouble());
+        ConditionalSmartDashboard.putNumber("Collector/Amp cut off left", leftMotor.getSupplyCurrent().getValueAsDouble());
+        if (!beambreak.get()) 
+        {
+          endCount[0]++;
+        }
+        else
+        {
+          endCount[0] = 0;
+        }
+        return endCount[0] >= Constants.Collector.END_COUNT_TICK_COUNTER_CORAL;
+      }
+    );
+  }
+
   public Command expelCoralCommand(boolean stopOnEnd)
   {
     return runEnd(

@@ -75,9 +75,8 @@ public class OI {
     if (optionalCollector.isPresent()) {
       Collector collector = optionalCollector.get();
 
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.INTAKE)
-          .and(coralToggle)
-          .whileTrue(collector.intakeCoralCommand(true));
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.INTAKE).and(coralToggle)
+      .whileTrue(collector.intakeCoralCommand(true));
 
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.EXPEL)
         .and(coralToggle)
@@ -147,7 +146,7 @@ public class OI {
 
       JoystickButton translationTwo = new JoystickButton(translationJoystick, 2);
 
-      new JoystickButton(translationJoystick, 1).and(translationTwo).onTrue(ResetGyro);
+      new JoystickButton(translationJoystick, 1).and(translationTwo).whileTrue(ResetGyro);
     }
 
     if(optionalDrivebase.isPresent() && optionalCollector.isPresent()) {
@@ -247,31 +246,59 @@ public class OI {
 
       // endEffectorToScoreHigh.and(algaeToggle).onTrue(
       //   new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_NET)
+      // ).beforeStarting(
+      //   () -> {
+      //     isGround = false;
+      //   }
       // );
 
       // Coral mode
       endEffectorGround.and(coralToggle).onTrue(
-        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_GROUND)
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_GROUND).beforeStarting(
+          () -> {
+            isGround = true;
+          }
+        )
       );
 
       endEffectorStow.and(coralToggle).onTrue(
-        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_STOW)
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_STOW).beforeStarting(
+          () -> {
+            isGround = false;
+          }
+        )
       );
 
       endEffectorToScoreLow.and(coralToggle).onTrue(
-        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L1)
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L1).beforeStarting(
+          () -> {
+            isGround = false;
+          }
+        )
       );
 
       endEffectorToL2.and(coralToggle).onTrue(
-        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L2)
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L2).beforeStarting(
+          () -> {
+            isGround = false;
+          }
+        )
       );
 
       endEffectorToL3.and(coralToggle).onTrue(
-        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L3)
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L3).beforeStarting(
+          () -> {
+            isGround = false;
+          }
+        )
       );
 
       // endEffectorToScoreHigh.and(coralToggle).onTrue(
       //   new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L4)
+      // ).beforeStarting(
+      //   () -> {
+      //     isGround = false;
+      //   }
       // );
     }
   }
@@ -304,5 +331,13 @@ public class OI {
 
   public double getYtranslationStick() {
     return applyDeadband.apply(-translationJoystick.getY());
+  }
+
+  public boolean getIsground() {
+    return isGround;
+  }
+
+  public boolean getNotIsGround() {
+    return isGround;
   }
 }

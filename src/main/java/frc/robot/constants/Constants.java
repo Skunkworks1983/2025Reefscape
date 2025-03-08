@@ -444,7 +444,7 @@ public class Constants {
 
         // Switch being off corresponds to coral
         // Switch being on corresponds to algae
-        public static final int ALGAE_TOGGLE = 10;
+        public static final int ALGAE_TOGGLE = 8;
 
         // The following buttons depend on ALGAE_TOGGLE
         public static final int GOTO_SCORE_LOW = 15; // either L1 or proccesor on ALGAE_TOGGLE

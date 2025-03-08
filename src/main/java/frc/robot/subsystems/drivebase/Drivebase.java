@@ -518,7 +518,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   }
 
   public Command resetGyro() {
-    return Commands.runEnd(
+    return Commands.startEnd(
       () -> {
         resetGyroHeading();
       },
