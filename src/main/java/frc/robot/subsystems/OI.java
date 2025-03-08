@@ -157,9 +157,6 @@ public class OI {
       new JoystickButton(rotationJoystick, Buttons.TARGET_CORAL_CYCLE_NO_ODOMETRY_BUTTON)
         .whileTrue(targetCoralCycleAngleNoOdometry);
     }
-      new JoystickButton(translationJoystick, 5)
-          .whileTrue(AlignCoralRightCommand);
-    } 
 
     if(optionalDrivebase.isPresent() && optionalElevator.isPresent() && optionalWrist.isPresent()) {
       Elevator elevator = optionalElevator.get();
@@ -209,8 +206,6 @@ public class OI {
       // endEffectorStow.onTrue(new MoveElevatorToSetpointCommand(elevator, EndEffectorSetpoints.CORAL_STOW.elevatorSetpoint));
       // wristDown.onTrue(new MoveWristToSetpoint(wrist, 0.1441));
       // wristUp.onTrue(new MoveWristToSetpoint(wrist, 0.0));
-
-      endEffectorButton.whileTrue(new JoystickEndEffectorPosition(wrist, elevator, this::getYrotationStick, this::getYtranslationStick));
 
       // Algae mode
       endEffectorGround.and(algaeToggle).onTrue(
