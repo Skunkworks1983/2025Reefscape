@@ -189,23 +189,12 @@ public class OI {
       Elevator elevator = optionalElevator.get();
       Wrist wrist = optionalWrist.get();
 
-      JoystickButton elevatorTop = new JoystickButton(buttonJoystick, 23);
-      JoystickButton elevatorBottom = new JoystickButton(buttonJoystick, 22);
-      JoystickButton wristUp = new JoystickButton(buttonJoystick, 17);
-      JoystickButton wristDown = new JoystickButton(buttonJoystick, 24);
-
-      JoystickButton endEffectorButton = new JoystickButton(buttonJoystick, 9);
-      // JoystickButton endEffectorToScoreLow = new JoystickButton(buttonJoystick, Buttons.GOTO_SCORE_LOW);
-      // JoystickButton endEffectorToL2 = new JoystickButton(buttonJoystick, Buttons.GOTO_L2);
-      // JoystickButton endEffectorToL3 = new JoystickButton(buttonJoystick, Buttons.GOTO_L3);
-      // JoystickButton endEffectorToScoreHigh = new JoystickButton(buttonJoystick, Buttons.GOTO_SCORE_HIGH);
-
-      // endEffectorToL2.onTrue(new MoveElevatorToSetpointCommand(elevator, EndEffectorSetpoints.CORAL_L2.elevatorSetpoint));
-      // endEffectorToL3.onTrue(new MoveElevatorToSetpointCommand(elevator, EndEffectorSetpoints.CORAL_L3.elevatorSetpoint));
-      // endEffectorToScoreHigh.onTrue(new MoveElevatorToSetpointCommand(elevator, EndEffectorSetpoints.CORAL_L4.elevatorSetpoint));
-      // endEffectorStow.onTrue(new MoveElevatorToSetpointCommand(elevator, EndEffectorSetpoints.CORAL_STOW.elevatorSetpoint));
-      // wristDown.onTrue(new MoveWristToSetpoint(wrist, 0.1441));
-      // wristUp.onTrue(new MoveWristToSetpoint(wrist, 0.0));
+      JoystickButton endEffectorGround = new JoystickButton(buttonJoystick, Buttons.GOTO_GROUND);
+      JoystickButton endEffectorStow = new JoystickButton(buttonJoystick, Buttons.GOTO_STOW);
+      JoystickButton endEffectorToScoreLow = new JoystickButton(buttonJoystick, Buttons.GOTO_SCORE_LOW);
+      JoystickButton endEffectorToL2 = new JoystickButton(buttonJoystick, Buttons.GOTO_L2);
+      JoystickButton endEffectorToL3 = new JoystickButton(buttonJoystick, Buttons.GOTO_L3);
+      JoystickButton endEffectorToScoreHigh = new JoystickButton(buttonJoystick, Buttons.GOTO_SCORE_HIGH);
 
       // Algae mode
       endEffectorGround.and(algaeToggle).onTrue(
