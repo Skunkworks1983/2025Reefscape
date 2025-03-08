@@ -72,7 +72,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
   private Pigeon2 gyro = new Pigeon2(Constants.Drivebase.PIGEON_ID, Constants.Drivebase.CANIVORE_NAME);
   private Lidar lidarRight = new Lidar(Constants.Drivebase.LIDAR_RIGHT_DATA_PORT, Constants.Drivebase.LIDAR_RIGHT_TRIGGER_PORT, Constants.Drivebase.LIDAR_TRIGGER_DISTANCE, 30000);
-  private Lidar lidarLeft = new Lidar(Constants.Drivebase.LIDAR_LEFT_DATA_PORT, Constants.Drivebase.LIDAR_LEFT_TRIGGER_PORT, Constants.Drivebase.LIDAR_TRIGGER_DISTANCE, 30000);
+  private Lidar lidarLeft = new Lidar(Constants.Drivebase.LIDAR_LEFT_DATA_PORT, Constants.Drivebase.LIDAR_LEFT_TRIGGER_PORT, Constants.Drivebase.LIDAR_TRIGGER_DISTANCE, 3000);
   private StructArrayPublisher<SwerveModuleState> desiredSwervestate = NetworkTableInstance.getDefault()
       .getStructArrayTopic("Desired swervestate", SwerveModuleState.struct).publish();
   private StructArrayPublisher<SwerveModuleState> actualSwervestate = NetworkTableInstance.getDefault()
@@ -465,19 +465,14 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       DoubleSupplier yMetersPerSecond,
       DoubleSupplier degreesPerSecond,
       boolean isFieldRelative) {
-    int fieldOrientationMultiplier;
-    Optional<Alliance> alliance = DriverStation.getAlliance();
-    if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Blue) {
-      fieldOrientationMultiplier = 1;
-    } else {
-      fieldOrientationMultiplier = -1;
-    }
+    int[] fieldOrientationMultiplier = new int[1];
+    fieldOrientationMultiplier[0] = 1;
 
     Command command = runEnd(
         () -> {
           drive(
-              xMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
-              yMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
+              xMetersPerSecond.getAsDouble() * fieldOrientationMultiplier[0],
+              yMetersPerSecond.getAsDouble() * fieldOrientationMultiplier[0],
               degreesPerSecond.getAsDouble(),
               isFieldRelative);
         },
@@ -486,6 +481,12 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     ).beforeStarting(
             () -> {
               setAllModulesTurnPidActive();
+              Optional<Alliance> alliance = DriverStation.getAlliance();
+              if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Blue) {
+                fieldOrientationMultiplier[0] = 1;
+              } else {
+                fieldOrientationMultiplier[0] = -1;
+              }
             });
 
     command.addRequirements(this);

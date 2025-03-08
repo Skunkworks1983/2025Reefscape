@@ -119,7 +119,7 @@ public class OI {
           this::getInstructedYMetersPerSecond,
           alignSpeed,
           /*goingRight=*/true,
-          1
+          0.5
       );
 
       Command AlignCoralLeftCommand = drivebase.getSwerveAlignCoral(
@@ -127,7 +127,7 @@ public class OI {
           this::getInstructedYMetersPerSecond,
           alignSpeed,
           /*goingRight=*/false,
-          1
+          0.5
       );
 
       Command ResetGyro = drivebase.resetGyro();

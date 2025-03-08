@@ -168,6 +168,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    drivebase.get().resetGyroHeading();
     Command autoCommand = autoChooser.getSelected();
     if(autoCommand != null) {
       autoCommand.schedule();
