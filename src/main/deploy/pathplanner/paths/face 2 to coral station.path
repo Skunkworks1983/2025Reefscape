@@ -1,0 +1,59 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.187,
+        "y": 2.5819999999999994
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.90425,
+        "y": 2.172499999999999
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.4722500000000003,
+        "y": 0.7684999999999991
+      },
+      "prevControl": {
+        "x": 2.1255000000000797,
+        "y": 1.051249999995481
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5933609958506203,
+      "rotationDegrees": 52.02750408431039
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 5.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 53.343891584033166
+  },
+  "reversed": false,
+  "folder": "2 - piece coral auto sp 3",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 122.06739160326046
+  },
+  "useDefaultConstraints": true
+}

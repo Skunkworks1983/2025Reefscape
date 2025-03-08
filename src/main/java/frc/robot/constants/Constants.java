@@ -4,13 +4,48 @@
 
 package frc.robot.constants;
 
+import java.io.IOException;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.struct.parser.ParseException;
+import edu.wpi.first.wpilibj2.command.Command;
 
 // TODO: add all robot constant values when they have been decided
 public class Constants {
+
+  public class PathPlanner
+  {
+    public static final double PATHPLANNER_DRIVE_KP = 1.0;
+    public static final double PATHPLANNER_DRIVE_KD = .0;
+    public static final double PATHPLANNER_DRIVE_KI = .0;
+    public static final double PATHPLANNER_DRIVE_KF = .0;
+
+    public static final double PATHPLANNER_TURN_KP = 1.0;
+    public static final double PATHPLANNER_TURN_KD = .0;
+    public static final double PATHPLANNER_TURN_KI = .0;
+    public static final double PATHPLANNER_TURN_KF = .0;
+
+    public static final double ROBOT_LENGTH = 0.864; //in meters with bumpers
+    public static final double ROBOT_WIDTH = 0.864; // in meters with bumpers
+
+    public static final double ROBOT_MASS = 67.1317; //kilograms
+    public static final double MOMENT_OF_INERTIA = 1.0/12.0 * (ROBOT_MASS)*(Math.sqrt(ROBOT_WIDTH) + Math.sqrt(ROBOT_LENGTH));
+  
+    
+    public static final double PATHPLANNER_MAX_METERS_PER_SECOND = .0; //TODO give real number
+
+    // distance from center to wheel
+    public static final double PATHPLANNER_DRIVEBASE_RADIUS_METERS = 0.; //TODO give real number
+
+    public static final double UPDATE_PERIOD = .02; //seconds
+  }
 
   public class CurrentLimits {
 
@@ -126,10 +161,13 @@ public class Constants {
     public static final double MAX_METERS_PER_SECOND = 4.5;
     public static final double MAX_DEGREES_PER_SECOND = 270;
 
+    public static final double DRIVE_CURRENT_LIMIT = 100;
+
     public class IDS {
       public static int ROTATION_JOYSTICK_ID = 1;
       public static int TRANSLATION_JOYSTICK_ID = 0;
       public static int BUTTON_STICK_ID = 2;
+
     }
 
     
@@ -146,10 +184,10 @@ public class Constants {
         10, 11, 12, -0.337158 + .75, new Translation2d(-MODULE_OFFSET, MODULE_OFFSET), "Back Left"
       ),
       new SwerveModuleConstants(
-        13, 14, 15, -0.289795 + .25, new Translation2d(-MODULE_OFFSET, -MODULE_OFFSET), "Back Right"
+         13, 14, 15, -0.289795 + .25, new Translation2d(-MODULE_OFFSET, -MODULE_OFFSET), "Back Right"
       ),
       new SwerveModuleConstants(
-        16, 17, 18, 0.476318 - .75, new Translation2d(MODULE_OFFSET, MODULE_OFFSET), "Front Left"
+       16, 17, 18, 0.476318 - .75, new Translation2d(MODULE_OFFSET, MODULE_OFFSET), "Front Left"
       ),
       new SwerveModuleConstants(
         19, 20, 21, -0.353027 + .75, new Translation2d(MODULE_OFFSET, -MODULE_OFFSET), "Front Right"

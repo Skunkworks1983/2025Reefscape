@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.drivebase;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
@@ -12,6 +13,14 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -21,6 +30,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
@@ -43,6 +53,8 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.Lidar;
 import frc.robot.utils.error.DiagnosticSubsystem;
+
+import org.json.simple.parser.ParseException;
 
 public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
@@ -117,6 +129,48 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
     headingController.enableContinuousInput(0, 360);
     odometryThread.startThread();
+
+    RobotConfig config = new RobotConfig(
+      Constants.PathPlanner.ROBOT_MASS, 
+      Constants.PathPlanner.MOMENT_OF_INERTIA, 
+      new ModuleConfig(
+        Constants.Drivebase.Info.WHEEL_DIAMETER / 2, 
+        Constants.Drivebase.Info.MAX_MODULE_SPEED, 
+        1, 
+        DCMotor.getKrakenX60(1).withReduction(Constants.Drivebase.Info.DRIVE_MOTOR_GEAR_RATIO), 
+        Constants.Drivebase.DRIVE_CURRENT_LIMIT,
+        Constants.Drivebase.MODULES.length
+        ),
+      Constants.Drivebase.MODULE_OFFSET);
+      positionEstimator.stateLock.readLock().lock();
+    AutoBuilder.configure(
+      positionEstimator::getPose,positionEstimator::reset,
+      this::getRobotRelativeSpeeds, (speeds, feedforwards) -> driveRobotRelative(speeds), 
+      new PPHolonomicDriveController( 
+        new PIDConstants(
+          Constants.PathPlanner.PATHPLANNER_DRIVE_KP, 
+          Constants.PathPlanner.PATHPLANNER_DRIVE_KI, 
+          Constants.PathPlanner.PATHPLANNER_DRIVE_KD),
+        new PIDConstants(
+          Constants.PathPlanner.PATHPLANNER_TURN_KP, 
+          Constants.PathPlanner.PATHPLANNER_TURN_KI, 
+          Constants.PathPlanner.PATHPLANNER_TURN_KD),
+          Constants.PathPlanner.UPDATE_PERIOD
+      ),
+      config,
+      () -> {
+          // Boolean supplier that controls when the path will be mirrored for the red alliance
+          // This will flip the path being followed to the red side of the field.
+          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+          int fieldOrientationMultiplier;
+  
+          Optional<Alliance> alliance = DriverStation.getAlliance();
+          return alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red;
+      },
+      this
+    );
+    positionEstimator.stateLock.readLock().unlock();
+    setAllModulesTurnPidActive();
   }
 
   @Override
@@ -163,6 +217,10 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       chassisSpeeds = new ChassisSpeeds(xMetersPerSecond, yMetersPerSecond, radiansPerSecond);
     }
 
+    driveRobotRelative(chassisSpeeds);
+  }
+
+  private void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
     mitigateSkew(chassisSpeeds);
     positionEstimator.getReadLock().lock();
     SwerveModuleState[] swerveModuleStates = positionEstimator.swerveDriveKinematics
@@ -425,4 +483,25 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   public Phoenix6DrivebaseState getState() {
     return state;
   }
+
+    public Command followPathCommand(String pathName) {
+    try {
+      PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+      return AutoBuilder.followPath(path);
+    }
+    catch (ParseException p){
+      System.out.println("pathplanner threw parseexception while parsing " + pathName);
+    }
+    catch (IOException e){
+      System.out.println("pathplanner threw ioexception while parsing " + pathName);
+    }
+    return new Command(){};
+   
+  }
+
+
+  public Command followAutoTrajectory(String autoName) {
+    return new PathPlannerAuto(autoName);
+  }
+
 }
