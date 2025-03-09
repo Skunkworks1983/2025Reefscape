@@ -394,9 +394,6 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
     double newAlignSpeed = alignSpeed * (goingRight ? -1 : 1);
     Rotation2d[] targetHeading = new Rotation2d[1];
-    SmartDashboard.putNumber(name, backSeconds);
-    double newBackSeconds[] = new double[1];
-    newBackSeconds[0] = backSeconds;
 
     return Commands.sequence(
       getSwerveHeadingCorrected(
@@ -408,7 +405,6 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
         () -> {
           targetHeading[0] = TeleopFeatureUtils.getCoralCycleAngleNoOdometry(true, cachedGyroHeading);
           System.out.println("Target Heading: " + targetHeading[0] + " X: " + TeleopFeatureUtils.getReefFaceSpeedX(targetHeading[0], newAlignSpeed) + " Y: " + TeleopFeatureUtils.getReefFaceSpeedY(targetHeading[0], newAlignSpeed));
-          newBackSeconds[0] = SmartDashboard.getNumber(name, backSeconds);
         }
       ).until(
         () -> {
@@ -425,22 +421,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
               () -> {return TeleopFeatureUtils.getReefFaceSpeedY(targetHeading[0], -newAlignSpeed * 0.5);},
               () -> targetHeading[0],
               true
-      ).until(
-        () -> {
-          if(goingRight == TeleopFeatureUtils.isCloseSideOfReef(targetHeading[0])) {
-            return !lidarRight.isTripped();
-          }
-          else {
-            return !lidarLeft.isTripped();
-          }
-        }
-      ),
-      getSwerveHeadingCorrected(
-              () -> {return TeleopFeatureUtils.getReefFaceSpeedX(targetHeading[0], -newAlignSpeed * 0.5);},
-              () -> {return TeleopFeatureUtils.getReefFaceSpeedY(targetHeading[0], -newAlignSpeed * 0.5);},
-              () -> targetHeading[0],
-              true
-      ).withTimeout(newBackSeconds[0])
+      ).withTimeout(backSeconds)
     );
   }
 
