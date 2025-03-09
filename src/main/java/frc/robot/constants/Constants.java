@@ -321,7 +321,7 @@ public class Constants {
     }
 
     public class Profile {
-      public static final double MAX_VELOCITY = 30 * 1.5;
+      public static final double MAX_VELOCITY = 55.0;
       public static final double MAX_ACCELERATION = 65 * 1.25;
     }
   }
@@ -371,7 +371,7 @@ public class Constants {
     public static final EndEffectorSetpointConstants ALGAE_STOW = 
       new EndEffectorSetpointConstants(0.0, WRIST_PROSSESSOR_STOW_POSITION, WRIST_PROSSESSOR_STOW_POSITION);
     public static final EndEffectorSetpointConstants ALGAE_PROCESSOR = 
-      new EndEffectorSetpointConstants(11.0, 0.3941, WRIST_PROSSESSOR_STOW_POSITION);
+      new EndEffectorSetpointConstants(10.8, 0.3941, WRIST_PROSSESSOR_STOW_POSITION);
     public static final EndEffectorSetpointConstants ALGAE_L2 = 
       new EndEffectorSetpointConstants(19.018 + 5, 0.3941, WRIST_STOW_POSITION_ALGAE);
     public static final EndEffectorSetpointConstants ALGAE_L3 = 
