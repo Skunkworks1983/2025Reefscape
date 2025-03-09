@@ -296,13 +296,13 @@ public class OI {
         )
       );
 
-      // endEffectorToScoreHigh.and(coralToggle).onTrue(
-      //   new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L4)
-      // ).beforeStarting(
-      //   () -> {
-      //     isGround = false;
-      //   }
-      // );
+      endEffectorToScoreHigh.and(coralToggle).onTrue(
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L4)
+      .beforeStarting(
+        () -> {
+          endEffectorSetpoint = EndEffectorSetpoints.CORAL_L4;
+        }
+      ));
     }
   }
 
