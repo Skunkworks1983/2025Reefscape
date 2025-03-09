@@ -27,6 +27,7 @@ import frc.robot.commands.drivebase.TrapezoidProfileDriveOut;
 import frc.robot.commands.funnel.MoveFunnelToSetpoint;
 import frc.robot.commands.tests.JoystickElevatorVelocity;
 import frc.robot.constants.Constants;
+import frc.robot.constants.EndEffectorSetpointConstants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.drivebase.Drivebase;
 
@@ -157,7 +158,7 @@ public class Robot extends TimedRobot {
     //   new MoveFunnelToSetpoint(funnel.get(), Constants.Funnel.FUNNEL_POSITION_HIGH_CONVERTED));
 
     // Collector 
-    NamedCommands.registerCommand("Expel Coral", collector.get().expelCoralCommand(true));
+    NamedCommands.registerCommand("Expel Coral", collector.get().expelCoralCommand(true, oi::getEndEffectorSetpoint));
 
     NamedCommands.registerCommand("Expel Algae",collector.get().expelAlgaeCommand(true));
 

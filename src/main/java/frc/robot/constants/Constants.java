@@ -113,8 +113,8 @@ public class Constants {
     public class Speeds {
       public static final double CORAL_INTAKE_SLOW_SPEED = 8.0; //meters per sec
       public static final double CORAL_INTAKE_FAST_SPEED = 18.0; //meters per sec 
-      public static final double CORAL_EXPEL_SLOW_SPEED = 8.0; //meters per sec
-      public static final double CORAL_EXPEL_FAST_SPEED = 16.0; //meters per sec 
+      public static final double CORAL_EXPEL_SLOW_SPEED = 3.0; //meters per sec
+      public static final double CORAL_EXPEL_FAST_SPEED = 10.0; //meters per sec 
       public static final double ALGAE_INTAKE_SPEED = 10.0; //meters per sec
       public static final double ALGAE_EXPEL_SPEED = -5.0; //meters per sec
 
@@ -123,7 +123,7 @@ public class Constants {
 
     public static final double COLLECTOR_ROTATIONS_PER_METER = 0.0762 * Math.PI;
     public static final double END_COUNT_TICK_COUNTER_ALGAE = 3;
-    public static final double END_COUNT_TICK_COUNTER_CORAL = 4;
+    public static final double END_COUNT_TICK_COUNTER_CORAL = 7.0;
     public static final double COLLECTOR_AMPS_BEFORE_CUTTOF = 5.0;
     public static final double ALGAE_AMP_CUT_OFF = 10.0;
 
@@ -346,8 +346,8 @@ public class Constants {
       public static final boolean WRIST_SMARTPID_ACTIVE = false;
     }
 
-    public static final double WRIST_MAX_VELOCITY = 0.5;
-    public static final double WRIST_MAX_ACCELERATION = 1.5;
+    public static final double WRIST_MAX_VELOCITY = 0.35;
+    public static final double WRIST_MAX_ACCELERATION = 1.25;
 
     public static final double WRIST_TOLERANCE = 0.02;
 
@@ -384,7 +384,7 @@ public class Constants {
     public static final EndEffectorSetpointConstants CORAL_STOW = 
       new EndEffectorSetpointConstants(0.0, WRIST_STOW_POSITION_CORAL, WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_L1 = 
-      new EndEffectorSetpointConstants(0.0, 0.0, WRIST_STOW_POSITION_CORAL);
+      new EndEffectorSetpointConstants(12.0, 0.0641, WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_L2 = 
       new EndEffectorSetpointConstants(13.756, 0.0, WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_L3 = 

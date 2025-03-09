@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.Supplier;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -17,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.CurrentLimits;
+import frc.robot.constants.EndEffectorSetpointConstants;
 import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.PIDControllers.SmartPIDControllerTalonFX;
 
@@ -158,7 +161,7 @@ public class Collector extends SubsystemBase {
   // it should almost always be true unless there will be a following command right after that will end it
   public Command intakeCoralCommand(
     boolean stopOnEnd
-  ) {
+    ) {
     int endCount [] = {0}; // This value needs to be effectivly final 
     return runEnd(
       () -> {
@@ -191,47 +194,21 @@ public class Collector extends SubsystemBase {
     );
   }
 
-  public Command intakeCoralCommandStop(
-    boolean stopOnEnd
-  ) {
-    int endCount [] = {0}; // This value needs to be effectivly final 
-    return runEnd(
-      () -> {
-        setCollectorSpeeds(Constants.Collector.Speeds.CORAL_INTAKE_SLOW_SPEED * 2, 
-          Constants.Collector.Speeds.CORAL_INTAKE_SLOW_SPEED * 2);
-      },
-      () -> {
-        if(stopOnEnd) {
-          setCollectorSpeeds(0, 0);
-        }
-      }
-    ).beforeStarting(
-      () -> {
-        endCount[0] = 0;
-      }
-    ).until(
-      () -> {
-        ConditionalSmartDashboard.putNumber("Collector/Amp cut off right", rightMotor.getSupplyCurrent().getValueAsDouble());
-        ConditionalSmartDashboard.putNumber("Collector/Amp cut off left", leftMotor.getSupplyCurrent().getValueAsDouble());
-        if (!beambreak.get()) 
-        {
-          endCount[0]++;
-        }
-        else
-        {
-          endCount[0] = 0;
-        }
-        return endCount[0] >= Constants.Collector.END_COUNT_TICK_COUNTER_CORAL;
-      }
-    );
-  }
-
-  public Command expelCoralCommand(boolean stopOnEnd)
+  public Command expelCoralCommand(
+    boolean stopOnEnd,
+    Supplier<EndEffectorSetpointConstants> endEffectorSetpoint
+    )
   {
     return runEnd(
       () -> {
-        setCollectorSpeeds(Constants.Collector.Speeds.CORAL_EXPEL_FAST_SPEED, 
-          Constants.Collector.Speeds.CORAL_EXPEL_FAST_SPEED);
+        if(endEffectorSetpoint.get().equals(Constants.EndEffectorSetpoints.CORAL_L1)) {
+          setCollectorSpeeds(Constants.Collector.Speeds.CORAL_EXPEL_SLOW_SPEED, 
+            Constants.Collector.Speeds.CORAL_EXPEL_SLOW_SPEED);
+        }
+        else {
+          setCollectorSpeeds(Constants.Collector.Speeds.CORAL_EXPEL_FAST_SPEED, 
+            Constants.Collector.Speeds.CORAL_EXPEL_FAST_SPEED);
+        }
       },
       () -> {
         if(stopOnEnd) {

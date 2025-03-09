@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants.EndEffectorSetpoints;
 import frc.robot.constants.Constants.OI.LIMITS;
+import frc.robot.constants.EndEffectorSetpointConstants;
 import frc.robot.commands.MoveEndEffector;
 import frc.robot.commands.elevator.MoveElevatorToSetpointCommand;
 import frc.robot.commands.funnel.MoveFunnelToSetpoint;
@@ -31,7 +32,7 @@ public class OI {
   private Joystick rotationJoystick = new Joystick(Joysticks.ROTATION_JOYSTICK_ID);
   private Joystick translationJoystick = new Joystick(Joysticks.TRANSLATION_JOYSTICK_ID);
   private Joystick buttonJoystick = new Joystick(Joysticks.BUTTON_STICK_ID);
-  boolean isGround = false;
+  EndEffectorSetpointConstants endEffectorSetpoint = Constants.EndEffectorSetpoints.CORAL_STOW;
 
   // Input to the function could be x or y axis.
   private DoubleFunction<Double> joystickToMetersPerSecond = (
@@ -80,7 +81,7 @@ public class OI {
 
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.EXPEL)
         .and(coralToggle)
-        .whileTrue(collector.expelCoralCommand(true));
+        .whileTrue(collector.expelCoralCommand(true, this::getEndEffectorSetpoint));
 
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.INTAKE)
           .and(algaeToggle)
@@ -207,7 +208,7 @@ public class OI {
       endEffectorGround.and(algaeToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_GROUND).beforeStarting(
           () -> {
-            isGround = true;
+            endEffectorSetpoint = EndEffectorSetpoints.ALGAE_GROUND;
           }
         )
       );
@@ -215,7 +216,7 @@ public class OI {
       endEffectorStow.and(algaeToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_STOW).beforeStarting(
           () -> {
-            isGround = false;
+            endEffectorSetpoint = EndEffectorSetpoints.ALGAE_STOW;
           }
         )
       );
@@ -223,7 +224,7 @@ public class OI {
       endEffectorToScoreLow.and(algaeToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_PROCESSOR).beforeStarting(
           () -> {
-            isGround = false;
+            endEffectorSetpoint = EndEffectorSetpoints.ALGAE_PROCESSOR;
           }
         )
       );
@@ -231,7 +232,7 @@ public class OI {
       endEffectorToL2.and(algaeToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_L2).beforeStarting(
           () -> {
-            isGround = false;
+            endEffectorSetpoint = EndEffectorSetpoints.ALGAE_L2;
           }
         )
       );
@@ -239,7 +240,7 @@ public class OI {
       endEffectorToL3.and(algaeToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_L3).beforeStarting(
           () -> {
-            isGround = false;
+            endEffectorSetpoint = EndEffectorSetpoints.ALGAE_L3;
           }
         )
       );
@@ -256,7 +257,7 @@ public class OI {
       endEffectorGround.and(coralToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_GROUND).beforeStarting(
           () -> {
-            isGround = true;
+            endEffectorSetpoint = EndEffectorSetpoints.CORAL_GROUND;
           }
         )
       );
@@ -264,7 +265,7 @@ public class OI {
       endEffectorStow.and(coralToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_STOW).beforeStarting(
           () -> {
-            isGround = false;
+            endEffectorSetpoint = EndEffectorSetpoints.CORAL_STOW;
           }
         )
       );
@@ -272,7 +273,7 @@ public class OI {
       endEffectorToScoreLow.and(coralToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L1).beforeStarting(
           () -> {
-            isGround = false;
+            endEffectorSetpoint = EndEffectorSetpoints.CORAL_L1;
           }
         )
       );
@@ -280,7 +281,7 @@ public class OI {
       endEffectorToL2.and(coralToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L2).beforeStarting(
           () -> {
-            isGround = false;
+            endEffectorSetpoint = EndEffectorSetpoints.CORAL_L2;
           }
         )
       );
@@ -288,7 +289,7 @@ public class OI {
       endEffectorToL3.and(coralToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L3).beforeStarting(
           () -> {
-            isGround = false;
+            endEffectorSetpoint = EndEffectorSetpoints.CORAL_L3;
           }
         )
       );
@@ -333,11 +334,7 @@ public class OI {
     return applyDeadband.apply(-translationJoystick.getY());
   }
 
-  public boolean getIsground() {
-    return isGround;
-  }
-
-  public boolean getNotIsGround() {
-    return isGround;
+  public EndEffectorSetpointConstants getEndEffectorSetpoint() {
+    return endEffectorSetpoint;
   }
 }
