@@ -346,8 +346,8 @@ public class Constants {
       public static final boolean WRIST_SMARTPID_ACTIVE = false;
     }
 
-    public static final double WRIST_MAX_VELOCITY = 1;
-    public static final double WRIST_MAX_ACCELERATION = 2; 
+    public static final double WRIST_MAX_VELOCITY = 0.5;
+    public static final double WRIST_MAX_ACCELERATION = 1.5;
 
     public static final double WRIST_TOLERANCE = 0.02;
 
@@ -363,14 +363,15 @@ public class Constants {
   public class EndEffectorSetpoints {
 
     public static final double WRIST_STOW_POSITION_CORAL = 0.0;
-    public static final double WRIST_STOW_POSITION_ALGAE = 0.1441;
+    public static final double WRIST_STOW_POSITION_ALGAE = 0.0; //0.1441;
+    public static final double WRIST_PROSSESSOR_STOW_POSITION = 0.1441;
 
     public static final EndEffectorSetpointConstants ALGAE_GROUND = 
       new EndEffectorSetpointConstants(3.0, 0.3941, WRIST_STOW_POSITION_ALGAE);
     public static final EndEffectorSetpointConstants ALGAE_STOW = 
       new EndEffectorSetpointConstants(0.0, WRIST_STOW_POSITION_ALGAE, WRIST_STOW_POSITION_ALGAE);
     public static final EndEffectorSetpointConstants ALGAE_PROCESSOR = 
-      new EndEffectorSetpointConstants(11.0, 0.3941, WRIST_STOW_POSITION_ALGAE);
+      new EndEffectorSetpointConstants(11.0, 0.3941, WRIST_PROSSESSOR_STOW_POSITION);
     public static final EndEffectorSetpointConstants ALGAE_L2 = 
       new EndEffectorSetpointConstants(19.018 + 5, 0.3941, WRIST_STOW_POSITION_ALGAE);
     public static final EndEffectorSetpointConstants ALGAE_L3 = 

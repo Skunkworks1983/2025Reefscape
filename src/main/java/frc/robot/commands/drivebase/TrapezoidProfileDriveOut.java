@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
@@ -22,7 +23,7 @@ public class TrapezoidProfileDriveOut extends Command {
   Timer timeElasped = new Timer();
   TrapezoidProfile profile = new TrapezoidProfile(new Constraints(1.0, 5.0));
   State startState = new State();
-  State goalState = new State(1.0, 0.0);
+  State goalState = new State(Units.inchesToMeters(58.683), 0.0);
 
   public TrapezoidProfileDriveOut(Drivebase drivebase) {
     this.drivebase = drivebase;

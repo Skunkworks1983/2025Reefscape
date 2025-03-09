@@ -9,7 +9,6 @@ import frc.robot.commands.elevator.MoveElevatorToSetpointCommand;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
 import frc.robot.commands.wrist.MoveWristToSetpoint;
-import frc.robot.constants.Constants;
 import frc.robot.constants.EndEffectorSetpointConstants;
 
 // Moves wrist and elevator
