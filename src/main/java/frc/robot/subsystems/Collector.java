@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -46,6 +47,8 @@ public class Collector extends SubsystemBase {
   double collectorRightSetpoint;
   double collectorLeftSetPoint;
   private PositionVoltage positionVoltage = new PositionVoltage(0);
+  private DutyCycleOut dutyCycleOut = new DutyCycleOut(0.0);
+  double lastThrottle = 0.0;
 
   /** Creates a new Collector. */
   public Collector() {
@@ -83,6 +86,15 @@ public class Collector extends SubsystemBase {
         Constants.Collector.SMART_PID_ENABLED, leftMotor);
     
         beambreak = new DigitalInput(Constants.Collector.IDs.DIGITAL_INPUT_CHANNEL);
+  }
+
+  private void setCollectorThrottle(double throttle) {
+
+    if(throttle != lastThrottle) {
+      leftMotor.setControl(dutyCycleOut.withOutput(throttle).withEnableFOC(true));
+      rightMotor.setControl(dutyCycleOut.withOutput(throttle).withEnableFOC(true));
+      lastThrottle = throttle;
+    }
   }
 
   // meters per sec
@@ -235,8 +247,9 @@ public class Collector extends SubsystemBase {
     int endCount [] = {0}; // This value needs to be effectivly final 
     return runEnd(
       () -> {
-        setCollectorSpeeds(Constants.Collector.Speeds.ALGAE_INTAKE_SPEED, 
-          Constants.Collector.Speeds.ALGAE_INTAKE_SPEED);
+        // setCollectorSpeeds(Constants.Collector.Speeds.ALGAE_INTAKE_SPEED, 
+        //   Constants.Collector.Speeds.ALGAE_INTAKE_SPEED);
+        setCollectorThrottle(Constants.Collector.Speeds.ALGAE_INTAKE_SPEED);
       },
       () -> {
         if(stopOnEnd) {
