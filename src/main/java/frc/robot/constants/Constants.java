@@ -125,7 +125,7 @@ public class Constants {
     public static final double END_COUNT_TICK_COUNTER_ALGAE = 3;
     public static final double END_COUNT_TICK_COUNTER_CORAL = 7.0;
     public static final double COLLECTOR_AMPS_BEFORE_CUTTOF = 5.0;
-    public static final double ALGAE_AMP_CUT_OFF = 10.0;
+    public static final double ALGAE_AMP_CUT_OFF = 20.0;
 
       public static final boolean SMART_PID_ENABLED = false;
 

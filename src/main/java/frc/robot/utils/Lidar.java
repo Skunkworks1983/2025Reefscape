@@ -35,20 +35,18 @@ public class Lidar {
   public boolean isTripped() {
     return getDistance() > triggerDistance;
   }
+  
 
   public double getDistance() {
     double currentTime = Timer.getFPGATimestamp();
-    if(currentTime - lastTime < 0.03) {
+    if(currentTime - lastTime < 0.04) {
       return dist;
     } 
-    else if(!isOn) {
-      lastTime = currentTime;
-      output.set(true);
-      isOn = true;
-      return dist;
-    }
+    output.set(true);
     lastTime = currentTime;
-    isOn = false;
+    while(Timer.getFPGATimestamp() - lastTime < 0.005) {
+
+    }
     double v = lidar.getPeriod();
     double d;
     if(lidar.get() < 1){
