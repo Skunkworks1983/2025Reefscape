@@ -422,7 +422,13 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
               () -> {return TeleopFeatureUtils.getReefFaceSpeedY(targetHeading[0], -newAlignSpeed * 0.5);},
               () -> targetHeading[0],
               true
-      ).withTimeout(backSeconds)
+      ).withTimeout(backSeconds),
+      getBaseSwerveCommand(
+        () -> 0, 
+        () -> 0, 
+        () -> 0, 
+        true
+      ).withTimeout(0.04)
     );
   }
 

@@ -23,11 +23,7 @@ public class MoveEndEffector extends SequentialCommandGroup {
     wristUp = false;
     elevatorUp = false;
     addCommands(
-      new MoveWristToSetpoint(wrist, setpoint.stowSetpoint).beforeStarting(
-        () -> {
-          elevator.setEndEffectorSetpoint(setpoint);
-        }
-      ).finallyDo(interrupted -> {
+      new MoveWristToSetpoint(wrist, setpoint.stowSetpoint).finallyDo(interrupted -> {
         wristUp = !interrupted;
       }),
       new MoveElevatorToSetpointCommand(elevator, setpoint.elevatorSetpoint).beforeStarting(() -> {
@@ -41,7 +37,17 @@ public class MoveEndEffector extends SequentialCommandGroup {
         if(!(elevatorUp && wristUp)) {
           this.cancel();
         }
-      })
+      }).finallyDo(
+        interrupted -> {
+          if(!interrupted) {
+            elevator.setEndEffectorSetpoint(setpoint);
+            System.out.println("Move end Effector finished: uninterupted");
+          }
+          else{
+            System.out.println("Move end Effector finished: interupted");
+          }
+        }
+      )
     );
   }
 }

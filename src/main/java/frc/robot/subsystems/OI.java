@@ -19,6 +19,7 @@ import frc.robot.constants.Constants.EndEffectorSetpoints;
 import frc.robot.constants.Constants.OI.LIMITS;
 import frc.robot.constants.EndEffectorSetpointConstants;
 import frc.robot.commands.MoveEndEffector;
+import frc.robot.commands.AutomatedScoring.AutomatedLidarScoring;
 import frc.robot.commands.elevator.MoveElevatorToSetpointCommand;
 import frc.robot.commands.funnel.MoveFunnelToSetpoint;
 import frc.robot.commands.tests.JoystickEndEffectorPosition;
@@ -97,7 +98,6 @@ public class OI {
     if (optionalDrivebase.isPresent()) {
       Drivebase drivebase = optionalDrivebase.get();
 
-      double alignSpeed = 0.5;
 
       Command targetReefCommand = 
         drivebase.getSwerveHeadingCorrected(
@@ -117,24 +117,6 @@ public class OI {
           true
         );
 
-      Command AlignCoralRightCommand = drivebase.getSwerveAlignCoral(
-          this::getInstructedXMetersPerSecond,
-          this::getInstructedYMetersPerSecond,
-          alignSpeed,
-          /*goingRight=*/true,
-          0.25,
-          "align right"
-      );
-
-      Command AlignCoralLeftCommand = drivebase.getSwerveAlignCoral(
-          this::getInstructedXMetersPerSecond,
-          this::getInstructedYMetersPerSecond,
-          alignSpeed,
-          /*goingRight=*/false,
-          0.25,
-          "align left"
-      );
-
       Command ResetGyro = drivebase.resetGyro();
 
       // new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_REEF_BUTTON)
@@ -143,18 +125,15 @@ public class OI {
       // new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_CORAL_STATION_BUTTON)
       //     .whileTrue(targetCoralStationCommand);
 
-      new JoystickButton(rotationJoystick, 5)
-          .whileTrue(AlignCoralRightCommand);
-
-      new JoystickButton(rotationJoystick, 4)
-          .whileTrue(AlignCoralLeftCommand);
+      
 
       new JoystickButton(translationJoystick, 1)
           .and(new JoystickButton(translationJoystick, 2))
           .whileTrue(ResetGyro);
     }
 
-    if (optionalDrivebase.isPresent() && optionalCollector.isPresent()) {
+    if (optionalDrivebase.isPresent() && optionalCollector.isPresent() && optionalElevator.isPresent()) {
+      Elevator elevator = optionalElevator.get();
       Collector collector = optionalCollector.get();
       Drivebase drivebase = optionalDrivebase.get();
       Command targetCoralCycleAngleNoOdometry = 
@@ -168,6 +147,38 @@ public class OI {
 
       new JoystickButton(rotationJoystick, Buttons.TARGET_CORAL_CYCLE_NO_ODOMETRY_BUTTON)
         .whileTrue(targetCoralCycleAngleNoOdometry);
+
+      double alignSpeed = 0.5;
+
+      Command AlignCoralRightCommand = new AutomatedLidarScoring(
+        drivebase,
+        collector,
+        this::getInstructedXMetersPerSecond,
+        this::getInstructedYMetersPerSecond,
+        alignSpeed,
+        /*goingRight=*/true,
+        0.25,
+        "align right",
+        elevator::getEndEffectorSetpoint
+      );
+
+      Command AlignCoralLeftCommand = new AutomatedLidarScoring(
+        drivebase,
+        collector,
+        this::getInstructedXMetersPerSecond,
+        this::getInstructedYMetersPerSecond,
+        alignSpeed,
+        /*goingRight=*/false,
+        0.25,
+        "align left",
+        elevator::getEndEffectorSetpoint
+      );
+
+      new JoystickButton(rotationJoystick, 5)
+        .whileTrue(AlignCoralRightCommand);
+
+      new JoystickButton(rotationJoystick, 4)
+        .whileTrue(AlignCoralLeftCommand);
     }
 
     // For Testing Only

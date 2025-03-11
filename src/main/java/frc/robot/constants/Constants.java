@@ -464,9 +464,9 @@ public class Constants {
         public static final int CLIMBER_GOTO_MAX = 0;
         public static final int CLIMBER_GOTO_MIN = 0;
 
-        public static final int TARGET_REEF_BUTTON = 1;
+        public static final int TARGET_REEF_BUTTON = 3;
         public static final int TARGET_CORAL_STATION_BUTTON = 2;
-        public static final int TARGET_CORAL_CYCLE_NO_ODOMETRY_BUTTON = 3;
+        public static final int TARGET_CORAL_CYCLE_NO_ODOMETRY_BUTTON = 1;
 
         public static final int RAISE_FUNNEL_TOGGLE = 0;
 
