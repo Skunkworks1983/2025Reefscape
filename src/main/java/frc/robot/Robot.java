@@ -169,6 +169,9 @@ public class Robot extends TimedRobot {
     }
   }
 
+=========
+  }
+>>>>>>>>> Temporary merge branch 2
 
   @Override
   public void autonomousPeriodic() {}
