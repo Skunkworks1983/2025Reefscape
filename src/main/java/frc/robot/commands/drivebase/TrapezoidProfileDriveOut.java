@@ -22,7 +22,7 @@ public class TrapezoidProfileDriveOut extends Command {
 
   Drivebase drivebase;
   Timer timeElasped = new Timer();
-  TrapezoidProfile profile = new TrapezoidProfile(new Constraints(1.0, 5.0));
+  TrapezoidProfile profile = new TrapezoidProfile(new Constraints(2.0, 1.0));
   State startState = new State();
   State goalState;
 
@@ -42,9 +42,11 @@ public class TrapezoidProfileDriveOut extends Command {
     Optional<Alliance> alliance = DriverStation.getAlliance();
     if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Blue) {
       drivebase.resetGyroHeading(Rotation2d.fromDegrees(180));
+      cachedHeadingForCommand = 180;
     }
     else {
       drivebase.resetGyroHeading(Rotation2d.fromDegrees(0));
+      cachedHeadingForCommand = 0;
     }
     
     timeElasped.reset();
