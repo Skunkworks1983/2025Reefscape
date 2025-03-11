@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import java.util.Optional;
+import java.util.Queue;
 import java.util.concurrent.BlockingDeque;
 import java.util.function.DoubleFunction;
 import java.util.function.Supplier;
@@ -32,7 +33,6 @@ public class OI {
   private Joystick rotationJoystick = new Joystick(Joysticks.ROTATION_JOYSTICK_ID);
   private Joystick translationJoystick = new Joystick(Joysticks.TRANSLATION_JOYSTICK_ID);
   private Joystick buttonJoystick = new Joystick(Joysticks.BUTTON_STICK_ID);
-  EndEffectorSetpointConstants endEffectorSetpoint = Constants.EndEffectorSetpoints.CORAL_STOW;
 
   // Input to the function could be x or y axis.
   private DoubleFunction<Double> joystickToMetersPerSecond = (
@@ -73,15 +73,17 @@ public class OI {
     Trigger algaeToggle = new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.ALGAE_TOGGLE);
     Trigger coralToggle = algaeToggle.negate(); // If not in algae mode, we are using coral mode.
 
-    if (optionalCollector.isPresent()) {
+    if (optionalCollector.isPresent() && optionalElevator.isPresent()) {
       Collector collector = optionalCollector.get();
+      Elevator elevator = optionalElevator.get();
 
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.INTAKE).and(coralToggle)
-      .whileTrue(collector.intakeCoralCommand(true));
+      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.INTAKE)
+          .and(coralToggle)
+          .whileTrue(collector.intakeCoralCommand(true));
 
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.EXPEL)
-        .and(coralToggle)
-        .whileTrue(collector.expelCoralCommand(true, this::getEndEffectorSetpoint));
+          .and(coralToggle)
+          .whileTrue(collector.expelCoralCommand(true, elevator::getEndEffectorSetpoint));
 
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.INTAKE)
           .and(algaeToggle)
@@ -147,12 +149,12 @@ public class OI {
       new JoystickButton(rotationJoystick, 4)
           .whileTrue(AlignCoralLeftCommand);
 
-      JoystickButton translationTwo = new JoystickButton(translationJoystick, 2);
-
-      new JoystickButton(translationJoystick, 1).and(translationTwo).whileTrue(ResetGyro);
+      new JoystickButton(translationJoystick, 1)
+          .and(new JoystickButton(translationJoystick, 2))
+          .whileTrue(ResetGyro);
     }
 
-    if(optionalDrivebase.isPresent() && optionalCollector.isPresent()) {
+    if (optionalDrivebase.isPresent() && optionalCollector.isPresent()) {
       Collector collector = optionalCollector.get();
       Drivebase drivebase = optionalDrivebase.get();
       Command targetCoralCycleAngleNoOdometry = 
@@ -168,7 +170,8 @@ public class OI {
         .whileTrue(targetCoralCycleAngleNoOdometry);
     }
 
-    if(optionalDrivebase.isPresent() && optionalElevator.isPresent() && optionalWrist.isPresent()) {
+    // For Testing Only
+    if (optionalDrivebase.isPresent() && optionalElevator.isPresent() && optionalWrist.isPresent()) {
       Elevator elevator = optionalElevator.get();
       Wrist wrist = optionalWrist.get();
       Drivebase drivebase = optionalDrivebase.get();
@@ -208,101 +211,53 @@ public class OI {
 
       // Algae mode
       endEffectorGround.and(algaeToggle).onTrue(
-        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_GROUND).beforeStarting(
-          () -> {
-            endEffectorSetpoint = EndEffectorSetpoints.ALGAE_GROUND;
-          }
-        )
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_GROUND)
       );
 
       endEffectorStow.and(algaeToggle).onTrue(
-        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_STOW).beforeStarting(
-          () -> {
-            endEffectorSetpoint = EndEffectorSetpoints.ALGAE_STOW;
-          }
-        )
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_STOW)
       );
 
       endEffectorToScoreLow.and(algaeToggle).onTrue(
-        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_PROCESSOR).beforeStarting(
-          () -> {
-            endEffectorSetpoint = EndEffectorSetpoints.ALGAE_PROCESSOR;
-          }
-        )
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_PROCESSOR)
       );
 
       endEffectorToL2.and(algaeToggle).onTrue(
-        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_L2).beforeStarting(
-          () -> {
-            endEffectorSetpoint = EndEffectorSetpoints.ALGAE_L2;
-          }
-        )
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_L2)
       );
 
       endEffectorToL3.and(algaeToggle).onTrue(
-        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_L3).beforeStarting(
-          () -> {
-            endEffectorSetpoint = EndEffectorSetpoints.ALGAE_L3;
-          }
-        )
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_L3)
       );
 
       // endEffectorToScoreHigh.and(algaeToggle).onTrue(
       //   new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_NET)
-      // ).beforeStarting(
-      //   () -> {
-      //     isGround = false;
-      //   }
       // );
 
       // Coral mode
       endEffectorGround.and(coralToggle).onTrue(
-        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_GROUND).beforeStarting(
-          () -> {
-            endEffectorSetpoint = EndEffectorSetpoints.CORAL_GROUND;
-          }
-        )
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_GROUND)
       );
 
       endEffectorStow.and(coralToggle).onTrue(
-        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_STOW).beforeStarting(
-          () -> {
-            endEffectorSetpoint = EndEffectorSetpoints.CORAL_STOW;
-          }
-        )
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_STOW)
       );
 
       endEffectorToScoreLow.and(coralToggle).onTrue(
-        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L1).beforeStarting(
-          () -> {
-            endEffectorSetpoint = EndEffectorSetpoints.CORAL_L1;
-          }
-        )
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L1)
       );
 
       endEffectorToL2.and(coralToggle).onTrue(
-        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L2).beforeStarting(
-          () -> {
-            endEffectorSetpoint = EndEffectorSetpoints.CORAL_L2;
-          }
-        )
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L2)
       );
 
       endEffectorToL3.and(coralToggle).onTrue(
-        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L3).beforeStarting(
-          () -> {
-            endEffectorSetpoint = EndEffectorSetpoints.CORAL_L3;
-          }
-        )
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L3)
       );
 
       endEffectorToScoreHigh.and(coralToggle).onTrue(
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L4)
-      .beforeStarting(
-        () -> {
-          endEffectorSetpoint = EndEffectorSetpoints.CORAL_L4;
-        }
-      ));
+      );
     }
   }
 
@@ -334,9 +289,5 @@ public class OI {
 
   public double getYtranslationStick() {
     return applyDeadband.apply(-translationJoystick.getY());
-  }
-
-  public EndEffectorSetpointConstants getEndEffectorSetpoint() {
-    return endEffectorSetpoint;
   }
 }

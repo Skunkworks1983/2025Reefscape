@@ -48,7 +48,7 @@ public class SmartPIDController extends PIDController implements SmartPIDBase {
   @Override
   public double calculate(double measurement) {
 
-    if (smart && Constants.Drivebase.PIDs.SMART_PID_ENABLED) {
+    if (smart && Constants.Testing.SMART_PID_ENABLED) {
       super.setP(getValueFromSmartDashboard(name, "kp Value", super.getP()));
       super.setI(getValueFromSmartDashboard(name, "ki Value", super.getI()));
       super.setD(getValueFromSmartDashboard(name, "kd Value", super.getD()));
@@ -68,7 +68,7 @@ public class SmartPIDController extends PIDController implements SmartPIDBase {
   @Override
   public double calculate(double measurement, double setpoint) {
 
-    if (smart && Constants.Drivebase.PIDs.SMART_PID_ENABLED) {
+    if (smart && Constants.Testing.SMART_PID_ENABLED) {
       super.setP(getValueFromSmartDashboard(name, "kp Value", super.getP()));
       super.setI(getValueFromSmartDashboard(name, "ki Value", super.getI()));
       super.setD(getValueFromSmartDashboard(name, "kd Value", super.getD()));

@@ -142,9 +142,10 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
         DCMotor.getKrakenX60(1).withReduction(Constants.Drivebase.Info.DRIVE_MOTOR_GEAR_RATIO), 
         Constants.Drivebase.DRIVE_CURRENT_LIMIT,
         Constants.Drivebase.MODULES.length
-        ),
-      Constants.Drivebase.MODULE_OFFSET);
-      positionEstimator.stateLock.readLock().lock();
+      ),
+      Constants.Drivebase.MODULE_OFFSET
+    );
+    positionEstimator.stateLock.readLock().lock();
     AutoBuilder.configure(
       positionEstimator::getPose,positionEstimator::reset,
       this::getRobotRelativeSpeeds, (speeds, feedforwards) -> driveRobotRelative(speeds), 
@@ -182,8 +183,8 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     SmartDashboard.putNumber("Gyro Position", gyro.getYaw().getValueAsDouble());
     SmartDashboard.putBoolean("Lidar Left", lidarLeft.isTripped());
     SmartDashboard.putBoolean("Lidar Right", lidarRight.isTripped());
-    SmartDashboard.putNumber("Lidar Left pos", lidarLeft.getDistance());
-    SmartDashboard.putNumber("Lidar Right pos", lidarRight.getDistance());
+    SmartDashboard.putNumber("Lidar Left Distance", lidarLeft.getDistance());
+    SmartDashboard.putNumber("Lidar Right Distance", lidarRight.getDistance());
   }
 
   /**
@@ -212,11 +213,11 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     double radiansPerSecond = Units.degreesToRadians(degreesPerSecond);
     if (isFieldRelative) {
       chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-          xMetersPerSecond,
-          yMetersPerSecond,
-          radiansPerSecond,
-          getCachedGyroHeading()
-        );
+        xMetersPerSecond,
+        yMetersPerSecond,
+        radiansPerSecond,
+        getCachedGyroHeading()
+      );
     } else {
       chassisSpeeds = new ChassisSpeeds(xMetersPerSecond, yMetersPerSecond, radiansPerSecond);
     }
@@ -499,7 +500,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     return state;
   }
 
-    public Command followPathCommand(String pathName) {
+  public Command followPathCommand(String pathName) {
     try {
       PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
       return AutoBuilder.followPath(path);

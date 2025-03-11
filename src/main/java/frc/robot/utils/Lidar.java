@@ -44,7 +44,7 @@ public class Lidar {
     } 
     output.set(true);
     lastTime = currentTime;
-    while(Timer.getFPGATimestamp() - lastTime < 0.005) {
+    while(Timer.getFPGATimestamp() - lastTime < 0.001) {
 
     }
     double v = lidar.getPeriod();
