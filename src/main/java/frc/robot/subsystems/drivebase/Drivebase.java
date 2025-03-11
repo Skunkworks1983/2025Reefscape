@@ -65,7 +65,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
   private SwerveModule swerveModules[] = new SwerveModule[Constants.Drivebase.MODULES.length];
 
-  private PIDController headingController = new PIDController(
+  public PIDController headingController = new PIDController(
       Constants.Drivebase.PIDs.HEADING_CONTROL_kP,
       Constants.Drivebase.PIDs.HEADING_CONTROL_kI,
       Constants.Drivebase.PIDs.HEADING_CONTROL_kD);

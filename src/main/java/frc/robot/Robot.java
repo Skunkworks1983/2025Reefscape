@@ -87,7 +87,7 @@ public class Robot extends TimedRobot {
       if (Constants.Testing.ROBOT != Constants.Testing.Robot.Comp2025) {
         throw new IllegalStateException("Using 2024 drivebase constants! Change to 2025 (Constants.Testing.ROBOT)");
       }
-      if (Constants.Drivebase.PIDs.SMART_PID_ENABLED) {
+      if (Constants.Testing.SMART_PID_ENABLED) {
         throw new IllegalStateException("Global Smartpid Enabled! (Constants.Drivebase.PIDS.SMART_PID_ENABLED)");
       }
     }
