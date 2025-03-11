@@ -1,0 +1,38 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "SP2 to face1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Coral to L3"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Expel Coral"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "1 piece autos",
+  "choreoAuto": false
+}
