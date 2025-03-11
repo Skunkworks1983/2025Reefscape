@@ -225,7 +225,7 @@ public class Constants {
       public static final double SWERVE_MODULE_DRIVE_KI = 0.0;
       public static final double SWERVE_MODULE_DRIVE_KD = 0.0;
       public static final double SWERVE_MODULE_DRIVE_KF = 0.0;
-      public static final double SWERVE_MODULE_DRIVE_KV = 0.3575;
+      public static final double SWERVE_MODULE_DRIVE_KV = 0.13575;
       public static final double SWERVE_MODULE_DRIVE_KA = 0.0;
       public static final double SWERVE_MODULE_DRIVE_KS = 0.0;
 
