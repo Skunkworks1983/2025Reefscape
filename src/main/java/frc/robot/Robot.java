@@ -9,6 +9,7 @@ import java.util.Optional;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -168,10 +169,6 @@ public class Robot extends TimedRobot {
       currentAutonomousCommand.schedule();
     }
   }
-
-=========
-  }
->>>>>>>>> Temporary merge branch 2
 
   @Override
   public void autonomousPeriodic() {}
