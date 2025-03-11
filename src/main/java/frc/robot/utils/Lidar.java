@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.Timer;
 public class Lidar {
   private double triggerDistance;
   private double lastTime;
-  private boolean isOn;
   private double dist;
   private double triggerCutoff;
 

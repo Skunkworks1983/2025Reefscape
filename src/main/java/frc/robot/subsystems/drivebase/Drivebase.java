@@ -51,6 +51,7 @@ import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.P
 import frc.robot.subsystems.drivebase.odometry.positionEstimation.PositionEstimator;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.utils.error.ErrorGroup;
+import frc.robot.utils.DualLidar;
 import frc.robot.utils.Lidar;
 import frc.robot.utils.error.DiagnosticSubsystem;
 
@@ -71,8 +72,17 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       Constants.Drivebase.PIDs.HEADING_CONTROL_kD);
 
   private Pigeon2 gyro = new Pigeon2(Constants.Drivebase.PIGEON_ID, Constants.Drivebase.CANIVORE_NAME);
-  private Lidar lidarRight = new Lidar(Constants.Drivebase.LIDAR_RIGHT_DATA_PORT, Constants.Drivebase.LIDAR_RIGHT_TRIGGER_PORT, Constants.Drivebase.LIDAR_TRIGGER_DISTANCE, 30000);
-  private Lidar lidarLeft = new Lidar(Constants.Drivebase.LIDAR_LEFT_DATA_PORT, Constants.Drivebase.LIDAR_LEFT_TRIGGER_PORT, Constants.Drivebase.LIDAR_TRIGGER_DISTANCE, 3000);
+
+  private DualLidar dualLidar = new DualLidar(
+    Constants.Drivebase.LIDAR_RIGHT_DATA_PORT,
+    Constants.Drivebase.LIDAR_RIGHT_TRIGGER_DISTANCE,
+    Constants.Drivebase.LIDAR_RIGHT_DATA_CUTTOF,
+    Constants.Drivebase.LIDAR_LEFT_DATA_PORT,
+    Constants.Drivebase.LIDAR_LEFT_TRIGGER_DISTANCE, 
+    Constants.Drivebase.LIDAR_LEFT_DATA_CUTTOF,
+    Constants.Drivebase.LIDAR_TRIGGER_PORT
+  );
+
   private StructArrayPublisher<SwerveModuleState> desiredSwervestate = NetworkTableInstance.getDefault()
       .getStructArrayTopic("Desired swervestate", SwerveModuleState.struct).publish();
   private StructArrayPublisher<SwerveModuleState> actualSwervestate = NetworkTableInstance.getDefault()
@@ -181,10 +191,10 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     cacheEstimatedRobotPose();
     cacheGyroHeading();
     SmartDashboard.putNumber("Gyro Position", gyro.getYaw().getValueAsDouble());
-    SmartDashboard.putBoolean("Lidar Left", lidarLeft.isTripped());
-    SmartDashboard.putBoolean("Lidar Right", lidarRight.isTripped());
-    SmartDashboard.putNumber("Lidar Left Distance", lidarLeft.getDistance());
-    SmartDashboard.putNumber("Lidar Right Distance", lidarRight.getDistance());
+    SmartDashboard.putBoolean("Lidar Right", dualLidar.isLidar1Tripped());
+    SmartDashboard.putBoolean("Lidar Left", dualLidar.isLidar2Tripped());
+    SmartDashboard.putNumber("Lidar Right Distance", dualLidar.getLidar1Distance());
+    SmartDashboard.putNumber("Lidar Left Distance", dualLidar.getLidar2Distance());
   }
 
   /**
@@ -410,10 +420,10 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       ).until(
         () -> {
           if(goingRight == TeleopFeatureUtils.isCloseSideOfReef(targetHeading[0])) {
-            return lidarRight.isTripped();
+            return dualLidar.isLidar1Tripped();
           }
           else {
-            return lidarLeft.isTripped();
+            return dualLidar.isLidar2Tripped();
           }
         }
       ),
