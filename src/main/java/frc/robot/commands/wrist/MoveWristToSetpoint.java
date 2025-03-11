@@ -59,11 +59,10 @@ public class MoveWristToSetpoint extends Command {
   public void execute() {
     State positionGoal = profile.calculate(timePassed.get(), startPosition, goal);
     positionVoltage.Position = positionGoal.position * Constants.Wrist.WRIST_GEAR_RATIO;
-    //positionVoltage.Velocity = positionGoal.velocity;
     wrist.setWristMotorControl(positionVoltage);
 
-    SmartDashboard.putNumber("Wrist position goal (motor rotations)", positionGoal.position);
-    SmartDashboard.putNumber("Wrist velocity goal (motor rotations per second)", positionGoal.velocity);
+    ConditionalSmartDashboard.putNumber("Wrist position goal (motor rotations)", positionGoal.position);
+    ConditionalSmartDashboard.putNumber("Wrist velocity goal (motor rotations per second)", positionGoal.velocity);
   }
   
   @Override

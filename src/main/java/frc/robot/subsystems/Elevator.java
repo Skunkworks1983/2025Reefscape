@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.CurrentLimits;
@@ -25,8 +26,9 @@ public class Elevator extends SubsystemBase {
   public TalonFX motorRight = new TalonFX(Constants.Elevator.MOTOR_RIGHT_ID);
   private TalonFX motorLeft = new TalonFX(Constants.Elevator.MOTOR_LEFT_ID);
 
+  // We do not currently have working limit switches on the wrist
   private DigitalInput bottomLimitSwitch = new DigitalInput(Constants.Elevator.BOTTOM_LIMIT_SWITCH_ID);
-  private DigitalInput topLimitSwitch = new DigitalInput(Constants.Elevator.TOP_LIMIT_SWITCH_ID);
+  // private DigitalInput topLimitSwitch = new DigitalInput(Constants.Elevator.TOP_LIMIT_SWITCH_ID);
 
   private double finalTargetPosition;
 
@@ -65,9 +67,10 @@ public class Elevator extends SubsystemBase {
     // Setposition counts as a config update, try and do this sparingly
     if(getBottomLimitSwitch() && Math.abs(motorRight.getPosition().getValueAsDouble()) > .001) {
       motorRight.setPosition(0.0);
-    } else if(getTopLimitSwitch()) {
-      //motorRight.setPosition(Constants.Elevator.MAX_HEIGHT_CARRIAGE * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
-    }
+    } 
+    // else if(getTopLimitSwitch()) {
+    //   motorRight.setPosition(Constants.Elevator.MAX_HEIGHT_CARRIAGE * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
+    // }
     putInfoSmartDashboard();
   }
 
@@ -87,9 +90,9 @@ public class Elevator extends SubsystemBase {
   }
 
   // Inverted because limit switches return true until tripped
-  public boolean getTopLimitSwitch() {
-    return !topLimitSwitch.get();
-  }
+  // public boolean getTopLimitSwitch() {
+  //   !topLimitSwitch.get();
+  // }
 
   public void setMotorTrapezoidProfileSafe(double position, double velocity) {
     PositionVoltage positionVoltage = new PositionVoltage(0).withSlot(0);
@@ -99,8 +102,9 @@ public class Elevator extends SubsystemBase {
     logTargetVelocity(velocity);
 
     motorRight.setControl(positionVoltage
-      .withLimitForwardMotion(getTopLimitSwitch())
-      .withLimitReverseMotion(getBottomLimitSwitch()).withEnableFOC(true)
+    //  .withLimitForwardMotion(getTopLimitSwitch())
+    //  .withLimitReverseMotion(getBottomLimitSwitch())
+      .withEnableFOC(true)
     );
   }
 
@@ -134,18 +138,18 @@ public class Elevator extends SubsystemBase {
     ConditionalSmartDashboard.putNumber("Elevator/Final setpoint in meters", finalTargetPosition);
     ConditionalSmartDashboard.putNumber("Elevator/Final setpoint in rotations", finalTargetPosition * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
     ConditionalSmartDashboard.putBoolean("Elevator/Bottom limit switch", getBottomLimitSwitch());
-    ConditionalSmartDashboard.putBoolean("Elevator/Top limit switch", getTopLimitSwitch());
+    //ConditionalSmartDashboard.putBoolean("Elevator/Top limit switch", getTopLimitSwitch());
   }
-
+  
   public void setElevatorMotorControl(PositionVoltage setElevatorMotorControl) {
     motorRight.setControl(setElevatorMotorControl
-      .withLimitForwardMotion(getTopLimitSwitch())
-      .withLimitReverseMotion(getBottomLimitSwitch()).withEnableFOC(true)
+    //  .withLimitForwardMotion(getTopLimitSwitch())
+    //  .withLimitReverseMotion(getBottomLimitSwitch())
+    .withEnableFOC(true)
     );
   }
 
   public void setSpeeds(double speed) {
     motorRight.setControl(new DutyCycleOut(speed));
-    //motorLeft.setControl(new DutyCycleOut(-speed));
   }
 }

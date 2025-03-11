@@ -62,15 +62,9 @@ public class MoveElevatorToSetpointCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    // if(elevator.getBottomLimitSwitch() && !isGoingUp) {
-    //   elevator.setMotorTrapezoidProfileSafe(0.0, 0.0);
-    // }
-    // else if(elevator.getTopLimitSwitch() && isGoingUp) {
-    //   elevator.setMotorTrapezoidProfileSafe(
-    //     Constants.EndEffectorSetpoints.CORAL_L4.elevatorSetpoint,
-    //     0.0
-    //   );
-    // }
+    if(elevator.getBottomLimitSwitch() && !isGoingUp) {
+      elevator.setMotorTrapezoidProfileSafe(0.0, 0.0);
+    }
   }
 
   @Override
@@ -78,8 +72,8 @@ public class MoveElevatorToSetpointCommand extends Command {
     return (Constants.Elevator.TOLERENCE_METERS_FOR_MOVE_TO_POSITION > 
       Math.abs(targetState.position - elevator.getElevatorPosition())) ||
       (
-        (elevator.getBottomLimitSwitch() && !isGoingUp) ||
-        (elevator.getTopLimitSwitch() && isGoingUp)
+        (elevator.getBottomLimitSwitch() && !isGoingUp)
+        // || (elevator.getTopLimitSwitch() && isGoingUp)
       );
   }
 }

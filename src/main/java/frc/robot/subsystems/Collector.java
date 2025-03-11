@@ -12,6 +12,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
@@ -108,7 +109,7 @@ public class Collector extends SubsystemBase {
         rightMotor.getSupplyCurrent().getValueAsDouble());
     ConditionalSmartDashboard.putNumber("Collector/Left motor current",
         leftMotor.getSupplyCurrent().getValueAsDouble());
-    ConditionalSmartDashboard.putBoolean("Collector/Beambreak collector", !beambreak.get());
+    SmartDashboard.putBoolean("Collector/Beambreak collector", !beambreak.get());
   }
 
   public double getLeftMotorVelocity() {
@@ -165,6 +166,10 @@ public class Collector extends SubsystemBase {
           setCollectorSpeeds(0, 0);
         }
       }
+    ).beforeStarting(
+      () -> {
+        endCount[0] = 0;
+      }
     ).until(
       () -> {
         ConditionalSmartDashboard.putNumber("Collector/Amp cut off right", rightMotor.getSupplyCurrent().getValueAsDouble());
@@ -177,7 +182,7 @@ public class Collector extends SubsystemBase {
         {
           endCount[0] = 0;
         }
-        return endCount[0] >= 2;
+        return endCount[0] >= Constants.Collector.END_COUNT_TICK_COUNTER_CORAL;
       }
     );
   }
@@ -222,6 +227,10 @@ public class Collector extends SubsystemBase {
           setCollectorSpeeds(0, 0);
         }
       }
+    ).beforeStarting(
+      () -> {
+        endCount[0] = 0;
+      }
     ).until(
       () -> {
         if (rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.ALGAE_AMP_CUT_OFF &&
@@ -233,7 +242,7 @@ public class Collector extends SubsystemBase {
         {
           endCount[0] = 0;
         }
-        return endCount[0] > Constants.Collector.END_COUNT_TICK_COUNTER;
+        return endCount[0] > Constants.Collector.END_COUNT_TICK_COUNTER_ALGAE;
       }
     );
   }
