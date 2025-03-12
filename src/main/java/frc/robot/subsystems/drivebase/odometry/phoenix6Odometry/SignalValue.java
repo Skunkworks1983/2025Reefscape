@@ -36,7 +36,7 @@ public class SignalValue {
    * Cached value can also be retreived using .get().
    */
   public void updateCachedValue() {
-    if(signalSlope.isPresent()){
+    if (signalSlope.isPresent()) {
       cachedValue = BaseStatusSignal.getLatencyCompensatedValueAsDouble(
         signal, 
         signalSlope.get()

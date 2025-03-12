@@ -6,9 +6,11 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.CurrentLimits;
+import frc.robot.constants.EndEffectorSetpointConstants;
 import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.PIDControllers.SmartPIDControllerTalonFX;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -33,6 +35,8 @@ public class Elevator extends SubsystemBase {
   private double finalTargetPosition;
 
   private SmartPIDControllerTalonFX smartPIDController;
+
+  private EndEffectorSetpointConstants endEffectorSetpoint = Constants.EndEffectorSetpoints.CORAL_STOW;
 
   public Elevator() {
     TalonFXConfiguration config = new TalonFXConfiguration();
@@ -65,10 +69,10 @@ public class Elevator extends SubsystemBase {
     smartPIDController.updatePID();
 
     // Setposition counts as a config update, try and do this sparingly
-    if(getBottomLimitSwitch() && Math.abs(motorRight.getPosition().getValueAsDouble()) > .001) {
+    if (getBottomLimitSwitch() && Math.abs(motorRight.getPosition().getValueAsDouble()) > .001) {
       motorRight.setPosition(0.0);
     } 
-    // else if(getTopLimitSwitch()) {
+    // else if (getTopLimitSwitch()) {
     //   motorRight.setPosition(Constants.Elevator.MAX_HEIGHT_CARRIAGE * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
     // }
     putInfoSmartDashboard();
@@ -132,12 +136,12 @@ public class Elevator extends SubsystemBase {
   public void putInfoSmartDashboard() {
     double currentPos = motorRight.getPosition().getValueAsDouble();
 
-    SmartDashboard.putNumber("Elevator/Actual velocity in mps", motorRight.getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("Elevator/Actual position in meters", currentPos * Constants.Elevator.MOTOR_ROTATIONS_TO_METERS);
-    SmartDashboard.putNumber("Elevator/Actual position in rotations", currentPos);
-    SmartDashboard.putNumber("Elevator/Final setpoint in meters", finalTargetPosition);
-    SmartDashboard.putNumber("Elevator/Final setpoint in rotations", finalTargetPosition * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
-    SmartDashboard.putBoolean("Elevator/Bottom limit switch", getBottomLimitSwitch());
+    ConditionalSmartDashboard.putNumber("Elevator/Actual velocity in mps", motorRight.getVelocity().getValueAsDouble());
+    ConditionalSmartDashboard.putNumber("Elevator/Actual position in meters", currentPos * Constants.Elevator.MOTOR_ROTATIONS_TO_METERS);
+    ConditionalSmartDashboard.putNumber("Elevator/Actual position in rotations", currentPos);
+    ConditionalSmartDashboard.putNumber("Elevator/Final setpoint in meters", finalTargetPosition);
+    ConditionalSmartDashboard.putNumber("Elevator/Final setpoint in rotations", finalTargetPosition * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
+    ConditionalSmartDashboard.putBoolean("Elevator/Bottom limit switch", getBottomLimitSwitch());
     //ConditionalSmartDashboard.putBoolean("Elevator/Top limit switch", getTopLimitSwitch());
   }
   
@@ -151,5 +155,13 @@ public class Elevator extends SubsystemBase {
 
   public void setSpeeds(double speed) {
     motorRight.setControl(new DutyCycleOut(speed));
+  }
+
+  public void setEndEffectorSetpoint(EndEffectorSetpointConstants endEffectorSetpoint) {
+    this.endEffectorSetpoint = endEffectorSetpoint;
+  }
+
+  public EndEffectorSetpointConstants getEndEffectorSetpoint() {
+    return endEffectorSetpoint;
   }
 }

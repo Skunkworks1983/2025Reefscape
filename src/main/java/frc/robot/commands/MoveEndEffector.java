@@ -14,33 +14,40 @@ import frc.robot.constants.EndEffectorSetpointConstants;
 // Moves wrist and elevator
 public class MoveEndEffector extends SequentialCommandGroup {
   boolean wristUp;
-  boolean elevatorUp1;
+  boolean elevatorUp;
   public MoveEndEffector(
     Elevator elevator,
     Wrist wrist,
     EndEffectorSetpointConstants setpoint
   ) {
     wristUp = false;
-    elevatorUp1 = false;
+    elevatorUp = false;
     addCommands(
       new MoveWristToSetpoint(wrist, setpoint.stowSetpoint).finallyDo(interrupted -> {
         wristUp = !interrupted;
       }),
       new MoveElevatorToSetpointCommand(elevator, setpoint.elevatorSetpoint).beforeStarting(() -> {
-        if(!wristUp) {
+        if (!wristUp) {
           this.cancel();
         }
       }).finallyDo(interrupted -> {
-        elevatorUp1 = !interrupted;
+        elevatorUp = !interrupted;
       }),
       new MoveWristToSetpoint(wrist, setpoint.wristSetpoint).beforeStarting(() -> {
-        if(!(elevatorUp1 && wristUp)) {
+        if (!(elevatorUp && wristUp)) {
           this.cancel();
         }
-      })
+      }).finallyDo(
+        interrupted -> {
+          if (!interrupted) {
+            elevator.setEndEffectorSetpoint(setpoint);
+            System.out.println("Move end Effector finished: uninterupted");
+          }
+          else{
+            System.out.println("Move end Effector finished: interupted");
+          }
+        }
+      )
     );
-  // addCommands(
-  //   new MoveElevatorToSetpointCommand(elevator, setpoint.elevatorSetpoint)
-  // );
   }
 }

@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.drivebase;
 
+import java.lang.constant.ConstantDesc;
+
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -28,6 +30,7 @@ import frc.robot.commands.AutomatedTests.TestTurnMotorAndEncoderOnModule;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.CurrentLimits;
 import frc.robot.constants.SwerveModuleConstants;
+import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.PIDControllers.SmartPIDController;
 import frc.robot.utils.PIDControllers.SmartPIDControllerTalonFX;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.Phoenix6Odometry;
@@ -136,7 +139,7 @@ public class SwerveModule extends SubsystemBase {
     // SmartDashboard.putNumber("A Velocity"+moduleName, driveMotor.getVelocity().getValueAsDouble());
     // SmartDashboard.putNumber("A Velocity"+moduleName, driveMotor.getVelocity().getValueAsDouble());
 
-    //SmartDashboard.putNumber("Drivebase/Swerve Module orientation",getTurnMotorAngle().getDegrees());
+    ConditionalSmartDashboard.putNumber("Drivebase/" + moduleName +" Swerve Module orientation",getTurnMotorAngle().getDegrees());
   }
 
   // only used if we want to run a manual speed on the motor
@@ -160,7 +163,7 @@ public class SwerveModule extends SubsystemBase {
   // Almost nothing should be calling this exept tests, this gets position from the turn motor
   // what should be used would be getTurnMotorAngle()
   public double getTurnMotorEncoderPosition() {
-    if(!DriverStation.isTestEnabled()) {
+    if (!DriverStation.isTestEnabled()) {
       new Alert("getTurnMotorEncoderPosition was called outside of Test", AlertType.kError).set(true);
       return getTurnMotorAngle().getDegrees();
     }
@@ -172,7 +175,7 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public void setBrakeMode(boolean brakeMode) {
-    if(brakeMode) {
+    if (brakeMode) {
       driveMotor.setNeutralMode(NeutralModeValue.Brake);
     }
     else {

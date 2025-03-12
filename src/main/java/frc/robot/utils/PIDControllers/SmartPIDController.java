@@ -87,7 +87,7 @@ public class SmartPIDController extends PIDController implements SmartPIDBase {
   }
 
   private void updateKf() {
-    if(iskf) {
+    if (iskf) {
       kf = getValueFromSmartDashboard(name, "kf Value", kf);
     }
   }

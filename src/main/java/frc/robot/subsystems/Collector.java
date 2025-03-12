@@ -52,8 +52,8 @@ public class Collector extends SubsystemBase {
 
   /** Creates a new Collector. */
   public Collector() {
-   rightMotor = new TalonFX(Constants.Collector.IDs.RIGHT_MOTOR, "Collector 2025");
-   leftMotor = new TalonFX(Constants.Collector.IDs.LEFT_MOTOR, "Collector 2025");
+    rightMotor = new TalonFX(Constants.Collector.IDs.RIGHT_MOTOR, "Collector 2025");
+    leftMotor = new TalonFX(Constants.Collector.IDs.LEFT_MOTOR, "Collector 2025");
 
     setDefaultCommand(holdPositionCommand());
 
@@ -90,7 +90,7 @@ public class Collector extends SubsystemBase {
 
   private void setCollectorThrottle(double throttle) {
 
-    if(throttle != lastThrottle) {
+    if (throttle != lastThrottle) {
       leftMotor.setControl(dutyCycleOut.withOutput(throttle).withEnableFOC(true));
       rightMotor.setControl(dutyCycleOut.withOutput(throttle).withEnableFOC(true));
       lastThrottle = throttle;
@@ -99,7 +99,7 @@ public class Collector extends SubsystemBase {
 
   // meters per sec
   private void setCollectorSpeeds(double rightSpeed, double leftSpeed) {
-    // Reseting last throttle
+    // Resetting last throttle
     lastThrottle = 0;
     if (rightSpeed != lastRightSpeed) {
       rightMotor.setControl(velocityVoltage
@@ -175,7 +175,7 @@ public class Collector extends SubsystemBase {
   // it should almost always be true unless there will be a following command right after that will end it
   public Command intakeCoralCommand(
     boolean stopOnEnd
-    ) {
+  ) {
     int endCount [] = {0}; // This value needs to be effectivly final 
     return runEnd(
       () -> {
@@ -183,7 +183,7 @@ public class Collector extends SubsystemBase {
           Constants.Collector.Speeds.CORAL_INTAKE_SLOW_SPEED);
       },
       () -> {
-        if(stopOnEnd) {
+        if (stopOnEnd) {
           setCollectorSpeeds(0, 0);
         }
       }
@@ -211,23 +211,27 @@ public class Collector extends SubsystemBase {
   public Command expelCoralCommand(
     boolean stopOnEnd,
     Supplier<EndEffectorSetpointConstants> endEffectorSetpoint
-    )
-  {
+  ) {
     return runEnd(
       () -> {
+        if (endEffectorSetpoint.get().equals(Constants.EndEffectorSetpoints.CORAL_L1)) {
+          setCollectorSpeeds(Constants.Collector.Speeds.CORAL_EXPEL_SLOW_SPEED, 
+            Constants.Collector.Speeds.CORAL_EXPEL_SLOW_SPEED);
+        }
+        else {
           setCollectorSpeeds(Constants.Collector.Speeds.CORAL_EXPEL_FAST_SPEED, 
             Constants.Collector.Speeds.CORAL_EXPEL_FAST_SPEED);
+        }
       },
       () -> {
-        if(stopOnEnd) {
+        if (stopOnEnd) {
           setCollectorSpeeds(0, 0);
         }
       }
     );
-
   }
 
-  public Command holdPositionCommand(){
+  public Command holdPositionCommand() {
     return startEnd(
       () -> {
         setCollectorSetPoint(getRightMotorPosition(), getLeftMotorPosition());
@@ -243,17 +247,16 @@ public class Collector extends SubsystemBase {
     int endCount [] = {0}; // This value needs to be effectivly final 
     return runEnd(
       () -> {
-        // setCollectorSpeeds(Constants.Collector.Speeds.ALGAE_INTAKE_SPEED, 
-        //   Constants.Collector.Speeds.ALGAE_INTAKE_SPEED);
         setCollectorThrottle(Constants.Collector.Speeds.ALGAE_INTAKE_SPEED);
       },
       () -> {
-        if(stopOnEnd) {
+        if (stopOnEnd) {
           setCollectorSpeeds(0, 0);
         }
       }
     ).beforeStarting(
       () -> {
+        lastThrottle = 0.0;
         endCount[0] = 0;
       }
     ).until(
@@ -280,7 +283,7 @@ public class Collector extends SubsystemBase {
           Constants.Collector.Speeds.ALGAE_EXPEL_SPEED);
       },
       () -> {
-        if(stopOnEnd) {
+        if (stopOnEnd) {
           setCollectorSpeeds(0, 0);
         }
       }

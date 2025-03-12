@@ -61,8 +61,8 @@ public class Wrist extends SubsystemBase {
     
     ConditionalSmartDashboard.putNumber("Wrist/Wrist velocity (rotations per second)", getWristVelocity());
     SmartDashboard.putNumber("Wrist/Wrist motor position(rotations)", getPosition());
-    SmartDashboard.putBoolean("Wrist/Bottom wrist magnet state", getBottomMagnetSensor());
-    SmartDashboard.putBoolean("Wrist/Top wrist magnet state", getTopMagnetSensor());
+    ConditionalSmartDashboard.putBoolean("Wrist/Bottom wrist magnet state", getBottomMagnetSensor());
+    ConditionalSmartDashboard.putBoolean("Wrist/Top wrist magnet state", getTopMagnetSensor());
 
     // Setposition counts as a config update, try and do this sparingly
     // if (getTopMagnetSensor() && Math.abs(wristMotor.getPosition().getValueAsDouble() - Constants.Wrist.WRIST_MAX_ROTATIONS) > .001) {
