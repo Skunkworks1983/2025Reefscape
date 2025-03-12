@@ -162,6 +162,7 @@ public class Constants {
     public static final double MAX_METERS_PER_SECOND = 4.5;
     public static final double MAX_DEGREES_PER_SECOND = 270;
 
+    public static final double AUTO_ALIGN_DRIVE_SPEED = 0.5;
     public static final double DRIVE_CURRENT_LIMIT = 100;
 
     public class IDS {

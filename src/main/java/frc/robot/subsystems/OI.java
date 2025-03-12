@@ -148,14 +148,13 @@ public class OI {
       new JoystickButton(rotationJoystick, Buttons.TARGET_CORAL_CYCLE_NO_ODOMETRY_BUTTON)
         .whileTrue(targetCoralCycleAngleNoOdometry);
 
-      double alignSpeed = 0.5;
 
       Command AlignCoralRightCommand = new AutomatedLidarScoring(
         drivebase,
         collector,
         this::getInstructedXMetersPerSecond,
         this::getInstructedYMetersPerSecond,
-        alignSpeed,
+        Constants.Drivebase.AUTO_ALIGN_DRIVE_SPEED,
         /*goingRight=*/true,
         0.25,
         "align right",
@@ -167,7 +166,7 @@ public class OI {
         collector,
         this::getInstructedXMetersPerSecond,
         this::getInstructedYMetersPerSecond,
-        alignSpeed,
+        Constants.Drivebase.AUTO_ALIGN_DRIVE_SPEED,
         /*goingRight=*/false,
         0.25,
         "align left",
