@@ -37,8 +37,6 @@ public class Vision extends SubsystemBase {
   private List<Field2d> field2ds = new LinkedList<Field2d>();
   private final AprilTagFieldLayout aprilTagLayout = 
     AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
-
-  // private PoseDeviations poseDeviations = new PoseDeviations();
   
   public Vision(VisionConsumer consumer, VisionIOConstants... ioConstants) {
       this.consumer = consumer;
@@ -84,12 +82,6 @@ public class Vision extends SubsystemBase {
           if (rejectPose) {
             continue;
           }
-
-          // If the pose is being added, then add to the measurements list.
-          // poseDeviations.updateMeasurements(observation.estimatedPose().toPose2d());
-    
-          // (0.0329)x2 + (-0.0222)x + (0.0048)
-
           double x = observation.averageTagDistance();
           double linearStdDev = (0.0329)*x*x + (-0.0222)*x + (0.0048);
   
