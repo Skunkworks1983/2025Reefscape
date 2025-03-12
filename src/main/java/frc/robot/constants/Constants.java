@@ -84,6 +84,7 @@ public class Constants {
     // If some subsystems are not created and this value is true, an exeption
     // will be thrown.
     public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = true;
+    public static final boolean SMART_PID_ENABLED = false;
 
     public static enum Robot {
       Comp2024,
@@ -125,7 +126,7 @@ public class Constants {
     public static final double END_COUNT_TICK_COUNTER_ALGAE = 3;
     public static final double END_COUNT_TICK_COUNTER_CORAL = 7.0;
     public static final double COLLECTOR_AMPS_BEFORE_CUTTOF = 5.0;
-    public static final double ALGAE_AMP_CUT_OFF = 20.0;
+    public static final double ALGAE_AMP_CUT_OFF = 10.0;
 
       public static final boolean SMART_PID_ENABLED = false;
 
@@ -161,6 +162,7 @@ public class Constants {
     public static final double MAX_METERS_PER_SECOND = 4.5;
     public static final double MAX_DEGREES_PER_SECOND = 270;
 
+    public static final double AUTO_ALIGN_DRIVE_SPEED = 0.5;
     public static final double DRIVE_CURRENT_LIMIT = 100;
 
     public class IDS {
@@ -184,10 +186,10 @@ public class Constants {
         10, 11, 12, -0.337158 + .75, new Translation2d(-MODULE_OFFSET, MODULE_OFFSET), "Back Left"
       ),
       new SwerveModuleConstants(
-         13, 14, 15, -0.289795 + .25, new Translation2d(-MODULE_OFFSET, -MODULE_OFFSET), "Back Right"
+        13, 14, 15, -0.289795 + .25, new Translation2d(-MODULE_OFFSET, -MODULE_OFFSET), "Back Right"
       ),
       new SwerveModuleConstants(
-       16, 17, 18, 0.476318 - .75, new Translation2d(MODULE_OFFSET, MODULE_OFFSET), "Front Left"
+        16, 17, 18, 0.476318 - .75, new Translation2d(MODULE_OFFSET, MODULE_OFFSET), "Front Left"
       ),
       new SwerveModuleConstants(
         19, 20, 21, -0.353027 + .75, new Translation2d(MODULE_OFFSET, -MODULE_OFFSET), "Front Right"
@@ -219,11 +221,11 @@ public class Constants {
       public static final double SWERVE_MODULE_TURN_KI = 0.0;
       public static final double SWERVE_MODULE_TURN_KD = 0.00017;
       public static final double SWERVE_MODULE_TURN_KF = 0.0;
-      public static final double SWERVE_MODULE_DRIVE_KP = 0.125;
+      public static final double SWERVE_MODULE_DRIVE_KP = 0.25;
       public static final double SWERVE_MODULE_DRIVE_KI = 0.0;
       public static final double SWERVE_MODULE_DRIVE_KD = 0.0;
       public static final double SWERVE_MODULE_DRIVE_KF = 0.0;
-      public static final double SWERVE_MODULE_DRIVE_KV = 0.1075;
+      public static final double SWERVE_MODULE_DRIVE_KV = 0.13;
       public static final double SWERVE_MODULE_DRIVE_KA = 0.0;
       public static final double SWERVE_MODULE_DRIVE_KS = 0.0;
 
@@ -234,7 +236,6 @@ public class Constants {
       public static final double PID_LOW_LIMIT = -0.8;
       public static final double PID_HIGH_LIMIT = 0.8;
 
-      public static final boolean SMART_PID_ENABLED = false;
       public static final boolean SMART_PID_TURN_ENABLED = false;
       public static final boolean SMART_PID_DRIVE_ENABLED = false;
     }
@@ -296,7 +297,7 @@ public class Constants {
     public static final double TOLORENCE_METERS_FOR_SETPOINT = 0.0;
     // This tolerance value will be used for moving to a setpoint
     // using the MoveToPositionCommand.
-    public static final double TOLERENCE_METERS_FOR_MOVE_TO_POSITION = 0.25;
+    public static final double TOLERENCE_METERS_FOR_MOVE_TO_POSITION = 0.2; // TODO: Priority: Tuning
 
     // In meters
     public static final double MAX_HEIGHT_CARRIAGE = 1.527175;
@@ -308,21 +309,22 @@ public class Constants {
     public static final double METERS_TO_MOTOR_ROTATIONS = 1; // We need to fix Transforms after Competition
 
 
+    // TODO: Priority: Tuning
     public class PIDs {
-      public static final double ELEVATOR_kP = 1.5;
+      public static final double ELEVATOR_kP = 1.6;
       public static final double ELEVATOR_kI = 0.125;
       public static final double ELEVATOR_kD = 0.0;
-      public static final double ELEVATOR_kF = 0.0;
+      public static final double ELEVATOR_kF = 0.605;
       public static final double ELEVATOR_kV = 0.0;
       public static final double ELEVATOR_kA = 0.0;
-      public static final double ELEVATOR_kS = 0.55;
+      public static final double ELEVATOR_kS = 0.0;
 
       public static final boolean SMART_PID_ENABLED = false;
     }
 
     public class Profile {
-      public static final double MAX_VELOCITY = 30 * 1.5;
-      public static final double MAX_ACCELERATION = 65 * 1.25;
+      public static final double MAX_VELOCITY = 55.0;
+      public static final double MAX_ACCELERATION = 81.0;
     }
   }
 
@@ -346,8 +348,8 @@ public class Constants {
       public static final boolean WRIST_SMARTPID_ACTIVE = false;
     }
 
-    public static final double WRIST_MAX_VELOCITY = 0.35  * 2.0;
-    public static final double WRIST_MAX_ACCELERATION = 1.25 * 1.25;
+    public static final double WRIST_MAX_VELOCITY = 0.7;
+    public static final double WRIST_MAX_ACCELERATION = 1.56;
 
     public static final double WRIST_TOLERANCE = 0.02;
 
@@ -359,11 +361,11 @@ public class Constants {
 
   }
   
-  // TODO: add end effector setpoints
+  // TODO: Priority: Tuning
   public class EndEffectorSetpoints {
 
     public static final double WRIST_STOW_POSITION_CORAL = 0.0;
-    public static final double WRIST_STOW_POSITION_ALGAE = 0.0; //0.1441;
+    public static final double WRIST_STOW_POSITION_ALGAE = 0.0;
     public static final double WRIST_PROSSESSOR_STOW_POSITION = 0.1441;
 
     public static final EndEffectorSetpointConstants ALGAE_GROUND = 
@@ -371,7 +373,7 @@ public class Constants {
     public static final EndEffectorSetpointConstants ALGAE_STOW = 
       new EndEffectorSetpointConstants(0.0, WRIST_PROSSESSOR_STOW_POSITION, WRIST_PROSSESSOR_STOW_POSITION);
     public static final EndEffectorSetpointConstants ALGAE_PROCESSOR = 
-      new EndEffectorSetpointConstants(11.0, 0.3941, WRIST_PROSSESSOR_STOW_POSITION);
+      new EndEffectorSetpointConstants(10.8, 0.3941, WRIST_PROSSESSOR_STOW_POSITION);
     public static final EndEffectorSetpointConstants ALGAE_L2 = 
       new EndEffectorSetpointConstants(19.018 + 5, 0.3941, WRIST_STOW_POSITION_ALGAE);
     public static final EndEffectorSetpointConstants ALGAE_L3 = 
@@ -463,9 +465,9 @@ public class Constants {
         public static final int CLIMBER_GOTO_MAX = 0;
         public static final int CLIMBER_GOTO_MIN = 0;
 
-        public static final int TARGET_REEF_BUTTON = 1;
+        public static final int TARGET_REEF_BUTTON = 3;
         public static final int TARGET_CORAL_STATION_BUTTON = 2;
-        public static final int TARGET_CORAL_CYCLE_NO_ODOMETRY_BUTTON = 3;
+        public static final int TARGET_CORAL_CYCLE_NO_ODOMETRY_BUTTON = 1;
 
         public static final int RAISE_FUNNEL_TOGGLE = 0;
 
@@ -476,6 +478,6 @@ public class Constants {
   }
 
   public class Phoenix6Odometry {
-    public static final double updatesPerSecond = 100.0;
+    public static final double requestedUpdatesPerSecond = 100.0;
   }
 }

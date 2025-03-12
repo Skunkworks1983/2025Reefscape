@@ -14,6 +14,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drivebase.Drivebase;
 
@@ -21,25 +22,29 @@ public class TrapezoidProfileDriveOut extends Command {
 
   Drivebase drivebase;
   Timer timeElasped = new Timer();
-  TrapezoidProfile profile = new TrapezoidProfile(new Constraints(1.0, 5.0));
+  TrapezoidProfile profile = new TrapezoidProfile(new Constraints(2.0, 1.0));
   State startState = new State();
-  State goalState = new State(Units.inchesToMeters(58.683), 0.0);
+  State goalState = new State(3, 0.0);
 
   public TrapezoidProfileDriveOut(Drivebase drivebase) {
     this.drivebase = drivebase;
     addRequirements(drivebase);
   }
 
+  double cachedHeadingForCommand;
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    cachedHeadingForCommand = drivebase.getCachedGyroHeading().getDegrees();
 
     Optional<Alliance> alliance = DriverStation.getAlliance();
     if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Blue) {
       drivebase.resetGyroHeading(Rotation2d.fromDegrees(180));
+      cachedHeadingForCommand = 180;
     }
     else {
       drivebase.resetGyroHeading(Rotation2d.fromDegrees(0));
+      cachedHeadingForCommand = 0;
     }
     
     timeElasped.reset();
@@ -50,7 +55,12 @@ public class TrapezoidProfileDriveOut extends Command {
   @Override
   public void execute() {
     double xVelocity = profile.calculate(timeElasped.get(), startState, goalState).velocity;
-    drivebase.drive(xVelocity, 0.0, 0.0, false);
+    drivebase.drive
+    (xVelocity,
+      0.0,
+      drivebase.calculateWithHeadingController(cachedHeadingForCommand),
+      false
+    );
   }
 
   // Called once the command ends or is interrupted.

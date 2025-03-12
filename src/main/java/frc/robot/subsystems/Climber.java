@@ -155,7 +155,7 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
         
       },
       () -> {
-        if(!isMotorConnected()) {
+        if (!isMotorConnected()) {
           climbMotorConnectedTest.setErrorStatus(AlertType.kError);
         }
         else {

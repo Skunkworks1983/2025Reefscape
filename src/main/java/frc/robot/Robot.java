@@ -22,7 +22,6 @@ import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.error.DiagnosticSubsystem;
 import frc.robot.commands.MoveEndEffector;
-import frc.robot.commands.drivebase.DeadReckoningDriveOut;
 import frc.robot.commands.drivebase.TrapezoidProfileDriveOut;
 import frc.robot.commands.funnel.MoveFunnelToSetpoint;
 import frc.robot.commands.tests.JoystickElevatorVelocity;
@@ -65,8 +64,8 @@ public class Robot extends TimedRobot {
   public Robot() {
     DataLogManager.start();
 
-    if(Constants.Testing.ENSURE_COMPETITION_READY_SUBSYSTEMS) {
-      if(drivebase.isEmpty()) {
+    if (Constants.Testing.ENSURE_COMPETITION_READY_SUBSYSTEMS) {
+      if (drivebase.isEmpty()) {
         throw new IllegalStateException("Drivebase not present");
       }
       if (collector.isEmpty()) {
@@ -87,12 +86,12 @@ public class Robot extends TimedRobot {
       if (Constants.Testing.ROBOT != Constants.Testing.Robot.Comp2025) {
         throw new IllegalStateException("Using 2024 drivebase constants! Change to 2025 (Constants.Testing.ROBOT)");
       }
-      if (Constants.Drivebase.PIDs.SMART_PID_ENABLED) {
+      if (Constants.Testing.SMART_PID_ENABLED) {
         throw new IllegalStateException("Global Smartpid Enabled! (Constants.Drivebase.PIDS.SMART_PID_ENABLED)");
       }
     }
 
-    if(drivebase.isPresent()) {
+    if (drivebase.isPresent()) {
       drivebase.get().setDefaultCommand(
         drivebase.get().getSwerveCommand(
           oi::getInstructedXMetersPerSecond,
@@ -102,7 +101,6 @@ public class Robot extends TimedRobot {
         )
       );
 
-      deadReckoningDriveOut = new DeadReckoningDriveOut(drivebase.get());
       trapezoidProfileDriveOut = new TrapezoidProfileDriveOut(drivebase.get());
     }
 
@@ -113,51 +111,51 @@ public class Robot extends TimedRobot {
 
   @Override 
   public void robotInit() {
-    if (elevator.isPresent() && wrist.isPresent()){
+    if (elevator.isPresent() && wrist.isPresent()) {
 
-    //move to pos coral 
-    NamedCommands.registerCommand("Coral to L4",
-      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_L4));
-    
-    NamedCommands.registerCommand("Coral to L3", 
-      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_L3));
+      // move to pos coral 
+      NamedCommands.registerCommand("Coral to L4",
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_L4));
+      
+      NamedCommands.registerCommand("Coral to L3", 
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_L3));
 
-    NamedCommands.registerCommand("Coral to L2", 
-      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_L2));
+      NamedCommands.registerCommand("Coral to L2", 
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_L2));
 
-    NamedCommands.registerCommand("Coral to L1", 
-      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_L1));
+      NamedCommands.registerCommand("Coral to L1", 
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_L1));
 
-    NamedCommands.registerCommand("Coral to Ground", 
-      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_GROUND));
+      NamedCommands.registerCommand("Coral to Ground", 
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_GROUND));
 
     NamedCommands.registerCommand("Coral to Stow", 
     new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_STOW));
 
-    // move to pos Algae
-    NamedCommands.registerCommand("Algae to L2 ", 
-    new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_L2));
+      // move to pos Algae
+      NamedCommands.registerCommand("Algae to L2 ", 
+      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_L2));
 
-    NamedCommands.registerCommand("Algae to L3", 
-      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_L3));
+      NamedCommands.registerCommand("Algae to L3", 
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_L3));
 
-    NamedCommands.registerCommand("Algae to Ground", 
-      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_GROUND));
+      NamedCommands.registerCommand("Algae to Ground", 
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_GROUND));
 
-    NamedCommands.registerCommand("Algae to Processor", 
-      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_PROCESSOR));
-    
-    NamedCommands.registerCommand("Algea to Stow", 
-      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_STOW));
+      NamedCommands.registerCommand("Algae to Processor", 
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_PROCESSOR));
+      
+      NamedCommands.registerCommand("Algea to Stow", 
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_STOW));
 
-    // Collector 
-    NamedCommands.registerCommand("Expel Coral", collector.get().expelCoralCommand(true, oi::getEndEffectorSetpoint));
+      // Collector 
+      NamedCommands.registerCommand("Expel Coral", collector.get().expelCoralCommand(true, elevator.get()::getEndEffectorSetpoint));
 
-    NamedCommands.registerCommand("Expel Algae",collector.get().expelAlgaeCommand(true));
+      NamedCommands.registerCommand("Expel Algae",collector.get().expelAlgaeCommand(true));
 
-    NamedCommands.registerCommand("Intake Coral", collector.get().intakeCoralCommand(true));
+      NamedCommands.registerCommand("Intake Coral", collector.get().intakeCoralCommand(true));
 
-    NamedCommands.registerCommand("Intake Algae ", collector.get().intakeAlgaeCommand(true));
+      NamedCommands.registerCommand("Intake Algae ", collector.get().intakeAlgaeCommand(true));
 
     }
   }
@@ -172,7 +170,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     drivebase.get().resetGyroHeading();
     // Command autoCommand = autoChooser.getSelected();
-    // if(autoCommand != null) {
+    // if (autoCommand != null) {
     //   autoCommand.schedule();
     // }
 
@@ -205,7 +203,7 @@ public class Robot extends TimedRobot {
     errorGroup.clearAllTest();
 
     // We provide the errorCommandGenerator with the error group and a array of subsystems to get commands from
-    if(drivebase.isPresent()) {
+    if (drivebase.isPresent()) {
       ErrorCommandGenerator.getErrorCommand(
         errorGroup,
         new DiagnosticSubsystem[] {drivebase.get()}

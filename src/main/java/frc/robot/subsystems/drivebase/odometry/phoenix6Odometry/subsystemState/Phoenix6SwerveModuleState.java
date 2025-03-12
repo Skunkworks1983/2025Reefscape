@@ -16,14 +16,14 @@ public class Phoenix6SwerveModuleState extends PhoenixSubsystemState<SwerveField
     super(signalSubsystem);
   }
 
-  public SwerveModulePosition getSwerveModulePosition(){
+  public SwerveModulePosition getSwerveModulePosition() {
     return new SwerveModulePosition(
       super.getValue(SwerveField.DRIVE_POSITION),
       Rotation2d.fromRotations(super.getValue(SwerveField.TURN_POSITION))
     );
   }
 
-  public SwerveModuleState getSwerveModuleState(){
+  public SwerveModuleState getSwerveModuleState() {
     return new SwerveModuleState(
       super.getValue(SwerveField.DRIVE_VELOCITY),
       Rotation2d.fromRotations(super.getValue(SwerveField.TURN_POSITION))

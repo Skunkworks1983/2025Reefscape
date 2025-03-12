@@ -142,9 +142,10 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
         DCMotor.getKrakenX60(1).withReduction(Constants.Drivebase.Info.DRIVE_MOTOR_GEAR_RATIO), 
         Constants.Drivebase.DRIVE_CURRENT_LIMIT,
         Constants.Drivebase.MODULES.length
-        ),
-      Constants.Drivebase.MODULE_OFFSET);
-      positionEstimator.stateLock.readLock().lock();
+      ),
+      Constants.Drivebase.MODULE_OFFSET
+    );
+    positionEstimator.stateLock.readLock().lock();
     AutoBuilder.configure(
       positionEstimator::getPose,positionEstimator::reset,
       this::getRobotRelativeSpeeds, (speeds, feedforwards) -> driveRobotRelative(speeds), 
@@ -182,8 +183,8 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     SmartDashboard.putNumber("Gyro Position", gyro.getYaw().getValueAsDouble());
     SmartDashboard.putBoolean("Lidar Left", lidarLeft.isTripped());
     SmartDashboard.putBoolean("Lidar Right", lidarRight.isTripped());
-    SmartDashboard.putNumber("Lidar Left pos", lidarLeft.getDistance());
-    SmartDashboard.putNumber("Lidar Right pos", lidarRight.getDistance());
+    SmartDashboard.putNumber("Lidar Left Distance", lidarLeft.getDistance());
+    SmartDashboard.putNumber("Lidar Right Distance", lidarRight.getDistance());
   }
 
   /**
@@ -212,11 +213,11 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     double radiansPerSecond = Units.degreesToRadians(degreesPerSecond);
     if (isFieldRelative) {
       chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-          xMetersPerSecond,
-          yMetersPerSecond,
-          radiansPerSecond,
-          getCachedGyroHeading()
-        );
+        xMetersPerSecond,
+        yMetersPerSecond,
+        radiansPerSecond,
+        getCachedGyroHeading()
+      );
     } else {
       chassisSpeeds = new ChassisSpeeds(xMetersPerSecond, yMetersPerSecond, radiansPerSecond);
     }
@@ -276,6 +277,13 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     ChassisSpeeds chassisSpeeds = positionEstimator.swerveDriveKinematics.toChassisSpeeds(moduleStates);
     positionEstimator.stateLock.readLock().unlock();
     return chassisSpeeds;
+  }
+
+  public double calculateWithHeadingController(double targetHeading) {
+    return headingController.calculate(
+      getCachedGyroHeading().getDegrees(),
+      targetHeading
+    );
   }
 
   private SwerveModuleState[] getSwerveModuleStates() {
@@ -408,7 +416,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
         }
       ).until(
         () -> {
-          if(goingRight == TeleopFeatureUtils.isCloseSideOfReef(targetHeading[0])) {
+          if (goingRight == TeleopFeatureUtils.isCloseSideOfReef(targetHeading[0])) {
             return lidarRight.isTripped();
           }
           else {
@@ -421,7 +429,13 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
               () -> {return TeleopFeatureUtils.getReefFaceSpeedY(targetHeading[0], -newAlignSpeed * 0.5);},
               () -> targetHeading[0],
               true
-      ).withTimeout(backSeconds)
+      ).withTimeout(backSeconds),
+      getBaseSwerveCommand(
+        () -> 0, 
+        () -> 0, 
+        () -> 0, 
+        true
+      ).withTimeout(0.04)
     );
   }
 
@@ -439,10 +453,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
         getYMetersPerSecond,
         (DoubleSupplier) () -> {
 
-          double rotSpeed = headingController.calculate(
-            getCachedGyroHeading().getDegrees(),
-            getDesiredHeading.get().getDegrees()
-          );
+          double rotSpeed = calculateWithHeadingController(getDesiredHeading.get().getDegrees());
 
           return rotSpeed;
         },
@@ -499,18 +510,18 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     return state;
   }
 
-    public Command followPathCommand(String pathName) {
+  public Command followPathCommand(String pathName) {
     try {
       PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
       return AutoBuilder.followPath(path);
     }
-    catch (ParseException p){
+    catch (ParseException p) {
       System.out.println("pathplanner threw parseexception while parsing " + pathName);
     }
-    catch (IOException e){
+    catch (IOException e) {
       System.out.println("pathplanner threw ioexception while parsing " + pathName);
     }
-    return new Command(){};
+    return new Command() {};
    
   }
 
