@@ -38,7 +38,7 @@ public class Vision extends SubsystemBase {
   private final AprilTagFieldLayout aprilTagLayout = 
     AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
-  private PoseDeviations poseDeviations = new PoseDeviations();
+  // private PoseDeviations poseDeviations = new PoseDeviations();
   
   public Vision(VisionConsumer consumer, VisionIOConstants... ioConstants) {
       this.consumer = consumer;
@@ -86,7 +86,7 @@ public class Vision extends SubsystemBase {
           }
 
           // If the pose is being added, then add to the measurements list.
-          poseDeviations.updateMeasurements(observation.estimatedPose().toPose2d());
+          // poseDeviations.updateMeasurements(observation.estimatedPose().toPose2d());
     
           // (0.0329)x2 + (-0.0222)x + (0.0048)
 
