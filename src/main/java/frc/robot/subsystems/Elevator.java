@@ -6,9 +6,11 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.CurrentLimits;
+import frc.robot.constants.EndEffectorSetpointConstants;
 import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.PIDControllers.SmartPIDControllerTalonFX;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -33,6 +35,8 @@ public class Elevator extends SubsystemBase {
   private double finalTargetPosition;
 
   private SmartPIDControllerTalonFX smartPIDController;
+
+  private EndEffectorSetpointConstants endEffectorSetpoint = Constants.EndEffectorSetpoints.CORAL_STOW;
 
   public Elevator() {
     TalonFXConfiguration config = new TalonFXConfiguration();
@@ -151,5 +155,13 @@ public class Elevator extends SubsystemBase {
 
   public void setSpeeds(double speed) {
     motorRight.setControl(new DutyCycleOut(speed));
+  }
+
+  public void setEndEffectorSetpoint(EndEffectorSetpointConstants endEffectorSetpoint) {
+    this.endEffectorSetpoint = endEffectorSetpoint;
+  }
+
+  public EndEffectorSetpointConstants getEndEffectorSetpoint() {
+    return endEffectorSetpoint;
   }
 }

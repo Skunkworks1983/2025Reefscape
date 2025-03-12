@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import java.util.Optional;
+import java.util.Queue;
+import java.util.concurrent.BlockingDeque;
 import java.util.function.DoubleFunction;
 import java.util.function.Supplier;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -15,7 +17,9 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants.EndEffectorSetpoints;
 import frc.robot.constants.Constants.OI.LIMITS;
+import frc.robot.constants.EndEffectorSetpointConstants;
 import frc.robot.commands.MoveEndEffector;
+import frc.robot.commands.AutomatedScoring.AutomatedLidarScoring;
 import frc.robot.commands.elevator.MoveElevatorToSetpointCommand;
 import frc.robot.commands.funnel.MoveFunnelToSetpoint;
 import frc.robot.commands.tests.JoystickEndEffectorPosition;
@@ -70,16 +74,17 @@ public class OI {
     Trigger algaeToggle = new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.ALGAE_TOGGLE);
     Trigger coralToggle = algaeToggle.negate(); // If not in algae mode, we are using coral mode.
 
-    if (optionalCollector.isPresent()) {
+    if (optionalCollector.isPresent() && optionalElevator.isPresent()) {
       Collector collector = optionalCollector.get();
+      Elevator elevator = optionalElevator.get();
 
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.INTAKE)
           .and(coralToggle)
           .whileTrue(collector.intakeCoralCommand(true));
 
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.EXPEL)
-        .and(coralToggle)
-        .whileTrue(collector.expelCoralCommand(true));
+          .and(coralToggle)
+          .whileTrue(collector.expelCoralCommand(true, elevator::getEndEffectorSetpoint));
 
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.INTAKE)
           .and(algaeToggle)
@@ -93,48 +98,99 @@ public class OI {
     if (optionalDrivebase.isPresent()) {
       Drivebase drivebase = optionalDrivebase.get();
 
-      double alignSpeed = 3;
 
-      Command targetCommand = drivebase.getSwerveHeadingCorrected(
+      Command targetReefCommand = 
+        drivebase.getSwerveHeadingCorrected(
           this::getInstructedXMetersPerSecond,
           this::getInstructedYMetersPerSecond,
           (Supplier<Rotation2d>) () -> 
-            TeleopFeatureUtils.getPointAtReefFaceAngle(drivebase::getCachedEstimatedRobotPose),
-          true);
+            TeleopFeatureUtils.getPointAtReefFaceAngle(drivebase.getCachedEstimatedRobotPose()),
+          true
+        );
 
-      Command targetCoralStationCommand = drivebase.getSwerveHeadingCorrected(
+      Command targetCoralStationCommand = 
+        drivebase.getSwerveHeadingCorrected(
           this::getInstructedXMetersPerSecond,
           this::getInstructedYMetersPerSecond,
           (Supplier<Rotation2d>) () -> 
-            TeleopFeatureUtils.getPointAtCoralStationAngle(drivebase::getCachedEstimatedRobotPose),
-          true);
+            TeleopFeatureUtils.getPointAtCoralStationAngle(drivebase.getCachedEstimatedRobotPose()),
+          true
+        );
 
-      Command AlignCoralRightCommand = drivebase.getSwerveAlignCoral(
+      Command ResetGyro = drivebase.resetGyro();
+
+      // new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_REEF_BUTTON)
+      //     .whileTrue(targetReefCommand);
+
+      // new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_CORAL_STATION_BUTTON)
+      //     .whileTrue(targetCoralStationCommand);
+
+      
+
+      new JoystickButton(translationJoystick, 1)
+          .and(new JoystickButton(translationJoystick, 2))
+          .whileTrue(ResetGyro);
+    }
+
+    if (optionalDrivebase.isPresent() && optionalCollector.isPresent() && optionalElevator.isPresent()) {
+      Elevator elevator = optionalElevator.get();
+      Collector collector = optionalCollector.get();
+      Drivebase drivebase = optionalDrivebase.get();
+      Command targetCoralCycleAngleNoOdometry = 
+        drivebase.getSwerveHeadingCorrected(
           this::getInstructedXMetersPerSecond,
           this::getInstructedYMetersPerSecond,
-          -alignSpeed,
-          /*goingRight=*/true
+          (Supplier<Rotation2d>) () -> 
+            TeleopFeatureUtils.getCoralCycleAngleNoOdometry(collector.isHoldingCoral(), drivebase.getCachedGyroHeading()),
+          true
+        );
+
+      new JoystickButton(rotationJoystick, Buttons.TARGET_CORAL_CYCLE_NO_ODOMETRY_BUTTON)
+        .whileTrue(targetCoralCycleAngleNoOdometry);
+
+
+      Command AlignCoralRightCommand = new AutomatedLidarScoring(
+        drivebase,
+        collector,
+        this::getInstructedXMetersPerSecond,
+        this::getInstructedYMetersPerSecond,
+        Constants.Drivebase.AUTO_ALIGN_DRIVE_SPEED,
+        /*goingRight=*/true,
+        0.25,
+        "align right",
+        elevator::getEndEffectorSetpoint
       );
 
-      Command AlignCoralLeftCommand = drivebase.getSwerveAlignCoral(
-          this::getInstructedXMetersPerSecond,
-          this::getInstructedYMetersPerSecond,
-          alignSpeed,
-          /*goingRight=*/false
+      Command AlignCoralLeftCommand = new AutomatedLidarScoring(
+        drivebase,
+        collector,
+        this::getInstructedXMetersPerSecond,
+        this::getInstructedYMetersPerSecond,
+        Constants.Drivebase.AUTO_ALIGN_DRIVE_SPEED,
+        /*goingRight=*/false,
+        0.25,
+        "align left",
+        elevator::getEndEffectorSetpoint
       );
 
-      new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_REEF_BUTTON)
-          .whileTrue(targetCommand);
+      new JoystickButton(rotationJoystick, 5)
+        .whileTrue(AlignCoralRightCommand);
 
-      new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_CORAL_STATION_BUTTON)
-          .whileTrue(targetCoralStationCommand);
+      new JoystickButton(rotationJoystick, 4)
+        .whileTrue(AlignCoralLeftCommand);
+    }
 
-      new JoystickButton(translationJoystick, 4)
-          .whileTrue(AlignCoralRightCommand);
+    // For Testing Only
+    if (optionalDrivebase.isPresent() && optionalElevator.isPresent() && optionalWrist.isPresent()) {
+      Elevator elevator = optionalElevator.get();
+      Wrist wrist = optionalWrist.get();
+      Drivebase drivebase = optionalDrivebase.get();
 
-      new JoystickButton(translationJoystick, 5)
-          .whileTrue(AlignCoralRightCommand);
-    } 
+      JoystickButton endEffectorButton = new JoystickButton(buttonJoystick, 9);
+
+      // endEffectorButton.whileTrue(new JoystickEndEffectorPosition(wrist, elevator, drivebase, this::getYrotationStick, this::getYtranslationStick));
+
+    }
 
     if(optionalClimber.isPresent()){
       Climber climber = optionalClimber.get();
@@ -156,25 +212,12 @@ public class OI {
       Elevator elevator = optionalElevator.get();
       Wrist wrist = optionalWrist.get();
 
-      // JoystickButton wristUp = new JoystickButton(buttonJoystick, 17);
-      // JoystickButton wristDown = new JoystickButton(buttonJoystick, 24);
-      // JoystickButton endEffectorButton = new JoystickButton(buttonJoystick, 18); // Temp id for testing
-
       JoystickButton endEffectorGround = new JoystickButton(buttonJoystick, Buttons.GOTO_GROUND);
       JoystickButton endEffectorStow = new JoystickButton(buttonJoystick, Buttons.GOTO_STOW);
       JoystickButton endEffectorToScoreLow = new JoystickButton(buttonJoystick, Buttons.GOTO_SCORE_LOW);
       JoystickButton endEffectorToL2 = new JoystickButton(buttonJoystick, Buttons.GOTO_L2);
       JoystickButton endEffectorToL3 = new JoystickButton(buttonJoystick, Buttons.GOTO_L3);
       JoystickButton endEffectorToScoreHigh = new JoystickButton(buttonJoystick, Buttons.GOTO_SCORE_HIGH);
-
-      // endEffectorToL2.onTrue(new MoveElevatorToSetpointCommand(elevator, EndEffectorSetpoints.CORAL_L2.elevatorSetpoint));
-      // endEffectorToL3.onTrue(new MoveElevatorToSetpointCommand(elevator, EndEffectorSetpoints.CORAL_L3.elevatorSetpoint));
-      // endEffectorToScoreHigh.onTrue(new MoveElevatorToSetpointCommand(elevator, EndEffectorSetpoints.CORAL_L4.elevatorSetpoint));
-      // endEffectorStow.onTrue(new MoveElevatorToSetpointCommand(elevator, EndEffectorSetpoints.CORAL_STOW.elevatorSetpoint));
-      // wristDown.onTrue(new MoveWristToSetpoint(wrist, 0.1441));
-      // wristUp.onTrue(new MoveWristToSetpoint(wrist, 0.0));
-
-      // endEffectorButton.whileTrue(new JoystickEndEffectorPosition(wrist, elevator, this::getYrotationStick, this::getYtranslationStick));
 
       // Algae mode
       endEffectorGround.and(algaeToggle).onTrue(
@@ -197,9 +240,9 @@ public class OI {
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_L3)
       );
 
-      endEffectorToScoreHigh.and(algaeToggle).onTrue(
-        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_NET)
-      );
+      // endEffectorToScoreHigh.and(algaeToggle).onTrue(
+      //   new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.ALGAE_NET)
+      // );
 
       // Coral mode
       endEffectorGround.and(coralToggle).onTrue(

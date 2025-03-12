@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.drivebase;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
@@ -12,7 +13,16 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.PathPlannerLogging;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -20,6 +30,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
@@ -43,6 +54,8 @@ import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.Lidar;
 import frc.robot.utils.error.DiagnosticSubsystem;
 
+import org.json.simple.parser.ParseException;
+
 public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
   private OdometryThread odometryThread;
@@ -58,14 +71,15 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       Constants.Drivebase.PIDs.HEADING_CONTROL_kD);
 
   private Pigeon2 gyro = new Pigeon2(Constants.Drivebase.PIGEON_ID, Constants.Drivebase.CANIVORE_NAME);
-  private Lidar lidarRight = new Lidar(Constants.Drivebase.LIDAR_RIGHT_DATA_PORT, Constants.Drivebase.LIDAR_RIGHT_TRIGGER_PORT, Constants.Drivebase.LIDAR_TRIGGER_DISTANCE);
-  private Lidar lidarLeft = new Lidar(Constants.Drivebase.LIDAR_LEFT_DATA_PORT, Constants.Drivebase.LIDAR_LEFT_TRIGGER_PORT, Constants.Drivebase.LIDAR_TRIGGER_DISTANCE);
+  private Lidar lidarRight = new Lidar(Constants.Drivebase.LIDAR_RIGHT_DATA_PORT, Constants.Drivebase.LIDAR_RIGHT_TRIGGER_PORT, Constants.Drivebase.LIDAR_TRIGGER_DISTANCE, 30000);
+  private Lidar lidarLeft = new Lidar(Constants.Drivebase.LIDAR_LEFT_DATA_PORT, Constants.Drivebase.LIDAR_LEFT_TRIGGER_PORT, Constants.Drivebase.LIDAR_TRIGGER_DISTANCE, 3000);
   private StructArrayPublisher<SwerveModuleState> desiredSwervestate = NetworkTableInstance.getDefault()
       .getStructArrayTopic("Desired swervestate", SwerveModuleState.struct).publish();
   private StructArrayPublisher<SwerveModuleState> actualSwervestate = NetworkTableInstance.getDefault()
       .getStructArrayTopic("Actual swervestate", SwerveModuleState.struct).publish();
 
   private Pose2d cachedEstimatedRobotPose = new Pose2d();
+  private Rotation2d cachedGyroHeading = new Rotation2d();
 
   public Drivebase() {
     // Creates a pheonix 6 pro state based on the gyro -- the only sensor owned
@@ -89,7 +103,9 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
             .map(module -> module.getState())
             .toArray(Phoenix6SwerveModuleState[]::new),
         phoenix6Odometry::setReadLock,
-        moduleLocations);
+        moduleLocations,
+        this
+      );
 
     
     // Reset the heading of the pose estimator to the correct side of the field. 
@@ -115,14 +131,60 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
     headingController.enableContinuousInput(0, 360);
     odometryThread.startThread();
+
+    RobotConfig config = new RobotConfig(
+      Constants.PathPlanner.ROBOT_MASS, 
+      Constants.PathPlanner.MOMENT_OF_INERTIA, 
+      new ModuleConfig(
+        Constants.Drivebase.Info.WHEEL_DIAMETER / 2, 
+        Constants.Drivebase.Info.MAX_MODULE_SPEED, 
+        1, 
+        DCMotor.getKrakenX60(1).withReduction(Constants.Drivebase.Info.DRIVE_MOTOR_GEAR_RATIO), 
+        Constants.Drivebase.DRIVE_CURRENT_LIMIT,
+        Constants.Drivebase.MODULES.length
+      ),
+      Constants.Drivebase.MODULE_OFFSET
+    );
+    positionEstimator.stateLock.readLock().lock();
+    AutoBuilder.configure(
+      positionEstimator::getPose,positionEstimator::reset,
+      this::getRobotRelativeSpeeds, (speeds, feedforwards) -> driveRobotRelative(speeds), 
+      new PPHolonomicDriveController( 
+        new PIDConstants(
+          Constants.PathPlanner.PATHPLANNER_DRIVE_KP, 
+          Constants.PathPlanner.PATHPLANNER_DRIVE_KI, 
+          Constants.PathPlanner.PATHPLANNER_DRIVE_KD),
+        new PIDConstants(
+          Constants.PathPlanner.PATHPLANNER_TURN_KP, 
+          Constants.PathPlanner.PATHPLANNER_TURN_KI, 
+          Constants.PathPlanner.PATHPLANNER_TURN_KD),
+          Constants.PathPlanner.UPDATE_PERIOD
+      ),
+      config,
+      () -> {
+          // Boolean supplier that controls when the path will be mirrored for the red alliance
+          // This will flip the path being followed to the red side of the field.
+          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+          int fieldOrientationMultiplier;
+  
+          Optional<Alliance> alliance = DriverStation.getAlliance();
+          return alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red;
+      },
+      this
+    );
+    positionEstimator.stateLock.readLock().unlock();
+    setAllModulesTurnPidActive();
   }
 
   @Override
   public void periodic() {
     cacheEstimatedRobotPose();
+    cacheGyroHeading();
     SmartDashboard.putNumber("Gyro Position", gyro.getYaw().getValueAsDouble());
     SmartDashboard.putBoolean("Lidar Left", lidarLeft.isTripped());
     SmartDashboard.putBoolean("Lidar Right", lidarRight.isTripped());
+    SmartDashboard.putNumber("Lidar Left Distance", lidarLeft.getDistance());
+    SmartDashboard.putNumber("Lidar Right Distance", lidarRight.getDistance());
   }
 
   /**
@@ -150,17 +212,20 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     ChassisSpeeds chassisSpeeds;
     double radiansPerSecond = Units.degreesToRadians(degreesPerSecond);
     if (isFieldRelative) {
-      state.getReadLock().lock();
       chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-          xMetersPerSecond,
-          yMetersPerSecond,
-          radiansPerSecond,
-          state.getGyroAngle());
-      state.getReadLock().unlock();
+        xMetersPerSecond,
+        yMetersPerSecond,
+        radiansPerSecond,
+        getCachedGyroHeading()
+      );
     } else {
       chassisSpeeds = new ChassisSpeeds(xMetersPerSecond, yMetersPerSecond, radiansPerSecond);
     }
 
+    driveRobotRelative(chassisSpeeds);
+  }
+
+  private void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
     mitigateSkew(chassisSpeeds);
     positionEstimator.getReadLock().lock();
     SwerveModuleState[] swerveModuleStates = positionEstimator.swerveDriveKinematics
@@ -181,11 +246,20 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   }
 
   public void resetGyroHeading() {
-    gyro.reset();
     Optional<Alliance> alliance = DriverStation.getAlliance();
     if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
-      gyro.setYaw(180);
+      resetGyroHeading(Rotation2d.fromDegrees(180));
     }
+    else {
+      resetGyroHeading(Rotation2d.fromDegrees(0));
+    }
+  }
+
+  public void resetGyroHeading(Rotation2d newHeading) {
+    positionEstimator.stateLock.readLock().lock();
+    gyro.reset();
+    gyro.setYaw(newHeading.getDegrees());
+    positionEstimator.stateLock.readLock().unlock();
   }
 
   public void setAllDriveMotorBreakMode(boolean breakMode) {
@@ -232,6 +306,12 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     positionEstimator.getReadLock().unlock();
   }
 
+  private void cacheGyroHeading() {
+    phoenix6Odometry.setReadLock(true);
+    cachedGyroHeading = state.getGyroAngle();
+    phoenix6Odometry.setReadLock(false);
+  }
+
   /**
    * 
    * @return 
@@ -241,6 +321,10 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
    */
   public Pose2d getCachedEstimatedRobotPose() {
     return cachedEstimatedRobotPose;
+  }
+
+  public Rotation2d getCachedGyroHeading() {
+    return cachedGyroHeading;
   }
 
   @Override
@@ -292,9 +376,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
             (Supplier<Rotation2d>) () -> lastRecordedHeading[0],
             true).beforeStarting(
                 () -> {
-                  phoenix6Odometry.setReadLock(true);
-                  lastRecordedHeading[0] = state.getGyroAngle();
-                  phoenix6Odometry.setReadLock(false);
+                  lastRecordedHeading[0] = getCachedGyroHeading();
                 }
             )
             .until(
@@ -307,31 +389,47 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       DoubleSupplier getXMetersPerSecond,
       DoubleSupplier getYMetersPerSecond,
       double alignSpeed,
-      boolean goingRight) {
+      boolean goingRight,
+      double backSeconds,
+      String name) {
 
     double newAlignSpeed = alignSpeed * (goingRight ? -1 : 1);
-    Rotation2d[] targetHeading = new Rotation2d[0];
+    Rotation2d[] targetHeading = new Rotation2d[1];
 
-    return getSwerveHeadingCorrected(
-            () -> {return (getXMetersPerSecond.getAsDouble() * 0.5) + TeleopFeatureUtils.getReefFaceSpeedX(targetHeading[0], newAlignSpeed);},
-            () -> {return (getYMetersPerSecond.getAsDouble() * 0.5) + TeleopFeatureUtils.getReefFaceSpeedY(targetHeading[0], newAlignSpeed);},
-            () -> targetHeading[0],
-            true
-    ).beforeStarting(
-      () -> {
-        targetHeading[0] = TeleopFeatureUtils.getPointAtReefFaceAngle(this::getCachedEstimatedRobotPose);
-      }
-    ).until(
-      () -> {
-        if(goingRight) {
-          return lidarRight.isTripped();
+    return Commands.sequence(
+      getSwerveHeadingCorrected(
+              () -> {return (getXMetersPerSecond.getAsDouble() * 0.5) + TeleopFeatureUtils.getReefFaceSpeedX(targetHeading[0], newAlignSpeed);},
+              () -> {return (getYMetersPerSecond.getAsDouble() * 0.5) + TeleopFeatureUtils.getReefFaceSpeedY(targetHeading[0], newAlignSpeed);},
+              () -> targetHeading[0],
+              true
+      ).beforeStarting(
+        () -> {
+          targetHeading[0] = TeleopFeatureUtils.getCoralCycleAngleNoOdometry(true, cachedGyroHeading);
+          System.out.println("Target Heading: " + targetHeading[0] + " X: " + TeleopFeatureUtils.getReefFaceSpeedX(targetHeading[0], newAlignSpeed) + " Y: " + TeleopFeatureUtils.getReefFaceSpeedY(targetHeading[0], newAlignSpeed));
         }
-        else {
-          return lidarLeft.isTripped();
+      ).until(
+        () -> {
+          if(goingRight == TeleopFeatureUtils.isCloseSideOfReef(targetHeading[0])) {
+            return lidarRight.isTripped();
+          }
+          else {
+            return lidarLeft.isTripped();
+          }
         }
-      }
+      ),
+      getSwerveHeadingCorrected(
+              () -> {return TeleopFeatureUtils.getReefFaceSpeedX(targetHeading[0], -newAlignSpeed * 0.5);},
+              () -> {return TeleopFeatureUtils.getReefFaceSpeedY(targetHeading[0], -newAlignSpeed * 0.5);},
+              () -> targetHeading[0],
+              true
+      ).withTimeout(backSeconds),
+      getBaseSwerveCommand(
+        () -> 0, 
+        () -> 0, 
+        () -> 0, 
+        true
+      ).withTimeout(0.04)
     );
-  
   }
 
   /**
@@ -348,12 +446,10 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
         getYMetersPerSecond,
         (DoubleSupplier) () -> {
 
-          phoenix6Odometry.setReadLock(true);
           double rotSpeed = headingController.calculate(
-            state.getGyroAngle().getDegrees(),
+            getCachedGyroHeading().getDegrees(),
             getDesiredHeading.get().getDegrees()
           );
-          phoenix6Odometry.setReadLock(false);
 
           return rotSpeed;
         },
@@ -377,19 +473,14 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       DoubleSupplier yMetersPerSecond,
       DoubleSupplier degreesPerSecond,
       boolean isFieldRelative) {
-    int fieldOrientationMultiplier;
-    Optional<Alliance> alliance = DriverStation.getAlliance();
-    if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Blue) {
-      fieldOrientationMultiplier = 1;
-    } else {
-      fieldOrientationMultiplier = -1;
-    }
+    int[] fieldOrientationMultiplier = new int[1];
+    fieldOrientationMultiplier[0] = 1;
 
     Command command = runEnd(
         () -> {
           drive(
-              xMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
-              yMetersPerSecond.getAsDouble() * fieldOrientationMultiplier,
+              xMetersPerSecond.getAsDouble() * fieldOrientationMultiplier[0],
+              yMetersPerSecond.getAsDouble() * fieldOrientationMultiplier[0],
               degreesPerSecond.getAsDouble(),
               isFieldRelative);
         },
@@ -398,6 +489,12 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     ).beforeStarting(
             () -> {
               setAllModulesTurnPidActive();
+              Optional<Alliance> alliance = DriverStation.getAlliance();
+              if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Blue) {
+                fieldOrientationMultiplier[0] = 1;
+              } else {
+                fieldOrientationMultiplier[0] = -1;
+              }
             });
 
     command.addRequirements(this);
@@ -408,4 +505,36 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   public Phoenix6DrivebaseState getState() {
     return state;
   }
+
+  public Command followPathCommand(String pathName) {
+    try {
+      PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+      return AutoBuilder.followPath(path);
+    }
+    catch (ParseException p){
+      System.out.println("pathplanner threw parseexception while parsing " + pathName);
+    }
+    catch (IOException e){
+      System.out.println("pathplanner threw ioexception while parsing " + pathName);
+    }
+    return new Command(){};
+   
+  }
+
+
+  public Command followAutoTrajectory(String autoName) {
+    return new PathPlannerAuto(autoName);
+  }
+
+  public Command resetGyro() {
+    return Commands.startEnd(
+      () -> {
+        resetGyroHeading();
+      },
+      () -> {
+
+      }
+    );
+  }
+
 }

@@ -272,9 +272,9 @@ public class VisionConstants {
         );
 
       public static final VisionIOConstants[] VISION_IO_CONSTANTS = {
-        new VisionIOConstantsPhotonVision(CAMERA_0_NAME, ROBOT_TO_FR_MAGNET.plus(FR_MAGNET_TO_CAMERA_0)),
-        new VisionIOConstantsPhotonVision(CAMERA_1_NAME, ROBOT_TO_FL_MAGNET.plus(FL_MAGNET_TO_CAMERA_1)),
-        new VisionIOConstantsPhotonVision(CAMERA_2_NAME, ROBOT_TO_BR_MAGNET.plus(BR_MAGNET_TO_CAMERA_2))   
+        //new VisionIOConstantsPhotonVision(CAMERA_0_NAME, ROBOT_TO_FR_MAGNET.plus(FR_MAGNET_TO_CAMERA_0)),
+        //new VisionIOConstantsPhotonVision(CAMERA_1_NAME, ROBOT_TO_FL_MAGNET.plus(FL_MAGNET_TO_CAMERA_1)),
+        //new VisionIOConstantsPhotonVision(CAMERA_2_NAME, ROBOT_TO_BR_MAGNET.plus(BR_MAGNET_TO_CAMERA_2))   
       };
     }
 

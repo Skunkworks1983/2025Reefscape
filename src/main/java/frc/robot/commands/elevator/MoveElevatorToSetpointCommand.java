@@ -46,6 +46,7 @@ public class MoveElevatorToSetpointCommand extends Command {
     elevator.logTargetPosition(targetState.position);
     timeElapsed.reset();
     timeElapsed.start();
+    System.out.println("Move elevator to Setpoint Command Initialize");
   }
 
   @Override
@@ -65,6 +66,7 @@ public class MoveElevatorToSetpointCommand extends Command {
     if(elevator.getBottomLimitSwitch() && !isGoingUp) {
       elevator.setMotorTrapezoidProfileSafe(0.0, 0.0);
     }
+    System.out.println("Move elevator to Setpoint Command End");
   }
 
   @Override

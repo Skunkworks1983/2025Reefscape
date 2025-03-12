@@ -6,16 +6,27 @@ package frc.robot;
 
 import java.util.Optional;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.utils.error.ErrorCommandGenerator;
 import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.error.DiagnosticSubsystem;
+import frc.robot.commands.MoveEndEffector;
+import frc.robot.commands.drivebase.TrapezoidProfileDriveOut;
+import frc.robot.commands.funnel.MoveFunnelToSetpoint;
 import frc.robot.commands.tests.JoystickElevatorVelocity;
 import frc.robot.constants.Constants;
+import frc.robot.constants.EndEffectorSetpointConstants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.drivebase.Drivebase;
 
@@ -33,6 +44,8 @@ public class Robot extends TimedRobot {
   Optional<Climber> climber = Optional.empty();
   Optional<Funnel> funnel = Optional.empty();
 
+  private SendableChooser<Command> autoChooser;
+
   OI oi = new OI( 
     elevator,
     collector,
@@ -44,6 +57,9 @@ public class Robot extends TimedRobot {
 
   ErrorGroup errorGroup = new ErrorGroup();
   Command automatedVisionMountTest;
+
+  Command deadReckoningDriveOut;
+  Command trapezoidProfileDriveOut;
 
   public Robot() {
     DataLogManager.start();
@@ -70,6 +86,9 @@ public class Robot extends TimedRobot {
       if (Constants.Testing.ROBOT != Constants.Testing.Robot.Comp2025) {
         throw new IllegalStateException("Using 2024 drivebase constants! Change to 2025 (Constants.Testing.ROBOT)");
       }
+      if (Constants.Testing.SMART_PID_ENABLED) {
+        throw new IllegalStateException("Global Smartpid Enabled! (Constants.Drivebase.PIDS.SMART_PID_ENABLED)");
+      }
     }
 
     if(drivebase.isPresent()) {
@@ -81,11 +100,65 @@ public class Robot extends TimedRobot {
           true
         )
       );
+
+      trapezoidProfileDriveOut = new TrapezoidProfileDriveOut(drivebase.get());
     }
+
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+    CameraServer.startAutomaticCapture();
   }
 
   @Override 
-  public void robotInit() {}
+  public void robotInit() {
+    if (elevator.isPresent() && wrist.isPresent()) {
+
+      // move to pos coral 
+      NamedCommands.registerCommand("Coral to L4",
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_L4));
+      
+      NamedCommands.registerCommand("Coral to L3", 
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_L3));
+
+      NamedCommands.registerCommand("Coral to L2", 
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_L2));
+
+      NamedCommands.registerCommand("Coral to L1", 
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_L1));
+
+      NamedCommands.registerCommand("Coral to Ground", 
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_GROUND));
+
+      NamedCommands.registerCommand("Coral to Stow ", 
+      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_STOW));
+
+      // move to pos Algae
+      NamedCommands.registerCommand("Algae to L2 ", 
+      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_L2));
+
+      NamedCommands.registerCommand("Algae to L3", 
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_L3));
+
+      NamedCommands.registerCommand("Algae to Ground", 
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_GROUND));
+
+      NamedCommands.registerCommand("Algae to Processor", 
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_PROCESSOR));
+      
+      NamedCommands.registerCommand("Algea to Stow", 
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_STOW));
+
+      // Collector 
+      NamedCommands.registerCommand("Expel Coral", collector.get().expelCoralCommand(true, elevator.get()::getEndEffectorSetpoint));
+
+      NamedCommands.registerCommand("Expel Algae",collector.get().expelAlgaeCommand(true));
+
+      NamedCommands.registerCommand("Intake Coral", collector.get().intakeCoralCommand(true));
+
+      NamedCommands.registerCommand("Intake Algae ", collector.get().intakeAlgaeCommand(true));
+
+    }
+  }
 
   @Override
   public void robotPeriodic() {
@@ -94,7 +167,15 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousInit() {}
+  public void autonomousInit() {
+    drivebase.get().resetGyroHeading();
+    // Command autoCommand = autoChooser.getSelected();
+    // if(autoCommand != null) {
+    //   autoCommand.schedule();
+    // }
+
+    trapezoidProfileDriveOut.schedule();
+  }
 
   @Override
   public void autonomousPeriodic() {}
