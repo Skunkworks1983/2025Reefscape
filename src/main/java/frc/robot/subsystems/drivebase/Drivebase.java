@@ -147,7 +147,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     );
     positionEstimator.stateLock.readLock().lock();
     AutoBuilder.configure(
-      positionEstimator::getPose,positionEstimator::reset,
+      positionEstimator::getPose,positionEstimator::pathplannerReset,
       this::getRobotRelativeSpeeds, (speeds, feedforwards) -> driveRobotRelative(speeds), 
       new PPHolonomicDriveController( 
         new PIDConstants(

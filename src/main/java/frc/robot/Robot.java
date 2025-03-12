@@ -162,13 +162,12 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    drivebase.get().resetGyroHeading();
-    // Command autoCommand = autoChooser.getSelected();
-    // if (autoCommand != null) {
-    //   autoCommand.schedule();
-    // }
+    Command autoCommand = autoChooser.getSelected();
+    if (autoCommand != null) {
+      autoCommand.schedule();
+    }
 
-    trapezoidProfileDriveOut.schedule();
+    // trapezoidProfileDriveOut.schedule();
   }
 
   @Override
