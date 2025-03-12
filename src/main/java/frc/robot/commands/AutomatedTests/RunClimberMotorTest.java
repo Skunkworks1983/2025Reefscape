@@ -65,7 +65,7 @@ public class RunClimberMotorTest extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (climber.getCimbMotorCurrent() > maxCurrent){
+    if (climber.getCimbMotorCurrent() > maxCurrent) {
       maxCurrent = climber.getCimbMotorCurrent();
     }
     if (maxCurrent > Constants.Testing.CLIMBER_CURRENT_TOLERANCE) //makes sure that the climber current has not exeeded a pre-determained level

@@ -49,7 +49,7 @@ public class Lidar {
     }
     double v = lidar.getPeriod();
     double d;
-    if (lidar.get() < 1){
+    if (lidar.get() < 1) {
       d = 0;
     }
     else {
