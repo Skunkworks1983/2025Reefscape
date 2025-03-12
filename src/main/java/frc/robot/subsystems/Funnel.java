@@ -113,7 +113,7 @@ public class Funnel extends SubsystemBase implements DiagnosticSubsystem{
 
         },
         () -> {
-          if(isMotorConnected()) {
+          if (isMotorConnected()) {
             funnelMotorConnectedTest.setErrorStatus(AlertType.kError);
           }
           else {

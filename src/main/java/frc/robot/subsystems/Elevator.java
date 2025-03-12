@@ -69,10 +69,10 @@ public class Elevator extends SubsystemBase {
     smartPIDController.updatePID();
 
     // Setposition counts as a config update, try and do this sparingly
-    if(getBottomLimitSwitch() && Math.abs(motorRight.getPosition().getValueAsDouble()) > .001) {
+    if (getBottomLimitSwitch() && Math.abs(motorRight.getPosition().getValueAsDouble()) > .001) {
       motorRight.setPosition(0.0);
     } 
-    // else if(getTopLimitSwitch()) {
+    // else if (getTopLimitSwitch()) {
     //   motorRight.setPosition(Constants.Elevator.MAX_HEIGHT_CARRIAGE * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
     // }
     putInfoSmartDashboard();

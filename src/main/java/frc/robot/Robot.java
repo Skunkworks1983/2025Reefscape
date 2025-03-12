@@ -64,8 +64,8 @@ public class Robot extends TimedRobot {
   public Robot() {
     DataLogManager.start();
 
-    if(Constants.Testing.ENSURE_COMPETITION_READY_SUBSYSTEMS) {
-      if(drivebase.isEmpty()) {
+    if (Constants.Testing.ENSURE_COMPETITION_READY_SUBSYSTEMS) {
+      if (drivebase.isEmpty()) {
         throw new IllegalStateException("Drivebase not present");
       }
       if (collector.isEmpty()) {
@@ -91,7 +91,7 @@ public class Robot extends TimedRobot {
       }
     }
 
-    if(drivebase.isPresent()) {
+    if (drivebase.isPresent()) {
       drivebase.get().setDefaultCommand(
         drivebase.get().getSwerveCommand(
           oi::getInstructedXMetersPerSecond,
@@ -170,7 +170,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     drivebase.get().resetGyroHeading();
     // Command autoCommand = autoChooser.getSelected();
-    // if(autoCommand != null) {
+    // if (autoCommand != null) {
     //   autoCommand.schedule();
     // }
 
@@ -203,7 +203,7 @@ public class Robot extends TimedRobot {
     errorGroup.clearAllTest();
 
     // We provide the errorCommandGenerator with the error group and a array of subsystems to get commands from
-    if(drivebase.isPresent()) {
+    if (drivebase.isPresent()) {
       ErrorCommandGenerator.getErrorCommand(
         errorGroup,
         new DiagnosticSubsystem[] {drivebase.get()}
