@@ -81,7 +81,7 @@ public class Vision extends SubsystemBase {
             continue;
           }
     
-          double stdDevFactor = Math.pow(observation.averageTagDistance(), 2.0) / observation.tagCount();
+          double stdDevFactor = observation.averageTagDistance(); // Math.pow(observation.averageTagDistance(), 2.0) / observation.tagCount();
           double linearStdDev = VisionConstants.LINEAR_STD_DEV_BASELINE * stdDevFactor;
           double angularStdDev = VisionConstants.ANGULAR_STD_DEV_BASELINE * stdDevFactor;
   

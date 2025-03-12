@@ -205,7 +205,7 @@ public class VisionConstants {
         new Rotation3d(
           Units.degreesToRadians(-5.0),
           Units.degreesToRadians(0.0),
-          Units.degreesToRadians(55.0)));
+          Units.degreesToRadians(35.310)));
 
       private static final Transform3d FL_MAGNET_TO_CAMERA_1 = new Transform3d(
         new Translation3d(
@@ -277,8 +277,8 @@ public class VisionConstants {
     }
 
   public static final double MAX_AMBIGUITY = 0.3;
-  public static final double LINEAR_STD_DEV_BASELINE = 0.02;
-  public static final double ANGULAR_STD_DEV_BASELINE = 0.06;
+  public static final double LINEAR_STD_DEV_BASELINE = 0.06;
+  public static final double ANGULAR_STD_DEV_BASELINE = 5.0;
   public static final double MAX_Z_ERROR = 3.0;
   public static final double MAX_AVERAGE_TAG_DISTANCE = 3.0; // Meters
   public static final int JITTER_TEST_ROLLING_AVG_LENGTH = 20;
