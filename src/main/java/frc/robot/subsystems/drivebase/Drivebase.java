@@ -181,10 +181,10 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     cacheEstimatedRobotPose();
     cacheGyroHeading();
     SmartDashboard.putNumber("Gyro Position", gyro.getYaw().getValueAsDouble());
-    SmartDashboard.putBoolean("Lidar Left", lidarLeft.isTripped());
-    SmartDashboard.putBoolean("Lidar Right", lidarRight.isTripped());
-    SmartDashboard.putNumber("Lidar Left Distance", lidarLeft.getDistance());
-    SmartDashboard.putNumber("Lidar Right Distance", lidarRight.getDistance());
+    // SmartDashboard.putBoolean("Lidar Left", lidarLeft.isTripped());
+    // SmartDashboard.putBoolean("Lidar Right", lidarRight.isTripped());
+    // SmartDashboard.putNumber("Lidar Left Distance", lidarLeft.getDistance());
+    // SmartDashboard.putNumber("Lidar Right Distance", lidarRight.getDistance());
   }
 
   /**
