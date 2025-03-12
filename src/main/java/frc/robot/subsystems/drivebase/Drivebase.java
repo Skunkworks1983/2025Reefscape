@@ -52,7 +52,6 @@ import frc.robot.subsystems.drivebase.odometry.positionEstimation.PositionEstima
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.DualLidar;
-import frc.robot.utils.Lidar;
 import frc.robot.utils.error.DiagnosticSubsystem;
 
 import org.json.simple.parser.ParseException;
@@ -191,10 +190,10 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     cacheEstimatedRobotPose();
     cacheGyroHeading();
     SmartDashboard.putNumber("Gyro Position", gyro.getYaw().getValueAsDouble());
-    SmartDashboard.putBoolean("Lidar Right", dualLidar.isLidar1Tripped());
-    SmartDashboard.putBoolean("Lidar Left", dualLidar.isLidar2Tripped());
-    SmartDashboard.putNumber("Lidar Right Distance", dualLidar.getLidar1Distance());
-    SmartDashboard.putNumber("Lidar Left Distance", dualLidar.getLidar2Distance());
+    SmartDashboard.putBoolean("Lidar Right", dualLidar.isLidar1Tripped.getAsBoolean());
+    SmartDashboard.putBoolean("Lidar Left", dualLidar.isLidar2Tripped.getAsBoolean());
+    SmartDashboard.putNumber("Lidar Right Distance", dualLidar.lidarDistance1.get());
+    SmartDashboard.putNumber("Lidar Left Distance", dualLidar.lidarDistance2.get());
   }
 
   /**
@@ -420,10 +419,10 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       ).until(
         () -> {
           if(goingRight == TeleopFeatureUtils.isCloseSideOfReef(targetHeading[0])) {
-            return dualLidar.isLidar1Tripped();
+            return dualLidar.isLidar1Tripped.getAsBoolean();
           }
           else {
-            return dualLidar.isLidar2Tripped();
+            return dualLidar.isLidar2Tripped.getAsBoolean();
           }
         }
       ),

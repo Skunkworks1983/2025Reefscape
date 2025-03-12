@@ -4,23 +4,31 @@
 
 package frc.robot.utils;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BooleanSupplier;
+
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.constants.Constants;
 
 /** Add your docs here. */
 public class DualLidar {
-  private double lastTime;
   private double triggerDistance1;
-  private double dist1;
-  private double triggerCutoff1;
   private double triggerDistance2;
-  private double dist2;
-  private double triggerCutoff2;
 
   private Counter lidar1;
   private Counter lidar2;
   private DigitalOutput output;
+  public AtomicReference<Double> lidarDistance1;
+  public AtomicReference<Double> lidarDistance2;
+
+  public BooleanSupplier isLidar1Tripped = () -> lidarDistance1.get() > triggerDistance1;
+  public BooleanSupplier isLidar2Tripped = () -> lidarDistance2.get() > triggerDistance2;
+
+  private Thread thread = new Thread(this::updateDistance);
 
   public DualLidar(
     int dataPort1, 
@@ -32,12 +40,7 @@ public class DualLidar {
     int triggerPort
   ) {
     this.triggerDistance1 = triggerDistance1;
-    this.triggerCutoff1 = triggerCutoff1;
     this.triggerDistance1 = triggerDistance2;
-    this.triggerCutoff1 = triggerCutoff2;
-    dist1 = 0;
-    dist2 = 0;
-    lastTime = 0;
 
     lidar1 = new Counter(dataPort1);
     lidar1.setMaxPeriod(1.0);
@@ -52,66 +55,48 @@ public class DualLidar {
     output = new DigitalOutput(triggerPort);
   }
 
-  public boolean isLidar1Tripped() {
-    return getLidar1Distance() > triggerDistance1;
-  }
-
-  public boolean isLidar2Tripped() {
-    return getLidar2Distance() > triggerDistance2;
-  }
-
-  public double getLidar1Distance() {
-    if(Timer.getFPGATimestamp() - lastTime >= 0.04) {
-      lastTime = Timer.getFPGATimestamp();
-      updateDistance();
-    } 
-
-    return dist1;
-  }
-
-  public double getLidar2Distance() {
-    if(Timer.getFPGATimestamp() - lastTime >= 0.04) {
-      lastTime = Timer.getFPGATimestamp();
-      updateDistance();
-    } 
-
-    return dist2;
-  }
-
   private void updateDistance() {
-    output.set(true);
-    while(Timer.getFPGATimestamp() - lastTime < 0.001) {
 
-    }
-    double v1 = lidar1.getPeriod();
-    double v2 = lidar1.getPeriod();
-    double d1;
-    double d2;
+    double thisTime = Timer.getFPGATimestamp();
+    while(true) {
+      output.set(true);
+      try {
+        Thread.sleep(1);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+      double v1 = lidar1.getPeriod();
+      double v2 = lidar1.getPeriod();
+      double d1;
+      double d2;
 
-    if(lidar1.get() < 1){
-      d1 = 0;
-    }
-    else {
-      d1 = v1 * 1000000.0 / 10.0;
-    }
+      if(lidar1.get() < 1){
+        d1 = 0;
+      }
+      else {
+        d1 = v1 * 1000000.0 / 10.0;
+      }
 
-    if(lidar2.get() < 1){
-      d2 = 0;
-    }
-    else {
-      d2 = v2 * 1000000.0 / 10.0;
-    }
+      if(lidar2.get() < 1){
+        d2 = 0;
+      }
+      else {
+        d2 = v2 * 1000000.0 / 10.0;
+      }
 
-    if(d1 > triggerCutoff1) {
-      d1 = dist1;
-    }
+      lidarDistance1.set(d1);
+      lidarDistance2.set(d2);
 
-    if(d2 > triggerCutoff2) {
-      d2 = dist2;
-    }
+      output.set(false);
 
-    dist1 = d1;
-    dist2 = d2;
-    output.set(false);
+      double lastTime = thisTime;
+      thisTime = Timer.getFPGATimestamp();
+      double timeElapsed = thisTime - lastTime;
+      try {
+        Thread.sleep((long)Units.secondsToMilliseconds(Constants.PathPlanner.UPDATE_PERIOD - (timeElapsed)));
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
   }
 }
