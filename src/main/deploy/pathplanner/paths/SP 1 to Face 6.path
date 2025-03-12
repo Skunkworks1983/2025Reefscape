@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.362762947868776,
-        "y": 6.413327341299784
+        "x": 5.790745310655296,
+        "y": 5.7013037431441855
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.861,
-        "y": 5.546
+        "x": 5.271930695866685,
+        "y": 5.039189301050676
       },
       "prevControl": {
-        "x": 5.216230174761734,
-        "y": 6.216485109916045
+        "x": 6.217308954639204,
+        "y": 6.12991751626158
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "face 6"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -62.87869659584148
+    "rotation": -120.63178753830086
   },
   "reversed": false,
   "folder": "3-piece coral auto sp1",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -63.434948822922074
+    "rotation": -119.16761337977347
   },
   "useDefaultConstraints": true
 }

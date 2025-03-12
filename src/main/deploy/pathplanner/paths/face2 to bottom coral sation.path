@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.333,
-        "y": 2.621
+        "x": 5.003871593936068,
+        "y": 2.8436679409435954
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.7448177453685707,
-        "y": 1.2937080232876657
+        "x": 2.415689339304638,
+        "y": 1.516375964231261
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "face 2"
     },
     {
       "anchor": {
-        "x": 1.29675,
-        "y": 0.9439999999999997
+        "x": 1.4722500000000003,
+        "y": 0.7684999999999991
       },
       "prevControl": {
-        "x": 1.4966232102596921,
-        "y": 1.111832189709588
+        "x": 1.6721232102596923,
+        "y": 0.9363321897095873
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "bottom coral station"
     }
   ],
   "rotationTargets": [
@@ -47,13 +47,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 53.13010235415596
+    "rotation": 53.343891584033166
   },
   "reversed": false,
   "folder": "2 piece coral auto sp2",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 120.78059715172895
+    "rotation": 122.06739160326046
   },
   "useDefaultConstraints": true
 }

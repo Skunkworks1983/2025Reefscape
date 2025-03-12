@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 5.440499999999999,
-        "y": 5.312
+        "x": 5.271930695866685,
+        "y": 5.039189301050676
       },
       "prevControl": {
-        "x": 6.15225,
-        "y": 6.0335
+        "x": 5.983680695866687,
+        "y": 5.760689301050676
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "face 6"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -121.60750224624873
+    "rotation": -120.63178753830086
   },
   "reversed": false,
   "folder": "2- piece coral auto sp1",

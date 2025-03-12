@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.965774440234302,
-        "y": 5.211193820665716
+        "x": 5.271930695866685,
+        "y": 5.039189301050676
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.6388387358270182,
-        "y": 5.419921849834068
+        "x": 4.2974306958666855,
+        "y": 6.023939301050675
       },
       "isLocked": false,
-      "linkedName": "face 5"
+      "linkedName": "face 6"
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 7.2132499999999995
       },
       "prevControl": {
-        "x": 1.9916103311702757,
-        "y": 6.825733929388143
+        "x": 1.56,
+        "y": 6.989
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,7 +48,7 @@
   "folder": "3-piece coral auto sp1",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -58.81502534126175
+    "rotation": -120.63178753830086
   },
   "useDefaultConstraints": true
 }

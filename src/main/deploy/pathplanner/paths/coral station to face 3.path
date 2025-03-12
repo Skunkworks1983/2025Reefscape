@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.472,
-        "y": 0.768
+        "x": 1.4722500000000003,
+        "y": 0.7684999999999991
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.020129380642135,
-        "y": 1.2224207104400828
+        "x": 2.0203793806421353,
+        "y": 1.2229207104400819
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "bottom coral station"
     },
     {
       "anchor": {
-        "x": 3.8415,
-        "y": 2.5625
+        "x": 3.9891041030848293,
+        "y": 2.808393327051475
       },
       "prevControl": {
-        "x": 2.8668684544534315,
-        "y": 1.8319253709730403
+        "x": 3.014472557538261,
+        "y": 2.0778186980245152
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Face 3"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 57.90740867126584
+    "rotation": 60.36161631184859
   },
   "reversed": false,
   "folder": "2 - piece coral auto sp 3",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 55.413445764706566
+    "rotation": 53.343891584033166
   },
   "useDefaultConstraints": true
 }
