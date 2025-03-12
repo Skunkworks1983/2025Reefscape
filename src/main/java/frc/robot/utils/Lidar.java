@@ -39,7 +39,7 @@ public class Lidar {
 
   public double getDistance() {
     double currentTime = Timer.getFPGATimestamp();
-    if(currentTime - lastTime < 0.04) {
+    if (currentTime - lastTime < 0.04) {
       return dist;
     } 
     output.set(true);
@@ -49,13 +49,13 @@ public class Lidar {
     }
     double v = lidar.getPeriod();
     double d;
-    if(lidar.get() < 1){
+    if (lidar.get() < 1) {
       d = 0;
     }
     else {
       d = v * 1000000.0 / 10.0;
     }
-    if(d > triggerCutoff) {
+    if (d > triggerCutoff) {
       d = dist;
     }
     dist = d;

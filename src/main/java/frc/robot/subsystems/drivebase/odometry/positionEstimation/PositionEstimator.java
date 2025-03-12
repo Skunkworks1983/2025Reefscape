@@ -69,7 +69,7 @@ public class PositionEstimator {
   public void update() {
     stateLock.writeLock().lock();
     setPhoenix6OdometryReadLock.accept(true);
-    for(int i =0; i < 4; i++){
+    for(int i =0; i < 4; i++) {
       swerveDrivePoseEstimator.update(
         drivebaseState.getGyroAngle(),
         new SwerveModulePosition[] {

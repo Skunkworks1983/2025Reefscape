@@ -16,7 +16,7 @@ public class ConditionalSmartDashboard {
 
   // Use instead of SmartDashboard.putNumber
   public static boolean putNumber(String key, double value) {
-    if(checkConditions()) {
+    if (checkConditions()) {
       return SmartDashboard.putNumber(key, value);
     }
     else {
@@ -26,7 +26,7 @@ public class ConditionalSmartDashboard {
 
   // Use instead of SmartDashboard.putBoolean
   public static boolean putBoolean(String key, Boolean value) {
-    if(checkConditions()) {
+    if (checkConditions()) {
       return SmartDashboard.putBoolean(key, value);
     }
     else {
@@ -36,7 +36,7 @@ public class ConditionalSmartDashboard {
 
   // Use instead of SmartDashboard.putData
   public static void putData(String key, Sendable data) {
-    if(checkConditions()) {
+    if (checkConditions()) {
       SmartDashboard.putData(key, data);
     }
   }

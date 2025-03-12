@@ -160,7 +160,7 @@ public class SwerveModule extends SubsystemBase {
   // Almost nothing should be calling this exept tests, this gets position from the turn motor
   // what should be used would be getTurnMotorAngle()
   public double getTurnMotorEncoderPosition() {
-    if(!DriverStation.isTestEnabled()) {
+    if (!DriverStation.isTestEnabled()) {
       new Alert("getTurnMotorEncoderPosition was called outside of Test", AlertType.kError).set(true);
       return getTurnMotorAngle().getDegrees();
     }
@@ -172,7 +172,7 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public void setBrakeMode(boolean brakeMode) {
-    if(brakeMode) {
+    if (brakeMode) {
       driveMotor.setNeutralMode(NeutralModeValue.Brake);
     }
     else {

@@ -63,7 +63,7 @@ public class MoveElevatorToSetpointCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    if(elevator.getBottomLimitSwitch() && !isGoingUp) {
+    if (elevator.getBottomLimitSwitch() && !isGoingUp) {
       elevator.setMotorTrapezoidProfileSafe(0.0, 0.0);
     }
     System.out.println("Move elevator to Setpoint Command End");

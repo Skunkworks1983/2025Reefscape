@@ -409,7 +409,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
         }
       ).until(
         () -> {
-          if(goingRight == TeleopFeatureUtils.isCloseSideOfReef(targetHeading[0])) {
+          if (goingRight == TeleopFeatureUtils.isCloseSideOfReef(targetHeading[0])) {
             return lidarRight.isTripped();
           }
           else {
@@ -511,13 +511,13 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
       return AutoBuilder.followPath(path);
     }
-    catch (ParseException p){
+    catch (ParseException p) {
       System.out.println("pathplanner threw parseexception while parsing " + pathName);
     }
-    catch (IOException e){
+    catch (IOException e) {
       System.out.println("pathplanner threw ioexception while parsing " + pathName);
     }
-    return new Command(){};
+    return new Command() {};
    
   }
 
