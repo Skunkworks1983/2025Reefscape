@@ -37,8 +37,10 @@ public class Vision extends SubsystemBase {
   private List<Field2d> field2ds = new LinkedList<Field2d>();
   private final AprilTagFieldLayout aprilTagLayout = 
     AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+
+  private PoseDeviations poseDeviations = new PoseDeviations();
   
-    public Vision(VisionConsumer consumer, VisionIOConstants... ioConstants) {
+  public Vision(VisionConsumer consumer, VisionIOConstants... ioConstants) {
       this.consumer = consumer;
   
       for (VisionIOConstants i : ioConstants) {
@@ -62,6 +64,8 @@ public class Vision extends SubsystemBase {
       for (int i = 0; i < io.size(); i++) {
         VisionIOData data = io.get(i).getLatestData();
         for (PoseObservation observation : data.poseObservations) {
+
+          field2ds.get(i).setRobotPose(observation.estimatedPose().toPose2d());
   
           ConditionalSmartDashboard.putNumber(io.get(i).getName() + " Latest Ambiguity", observation.ambiguity());
           ConditionalSmartDashboard.putNumber(io.get(i).getName() + " Latest Z Error", observation.estimatedPose().getZ());
@@ -80,17 +84,19 @@ public class Vision extends SubsystemBase {
           if (rejectPose) {
             continue;
           }
+
+          // If the pose is being added, then add to the measurements list.
+          poseDeviations.updateMeasurements(observation.estimatedPose().toPose2d());
     
-          double stdDevFactor = observation.averageTagDistance(); // Math.pow(observation.averageTagDistance(), 2.0) / observation.tagCount();
-          double linearStdDev = VisionConstants.LINEAR_STD_DEV_BASELINE * stdDevFactor;
-          double angularStdDev = VisionConstants.ANGULAR_STD_DEV_BASELINE * stdDevFactor;
+          // (0.0329)x2 + (-0.0222)x + (0.0048)
+
+          double x = observation.averageTagDistance();
+          double linearStdDev = (0.0329)*x*x + (-0.0222)*x + (0.0048);
   
           consumer.accept(
               observation.estimatedPose().toPose2d(),
               observation.timestamp(),
-              VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
-  
-          field2ds.get(i).setRobotPose(observation.estimatedPose().toPose2d());
+              VecBuilder.fill(linearStdDev, linearStdDev, VisionConstants.ANGULAR_STD_DEV));
         }
       }
     }

@@ -82,7 +82,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   private Rotation2d cachedGyroHeading = new Rotation2d();
 
   public Drivebase() {
-    resetGyroHeading(Rotation2d.k180deg);
+    // resetGyroHeading(Rotation2d.k180deg);
 
     // Creates a pheonix 6 pro state based on the gyro -- the only sensor owned
     // directly by the drivebase. A pheonix 6 pro state is a class to store all
