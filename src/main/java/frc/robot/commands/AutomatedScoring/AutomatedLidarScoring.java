@@ -50,15 +50,6 @@ public class AutomatedLidarScoring extends SequentialCommandGroup {
           }
           return false;
         }
-      ).finallyDo(
-        b -> {
-          if(!b) {
-            System.out.println(name + " finished side movement, expelling");
-          }
-          else {
-            System.out.println(name + " failed to finished side movement");
-          }
-        }
       ),
       collector.expelCoralCommand(
         true, 
