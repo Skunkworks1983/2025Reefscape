@@ -279,6 +279,13 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     return chassisSpeeds;
   }
 
+  public double calculateWithHeadingController(double targetHeading) {
+    return headingController.calculate(
+      getCachedGyroHeading().getDegrees(),
+      targetHeading
+    );
+  }
+
   private SwerveModuleState[] getSwerveModuleStates() {
     phoenix6Odometry.setReadLock(true);
     SwerveModuleState[] moduleStates = new SwerveModuleState[Constants.Drivebase.MODULES.length];
@@ -446,10 +453,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
         getYMetersPerSecond,
         (DoubleSupplier) () -> {
 
-          double rotSpeed = headingController.calculate(
-            getCachedGyroHeading().getDegrees(),
-            getDesiredHeading.get().getDegrees()
-          );
+          double rotSpeed = calculateWithHeadingController(getDesiredHeading.get().getDegrees());
 
           return rotSpeed;
         },
