@@ -29,7 +29,6 @@ public class TrapezoidProfileDriveOut extends Command {
   public TrapezoidProfileDriveOut(Drivebase drivebase) {
     this.drivebase = drivebase;
     addRequirements(drivebase);
-    SmartDashboard.putNumber("distanceToTravel",0.0);
   }
 
   double cachedHeadingForCommand;
