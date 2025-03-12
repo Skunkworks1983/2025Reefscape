@@ -43,7 +43,7 @@ public class MoveElevatorToSetpointCommand extends Command {
   public void initialize() {
     startState = new State(elevator.getElevatorPosition() * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS, 0.0);
     isGoingUp = targetState.position > elevator.getElevatorPosition() * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS;
-    elevator.logTargetPosition(targetState.position);
+    elevator.setFinalPosition(targetState.position);
     timeElapsed.reset();
     timeElapsed.start();
     System.out.println("Move elevator to Setpoint Command Initialize");

@@ -128,7 +128,10 @@ public class Elevator extends SubsystemBase {
       targetPosition * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS
     );
 
-    finalTargetPosition = targetPosition;
+  }
+
+  public void setFinalPosition(double finalTargetPosition) {
+    this.finalTargetPosition = finalTargetPosition;
   }
 
   public void logTargetVelocity(double targetVelocity) {

@@ -297,7 +297,7 @@ public class Constants {
     public static final double TOLORENCE_METERS_FOR_SETPOINT = 0.0;
     // This tolerance value will be used for moving to a setpoint
     // using the MoveToPositionCommand.
-    public static final double TOLERENCE_METERS_FOR_MOVE_TO_POSITION = 0.0; // TODO: Priority: Tuning
+    public static final double TOLERENCE_METERS_FOR_MOVE_TO_POSITION = 0.2; // TODO: Priority: Tuning
 
     // In meters
     public static final double MAX_HEIGHT_CARRIAGE = 1.527175;
@@ -311,13 +311,13 @@ public class Constants {
 
     // TODO: Priority: Tuning
     public class PIDs {
-      public static final double ELEVATOR_kP = 1.5;
+      public static final double ELEVATOR_kP = 1.6;
       public static final double ELEVATOR_kI = 0.125;
       public static final double ELEVATOR_kD = 0.0;
-      public static final double ELEVATOR_kF = 0.0;
+      public static final double ELEVATOR_kF = 0.605;
       public static final double ELEVATOR_kV = 0.0;
       public static final double ELEVATOR_kA = 0.0;
-      public static final double ELEVATOR_kS = 0.55;
+      public static final double ELEVATOR_kS = 0.0;
 
       public static final boolean SMART_PID_ENABLED = false;
     }
