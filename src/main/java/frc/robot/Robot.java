@@ -129,8 +129,8 @@ public class Robot extends TimedRobot {
       NamedCommands.registerCommand("Coral to Ground", 
         new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_GROUND));
 
-    NamedCommands.registerCommand("Coral to Stow", 
-    new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_STOW));
+      NamedCommands.registerCommand("Coral to Stow", 
+      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_STOW));
 
       // move to pos Algae
       NamedCommands.registerCommand("Algae to L2 ", 
