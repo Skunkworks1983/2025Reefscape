@@ -128,6 +128,11 @@ public class Elevator extends SubsystemBase {
       targetPosition * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS
     );
 
+    ConditionalSmartDashboard.putNumber(
+      "Elevator/Error in rotations",
+      targetPosition - motorRight.getPosition().getValueAsDouble()
+    );
+
   }
 
   public void setFinalPosition(double finalTargetPosition) {
@@ -141,11 +146,10 @@ public class Elevator extends SubsystemBase {
   public void putInfoSmartDashboard() {
     double currentPos = motorRight.getPosition().getValueAsDouble();
 
-    SmartDashboard.putNumber("Elevator/Actual velocity in mps", motorRight.getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("Elevator/Actual position in meters", currentPos * Constants.Elevator.MOTOR_ROTATIONS_TO_METERS);
-    SmartDashboard.putNumber("Elevator/Actual position in rotations", currentPos);
-    SmartDashboard.putNumber("Elevator/Error in rotations", finalTargetPosition - currentPos);
-    SmartDashboard.putBoolean("Elevator/Bottom limit switch", getBottomLimitSwitch());
+    ConditionalSmartDashboard.putNumber("Elevator/Actual velocity in mps", motorRight.getVelocity().getValueAsDouble());
+    ConditionalSmartDashboard.putNumber("Elevator/Actual position in meters", currentPos * Constants.Elevator.MOTOR_ROTATIONS_TO_METERS);
+    ConditionalSmartDashboard.putNumber("Elevator/Actual position in rotations", currentPos);
+    ConditionalSmartDashboard.putBoolean("Elevator/Bottom limit switch", getBottomLimitSwitch());
     //ConditionalSmartDashboard.putBoolean("Elevator/Top limit switch", getTopLimitSwitch());
   }
   
