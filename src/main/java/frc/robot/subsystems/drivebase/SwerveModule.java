@@ -135,7 +135,6 @@ public class SwerveModule extends SubsystemBase {
     if (turnControllerActive && !turnController.atSetpoint()) {
       updateSpeedToSetpointTurn();
     }
-
     ConditionalSmartDashboard.putNumber("Drivebase/" + moduleName +" Swerve Module orientation",getTurnMotorAngle().getDegrees());
   }
 
