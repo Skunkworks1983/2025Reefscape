@@ -67,25 +67,25 @@ public class DualLidar {
       }
       double v1 = lidar1.getPeriod();
       double v2 = lidar1.getPeriod();
-      double d1;
-      double d2;
+      double distance1;
+      double distance2;
 
       if(lidar1.get() < 1){
-        d1 = 0;
+        distance1 = 0;
       }
       else {
-        d1 = v1 * 1000000.0 / 10.0;
+        distance1 = v1 * 1000000.0 / 10.0;
       }
 
       if(lidar2.get() < 1){
-        d2 = 0;
+        distance2 = 0;
       }
       else {
-        d2 = v2 * 1000000.0 / 10.0;
+        distance2 = v2 * 1000000.0 / 10.0;
       }
 
-      lidarDistance1.set(d1);
-      lidarDistance2.set(d2);
+      lidarDistance1.set(distance1);
+      lidarDistance2.set(distance2);
 
       output.set(false);
 
@@ -93,7 +93,7 @@ public class DualLidar {
       thisTime = Timer.getFPGATimestamp();
       double timeElapsed = thisTime - lastTime;
       try {
-        Thread.sleep((long)Units.secondsToMilliseconds(Constants.PathPlanner.UPDATE_PERIOD - (timeElapsed)));
+        Thread.sleep((long)Units.secondsToMilliseconds(Constants.RoboRIOInfo.UPDATE_PERIOD - (timeElapsed)));
       } catch (InterruptedException e) {
         e.printStackTrace();
       }

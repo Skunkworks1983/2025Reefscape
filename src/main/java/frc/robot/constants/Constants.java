@@ -43,7 +43,9 @@ public class Constants {
 
     // distance from center to wheel
     public static final double PATHPLANNER_DRIVEBASE_RADIUS_METERS = 0.; //TODO give real number
+  }
 
+  public class RoboRIOInfo {
     public static final double UPDATE_PERIOD = .02; //seconds
   }
 

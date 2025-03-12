@@ -167,7 +167,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
           Constants.PathPlanner.PATHPLANNER_TURN_KP, 
           Constants.PathPlanner.PATHPLANNER_TURN_KI, 
           Constants.PathPlanner.PATHPLANNER_TURN_KD),
-          Constants.PathPlanner.UPDATE_PERIOD
+          Constants.RoboRIOInfo.UPDATE_PERIOD
       ),
       config,
       () -> {
