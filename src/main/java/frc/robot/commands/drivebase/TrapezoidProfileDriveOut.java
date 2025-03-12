@@ -24,7 +24,7 @@ public class TrapezoidProfileDriveOut extends Command {
   Timer timeElasped = new Timer();
   TrapezoidProfile profile = new TrapezoidProfile(new Constraints(2.0, 1.0));
   State startState = new State();
-  State goalState;
+  State goalState = new State(3, 0.0);
 
   public TrapezoidProfileDriveOut(Drivebase drivebase) {
     this.drivebase = drivebase;
@@ -38,7 +38,6 @@ public class TrapezoidProfileDriveOut extends Command {
   public void initialize() {
     cachedHeadingForCommand = drivebase.getCachedGyroHeading().getDegrees();
 
-    goalState = new State(SmartDashboard.getNumber("distanceToTravel", 0.0), 0.0);
     Optional<Alliance> alliance = DriverStation.getAlliance();
     if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Blue) {
       drivebase.resetGyroHeading(Rotation2d.fromDegrees(180));
@@ -57,10 +56,12 @@ public class TrapezoidProfileDriveOut extends Command {
   @Override
   public void execute() {
     double xVelocity = profile.calculate(timeElasped.get(), startState, goalState).velocity;
-    drivebase.drive(xVelocity, 0.0, drivebase.headingController.calculate(
-            drivebase.getCachedGyroHeading().getDegrees(),
-            cachedHeadingForCommand)
-    , false);
+    drivebase.drive
+    (xVelocity,
+      0.0,
+      drivebase.calculateWithHeadingController(cachedHeadingForCommand),
+      false
+    );
   }
 
   // Called once the command ends or is interrupted.
