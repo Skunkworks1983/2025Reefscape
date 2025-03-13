@@ -113,11 +113,6 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     // Reset the heading of the pose estimator to the correct side of the field. 
     // This ensures that camera heading estimates and swerve drive pose estimator estimates 
     // are ~ the same, so the robot doesn't spiral off the field.
-    positionEstimator.reset(
-      (DriverStation.getAlliance().isPresent()
-      && DriverStation.getAlliance().get() == Alliance.Red) ? 
-          new Pose2d(TeleopFeature.FIELD_CENTER, Rotation2d.k180deg) : 
-          new Pose2d(TeleopFeature.FIELD_CENTER, new Rotation2d()));
 
     Pigeon2Configuration gyroConfiguration = new Pigeon2Configuration();
     gyroConfiguration.MountPose.MountPoseYaw = 0;
