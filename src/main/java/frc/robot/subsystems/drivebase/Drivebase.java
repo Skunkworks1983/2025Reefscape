@@ -353,6 +353,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   public Command setToPosition(double pos){
     return Commands.runEnd(
       () -> {
+        System.out.println("command start " + pos);
         SwerveModuleState[] states = getSwerveModuleStates();
         for(int i = 0; i < states.length; i++){
           states[i].angle = Rotation2d.fromDegrees(pos);

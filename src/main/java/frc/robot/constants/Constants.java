@@ -83,7 +83,7 @@ public class Constants {
     // must be constructed and assigned to the correct variable in Robot.java.
     // If some subsystems are not created and this value is true, an exeption
     // will be thrown.
-    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = true;
+    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = false;
     public static final boolean SMART_PID_ENABLED = true;
 
     public static enum Robot {
@@ -219,7 +219,7 @@ public class Constants {
     public class PIDs {
       public static final double SWERVE_MODULE_TURN_KP = 0.0145;
       public static final double SWERVE_MODULE_TURN_KI = 0.0;
-      public static final double SWERVE_MODULE_TURN_KD = 0.00017;
+      public static final double SWERVE_MODULE_TURN_KD = 0.00034;
       public static final double SWERVE_MODULE_TURN_KF = 0.0;
       public static final double SWERVE_MODULE_DRIVE_KP = 0.25;
       public static final double SWERVE_MODULE_DRIVE_KI = 0.0;
@@ -258,7 +258,7 @@ public class Constants {
 
     public static final double FIELD_X_LENGTH = 17.55; // Meters
     public static final double FIELD_Y_LENGTH = 8.05; // Meters
-    public static final double SKEW_PROPORTIONAL = .027;
+    public static final double SKEW_PROPORTIONAL = .065;
     public static final double CURRENT_LIMIT = 100.0;
   }
 
