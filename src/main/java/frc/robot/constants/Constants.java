@@ -84,7 +84,7 @@ public class Constants {
     // If some subsystems are not created and this value is true, an exeption
     // will be thrown.
     public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = true;
-    public static final boolean SMART_PID_ENABLED = false;
+    public static final boolean SMART_PID_ENABLED = true;
 
     public static enum Robot {
       Comp2024,
@@ -236,7 +236,7 @@ public class Constants {
       public static final double PID_LOW_LIMIT = -0.8;
       public static final double PID_HIGH_LIMIT = 0.8;
 
-      public static final boolean SMART_PID_TURN_ENABLED = false;
+      public static final boolean SMART_PID_TURN_ENABLED = true;
       public static final boolean SMART_PID_DRIVE_ENABLED = false;
     }
 

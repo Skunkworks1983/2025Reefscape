@@ -116,6 +116,14 @@ public class OI {
             TeleopFeatureUtils.getPointAtCoralStationAngle(drivebase.getCachedEstimatedRobotPose()),
           true
         );
+      
+      Command setPos90 = drivebase.setToPosition(
+        90
+      );
+
+      Command setPos0 = drivebase.setToPosition(
+        0
+      );
 
       Command ResetGyro = drivebase.resetGyro();
 
@@ -130,6 +138,10 @@ public class OI {
       new JoystickButton(translationJoystick, 1)
           .and(new JoystickButton(translationJoystick, 2))
           .whileTrue(ResetGyro);
+      
+      new JoystickButton(buttonJoystick, 3).whileTrue(setPos90);
+
+      new JoystickButton(buttonJoystick, 5).whileTrue(setPos0);
     }
 
     if (optionalDrivebase.isPresent() && optionalCollector.isPresent() && optionalElevator.isPresent()) {
