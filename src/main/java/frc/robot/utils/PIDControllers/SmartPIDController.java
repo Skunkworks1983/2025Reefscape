@@ -57,7 +57,7 @@ public class SmartPIDController extends PIDController implements SmartPIDBase {
 
     double calculate = super.calculate(measurement) + kf;
     putValueSmartDashboard(name, "Measurement", measurement);
-    putValueSmartDashboard(name, "Error", getError());
+    putValueSmartDashboard(name, "Error", getPositionError());
     putValueSmartDashboard(name, "Setpoint", getSetpoint());
     putValueSmartDashboard(name, "Calculated Value", calculate);
 
