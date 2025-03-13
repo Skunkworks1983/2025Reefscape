@@ -149,9 +149,9 @@ public class Robot extends TimedRobot {
 
       NamedCommands.registerCommand("Expel Algae",collector.get().expelAlgaeCommand(true));
 
-      NamedCommands.registerCommand("Intake Coral", collector.get().intakeCoralCommand(true));
+      NamedCommands.registerCommand("Intake Coral", collector.get().intakeCoralCommand(true, elevator.get()::getEndEffectorSetpoint));
 
-      NamedCommands.registerCommand("Intake Algae ", collector.get().intakeAlgaeCommand(true));
+      NamedCommands.registerCommand("Intake Algae ", collector.get().intakeAlgaeCommand(true, elevator.get()::getEndEffectorSetpoint));
 
       NamedCommands.registerCommand("Lidar Score Right",
         new AutomatedLidarScoring(

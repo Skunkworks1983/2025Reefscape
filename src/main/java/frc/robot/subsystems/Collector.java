@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -30,7 +31,7 @@ public class Collector extends SubsystemBase {
   private TalonFX leftMotor;
 
   private final VelocityVoltage velocityVoltage = new VelocityVoltage(0);
-  private double lastRightSpeed;
+  private double lastSpeed;
   private double lastLeftSpeed;
 
   // Neither of these smart PIDs are 'used' after they are constructed because the
@@ -39,8 +40,6 @@ public class Collector extends SubsystemBase {
   // do with the PIDController class).
   @SuppressWarnings("unused")
   private SmartPIDControllerTalonFX rightMotorController;
-  @SuppressWarnings("unused")
-  private SmartPIDControllerTalonFX leftMotorController;
 
   private DigitalInput beambreak;
 
@@ -62,7 +61,6 @@ public class Collector extends SubsystemBase {
 
     talonConfigCollectorMotor.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     rightMotor.getConfigurator().apply(talonConfigCollectorMotor);
-    talonConfigCollectorMotor.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     leftMotor.getConfigurator().apply(talonConfigCollectorMotor);
 
     //Dual Pids with two slots, one for velocity and one for position
@@ -77,49 +75,34 @@ public class Collector extends SubsystemBase {
         Constants.Collector.PositionControlMode.KF, Constants.Collector.PositionControlMode.KV,
         Constants.Collector.PositionControlMode.KA, Constants.Collector.PositionControlMode.KS);
 
-    leftMotorController = new SmartPIDControllerTalonFX(Constants.Collector.VelocityControlMode.KP, //VELOCITY
-        Constants.Collector.VelocityControlMode.KI,
-        Constants.Collector.VelocityControlMode.KD,
-        Constants.Collector.VelocityControlMode.KF, Constants.Collector.VelocityControlMode.KV,
-        Constants.Collector.VelocityControlMode.KA, Constants.Collector.VelocityControlMode.KS,
-        "left motor",
-        Constants.Collector.SMART_PID_ENABLED, leftMotor);
+    leftMotor.setControl(new Follower(Constants.Collector.IDs.RIGHT_MOTOR, true));
     
-        beambreak = new DigitalInput(Constants.Collector.IDs.DIGITAL_INPUT_CHANNEL);
+    beambreak = new DigitalInput(Constants.Collector.IDs.DIGITAL_INPUT_CHANNEL);
   }
 
   private void setCollectorThrottle(double throttle) {
 
     if (throttle != lastThrottle) {
-      leftMotor.setControl(dutyCycleOut.withOutput(throttle).withEnableFOC(true));
       rightMotor.setControl(dutyCycleOut.withOutput(throttle).withEnableFOC(true));
       lastThrottle = throttle;
     }
   }
 
   // meters per sec
-  private void setCollectorSpeeds(double rightSpeed, double leftSpeed) {
+  private void setCollectorSpeeds(double speed) {
     // Resetting last throttle
     lastThrottle = 0;
-    if (rightSpeed != lastRightSpeed) {
+    if (speed != lastSpeed) {
       rightMotor.setControl(velocityVoltage
-          .withVelocity(rightSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER).withEnableFOC(true)
+          .withVelocity(speed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER).withEnableFOC(true)
           .withSlot(0));
-      ConditionalSmartDashboard.putNumber("Collector/Right speed", rightSpeed);
+      ConditionalSmartDashboard.putNumber("Collector/Right speed", speed);
     }
-    lastRightSpeed = rightSpeed;
-
-    if (leftSpeed != lastLeftSpeed) {
-      leftMotor.setControl(velocityVoltage
-          .withVelocity(leftSpeed * Constants.Collector.COLLECTOR_ROTATIONS_PER_METER).withEnableFOC(true).withSlot(0));
-      ConditionalSmartDashboard.putNumber("Collector/Left speed", leftSpeed);
-    }
-    lastLeftSpeed = leftSpeed;
+    lastSpeed = speed;
   }
 
   @Override
   public void periodic() {
-    leftMotorController.updatePID();
     rightMotorController.updatePID();
 
     ConditionalSmartDashboard.putNumber("Collector/Right motor current",
@@ -149,23 +132,20 @@ public class Collector extends SubsystemBase {
     return !beambreak.get();
   }
 
-  public void setCollectorSetPoint(double newRightSetpoint, double newLeftSetpoint) {
+  public void setCollectorSetPoint(double newRightSetpoint) {
     rightMotor.setControl(
         positionVoltage.withPosition(newRightSetpoint).withSlot(1));
-    leftMotor.setControl(
-        positionVoltage.withPosition(newLeftSetpoint).withSlot(1));
   }
 
   public Command rotateCoralCommand() {
     return runEnd(
       () -> {
-        setCollectorSpeeds(Constants.Collector.Speeds.CORAL_INTAKE_SLOW_SPEED, 
-        Constants.Collector.Speeds.CORAL_INTAKE_FAST_SPEED);
+        setCollectorSpeeds(Constants.Collector.Speeds.CORAL_INTAKE_SLOW_SPEED);
         ConditionalSmartDashboard.putNumber("Collector/Right collector current speed", getRightMotorVelocity());
         ConditionalSmartDashboard.putNumber("Collector/Left collector current speed", getLeftMotorVelocity());
       }, 
       () -> {
-        setCollectorSpeeds(0, 0);
+        setCollectorSpeeds(0);
       }
     );
   }
@@ -174,17 +154,23 @@ public class Collector extends SubsystemBase {
   // Rrue if you want it to stop the motor when the command ends
   // it should almost always be true unless there will be a following command right after that will end it
   public Command intakeCoralCommand(
-    boolean stopOnEnd
+    boolean stopOnEnd,
+    Supplier<EndEffectorSetpointConstants> endEffectorSetpoint
   ) {
     int endCount [] = {0}; // This value needs to be effectivly final 
     return runEnd(
       () -> {
-        setCollectorSpeeds(Constants.Collector.Speeds.CORAL_INTAKE_SLOW_SPEED, 
-          Constants.Collector.Speeds.CORAL_INTAKE_SLOW_SPEED);
+        if(endEffectorSetpoint.get() == Constants.EndEffectorSetpoints.CORAL_GROUND) {
+          setCollectorSpeeds(Constants.Collector.Speeds.CORAL_INTAKE_FAST_SPEED);
+        }
+        else {
+          setCollectorSpeeds(Constants.Collector.Speeds.CORAL_INTAKE_SLOW_SPEED);
+        }
+
       },
       () -> {
         if (stopOnEnd) {
-          setCollectorSpeeds(0, 0);
+          setCollectorSpeeds(0);
         }
       }
     ).beforeStarting(
@@ -215,17 +201,15 @@ public class Collector extends SubsystemBase {
     return runEnd(
       () -> {
         if (endEffectorSetpoint.get().equals(Constants.EndEffectorSetpoints.CORAL_L1)) {
-          setCollectorSpeeds(Constants.Collector.Speeds.CORAL_EXPEL_SLOW_SPEED, 
-            Constants.Collector.Speeds.CORAL_EXPEL_SLOW_SPEED);
+          setCollectorSpeeds(Constants.Collector.Speeds.CORAL_EXPEL_SLOW_SPEED);
         }
         else {
-          setCollectorSpeeds(Constants.Collector.Speeds.CORAL_EXPEL_FAST_SPEED, 
-            Constants.Collector.Speeds.CORAL_EXPEL_FAST_SPEED);
+          setCollectorSpeeds(Constants.Collector.Speeds.CORAL_EXPEL_FAST_SPEED);
         }
       },
       () -> {
         if (stopOnEnd) {
-          setCollectorSpeeds(0, 0);
+          setCollectorSpeeds(0);
         }
       }
     );
@@ -234,7 +218,7 @@ public class Collector extends SubsystemBase {
   public Command holdPositionCommand() {
     return startEnd(
       () -> {
-        setCollectorSetPoint(getRightMotorPosition(), getLeftMotorPosition());
+        setCollectorSetPoint(getRightMotorPosition());
       }, () -> {
 
       }
@@ -242,16 +226,22 @@ public class Collector extends SubsystemBase {
   }
 
   public Command intakeAlgaeCommand(
-    boolean stopOnEnd
+    boolean stopOnEnd,
+    Supplier<EndEffectorSetpointConstants> endEffectorSetpoint
   ) {
     int endCount [] = {0}; // This value needs to be effectivly final 
     return runEnd(
       () -> {
-        setCollectorThrottle(Constants.Collector.Speeds.ALGAE_INTAKE_SPEED);
+        if(endEffectorSetpoint.get() == Constants.EndEffectorSetpoints.ALGAE_GROUND) {
+          setCollectorThrottle(Constants.Collector.Speeds.ALGAE_INTAKE_SPEED_FAST);
+        }
+        else {
+          setCollectorThrottle(Constants.Collector.Speeds.ALGAE_INTAKE_SPEED_SLOW);
+        }
       },
       () -> {
         if (stopOnEnd) {
-          setCollectorSpeeds(0, 0);
+          setCollectorSpeeds(0);
         }
       }
     ).beforeStarting(
@@ -261,8 +251,7 @@ public class Collector extends SubsystemBase {
       }
     ).until(
       () -> {
-        if (rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.ALGAE_AMP_CUT_OFF &&
-        leftMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.ALGAE_AMP_CUT_OFF) 
+        if (rightMotor.getSupplyCurrent().getValueAsDouble() >= Constants.Collector.ALGAE_AMP_CUT_OFF)
         {
           endCount[0]++;
         }
@@ -279,12 +268,11 @@ public class Collector extends SubsystemBase {
       boolean stopOnEnd) {
     return runEnd(
       () -> {
-        setCollectorSpeeds(Constants.Collector.Speeds.ALGAE_EXPEL_SPEED, 
-          Constants.Collector.Speeds.ALGAE_EXPEL_SPEED);
+        setCollectorSpeeds(Constants.Collector.Speeds.ALGAE_EXPEL_SPEED);
       },
       () -> {
         if (stopOnEnd) {
-          setCollectorSpeeds(0, 0);
+          setCollectorSpeeds(0);
         }
       }
     );

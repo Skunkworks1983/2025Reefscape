@@ -80,7 +80,7 @@ public class OI {
 
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.INTAKE)
           .and(coralToggle)
-          .whileTrue(collector.intakeCoralCommand(true));
+          .whileTrue(collector.intakeCoralCommand(true, elevator::getEndEffectorSetpoint));
 
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.EXPEL)
           .and(coralToggle)
@@ -88,7 +88,7 @@ public class OI {
 
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.INTAKE)
           .and(algaeToggle)
-          .whileTrue(collector.intakeAlgaeCommand(true));
+          .whileTrue(collector.intakeAlgaeCommand(true, elevator::getEndEffectorSetpoint));
 
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.EXPEL)
           .and(algaeToggle)

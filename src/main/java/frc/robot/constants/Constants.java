@@ -118,7 +118,8 @@ public class Constants {
       public static final double CORAL_INTAKE_FAST_SPEED = 18.0; //meters per sec 
       public static final double CORAL_EXPEL_SLOW_SPEED = 3.0; //meters per sec
       public static final double CORAL_EXPEL_FAST_SPEED = 10.0; //meters per sec 
-      public static final double ALGAE_INTAKE_SPEED = 0.25; // throttle pct output
+      public static final double ALGAE_INTAKE_SPEED_SLOW = 0.25; // throttle pct output
+      public static final double ALGAE_INTAKE_SPEED_FAST = 0.5;
       public static final double ALGAE_EXPEL_SPEED = -20.0; //meters per sec
 
       public static final double SPEED_MULIPILER_LEFT = 0.75;
