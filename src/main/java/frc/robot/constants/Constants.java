@@ -162,7 +162,8 @@ public class Constants {
     public static final int LIDAR_LEFT_DATA_PORT = 4;
     public static final int LIDAR_LEFT_TRIGGER_DISTANCE = 60;
     public static final int LIDAR_LEFT_DATA_CUTTOF = 3000;
-    public static final int LIDAR_TRIGGER_PORT = 3;
+    public static final int LIDAR_LEFT_TRIGGER_PORT = 3;
+    public static final int LIDAR_RIGHT_TRIGGER_PORT = 7;
     public static final double MAX_METERS_PER_SECOND = 4.5;
     public static final double MAX_DEGREES_PER_SECOND = 270;
 

@@ -4,7 +4,6 @@
 
 package frc.robot.utils;
 
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BooleanSupplier;
 
@@ -16,68 +15,58 @@ import frc.robot.constants.Constants;
 
 /** Add your docs here. */
 public class DualLidar {
-  private double triggerDistance1;
-  private double triggerDistance2;
-
-  private Counter lidar1;
-  private Counter lidar2;
-  private DigitalOutput output;
+  private Counter lidarRight;
+  private Counter lidarLeft;
+  private DigitalOutput outputLeft;
+  private DigitalOutput outputRight;
   public AtomicReference<Double> lidarDistance1;
   public AtomicReference<Double> lidarDistance2;
 
-  public BooleanSupplier isLidar1Tripped = () -> lidarDistance1.get() > triggerDistance1;
-  public BooleanSupplier isLidar2Tripped = () -> lidarDistance2.get() > triggerDistance2;
+  public BooleanSupplier isLidar1Tripped = () -> lidarDistance1.get() > Constants.Drivebase.LIDAR_RIGHT_TRIGGER_DISTANCE;
+  public BooleanSupplier isLidar2Tripped = () -> lidarDistance2.get() > Constants.Drivebase.LIDAR_RIGHT_TRIGGER_DISTANCE;
 
   private Thread thread = new Thread(this::updateDistance);
 
-  public DualLidar(
-    int dataPort1, 
-    double triggerDistance1, 
-    double triggerCutoff1, 
-    int dataPort2, 
-    double triggerDistance2,
-    double triggerCutoff2,
-    int triggerPort
-  ) {
-    this.triggerDistance1 = triggerDistance1;
-    this.triggerDistance1 = triggerDistance2;
+  public DualLidar() {
+    lidarRight = new Counter(Constants.Drivebase.LIDAR_RIGHT_DATA_PORT);
+    lidarRight.setMaxPeriod(1.0);
+    lidarRight.setSemiPeriodMode(true);
+    lidarRight.reset();
 
-    lidar1 = new Counter(dataPort1);
-    lidar1.setMaxPeriod(1.0);
-    lidar1.setSemiPeriodMode(true);
-    lidar1.reset();
+    lidarLeft = new Counter(Constants.Drivebase.LIDAR_LEFT_DATA_PORT);
+    lidarLeft.setMaxPeriod(1.0);
+    lidarLeft.setSemiPeriodMode(true);
+    lidarLeft.reset();
 
-    lidar2 = new Counter(dataPort2);
-    lidar2.setMaxPeriod(1.0);
-    lidar2.setSemiPeriodMode(true);
-    lidar2.reset();
-
-    output = new DigitalOutput(triggerPort);
+    outputLeft = new DigitalOutput(Constants.Drivebase.LIDAR_LEFT_TRIGGER_PORT);
+    outputRight = new DigitalOutput(Constants.Drivebase.LIDAR_RIGHT_TRIGGER_PORT);
+    thread.run();
   }
 
   private void updateDistance() {
 
     double thisTime = Timer.getFPGATimestamp();
     while(true) {
-      output.set(true);
+      outputLeft.set(true);
+      outputRight.set(true);
       try {
         Thread.sleep(1);
       } catch (InterruptedException e) {
         e.printStackTrace();
       }
-      double v1 = lidar1.getPeriod();
-      double v2 = lidar1.getPeriod();
+      double v1 = lidarRight.getPeriod();
+      double v2 = lidarRight.getPeriod();
       double distance1;
       double distance2;
 
-      if(lidar1.get() < 1){
+      if(lidarRight.get() < 1){
         distance1 = 0;
       }
       else {
         distance1 = v1 * 1000000.0 / 10.0;
       }
 
-      if(lidar2.get() < 1){
+      if(lidarLeft.get() < 1){
         distance2 = 0;
       }
       else {
@@ -87,7 +76,8 @@ public class DualLidar {
       lidarDistance1.set(distance1);
       lidarDistance2.set(distance2);
 
-      output.set(false);
+      outputLeft.set(false);
+      outputRight.set(false);
 
       double lastTime = thisTime;
       thisTime = Timer.getFPGATimestamp();

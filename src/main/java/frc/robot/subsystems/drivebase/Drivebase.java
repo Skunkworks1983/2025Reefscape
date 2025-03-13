@@ -72,15 +72,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
   private Pigeon2 gyro = new Pigeon2(Constants.Drivebase.PIGEON_ID, Constants.Drivebase.CANIVORE_NAME);
 
-  private DualLidar dualLidar = new DualLidar(
-    Constants.Drivebase.LIDAR_RIGHT_DATA_PORT,
-    Constants.Drivebase.LIDAR_RIGHT_TRIGGER_DISTANCE,
-    Constants.Drivebase.LIDAR_RIGHT_DATA_CUTTOF,
-    Constants.Drivebase.LIDAR_LEFT_DATA_PORT,
-    Constants.Drivebase.LIDAR_LEFT_TRIGGER_DISTANCE, 
-    Constants.Drivebase.LIDAR_LEFT_DATA_CUTTOF,
-    Constants.Drivebase.LIDAR_TRIGGER_PORT
-  );
+  private DualLidar dualLidar = new DualLidar();
 
   private StructArrayPublisher<SwerveModuleState> desiredSwervestate = NetworkTableInstance.getDefault()
       .getStructArrayTopic("Desired swervestate", SwerveModuleState.struct).publish();
