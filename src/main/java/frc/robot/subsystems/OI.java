@@ -154,7 +154,6 @@ public class OI {
         this::getInstructedYMetersPerSecond,
         /*goingRight=*/true,
         Constants.Drivebase.AUTO_ALIGN_DRIVE_SPEED_TELEOP,
-        "align right",
         elevator::getEndEffectorSetpoint
       );
 
@@ -165,7 +164,6 @@ public class OI {
         this::getInstructedYMetersPerSecond,
         /*goingRight=*/false,
         Constants.Drivebase.AUTO_ALIGN_DRIVE_SPEED_TELEOP,
-        "align left",
         elevator::getEndEffectorSetpoint
       );
 
