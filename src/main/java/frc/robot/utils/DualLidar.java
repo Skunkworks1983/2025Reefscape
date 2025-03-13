@@ -54,11 +54,8 @@ public class DualLidar {
       double startTime = Timer.getFPGATimestamp();
       outputLeft.set(true);
       outputRight.set(true);
-      try {
-        Thread.sleep(1);
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
+      while(Timer.getFPGATimestamp() - startTime < 0.001) {}
+
       double rightValue = lidarRight.getPeriod();
       double leftValue = lidarLeft.getPeriod();
       double distanceRight;
@@ -84,7 +81,12 @@ public class DualLidar {
 
       double timeElapsed = Timer.getFPGATimestamp() - startTime;
       try {
-        Thread.sleep((long)Units.secondsToMilliseconds(Math.max(Constants.RoboRIOInfo.UPDATE_PERIOD - timeElapsed, 0.0)));
+        Thread.sleep((long)Units.secondsToMilliseconds(
+          Math.max(
+            (Constants.RoboRIOInfo.UPDATE_PERIOD * 2.0) - timeElapsed,
+            0.0
+          )
+        ));
       } catch (InterruptedException e) {
         e.printStackTrace();
       }
