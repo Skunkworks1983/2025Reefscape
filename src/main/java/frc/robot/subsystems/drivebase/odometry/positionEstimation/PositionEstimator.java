@@ -66,7 +66,11 @@ public class PositionEstimator {
    * Must be called every loop in <code>periodic()</code> to keep odometry up to
    * date.
    */
+
+  private int updateCalls = 0;
+
   public void update() {
+    updateCalls++;
     stateLock.writeLock().lock();
     setPhoenix6OdometryReadLock.accept(true);
     for(int i =0; i < 4; i++) {
@@ -87,6 +91,7 @@ public class PositionEstimator {
 
     setPhoenix6OdometryReadLock.accept(false);
     stateLock.writeLock().unlock();
+    SmartDashboard.putNumber("update Calls", updateCalls);
   }
 
   public void reset(Pose2d newPose) {
