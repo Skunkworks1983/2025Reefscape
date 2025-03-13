@@ -52,6 +52,7 @@ import frc.robot.subsystems.drivebase.odometry.positionEstimation.PositionEstima
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.Lidar;
+import frc.robot.utils.PIDControllers.SmartPIDController;
 import frc.robot.utils.error.DiagnosticSubsystem;
 
 import org.json.simple.parser.ParseException;
@@ -65,10 +66,13 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
   private SwerveModule swerveModules[] = new SwerveModule[Constants.Drivebase.MODULES.length];
 
-  private PIDController headingController = new PIDController(
+  private SmartPIDController headingController = new SmartPIDController(
       Constants.Drivebase.PIDs.HEADING_CONTROL_kP,
       Constants.Drivebase.PIDs.HEADING_CONTROL_kI,
-      Constants.Drivebase.PIDs.HEADING_CONTROL_kD);
+      Constants.Drivebase.PIDs.HEADING_CONTROL_kD,
+      "Heading Controller",
+      true
+    );
 
   private Pigeon2 gyro = new Pigeon2(Constants.Drivebase.PIGEON_ID, Constants.Drivebase.CANIVORE_NAME);
   private Lidar lidarRight = new Lidar(Constants.Drivebase.LIDAR_RIGHT_DATA_PORT, Constants.Drivebase.LIDAR_RIGHT_TRIGGER_PORT, Constants.Drivebase.LIDAR_TRIGGER_DISTANCE, 30000);
