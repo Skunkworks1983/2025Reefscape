@@ -398,8 +398,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       DoubleSupplier getXMetersPerSecond,
       DoubleSupplier getYMetersPerSecond,
       boolean goingRight,
-      double alignSpeed,
-      String name // TODO: figure out what this is for
+      double alignSpeed
     ) {
 
     double newAlignSpeed = alignSpeed * (goingRight ? -1 : 1);

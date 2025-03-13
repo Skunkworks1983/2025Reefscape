@@ -27,15 +27,13 @@ public class AutomatedLidarScoring extends SequentialCommandGroup {
       DoubleSupplier getYMetersPerSecond,
       boolean goingRight,
       double alignSpeed,
-      String name,
       Supplier<EndEffectorSetpointConstants> endEffectorSetpoint) {
     addCommands(
       drivebase.getSwerveAlignCoral(
         getXMetersPerSecond,
         getYMetersPerSecond,
         goingRight,
-        alignSpeed,
-        name
+        alignSpeed
       ),
       Commands.waitUntil(
         () -> {
