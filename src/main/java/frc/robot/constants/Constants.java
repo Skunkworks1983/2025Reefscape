@@ -43,7 +43,9 @@ public class Constants {
 
     // distance from center to wheel
     public static final double PATHPLANNER_DRIVEBASE_RADIUS_METERS = 0.; //TODO give real number
+  }
 
+  public class RoboRIOInfo {
     public static final double UPDATE_PERIOD = .02; //seconds
   }
 
@@ -155,10 +157,13 @@ public class Constants {
     public static final String CANIVORE_NAME = Testing.ROBOT == Testing.Robot.Comp2025 ? "Drivebase 2025" : "1983 Comp Drivebase";
     public static final int PIGEON_ID = Testing.ROBOT == Testing.Robot.Comp2025 ? 22 : 26;
     public static final int LIDAR_RIGHT_DATA_PORT = 8;
-    public static final int LIDAR_RIGHT_TRIGGER_PORT = 7;
+    public static final int LIDAR_RIGHT_TRIGGER_DISTANCE = 60;
+    public static final int LIDAR_RIGHT_DATA_CUTOFF = 30000;
     public static final int LIDAR_LEFT_DATA_PORT = 4;
+    public static final int LIDAR_LEFT_TRIGGER_DISTANCE = 60;
+    public static final int LIDAR_LEFT_DATA_CUTOFF = 30000;
     public static final int LIDAR_LEFT_TRIGGER_PORT = 3;
-    public static final int LIDAR_TRIGGER_DISTANCE = 60;
+    public static final int LIDAR_RIGHT_TRIGGER_PORT = 7;
     public static final double MAX_METERS_PER_SECOND = 4.5;
     public static final double MAX_DEGREES_PER_SECOND = 270;
 
