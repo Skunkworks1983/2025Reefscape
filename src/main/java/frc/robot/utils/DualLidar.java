@@ -76,8 +76,8 @@ public class DualLidar {
         distanceLeft = leftValue * 1000000.0 / 10.0;
       }
 
-      lidarDistanceRight.set(distanceRight);
-      lidarDistanceLeft.set(distanceLeft);
+      if(distanceRight < Constants.Drivebase.LIDAR_RIGHT_DATA_CUTOFF) lidarDistanceRight.set(distanceRight);
+      if(distanceLeft < Constants.Drivebase.LIDAR_LEFT_DATA_CUTOFF) lidarDistanceLeft.set(distanceLeft);
 
       outputLeft.set(false);
       outputRight.set(false);

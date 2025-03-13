@@ -158,10 +158,10 @@ public class Constants {
     public static final int PIGEON_ID = Testing.ROBOT == Testing.Robot.Comp2025 ? 22 : 26;
     public static final int LIDAR_RIGHT_DATA_PORT = 8;
     public static final int LIDAR_RIGHT_TRIGGER_DISTANCE = 60;
-    public static final int LIDAR_RIGHT_DATA_CUTTOF = 30000;
+    public static final int LIDAR_RIGHT_DATA_CUTOFF = 30000;
     public static final int LIDAR_LEFT_DATA_PORT = 4;
     public static final int LIDAR_LEFT_TRIGGER_DISTANCE = 60;
-    public static final int LIDAR_LEFT_DATA_CUTTOF = 3000;
+    public static final int LIDAR_LEFT_DATA_CUTOFF = 30000;
     public static final int LIDAR_LEFT_TRIGGER_PORT = 3;
     public static final int LIDAR_RIGHT_TRIGGER_PORT = 7;
     public static final double MAX_METERS_PER_SECOND = 4.5;
