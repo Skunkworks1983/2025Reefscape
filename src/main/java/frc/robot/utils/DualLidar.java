@@ -20,18 +20,16 @@ public class DualLidar {
   private DigitalOutput outputLeft;
   private DigitalOutput outputRight;
 
-  // TODO: remove atomic reference as they are unnessecary
-  public AtomicReference<Double> lidarDistanceRight = new AtomicReference<>();
-  public AtomicReference<Double> lidarDistanceLeft = new AtomicReference<>();
+  // NOTE: using objects because reference are always atomic (double changes /might/ not be for some systems).
+  public Double lidarDistanceRight = 0.0;
+  public Double lidarDistanceLeft = 0.0;
 
-  public BooleanSupplier isLidarRightTripped = () -> lidarDistanceRight.get() > Constants.Drivebase.LIDAR_RIGHT_TRIGGER_DISTANCE;
-  public BooleanSupplier isLidarLeftTripped = () -> lidarDistanceLeft.get() > Constants.Drivebase.LIDAR_LEFT_TRIGGER_DISTANCE;
+  public BooleanSupplier isLidarRightTripped = () -> lidarDistanceRight > Constants.Drivebase.LIDAR_RIGHT_TRIGGER_DISTANCE;
+  public BooleanSupplier isLidarLeftTripped = () -> lidarDistanceLeft > Constants.Drivebase.LIDAR_LEFT_TRIGGER_DISTANCE;
 
   private Thread thread = new Thread(this::updateDistance);
 
   public DualLidar() {
-    lidarDistanceRight.set(0.0);
-    lidarDistanceLeft.set(0.0);
 
     lidarRight = new Counter(Constants.Drivebase.LIDAR_RIGHT_DATA_PORT);
     lidarRight.setMaxPeriod(1.0);
@@ -74,8 +72,8 @@ public class DualLidar {
       }
 
       // Ignore returned values that are too large (because they are not real values)
-      if(distanceRight < Constants.Drivebase.LIDAR_RIGHT_DATA_CUTOFF) lidarDistanceRight.set(distanceRight);
-      if(distanceLeft < Constants.Drivebase.LIDAR_LEFT_DATA_CUTOFF) lidarDistanceLeft.set(distanceLeft);
+      if(distanceRight < Constants.Drivebase.LIDAR_RIGHT_DATA_CUTOFF) lidarDistanceRight = distanceRight;
+      if(distanceLeft < Constants.Drivebase.LIDAR_LEFT_DATA_CUTOFF) lidarDistanceLeft = distanceLeft;
 
       outputLeft.set(false);
       outputRight.set(false);

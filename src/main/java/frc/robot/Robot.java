@@ -5,6 +5,7 @@
 package frc.robot;
 
 import java.util.Optional;
+import java.util.function.DoubleSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -21,6 +22,7 @@ import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.error.DiagnosticSubsystem;
 import frc.robot.commands.MoveEndEffector;
+import frc.robot.commands.AutomatedScoring.AutomatedLidarScoring;
 import frc.robot.commands.drivebase.TrapezoidProfileDriveOut;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.*;
@@ -151,6 +153,29 @@ public class Robot extends TimedRobot {
 
       NamedCommands.registerCommand("Intake Algae ", collector.get().intakeAlgaeCommand(true));
 
+      NamedCommands.registerCommand("Lidar Score Right",
+        new AutomatedLidarScoring(
+          drivebase.get(),
+          collector.get(),
+          (DoubleSupplier)() -> 0.0, 
+          (DoubleSupplier)() -> 0.0,
+          true, 
+          Constants.Drivebase.AUTO_ALIGN_DRIVE_SPEED_AUTO,
+          elevator.get()::getEndEffectorSetpoint
+        )
+      );
+
+      NamedCommands.registerCommand("Lidar Score Left",
+        new AutomatedLidarScoring(
+          drivebase.get(),
+          collector.get(),
+          (DoubleSupplier)() -> 0.0, 
+          (DoubleSupplier)() -> 0.0,
+          false, 
+          Constants.Drivebase.AUTO_ALIGN_DRIVE_SPEED_AUTO,
+          elevator.get()::getEndEffectorSetpoint
+        )
+      );
     }
   }
 
