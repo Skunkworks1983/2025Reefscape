@@ -71,7 +71,7 @@ public class TestModuleComponentsConnection extends Command {
   public void end(boolean interrupted) {
 
     // Testing the Modules Encoder connection status
-    if(swerveModule.isEncoderConnected()) {
+    if (swerveModule.isEncoderConnected()) {
       encoderConnectedTest.setErrorStatus(AlertType.kInfo);
     }
     else {
@@ -80,7 +80,7 @@ public class TestModuleComponentsConnection extends Command {
     setTest.accept(encoderConnectedTest);
 
     // Testing the Modules Turn Motor connection status
-    if(swerveModule.isTurnMotorConnected()) {
+    if (swerveModule.isTurnMotorConnected()) {
       turnMotorConnectedTest.setErrorStatus(AlertType.kInfo);
     }
     else {
@@ -89,7 +89,7 @@ public class TestModuleComponentsConnection extends Command {
     setTest.accept(turnMotorConnectedTest);
 
     // Testing the Modules Drive Motor connection status
-    if(swerveModule.isDriveMotorConnected()) {
+    if (swerveModule.isDriveMotorConnected()) {
       driveMotorConnectedTest.setErrorStatus(AlertType.kInfo);
     }
     else {

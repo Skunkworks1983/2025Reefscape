@@ -65,19 +65,19 @@ public class Funnel extends SubsystemBase implements DiagnosticSubsystem{
     ConditionalSmartDashboard.putNumber("Funnel/Motor Current", getCurrent());
   }
 
-  public double getPos(){
+  public double getPos() {
     return pivotMotor.getEncoder().getPosition();
   }
 
-  public double getSetpoint(){
+  public double getSetpoint() {
     return setpoint;
   }
 
-  public boolean isMotorConnected(){
+  public boolean isMotorConnected() {
     return pivotMotor.getFirmwareVersion() != 0;
   }
 
-  public double getCurrent(){
+  public double getCurrent() {
     return pivotMotor.getOutputCurrent();
   }
 
@@ -89,11 +89,11 @@ public class Funnel extends SubsystemBase implements DiagnosticSubsystem{
     return approxEquals(getPos(), getSetpoint(), Constants.Climber.CLIMBER_TOLERANCE); 
   }
 
-  public double getVelocity(){
+  public double getVelocity() {
     return pivotMotor.getEncoder().getVelocity();
   }
 
-  public void setFunnelSetPoint(double revs){
+  public void setFunnelSetPoint(double revs) {
     setpoint = revs;
     SparkClosedLoopController FunnelLoopController = pivotMotor.getClosedLoopController();
     FunnelLoopController.setReference(getSetpoint(), ControlType.kPosition);
@@ -113,7 +113,7 @@ public class Funnel extends SubsystemBase implements DiagnosticSubsystem{
 
         },
         () -> {
-          if(isMotorConnected()) {
+          if (isMotorConnected()) {
             funnelMotorConnectedTest.setErrorStatus(AlertType.kError);
           }
           else {

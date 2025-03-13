@@ -4,13 +4,48 @@
 
 package frc.robot.constants;
 
+import java.io.IOException;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.struct.parser.ParseException;
+import edu.wpi.first.wpilibj2.command.Command;
 
 // TODO: add all robot constant values when they have been decided
 public class Constants {
+
+  public class PathPlanner
+  {
+    public static final double PATHPLANNER_DRIVE_KP = 1.0;
+    public static final double PATHPLANNER_DRIVE_KD = .0;
+    public static final double PATHPLANNER_DRIVE_KI = .0;
+    public static final double PATHPLANNER_DRIVE_KF = .0;
+
+    public static final double PATHPLANNER_TURN_KP = 1.0;
+    public static final double PATHPLANNER_TURN_KD = .0;
+    public static final double PATHPLANNER_TURN_KI = .0;
+    public static final double PATHPLANNER_TURN_KF = .0;
+
+    public static final double ROBOT_LENGTH = 0.864; //in meters with bumpers
+    public static final double ROBOT_WIDTH = 0.864; // in meters with bumpers
+
+    public static final double ROBOT_MASS = 67.1317; //kilograms
+    public static final double MOMENT_OF_INERTIA = 1.0/12.0 * (ROBOT_MASS)*(Math.sqrt(ROBOT_WIDTH) + Math.sqrt(ROBOT_LENGTH));
+  
+    
+    public static final double PATHPLANNER_MAX_METERS_PER_SECOND = .0; //TODO give real number
+
+    // distance from center to wheel
+    public static final double PATHPLANNER_DRIVEBASE_RADIUS_METERS = 0.; //TODO give real number
+
+    public static final double UPDATE_PERIOD = .02; //seconds
+  }
 
   public class CurrentLimits {
 
@@ -49,6 +84,7 @@ public class Constants {
     // If some subsystems are not created and this value is true, an exeption
     // will be thrown.
     public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = true;
+    public static final boolean SMART_PID_ENABLED = false;
 
     public static enum Robot {
       Comp2024,
@@ -78,19 +114,19 @@ public class Constants {
     public class Speeds {
       public static final double CORAL_INTAKE_SLOW_SPEED = 8.0; //meters per sec
       public static final double CORAL_INTAKE_FAST_SPEED = 18.0; //meters per sec 
-      public static final double CORAL_EXPEL_SLOW_SPEED = 8.0; //meters per sec
-      public static final double CORAL_EXPEL_FAST_SPEED = 18.0; //meters per sec 
-      public static final double ALGAE_INTAKE_SPEED = 5.0; //meters per sec
-      public static final double ALGAE_EXPEL_SPEED = -5.0; //meters per sec
+      public static final double CORAL_EXPEL_SLOW_SPEED = 3.0; //meters per sec
+      public static final double CORAL_EXPEL_FAST_SPEED = 10.0; //meters per sec 
+      public static final double ALGAE_INTAKE_SPEED = 0.25; // throttle pct output
+      public static final double ALGAE_EXPEL_SPEED = -20.0; //meters per sec
 
       public static final double SPEED_MULIPILER_LEFT = 0.75;
     }
 
     public static final double COLLECTOR_ROTATIONS_PER_METER = 0.0762 * Math.PI;
     public static final double END_COUNT_TICK_COUNTER_ALGAE = 3;
-    public static final double END_COUNT_TICK_COUNTER_CORAL = 2;
+    public static final double END_COUNT_TICK_COUNTER_CORAL = 7.0;
     public static final double COLLECTOR_AMPS_BEFORE_CUTTOF = 5.0;
-    public static final double ALGAE_AMP_CUT_OFF = 6.0;
+    public static final double ALGAE_AMP_CUT_OFF = 10.0;
 
       public static final boolean SMART_PID_ENABLED = false;
 
@@ -116,20 +152,24 @@ public class Constants {
   }
 
   public class Drivebase {
-    public static final String CANIVORE_NAME = Testing.ROBOT == Testing.Robot.Comp2025 ? "Evil Canivore" : "1983 Comp Drivebase";
+    public static final String CANIVORE_NAME = Testing.ROBOT == Testing.Robot.Comp2025 ? "Drivebase 2025" : "1983 Comp Drivebase";
     public static final int PIGEON_ID = Testing.ROBOT == Testing.Robot.Comp2025 ? 22 : 26;
     public static final int LIDAR_RIGHT_DATA_PORT = 8;
     public static final int LIDAR_RIGHT_TRIGGER_PORT = 7;
     public static final int LIDAR_LEFT_DATA_PORT = 4;
     public static final int LIDAR_LEFT_TRIGGER_PORT = 3;
-    public static final int LIDAR_TRIGGER_DISTANCE = 40;
+    public static final int LIDAR_TRIGGER_DISTANCE = 60;
     public static final double MAX_METERS_PER_SECOND = 4.5;
     public static final double MAX_DEGREES_PER_SECOND = 270;
+
+    public static final double AUTO_ALIGN_DRIVE_SPEED = 0.5;
+    public static final double DRIVE_CURRENT_LIMIT = 100;
 
     public class IDS {
       public static int ROTATION_JOYSTICK_ID = 1;
       public static int TRANSLATION_JOYSTICK_ID = 0;
       public static int BUTTON_STICK_ID = 2;
+
     }
 
     
@@ -181,23 +221,22 @@ public class Constants {
       public static final double SWERVE_MODULE_TURN_KI = 0.0;
       public static final double SWERVE_MODULE_TURN_KD = 0.00017;
       public static final double SWERVE_MODULE_TURN_KF = 0.0;
-      public static final double SWERVE_MODULE_DRIVE_KP = 0.125;
+      public static final double SWERVE_MODULE_DRIVE_KP = 0.25;
       public static final double SWERVE_MODULE_DRIVE_KI = 0.0;
       public static final double SWERVE_MODULE_DRIVE_KD = 0.0;
       public static final double SWERVE_MODULE_DRIVE_KF = 0.0;
-      public static final double SWERVE_MODULE_DRIVE_KV = 0.1075;
+      public static final double SWERVE_MODULE_DRIVE_KV = 0.13;
       public static final double SWERVE_MODULE_DRIVE_KA = 0.0;
       public static final double SWERVE_MODULE_DRIVE_KS = 0.0;
 
-      public static final double HEADING_CONTROL_kP = 2.00;
+      public static final double HEADING_CONTROL_kP = 6.00;
       public static final double HEADING_CONTROL_kI = 0.0;
       public static final double HEADING_CONTROL_kD = 0.0;
       
       public static final double PID_LOW_LIMIT = -0.8;
       public static final double PID_HIGH_LIMIT = 0.8;
 
-      public static final boolean SMART_PID_ENABLED = false;
-      public static final boolean SMART_PID_TURN_ENABLED = true;
+      public static final boolean SMART_PID_TURN_ENABLED = false;
       public static final boolean SMART_PID_DRIVE_ENABLED = false;
     }
 
@@ -258,7 +297,7 @@ public class Constants {
     public static final double TOLORENCE_METERS_FOR_SETPOINT = 0.0;
     // This tolerance value will be used for moving to a setpoint
     // using the MoveToPositionCommand.
-    public static final double TOLERENCE_METERS_FOR_MOVE_TO_POSITION = 0.0;
+    public static final double TOLERENCE_METERS_FOR_MOVE_TO_POSITION = 0.2; // TODO: Priority: Tuning
 
     // In meters
     public static final double MAX_HEIGHT_CARRIAGE = 1.527175;
@@ -270,21 +309,22 @@ public class Constants {
     public static final double METERS_TO_MOTOR_ROTATIONS = 1; // We need to fix Transforms after Competition
 
 
+    // TODO: Priority: Tuning
     public class PIDs {
-      public static final double ELEVATOR_kP = 1.5;
-      public static final double ELEVATOR_kI = 0.1;
+      public static final double ELEVATOR_kP = 1.6;
+      public static final double ELEVATOR_kI = 0.125;
       public static final double ELEVATOR_kD = 0.0;
-      public static final double ELEVATOR_kF = 0.0;
+      public static final double ELEVATOR_kF = 0.605;
       public static final double ELEVATOR_kV = 0.0;
       public static final double ELEVATOR_kA = 0.0;
-      public static final double ELEVATOR_kS = 0.55;
+      public static final double ELEVATOR_kS = 0.0;
 
       public static final boolean SMART_PID_ENABLED = false;
     }
 
     public class Profile {
-      public static final double MAX_VELOCITY = 65;
-      public static final double MAX_ACCELERATION = 130;
+      public static final double MAX_VELOCITY = 55.0;
+      public static final double MAX_ACCELERATION = 81.0;
     }
   }
 
@@ -308,10 +348,10 @@ public class Constants {
       public static final boolean WRIST_SMARTPID_ACTIVE = false;
     }
 
-    public static final double WRIST_MAX_VELOCITY = 1;
-    public static final double WRIST_MAX_ACCELERATION = 2; 
+    public static final double WRIST_MAX_VELOCITY = 0.7;
+    public static final double WRIST_MAX_ACCELERATION = 1.56;
 
-    public static final double WRIST_TOLERANCE = 0.01;
+    public static final double WRIST_TOLERANCE = 0.02;
 
     public static final int WRIST_GEAR_RATIO = 56; // 56 motor rotations to 1 wrist rotation
 
@@ -321,31 +361,32 @@ public class Constants {
 
   }
   
-  // TODO: add end effector setpoints
+  // TODO: Priority: Tuning
   public class EndEffectorSetpoints {
 
     public static final double WRIST_STOW_POSITION_CORAL = 0.0;
-    public static final double WRIST_STOW_POSITION_ALGAE = 0.1;
+    public static final double WRIST_STOW_POSITION_ALGAE = 0.0;
+    public static final double WRIST_PROSSESSOR_STOW_POSITION = 0.1441;
 
     public static final EndEffectorSetpointConstants ALGAE_GROUND = 
-      new EndEffectorSetpointConstants(0.0, 0.0, WRIST_STOW_POSITION_ALGAE);
+      new EndEffectorSetpointConstants(3.0, 0.3941, WRIST_STOW_POSITION_ALGAE);
     public static final EndEffectorSetpointConstants ALGAE_STOW = 
-      new EndEffectorSetpointConstants(0.0, WRIST_STOW_POSITION_ALGAE, WRIST_STOW_POSITION_ALGAE);
+      new EndEffectorSetpointConstants(0.0, WRIST_PROSSESSOR_STOW_POSITION, WRIST_PROSSESSOR_STOW_POSITION);
     public static final EndEffectorSetpointConstants ALGAE_PROCESSOR = 
-      new EndEffectorSetpointConstants(0.0, 0.0, WRIST_STOW_POSITION_ALGAE);
+      new EndEffectorSetpointConstants(10.8, 0.3941, WRIST_PROSSESSOR_STOW_POSITION);
     public static final EndEffectorSetpointConstants ALGAE_L2 = 
-      new EndEffectorSetpointConstants(0.0, 0.0, WRIST_STOW_POSITION_ALGAE);
+      new EndEffectorSetpointConstants(19.018 + 5, 0.3941, WRIST_STOW_POSITION_ALGAE);
     public static final EndEffectorSetpointConstants ALGAE_L3 = 
-      new EndEffectorSetpointConstants(0.0, 0.0, WRIST_STOW_POSITION_ALGAE);
+      new EndEffectorSetpointConstants(29.77 + 5, 0.3941, WRIST_STOW_POSITION_ALGAE);
     public static final EndEffectorSetpointConstants ALGAE_NET = 
-      new EndEffectorSetpointConstants(0.0, 0.0, WRIST_STOW_POSITION_ALGAE);
+      new EndEffectorSetpointConstants(0.0, WRIST_STOW_POSITION_ALGAE, WRIST_STOW_POSITION_ALGAE);
 
     public static final EndEffectorSetpointConstants CORAL_GROUND = 
       new EndEffectorSetpointConstants(0.0, 0.0, WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_STOW = 
       new EndEffectorSetpointConstants(0.0, WRIST_STOW_POSITION_CORAL, WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_L1 = 
-      new EndEffectorSetpointConstants(0.0, 0.0, WRIST_STOW_POSITION_CORAL);
+      new EndEffectorSetpointConstants(12.0, 0.0641, WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_L2 = 
       new EndEffectorSetpointConstants(13.756, 0.0, WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_L3 = 
@@ -406,7 +447,7 @@ public class Constants {
 
         // Switch being off corresponds to coral
         // Switch being on corresponds to algae
-        public static final int ALGAE_TOGGLE = 10;
+        public static final int ALGAE_TOGGLE = 8;
 
         // The following buttons depend on ALGAE_TOGGLE
         public static final int GOTO_SCORE_LOW = 15; // either L1 or proccesor on ALGAE_TOGGLE
@@ -424,8 +465,9 @@ public class Constants {
         public static final int CLIMBER_GOTO_MAX = 0;
         public static final int CLIMBER_GOTO_MIN = 0;
 
-        public static final int TARGET_REEF_BUTTON = 1;
+        public static final int TARGET_REEF_BUTTON = 3;
         public static final int TARGET_CORAL_STATION_BUTTON = 2;
+        public static final int TARGET_CORAL_CYCLE_NO_ODOMETRY_BUTTON = 1;
 
         public static final int RAISE_FUNNEL_TOGGLE = 0;
 
@@ -436,6 +478,6 @@ public class Constants {
   }
 
   public class Phoenix6Odometry {
-    public static final double updatesPerSecond = 100.0;
+    public static final double requestedUpdatesPerSecond = 100.0;
   }
 }

@@ -56,12 +56,15 @@ public class Phoenix6Odometry {
   public void updateSignals() {
     // Note: waitForAll uses signals as an out param.
     // Using toArray(new BaseStatusSignal[0]) to specify type to be used
+    //
+    // We wait for two times the update period in order to ensure we receive
+    // updated values. I.e. the 2.0 is intentional.
     StatusCode status = BaseStatusSignal.waitForAll(
-      1.0 / Constants.Phoenix6Odometry.updatesPerSecond,
+      2.0 / Constants.Phoenix6Odometry.requestedUpdatesPerSecond,
       getAllSignals().toArray(new BaseStatusSignal[0])
     );
 
-    if(status.isOK()) {
+    if (status.isOK()) {
       vaildUpdates++;
     } else {
       failedUpdates++;
@@ -125,7 +128,7 @@ public class Phoenix6Odometry {
 
   private void resetUpdateFrequency() {
     BaseStatusSignal.setUpdateFrequencyForAll(
-      Constants.Phoenix6Odometry.updatesPerSecond,
+      Constants.Phoenix6Odometry.requestedUpdatesPerSecond,
       getAllSignals().toArray(new BaseStatusSignal[0])
     );
   }
@@ -133,7 +136,7 @@ public class Phoenix6Odometry {
   private void setWriteLock(boolean locked) {
     subsystemSignals.forEach(
       subsystemSignal -> {
-        if(locked) {
+        if (locked) {
           subsystemSignal.getLock().writeLock().lock();
         } else {
           subsystemSignal.getLock().writeLock().unlock();
@@ -145,7 +148,7 @@ public class Phoenix6Odometry {
   public void setReadLock(boolean locked) {
     subsystemSignals.forEach(
       subsystemSignal -> {
-        if(locked) {
+        if (locked) {
           subsystemSignal.getLock().readLock().lock();
         } else {
           subsystemSignal.getLock().readLock().unlock();
