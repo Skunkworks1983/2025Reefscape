@@ -140,8 +140,9 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
         Constants.Drivebase.DRIVE_CURRENT_LIMIT,
         Constants.Drivebase.MODULES.length
       ),
-      Constants.Drivebase.MODULE_OFFSET
+      Constants.Drivebase.pathPlannerConstants
     );
+
     positionEstimator.stateLock.readLock().lock();
     AutoBuilder.configure(
       positionEstimator::getPose,

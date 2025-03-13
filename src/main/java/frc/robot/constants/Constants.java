@@ -211,6 +211,13 @@ public class Constants {
     		-T_Y), "Back Right")
     };
 
+    public static Translation2d[] pathPlannerConstants = {
+      new Translation2d(MODULE_OFFSET, MODULE_OFFSET),
+      new Translation2d(MODULE_OFFSET, -MODULE_OFFSET),
+      new Translation2d(-MODULE_OFFSET, MODULE_OFFSET),
+      new Translation2d(-MODULE_OFFSET, -MODULE_OFFSET)
+    };
+
     public class Info {
       public static final double DRIVE_MOTOR_GEAR_RATIO = Testing.ROBOT == Testing.Robot.Comp2025 ? 6.12 : 6.75;
       public static final double WHEEL_DIAMETER = 0.0991108;
