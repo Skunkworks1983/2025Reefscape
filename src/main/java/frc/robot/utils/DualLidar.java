@@ -22,8 +22,8 @@ public class DualLidar {
   public AtomicReference<Double> lidarDistanceRight = new AtomicReference<>();
   public AtomicReference<Double> lidarDistanceLeft = new AtomicReference<>();
 
-  public BooleanSupplier isLidar1Tripped = () -> lidarDistanceRight.get() > Constants.Drivebase.LIDAR_RIGHT_TRIGGER_DISTANCE;
-  public BooleanSupplier isLidar2Tripped = () -> lidarDistanceLeft.get() > Constants.Drivebase.LIDAR_RIGHT_TRIGGER_DISTANCE;
+  public BooleanSupplier isLidarRightTripped = () -> lidarDistanceRight.get() > Constants.Drivebase.LIDAR_RIGHT_TRIGGER_DISTANCE;
+  public BooleanSupplier isLidarLeftTripped = () -> lidarDistanceLeft.get() > Constants.Drivebase.LIDAR_RIGHT_TRIGGER_DISTANCE;
 
   private Thread thread = new Thread(this::updateDistance);
 
@@ -42,13 +42,13 @@ public class DualLidar {
 
     outputLeft = new DigitalOutput(Constants.Drivebase.LIDAR_LEFT_TRIGGER_PORT);
     outputRight = new DigitalOutput(Constants.Drivebase.LIDAR_RIGHT_TRIGGER_PORT);
-    thread.run();
+    thread.start();
   }
 
   private void updateDistance() {
 
-    double thisTime = Timer.getFPGATimestamp();
     while(true) {
+      double startTime = Timer.getFPGATimestamp();
       outputLeft.set(true);
       outputRight.set(true);
       try {
@@ -56,8 +56,8 @@ public class DualLidar {
       } catch (InterruptedException e) {
         e.printStackTrace();
       }
-      double v1 = lidarRight.getPeriod();
-      double v2 = lidarRight.getPeriod();
+      double rightValue = lidarRight.getPeriod();
+      double leftValue = lidarLeft.getPeriod();
       double distanceRight;
       double distanceLeft;
 
@@ -65,14 +65,14 @@ public class DualLidar {
         distanceRight = 0;
       }
       else {
-        distanceRight = v1 * 1000000.0 / 10.0;
+        distanceRight = rightValue * 1000000.0 / 10.0;
       }
 
       if(lidarLeft.get() < 1){
         distanceLeft = 0;
       }
       else {
-        distanceLeft = v2 * 1000000.0 / 10.0;
+        distanceLeft = leftValue * 1000000.0 / 10.0;
       }
 
       lidarDistanceRight.set(distanceRight);
@@ -81,11 +81,9 @@ public class DualLidar {
       outputLeft.set(false);
       outputRight.set(false);
 
-      double lastTime = thisTime;
-      thisTime = Timer.getFPGATimestamp();
-      double timeElapsed = thisTime - lastTime;
+      double timeElapsed = Timer.getFPGATimestamp() - startTime;
       try {
-        Thread.sleep((long)Units.secondsToMilliseconds(Math.min(Constants.RoboRIOInfo.UPDATE_PERIOD - (timeElapsed), 0.0)));
+        Thread.sleep((long)Units.secondsToMilliseconds(Math.max(Constants.RoboRIOInfo.UPDATE_PERIOD - timeElapsed, 0.0)));
       } catch (InterruptedException e) {
         e.printStackTrace();
       }
