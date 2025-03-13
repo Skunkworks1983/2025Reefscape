@@ -19,17 +19,20 @@ public class DualLidar {
   private Counter lidarLeft;
   private DigitalOutput outputLeft;
   private DigitalOutput outputRight;
+
+  // TODO: remove atomic reference as they are unnessecary
   public AtomicReference<Double> lidarDistanceRight = new AtomicReference<>();
   public AtomicReference<Double> lidarDistanceLeft = new AtomicReference<>();
 
   public BooleanSupplier isLidarRightTripped = () -> lidarDistanceRight.get() > Constants.Drivebase.LIDAR_RIGHT_TRIGGER_DISTANCE;
-  public BooleanSupplier isLidarLeftTripped = () -> lidarDistanceLeft.get() > Constants.Drivebase.LIDAR_RIGHT_TRIGGER_DISTANCE;
+  public BooleanSupplier isLidarLeftTripped = () -> lidarDistanceLeft.get() > Constants.Drivebase.LIDAR_LEFT_TRIGGER_DISTANCE;
 
   private Thread thread = new Thread(this::updateDistance);
 
   public DualLidar() {
     lidarDistanceRight.set(0.0);
     lidarDistanceLeft.set(0.0);
+
     lidarRight = new Counter(Constants.Drivebase.LIDAR_RIGHT_DATA_PORT);
     lidarRight.setMaxPeriod(1.0);
     lidarRight.setSemiPeriodMode(true);
@@ -63,15 +66,13 @@ public class DualLidar {
 
       if(lidarRight.get() < 1){
         distanceRight = 0;
-      }
-      else {
+      } else {
         distanceRight = rightValue * 1000000.0 / 10.0;
       }
 
       if(lidarLeft.get() < 1){
         distanceLeft = 0;
-      }
-      else {
+      } else {
         distanceLeft = leftValue * 1000000.0 / 10.0;
       }
 
