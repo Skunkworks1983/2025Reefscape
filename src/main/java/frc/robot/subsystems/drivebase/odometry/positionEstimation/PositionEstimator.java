@@ -69,7 +69,7 @@ public class PositionEstimator {
   public void update() {
     stateLock.writeLock().lock();
     setPhoenix6OdometryReadLock.accept(true);
-    for(int i =0; i < 4; i++){
+    for(int i =0; i < 4; i++) {
       swerveDrivePoseEstimator.update(
         drivebaseState.getGyroAngle(),
         new SwerveModulePosition[] {
@@ -100,6 +100,13 @@ public class PositionEstimator {
       newPose
     );
     stateLock.writeLock().unlock();
+  }
+
+  public void pathplannerReset(Pose2d newPose) {
+    System.out.println("x pos: " + newPose.getX());
+    System.out.println("y pos: " + newPose.getY());
+    System.out.println("theta pos: " + newPose.getRotation().getDegrees());
+    reset(newPose);
   }
 
   public ReentrantReadWriteLock.ReadLock getReadLock() {

@@ -68,7 +68,8 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   private PIDController headingController = new PIDController(
       Constants.Drivebase.PIDs.HEADING_CONTROL_kP,
       Constants.Drivebase.PIDs.HEADING_CONTROL_kI,
-      Constants.Drivebase.PIDs.HEADING_CONTROL_kD);
+      Constants.Drivebase.PIDs.HEADING_CONTROL_kD
+    );
 
   private Pigeon2 gyro = new Pigeon2(Constants.Drivebase.PIGEON_ID, Constants.Drivebase.CANIVORE_NAME);
 
@@ -114,20 +115,20 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     // are ~ the same, so the robot doesn't spiral off the field.
     positionEstimator.reset(
       (DriverStation.getAlliance().isPresent()
-        && DriverStation.getAlliance().get() == Alliance.Red) ? 
+      && DriverStation.getAlliance().get() == Alliance.Red) ? 
           new Pose2d(TeleopFeature.FIELD_CENTER, Rotation2d.k180deg) : 
           new Pose2d(TeleopFeature.FIELD_CENTER, new Rotation2d()));
 
     Pigeon2Configuration gyroConfiguration = new Pigeon2Configuration();
     gyroConfiguration.MountPose.MountPoseYaw = 0;
     gyro.getConfigurator().apply(gyroConfiguration);
-    resetGyroHeading();
+    // resetGyroHeading();
 
     odometryThread = new OdometryThread(phoenix6Odometry, positionEstimator);
 
     new Vision(
       positionEstimator::addVisionMeasurement,
-      VisionConstants.Comp2025Mount.VISION_IO_CONSTANTS
+      VisionConstants.Comp2025Mount.IO_CONSTANTS
     );
 
     headingController.enableContinuousInput(0, 360);
@@ -148,7 +149,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     );
     positionEstimator.stateLock.readLock().lock();
     AutoBuilder.configure(
-      positionEstimator::getPose,positionEstimator::reset,
+      positionEstimator::getPose,positionEstimator::pathplannerReset,
       this::getRobotRelativeSpeeds, (speeds, feedforwards) -> driveRobotRelative(speeds), 
       new PPHolonomicDriveController( 
         new PIDConstants(
@@ -278,6 +279,13 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     ChassisSpeeds chassisSpeeds = positionEstimator.swerveDriveKinematics.toChassisSpeeds(moduleStates);
     positionEstimator.stateLock.readLock().unlock();
     return chassisSpeeds;
+  }
+
+  public double calculateWithHeadingController(double targetHeading) {
+    return headingController.calculate(
+      getCachedGyroHeading().getDegrees(),
+      targetHeading
+    );
   }
 
   private SwerveModuleState[] getSwerveModuleStates() {
@@ -447,10 +455,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
         getYMetersPerSecond,
         (DoubleSupplier) () -> {
 
-          double rotSpeed = headingController.calculate(
-            getCachedGyroHeading().getDegrees(),
-            getDesiredHeading.get().getDegrees()
-          );
+          double rotSpeed = calculateWithHeadingController(getDesiredHeading.get().getDegrees());
 
           return rotSpeed;
         },
@@ -512,13 +517,13 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
       return AutoBuilder.followPath(path);
     }
-    catch (ParseException p){
+    catch (ParseException p) {
       System.out.println("pathplanner threw parseexception while parsing " + pathName);
     }
-    catch (IOException e){
+    catch (IOException e) {
       System.out.println("pathplanner threw ioexception while parsing " + pathName);
     }
-    return new Command(){};
+    return new Command() {};
    
   }
 

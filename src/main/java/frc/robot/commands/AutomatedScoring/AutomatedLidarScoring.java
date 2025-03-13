@@ -42,22 +42,13 @@ public class AutomatedLidarScoring extends SequentialCommandGroup {
       Commands.waitUntil(
         () -> {
           EndEffectorSetpointConstants constants = endEffectorSetpoint.get();
-          if(constants == Constants.EndEffectorSetpoints.CORAL_L2) {
+          if (constants == Constants.EndEffectorSetpoints.CORAL_L2) {
             return true;
           }
-          if(constants == Constants.EndEffectorSetpoints.CORAL_L3) {
+          if (constants == Constants.EndEffectorSetpoints.CORAL_L3) {
             return true;
           }
           return false;
-        }
-      ).finallyDo(
-        b -> {
-          if(!b) {
-            System.out.println(name + " finished side movement, expelling");
-          }
-          else {
-            System.out.println(name + " failed to finished side movement");
-          }
         }
       ),
       collector.expelCoralCommand(

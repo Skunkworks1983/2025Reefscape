@@ -21,8 +21,8 @@ public class ErrorGroup {
   public void addTestSetEntry(TestResult test) {
     // checks the list to see if there is a duplicate, and if either is an error, the final becomes an error
     for(TestResult testResult : testList) {
-      if(testResult.name.equals(test.name) && testResult.subsystem == test.subsystem) {
-        if(test.errorStatus == AlertType.kWarning) {
+      if (testResult.name.equals(test.name) && testResult.subsystem == test.subsystem) {
+        if (test.errorStatus == AlertType.kWarning) {
           setTestStatus(test.name, test.subsystem, AlertType.kWarning);
         }
         System.out.println("Duplicate entry in list, please check to see what is doing this. Subsystem: " + test.subsystem.toString() + " Error: " + test.name);
@@ -35,7 +35,7 @@ public class ErrorGroup {
 
   public void setTestStatus(String entryName, Subsystem subsystem, AlertType error) {
     for(TestResult testResult : testList) {
-      if(testResult.name.equals(entryName) && testResult.subsystem.equals(subsystem)) {
+      if (testResult.name.equals(entryName) && testResult.subsystem.equals(subsystem)) {
         testResult.errorStatus = error;
         putTestToSmartdashboard(testResult);
         return;
@@ -49,7 +49,7 @@ public class ErrorGroup {
 
   public AlertType getTestStatus(String entryName, Subsystem subsystem) {
     for(TestResult testResult : testList) {
-      if(testResult.name.equals(entryName) && testResult.subsystem == subsystem) {
+      if (testResult.name.equals(entryName) && testResult.subsystem == subsystem) {
         return testResult.errorStatus;
       }
     }
@@ -69,7 +69,7 @@ public class ErrorGroup {
 
   public void putAllErrors() {
     for(TestResult testResult : testList) {
-      if(testResult.errorStatus != AlertType.kInfo) {
+      if (testResult.errorStatus != AlertType.kInfo) {
         Alert alert = new Alert(testResult.name + " " + testResult.subsystem.toString(), testResult.errorStatus);
         alert.set(true);
       }

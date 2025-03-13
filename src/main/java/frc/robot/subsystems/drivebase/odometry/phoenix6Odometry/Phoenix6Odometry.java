@@ -64,7 +64,7 @@ public class Phoenix6Odometry {
       getAllSignals().toArray(new BaseStatusSignal[0])
     );
 
-    if(status.isOK()) {
+    if (status.isOK()) {
       vaildUpdates++;
     } else {
       failedUpdates++;
@@ -136,7 +136,7 @@ public class Phoenix6Odometry {
   private void setWriteLock(boolean locked) {
     subsystemSignals.forEach(
       subsystemSignal -> {
-        if(locked) {
+        if (locked) {
           subsystemSignal.getLock().writeLock().lock();
         } else {
           subsystemSignal.getLock().writeLock().unlock();
@@ -148,7 +148,7 @@ public class Phoenix6Odometry {
   public void setReadLock(boolean locked) {
     subsystemSignals.forEach(
       subsystemSignal -> {
-        if(locked) {
+        if (locked) {
           subsystemSignal.getLock().readLock().lock();
         } else {
           subsystemSignal.getLock().readLock().unlock();

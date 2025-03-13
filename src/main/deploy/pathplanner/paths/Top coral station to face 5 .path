@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.433,
-        "y": 7.242
+        "x": 1.4039999999999997,
+        "y": 7.2132499999999995
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.8452941609819046,
-        "y": 7.629579471572007
+        "x": 0.816294160981904,
+        "y": 7.600829471572006
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "top coral station"
     },
     {
       "anchor": {
-        "x": 3.861,
-        "y": 5.546
+        "x": 3.965774440234302,
+        "y": 5.211193820665716
       },
       "prevControl": {
-        "x": 4.18803196718774,
-        "y": 5.337208016348049
+        "x": 4.292806407422042,
+        "y": 5.002401837013764
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "face 5"
     }
   ],
   "rotationTargets": [],
@@ -33,9 +33,9 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.0,
+    "maxVelocity": 2.0,
     "maxAcceleration": 5.0,
-    "maxAngularVelocity": 540.0,
+    "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
@@ -48,7 +48,7 @@
   "folder": "3-piece coral auto sp1",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -54.26300858458019
+    "rotation": -53.56914187983759
   },
   "useDefaultConstraints": true
 }

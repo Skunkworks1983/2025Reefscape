@@ -57,7 +57,7 @@ public class TeleopFeatureUtils {
   }
 
   public static double getReefFaceSpeedX(Rotation2d targetingAngle, double speed) {
-    if(Math.abs(MathUtil.inputModulus(targetingAngle.getDegrees(), -180, 180)) > 90) {
+    if (Math.abs(MathUtil.inputModulus(targetingAngle.getDegrees(), -180, 180)) > 90) {
       return Math.sin(targetingAngle.getRadians()) * speed;
     }
     else {
@@ -66,7 +66,7 @@ public class TeleopFeatureUtils {
   }
 
   public static double getReefFaceSpeedY(Rotation2d targetingAngle, double speed) {
-    if(Math.abs(MathUtil.inputModulus(targetingAngle.getDegrees(), -180, 180)) > 90) {
+    if (Math.abs(MathUtil.inputModulus(targetingAngle.getDegrees(), -180, 180)) > 90) {
       return -Math.cos(targetingAngle.getRadians()) * speed;
     }
     else {
@@ -76,11 +76,11 @@ public class TeleopFeatureUtils {
 
   public static Rotation2d getCoralCycleAngleNoOdometry(boolean isHoldingCoral, Rotation2d gyroHeading) {
 
-    if(isHoldingCoral) {
+    if (isHoldingCoral) {
       return Rotation2d.fromDegrees(Math.round(gyroHeading.getDegrees() / 60.0) * 60.0);
     } else {
-      if(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
-          if(
+      if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
+          if (
             Math.abs(TeleopFeature.RED_LEFT_CORAL_STATION_ANGLE.minus(gyroHeading).getDegrees()) <
             Math.abs(TeleopFeature.RED_RIGHT_CORAL_STATION_ANGLE.minus(gyroHeading).getDegrees())
           ) {
@@ -90,7 +90,7 @@ public class TeleopFeatureUtils {
             return TeleopFeature.RED_RIGHT_CORAL_STATION_ANGLE;
           }
       } else {
-        if(
+        if (
             Math.abs(TeleopFeature.BLUE_LEFT_CORAL_STATION_ANGLE.minus(gyroHeading).getDegrees()) <
             Math.abs(TeleopFeature.BLUE_RIGHT_CORAL_STATION_ANGLE.minus(gyroHeading).getDegrees())
           ) {
@@ -104,7 +104,7 @@ public class TeleopFeatureUtils {
   }
 
   public static boolean isCloseSideOfReef(Rotation2d gyroHeading) {
-    if(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
+    if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
       return (Math.abs(MathUtil.inputModulus(gyroHeading.getDegrees(), -180, 180)) > 90);
     }
     else {

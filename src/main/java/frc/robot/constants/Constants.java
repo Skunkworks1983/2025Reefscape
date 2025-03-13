@@ -22,12 +22,12 @@ public class Constants {
 
   public class PathPlanner
   {
-    public static final double PATHPLANNER_DRIVE_KP = 1.0;
-    public static final double PATHPLANNER_DRIVE_KD = .0;
+    public static final double PATHPLANNER_DRIVE_KP = 6.5;
+    public static final double PATHPLANNER_DRIVE_KD = .05;
     public static final double PATHPLANNER_DRIVE_KI = .0;
     public static final double PATHPLANNER_DRIVE_KF = .0;
 
-    public static final double PATHPLANNER_TURN_KP = 1.0;
+    public static final double PATHPLANNER_TURN_KP = 8;
     public static final double PATHPLANNER_TURN_KD = .0;
     public static final double PATHPLANNER_TURN_KI = .0;
     public static final double PATHPLANNER_TURN_KF = .0;
@@ -167,6 +167,7 @@ public class Constants {
     public static final double MAX_METERS_PER_SECOND = 4.5;
     public static final double MAX_DEGREES_PER_SECOND = 270;
 
+    public static final double AUTO_ALIGN_DRIVE_SPEED = 0.5;
     public static final double DRIVE_CURRENT_LIMIT = 100;
 
     public class IDS {
@@ -225,11 +226,11 @@ public class Constants {
       public static final double SWERVE_MODULE_TURN_KI = 0.0;
       public static final double SWERVE_MODULE_TURN_KD = 0.00017;
       public static final double SWERVE_MODULE_TURN_KF = 0.0;
-      public static final double SWERVE_MODULE_DRIVE_KP = 0.125;
+      public static final double SWERVE_MODULE_DRIVE_KP = 0.25;
       public static final double SWERVE_MODULE_DRIVE_KI = 0.0;
       public static final double SWERVE_MODULE_DRIVE_KD = 0.0;
       public static final double SWERVE_MODULE_DRIVE_KF = 0.0;
-      public static final double SWERVE_MODULE_DRIVE_KV = 0.1075;
+      public static final double SWERVE_MODULE_DRIVE_KV = 0.13;
       public static final double SWERVE_MODULE_DRIVE_KA = 0.0;
       public static final double SWERVE_MODULE_DRIVE_KS = 0.0;
 
@@ -301,7 +302,7 @@ public class Constants {
     public static final double TOLORENCE_METERS_FOR_SETPOINT = 0.0;
     // This tolerance value will be used for moving to a setpoint
     // using the MoveToPositionCommand.
-    public static final double TOLERENCE_METERS_FOR_MOVE_TO_POSITION = 0.25; // TODO: Priority: Tuning
+    public static final double TOLERENCE_METERS_FOR_MOVE_TO_POSITION = 0.2; // TODO: Priority: Tuning
 
     // In meters
     public static final double MAX_HEIGHT_CARRIAGE = 1.527175;
@@ -315,13 +316,13 @@ public class Constants {
 
     // TODO: Priority: Tuning
     public class PIDs {
-      public static final double ELEVATOR_kP = 1.5;
+      public static final double ELEVATOR_kP = 1.6;
       public static final double ELEVATOR_kI = 0.125;
       public static final double ELEVATOR_kD = 0.0;
-      public static final double ELEVATOR_kF = 0.0;
+      public static final double ELEVATOR_kF = 0.605;
       public static final double ELEVATOR_kV = 0.0;
       public static final double ELEVATOR_kA = 0.0;
-      public static final double ELEVATOR_kS = 0.55;
+      public static final double ELEVATOR_kS = 0.0;
 
       public static final boolean SMART_PID_ENABLED = false;
     }

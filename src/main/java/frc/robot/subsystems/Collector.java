@@ -90,7 +90,7 @@ public class Collector extends SubsystemBase {
 
   private void setCollectorThrottle(double throttle) {
 
-    if(throttle != lastThrottle) {
+    if (throttle != lastThrottle) {
       leftMotor.setControl(dutyCycleOut.withOutput(throttle).withEnableFOC(true));
       rightMotor.setControl(dutyCycleOut.withOutput(throttle).withEnableFOC(true));
       lastThrottle = throttle;
@@ -183,7 +183,7 @@ public class Collector extends SubsystemBase {
           Constants.Collector.Speeds.CORAL_INTAKE_SLOW_SPEED);
       },
       () -> {
-        if(stopOnEnd) {
+        if (stopOnEnd) {
           setCollectorSpeeds(0, 0);
         }
       }
@@ -214,7 +214,7 @@ public class Collector extends SubsystemBase {
   ) {
     return runEnd(
       () -> {
-        if(endEffectorSetpoint.get().equals(Constants.EndEffectorSetpoints.CORAL_L1)) {
+        if (endEffectorSetpoint.get().equals(Constants.EndEffectorSetpoints.CORAL_L1)) {
           setCollectorSpeeds(Constants.Collector.Speeds.CORAL_EXPEL_SLOW_SPEED, 
             Constants.Collector.Speeds.CORAL_EXPEL_SLOW_SPEED);
         }
@@ -224,7 +224,7 @@ public class Collector extends SubsystemBase {
         }
       },
       () -> {
-        if(stopOnEnd) {
+        if (stopOnEnd) {
           setCollectorSpeeds(0, 0);
         }
       }
@@ -250,7 +250,7 @@ public class Collector extends SubsystemBase {
         setCollectorThrottle(Constants.Collector.Speeds.ALGAE_INTAKE_SPEED);
       },
       () -> {
-        if(stopOnEnd) {
+        if (stopOnEnd) {
           setCollectorSpeeds(0, 0);
         }
       }
@@ -283,7 +283,7 @@ public class Collector extends SubsystemBase {
           Constants.Collector.Speeds.ALGAE_EXPEL_SPEED);
       },
       () -> {
-        if(stopOnEnd) {
+        if (stopOnEnd) {
           setCollectorSpeeds(0, 0);
         }
       }

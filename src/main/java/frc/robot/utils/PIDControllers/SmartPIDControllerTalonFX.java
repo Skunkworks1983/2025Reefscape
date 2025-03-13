@@ -49,19 +49,19 @@ public class SmartPIDControllerTalonFX implements SmartPIDBase {
     slot0Configs.kD = kd;
     slot0Configs.kG = kf;
 
-    if(kv.isPresent()) {
+    if (kv.isPresent()) {
       putValueSmartDashboard(name, "Slot 0/kv Value", kv.get());
       slot0Configs.kV = kv.get();
       lastKvValue0 = kv;
     }
 
-    if(ka.isPresent()) {
+    if (ka.isPresent()) {
       putValueSmartDashboard(name, "Slot 0/ka Value", ka.get());
       slot0Configs.kA = ka.get();
       lastKaValue0 = ka;
     }
 
-    if(ks.isPresent()) {
+    if (ks.isPresent()) {
       putValueSmartDashboard(name, "Slot 0/ks Value", ks.get());
       slot0Configs.kS = ks.get();
       lastKsValue0 = ks;
@@ -96,11 +96,11 @@ public class SmartPIDControllerTalonFX implements SmartPIDBase {
 
     updatePIDSlot0();
 
-    if(slot1Configs.isPresent()) {
+    if (slot1Configs.isPresent()) {
       updatePIDSlot1();
     }
 
-    if(slot2Configs.isPresent()) {
+    if (slot2Configs.isPresent()) {
       updatePIDSlot2();
     }
 
@@ -116,9 +116,9 @@ public class SmartPIDControllerTalonFX implements SmartPIDBase {
     boolean newPIDValues = false;
 
     Optional<Double> currentKv = Optional.empty();
-    if(lastKvValue0.isPresent()) {
+    if (lastKvValue0.isPresent()) {
       currentKv = Optional.of(getValueFromSmartDashboard(name, "Slot 0/kv Value", lastKvValue0.get()));
-      if(!currentKv.equals(lastKvValue0)) {
+      if (!currentKv.equals(lastKvValue0)) {
         lastKvValue0 = currentKv;
         slot0Configs.kV = currentKv.get();
         newPIDValues = true;
@@ -126,9 +126,9 @@ public class SmartPIDControllerTalonFX implements SmartPIDBase {
     }
 
     Optional<Double> currentKa = Optional.empty();
-    if(lastKaValue0.isPresent()) {
+    if (lastKaValue0.isPresent()) {
       currentKa = Optional.of(getValueFromSmartDashboard(name, "Slot 0/ka Value", lastKaValue0.get()));
-      if(!currentKa.equals(lastKaValue0)) {
+      if (!currentKa.equals(lastKaValue0)) {
         lastKaValue0 = currentKa;
         slot0Configs.kA = currentKa.get();
         newPIDValues = true;
@@ -136,9 +136,9 @@ public class SmartPIDControllerTalonFX implements SmartPIDBase {
     }
 
     Optional<Double> currentKs = Optional.empty();
-    if(lastKsValue0.isPresent()) {
+    if (lastKsValue0.isPresent()) {
       currentKs = Optional.of(getValueFromSmartDashboard(name, "Slot 0/ks Value", lastKsValue0.get()));
-      if(!currentKs.equals(lastKsValue0)) {
+      if (!currentKs.equals(lastKsValue0)) {
         lastKsValue0 = currentKs;
         slot0Configs.kS = currentKs.get();
         newPIDValues = true;
@@ -155,7 +155,7 @@ public class SmartPIDControllerTalonFX implements SmartPIDBase {
       newPIDValues = true;
     }
 
-    if(!newPIDValues) {
+    if (!newPIDValues) {
       return;
     }
 
@@ -171,9 +171,9 @@ public class SmartPIDControllerTalonFX implements SmartPIDBase {
     boolean newPIDValues = false;
 
     Optional<Double> currentKv = Optional.empty();
-    if(lastKvValue1.isPresent()) {
+    if (lastKvValue1.isPresent()) {
       currentKv = Optional.of(getValueFromSmartDashboard(name, "Slot 1/kv Value", lastKvValue1.get()));
-      if(!currentKv.equals(lastKvValue1)) {
+      if (!currentKv.equals(lastKvValue1)) {
         lastKvValue1 = currentKv;
         slot1Configs.get().kV = currentKv.get();
         newPIDValues = true;
@@ -181,9 +181,9 @@ public class SmartPIDControllerTalonFX implements SmartPIDBase {
     }
 
     Optional<Double> currentKa = Optional.empty();
-    if(lastKaValue1.isPresent()) {
+    if (lastKaValue1.isPresent()) {
       currentKa = Optional.of(getValueFromSmartDashboard(name, "Slot 1/ka Value", lastKaValue1.get()));
-      if(!currentKa.equals(lastKaValue1)) {
+      if (!currentKa.equals(lastKaValue1)) {
         lastKaValue1 = currentKa;
         slot1Configs.get().kA = currentKa.get();
         newPIDValues = true;
@@ -191,9 +191,9 @@ public class SmartPIDControllerTalonFX implements SmartPIDBase {
     }
 
     Optional<Double> currentKs = Optional.empty();
-    if(lastKsValue1.isPresent()) {
+    if (lastKsValue1.isPresent()) {
       currentKs = Optional.of(getValueFromSmartDashboard(name, "Slot 1/ks Value", lastKsValue1.get()));
-      if(!currentKs.equals(lastKsValue1)) {
+      if (!currentKs.equals(lastKsValue1)) {
         lastKsValue1 = currentKs;
         slot1Configs.get().kS = currentKs.get();
         newPIDValues = true;
@@ -210,7 +210,7 @@ public class SmartPIDControllerTalonFX implements SmartPIDBase {
       newPIDValues = true;
     }
 
-    if(!newPIDValues) {
+    if (!newPIDValues) {
       return;
     }
 
@@ -226,9 +226,9 @@ public class SmartPIDControllerTalonFX implements SmartPIDBase {
     boolean newPIDValues = false;
 
     Optional<Double> currentKv = Optional.empty();
-    if(lastKvValue2.isPresent()) {
+    if (lastKvValue2.isPresent()) {
       currentKv = Optional.of(getValueFromSmartDashboard(name, "Slot 2/kv Value", lastKvValue2.get()));
-      if(!currentKv.equals(lastKvValue2)) {
+      if (!currentKv.equals(lastKvValue2)) {
         lastKvValue2 = currentKv;
         slot2Configs.get().kV = currentKv.get();
         newPIDValues = true;
@@ -236,9 +236,9 @@ public class SmartPIDControllerTalonFX implements SmartPIDBase {
     }
 
     Optional<Double> currentKa = Optional.empty();
-    if(lastKaValue2.isPresent()) {
+    if (lastKaValue2.isPresent()) {
       currentKa = Optional.of(getValueFromSmartDashboard(name, "Slot 2/ka Value", lastKaValue2.get()));
-      if(!currentKa.equals(lastKaValue2)) {
+      if (!currentKa.equals(lastKaValue2)) {
         lastKaValue2 = currentKa;
         slot2Configs.get().kA = currentKa.get();
         newPIDValues = true;
@@ -246,9 +246,9 @@ public class SmartPIDControllerTalonFX implements SmartPIDBase {
     }
 
     Optional<Double> currentKs = Optional.empty();
-    if(lastKsValue2.isPresent()) {
+    if (lastKsValue2.isPresent()) {
       currentKs = Optional.of(getValueFromSmartDashboard(name, "Slot 2/ks Value", lastKsValue2.get()));
-      if(!currentKs.equals(lastKsValue2)) {
+      if (!currentKs.equals(lastKsValue2)) {
         lastKsValue2 = currentKs;
         slot2Configs.get().kS = currentKs.get();
         newPIDValues = true;
@@ -265,7 +265,7 @@ public class SmartPIDControllerTalonFX implements SmartPIDBase {
       newPIDValues = true;
     }
 
-    if(!newPIDValues) {
+    if (!newPIDValues) {
       return;
     }
 
@@ -282,19 +282,19 @@ public class SmartPIDControllerTalonFX implements SmartPIDBase {
     slot1Configs.get().kD = kd;
     slot1Configs.get().kG = kf;
 
-    if(kv.isPresent()) {
+    if (kv.isPresent()) {
       putValueSmartDashboard(name, "Slot 1/kv Value", kv.get());
       slot1Configs.get().kV = kv.get();
       lastKvValue1 = kv;
     }
 
-    if(ka.isPresent()) {
+    if (ka.isPresent()) {
       putValueSmartDashboard(name, "Slot 1/ka Value", ka.get());
       slot1Configs.get().kA = ka.get();
       lastKaValue1 = ka;
     }
 
-    if(ks.isPresent()) {
+    if (ks.isPresent()) {
       putValueSmartDashboard(name, "Slot 1/ks Value", ks.get());
       slot1Configs.get().kS = ks.get();
       lastKsValue1 = ks;
@@ -318,19 +318,19 @@ public class SmartPIDControllerTalonFX implements SmartPIDBase {
     slot2Configs.get().kD = kd;
     slot2Configs.get().kG = kf;
 
-    if(kv.isPresent()) {
+    if (kv.isPresent()) {
       putValueSmartDashboard(name, "Slot 2/kv Value", kv.get());
       slot2Configs.get().kV = kv.get();
       lastKvValue2 = kv;
     }
 
-    if(ka.isPresent()) {
+    if (ka.isPresent()) {
       putValueSmartDashboard(name, "Slot 2/ka Value", ka.get());
       slot2Configs.get().kA = ka.get();
       lastKaValue2 = ka;
     }
 
-    if(ks.isPresent()) {
+    if (ks.isPresent()) {
       putValueSmartDashboard(name, "Slot 2/ks Value", ks.get());
       slot2Configs.get().kS = ks.get();
       lastKsValue2 = ks;
@@ -346,28 +346,28 @@ public class SmartPIDControllerTalonFX implements SmartPIDBase {
 
   public void AddSlot1Configs(double kp, double ki, double kd, double kf) {
 
-    if(slot1Configs.isEmpty()) {
+    if (slot1Configs.isEmpty()) {
       AddSlot1Configs(kp, ki, kd, kf, Optional.empty(), Optional.empty(), Optional.empty());
     }
   }
 
   public void AddSlot1Configs(double kp, double ki, double kd, double kf, double kv, double ka, double ks) {
 
-    if(slot1Configs.isEmpty()) {
+    if (slot1Configs.isEmpty()) {
       AddSlot1Configs(kp, ki, kd, kf, Optional.of(kv), Optional.of(ka), Optional.of(ks));
     }
   }
 
   public void AddSlot2Configs(double kp, double ki, double kd, double kf) {
 
-    if(slot2Configs.isEmpty()) {
+    if (slot2Configs.isEmpty()) {
       AddSlot2Configs(kp, ki, kd, kf, Optional.empty(), Optional.empty(), Optional.empty());
     }
   }
 
   public void AddSlot2Configs(double kp, double ki, double kd, double kf, double kv, double ka, double ks) {
 
-    if(slot2Configs.isEmpty()) {
+    if (slot2Configs.isEmpty()) {
       AddSlot2Configs(kp, ki, kd, kf, Optional.of(kv), Optional.of(ka), Optional.of(ks));
     }
   }

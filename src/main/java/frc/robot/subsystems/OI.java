@@ -119,13 +119,11 @@ public class OI {
 
       Command ResetGyro = drivebase.resetGyro();
 
-      // new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_REEF_BUTTON)
-      //     .whileTrue(targetReefCommand);
+      new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_REEF_BUTTON)
+          .whileTrue(targetReefCommand);
 
-      // new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_CORAL_STATION_BUTTON)
-      //     .whileTrue(targetCoralStationCommand);
-
-      
+      new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_CORAL_STATION_BUTTON)
+          .whileTrue(targetCoralStationCommand);
 
       new JoystickButton(translationJoystick, 1)
           .and(new JoystickButton(translationJoystick, 2))
@@ -148,14 +146,13 @@ public class OI {
       new JoystickButton(rotationJoystick, Buttons.TARGET_CORAL_CYCLE_NO_ODOMETRY_BUTTON)
         .whileTrue(targetCoralCycleAngleNoOdometry);
 
-      double alignSpeed = 0.5;
 
       Command AlignCoralRightCommand = new AutomatedLidarScoring(
         drivebase,
         collector,
         this::getInstructedXMetersPerSecond,
         this::getInstructedYMetersPerSecond,
-        alignSpeed,
+        Constants.Drivebase.AUTO_ALIGN_DRIVE_SPEED,
         /*goingRight=*/true,
         0.25,
         "align right",
@@ -167,7 +164,7 @@ public class OI {
         collector,
         this::getInstructedXMetersPerSecond,
         this::getInstructedYMetersPerSecond,
-        alignSpeed,
+        Constants.Drivebase.AUTO_ALIGN_DRIVE_SPEED,
         /*goingRight=*/false,
         0.25,
         "align left",
@@ -193,7 +190,7 @@ public class OI {
 
     }
 
-    if(optionalClimber.isPresent()){
+    if (optionalClimber.isPresent()) {
       Climber climber = optionalClimber.get();
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.CLIMBER_GOTO_MAX)
           .onTrue(climber.goToPositionAfterMagnetSensor(Constants.Climber.CLIMBER_MAX));
