@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.drivebase.odometry;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.Phoenix6Odometry;
 import frc.robot.subsystems.drivebase.odometry.positionEstimation.PositionEstimator;
 
@@ -26,9 +27,14 @@ private PositionEstimator positionEstimator;
 
   Thread thread = new Thread(() -> { while(true) update(); });
 
+  private int updateCalls = 0;
+
   private void update() {
 
+    updateCalls++;
+    SmartDashboard.putNumber("update Calls", updateCalls);
     pheonix6Odometry.update();
     positionEstimator.update();
+
   }
 }
