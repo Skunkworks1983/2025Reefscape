@@ -85,8 +85,8 @@ public class PositionEstimator {
       swerveDrivePoseEstimator.getEstimatedPosition()
     );
 
-    stateLock.writeLock().unlock();
     setPhoenix6OdometryReadLock.accept(false);
+    stateLock.writeLock().unlock();
   }
 
   public void reset(Pose2d newPose) {
