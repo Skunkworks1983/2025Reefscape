@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.drivebase;
 
-import java.lang.constant.ConstantDesc;
-
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
