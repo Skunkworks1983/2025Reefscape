@@ -185,8 +185,8 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     SmartDashboard.putNumber("Gyro Position", gyro.getYaw().getValueAsDouble());
     SmartDashboard.putBoolean("Lidar Right", dualLidar.isLidarRightTripped.getAsBoolean());
     SmartDashboard.putBoolean("Lidar Left", dualLidar.isLidarLeftTripped.getAsBoolean());
-    SmartDashboard.putNumber("Lidar Right Distance", dualLidar.lidarDistanceRight.get());
-    SmartDashboard.putNumber("Lidar Left Distance", dualLidar.lidarDistanceLeft.get());
+    SmartDashboard.putNumber("Lidar Right Distance", dualLidar.lidarDistanceRight);
+    SmartDashboard.putNumber("Lidar Left Distance", dualLidar.lidarDistanceLeft);
   }
 
   /**
