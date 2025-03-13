@@ -197,7 +197,7 @@ public class Constants {
       public static final double PID_HIGH_LIMIT = 0.8;
 
       public static final boolean SMART_PID_ENABLED = false;
-      public static final boolean SMART_PID_TURN_ENABLED = false;
+      public static final boolean SMART_PID_TURN_ENABLED = true;
       public static final boolean SMART_PID_DRIVE_ENABLED = false;
     }
 
