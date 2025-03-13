@@ -14,9 +14,9 @@
     "Drive Out Autos",
     "1 piece autos"
   ],
-  "defaultMaxVel": 5.0,
+  "defaultMaxVel": 2.0,
   "defaultMaxAccel": 5.0,
-  "defaultMaxAngVel": 540.0,
+  "defaultMaxAngVel": 360.0,
   "defaultMaxAngAccel": 720.0,
   "defaultNominalVoltage": 12.0,
   "robotMass": 74.088,

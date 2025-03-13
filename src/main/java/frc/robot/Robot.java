@@ -123,7 +123,7 @@ public class Robot extends TimedRobot {
       NamedCommands.registerCommand("Coral to Ground", 
         new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_GROUND));
 
-      NamedCommands.registerCommand("Coral to Stow ", 
+      NamedCommands.registerCommand("Coral to Stow", 
       new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_STOW));
 
       // move to pos Algae
@@ -162,13 +162,12 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    drivebase.get().resetGyroHeading();
-    // Command autoCommand = autoChooser.getSelected();
-    // if (autoCommand != null) {
-    //   autoCommand.schedule();
-    // }
+    Command autoCommand = autoChooser.getSelected();
+    if (autoCommand != null) {
+      autoCommand.schedule();
+    }
 
-    trapezoidProfileDriveOut.schedule();
+    // trapezoidProfileDriveOut.schedule();
   }
 
   @Override

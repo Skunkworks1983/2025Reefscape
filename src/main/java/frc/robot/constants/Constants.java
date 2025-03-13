@@ -22,12 +22,12 @@ public class Constants {
 
   public class PathPlanner
   {
-    public static final double PATHPLANNER_DRIVE_KP = 1.0;
-    public static final double PATHPLANNER_DRIVE_KD = .0;
+    public static final double PATHPLANNER_DRIVE_KP = 6.5;
+    public static final double PATHPLANNER_DRIVE_KD = .05;
     public static final double PATHPLANNER_DRIVE_KI = .0;
     public static final double PATHPLANNER_DRIVE_KF = .0;
 
-    public static final double PATHPLANNER_TURN_KP = 1.0;
+    public static final double PATHPLANNER_TURN_KP = 8;
     public static final double PATHPLANNER_TURN_KD = .0;
     public static final double PATHPLANNER_TURN_KI = .0;
     public static final double PATHPLANNER_TURN_KF = .0;

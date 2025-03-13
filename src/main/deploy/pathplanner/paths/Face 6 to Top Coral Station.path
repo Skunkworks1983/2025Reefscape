@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.44,
-        "y": 5.312
+        "x": 5.271930695866685,
+        "y": 5.039189301050676
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.82625,
-        "y": 5.98475
+        "x": 4.658180695866685,
+        "y": 5.711939301050676
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "face 6"
     },
     {
       "anchor": {
@@ -25,7 +25,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "top coral station"
     }
   ],
   "rotationTargets": [
@@ -38,9 +38,9 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.0,
+    "maxVelocity": 2.0,
     "maxAcceleration": 5.0,
-    "maxAngularVelocity": 540.0,
+    "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false

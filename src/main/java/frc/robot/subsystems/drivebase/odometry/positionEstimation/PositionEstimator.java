@@ -102,6 +102,13 @@ public class PositionEstimator {
     stateLock.writeLock().unlock();
   }
 
+  public void pathplannerReset(Pose2d newPose) {
+    System.out.println("x pos: " + newPose.getX());
+    System.out.println("y pos: " + newPose.getY());
+    System.out.println("theta pos: " + newPose.getRotation().getDegrees());
+    reset(newPose);
+  }
+
   public ReentrantReadWriteLock.ReadLock getReadLock() {
     return stateLock.readLock();
   }
