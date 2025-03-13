@@ -25,30 +25,22 @@ public class AutomatedLidarScoring extends SequentialCommandGroup {
       Collector collector,
       DoubleSupplier getXMetersPerSecond,
       DoubleSupplier getYMetersPerSecond,
-      double alignSpeed,
       boolean goingRight,
-      double backSeconds,
+      double alignSpeed,
       String name,
       Supplier<EndEffectorSetpointConstants> endEffectorSetpoint) {
     addCommands(
       drivebase.getSwerveAlignCoral(
         getXMetersPerSecond,
         getYMetersPerSecond,
-        alignSpeed,
         goingRight,
-        backSeconds,
+        alignSpeed,
         name
       ),
       Commands.waitUntil(
         () -> {
           EndEffectorSetpointConstants constants = endEffectorSetpoint.get();
-          if (constants == Constants.EndEffectorSetpoints.CORAL_L2) {
-            return true;
-          }
-          if (constants == Constants.EndEffectorSetpoints.CORAL_L3) {
-            return true;
-          }
-          return false;
+          return (constants == Constants.EndEffectorSetpoints.CORAL_L2) || (constants == Constants.EndEffectorSetpoints.CORAL_L3);
         }
       ),
       collector.expelCoralCommand(

@@ -397,10 +397,10 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   public Command getSwerveAlignCoral(
       DoubleSupplier getXMetersPerSecond,
       DoubleSupplier getYMetersPerSecond,
-      double alignSpeed,
       boolean goingRight,
-      double backSeconds,
-      String name) {
+      double alignSpeed,
+      String name // TODO: figure out what this is for
+    ) {
 
     double newAlignSpeed = alignSpeed * (goingRight ? -1 : 1);
     Rotation2d[] targetHeading = new Rotation2d[1];
@@ -431,7 +431,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
               () -> {return TeleopFeatureUtils.getReefFaceSpeedY(targetHeading[0], -newAlignSpeed * 0.5);},
               () -> targetHeading[0],
               true
-      ).withTimeout(backSeconds),
+      ).withTimeout(Constants.Drivebase.AUTO_ALIGN_MOVE_BACK_DURATION),
       getBaseSwerveCommand(
         () -> 0, 
         () -> 0, 
