@@ -167,8 +167,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
           // Boolean supplier that controls when the path will be mirrored for the red alliance
           // This will flip the path being followed to the red side of the field.
           // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-          int fieldOrientationMultiplier;
-  
+
           Optional<Alliance> alliance = DriverStation.getAlliance();
           return alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red;
       },

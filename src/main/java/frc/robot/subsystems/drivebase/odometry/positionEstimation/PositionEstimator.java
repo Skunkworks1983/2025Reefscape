@@ -114,7 +114,11 @@ public class PositionEstimator {
   }
 
   public Pose2d getPose() {
-    return swerveDrivePoseEstimator.getEstimatedPosition();
+    Pose2d pose = swerveDrivePoseEstimator.getEstimatedPosition();
+    System.out.println("x pos: " + pose.getX());
+    System.out.println("y pos: " + pose.getY());
+    System.out.println("theta pos: " + pose.getRotation().getDegrees());
+    return pose;
   }
 
   /**
