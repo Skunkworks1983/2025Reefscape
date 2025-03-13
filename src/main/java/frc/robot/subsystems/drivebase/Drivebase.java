@@ -68,7 +68,8 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   private PIDController headingController = new PIDController(
       Constants.Drivebase.PIDs.HEADING_CONTROL_kP,
       Constants.Drivebase.PIDs.HEADING_CONTROL_kI,
-      Constants.Drivebase.PIDs.HEADING_CONTROL_kD);
+      Constants.Drivebase.PIDs.HEADING_CONTROL_kD
+    );
 
   private Pigeon2 gyro = new Pigeon2(Constants.Drivebase.PIGEON_ID, Constants.Drivebase.CANIVORE_NAME);
   private Lidar lidarRight = new Lidar(Constants.Drivebase.LIDAR_RIGHT_DATA_PORT, Constants.Drivebase.LIDAR_RIGHT_TRIGGER_PORT, Constants.Drivebase.LIDAR_TRIGGER_DISTANCE, 30000);
@@ -147,7 +148,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     );
     positionEstimator.stateLock.readLock().lock();
     AutoBuilder.configure(
-      positionEstimator::getPose,positionEstimator::reset,
+      positionEstimator::getPose,positionEstimator::pathplannerReset,
       this::getRobotRelativeSpeeds, (speeds, feedforwards) -> driveRobotRelative(speeds), 
       new PPHolonomicDriveController( 
         new PIDConstants(
