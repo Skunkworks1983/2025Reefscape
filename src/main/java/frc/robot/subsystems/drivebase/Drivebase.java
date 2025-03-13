@@ -51,7 +51,7 @@ import frc.robot.subsystems.drivebase.odometry.phoenix6Odometry.subsystemState.P
 import frc.robot.subsystems.drivebase.odometry.positionEstimation.PositionEstimator;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.utils.error.ErrorGroup;
-import frc.robot.utils.Lidar;
+import frc.robot.utils.DualLidar;
 import frc.robot.utils.error.DiagnosticSubsystem;
 
 import org.json.simple.parser.ParseException;
@@ -68,11 +68,13 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   private PIDController headingController = new PIDController(
       Constants.Drivebase.PIDs.HEADING_CONTROL_kP,
       Constants.Drivebase.PIDs.HEADING_CONTROL_kI,
-      Constants.Drivebase.PIDs.HEADING_CONTROL_kD);
+      Constants.Drivebase.PIDs.HEADING_CONTROL_kD
+    );
 
   private Pigeon2 gyro = new Pigeon2(Constants.Drivebase.PIGEON_ID, Constants.Drivebase.CANIVORE_NAME);
-  private Lidar lidarRight = new Lidar(Constants.Drivebase.LIDAR_RIGHT_DATA_PORT, Constants.Drivebase.LIDAR_RIGHT_TRIGGER_PORT, Constants.Drivebase.LIDAR_TRIGGER_DISTANCE, 30000);
-  private Lidar lidarLeft = new Lidar(Constants.Drivebase.LIDAR_LEFT_DATA_PORT, Constants.Drivebase.LIDAR_LEFT_TRIGGER_PORT, Constants.Drivebase.LIDAR_TRIGGER_DISTANCE, 3000);
+
+  private DualLidar dualLidar = new DualLidar();
+
   private StructArrayPublisher<SwerveModuleState> desiredSwervestate = NetworkTableInstance.getDefault()
       .getStructArrayTopic("Desired swervestate", SwerveModuleState.struct).publish();
   private StructArrayPublisher<SwerveModuleState> actualSwervestate = NetworkTableInstance.getDefault()
@@ -160,7 +162,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
           Constants.PathPlanner.PATHPLANNER_TURN_KP, 
           Constants.PathPlanner.PATHPLANNER_TURN_KI, 
           Constants.PathPlanner.PATHPLANNER_TURN_KD),
-          Constants.PathPlanner.UPDATE_PERIOD
+          Constants.RoboRIOInfo.UPDATE_PERIOD
       ),
       config,
       () -> {
@@ -182,10 +184,10 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     cacheEstimatedRobotPose();
     cacheGyroHeading();
     SmartDashboard.putNumber("Gyro Position", gyro.getYaw().getValueAsDouble());
-    SmartDashboard.putBoolean("Lidar Left", lidarLeft.isTripped());
-    SmartDashboard.putBoolean("Lidar Right", lidarRight.isTripped());
-    SmartDashboard.putNumber("Lidar Left Distance", lidarLeft.getDistance());
-    SmartDashboard.putNumber("Lidar Right Distance", lidarRight.getDistance());
+    SmartDashboard.putBoolean("Lidar Right", dualLidar.isLidarRightTripped.getAsBoolean());
+    SmartDashboard.putBoolean("Lidar Left", dualLidar.isLidarLeftTripped.getAsBoolean());
+    SmartDashboard.putNumber("Lidar Right Distance", dualLidar.lidarDistanceRight.get());
+    SmartDashboard.putNumber("Lidar Left Distance", dualLidar.lidarDistanceLeft.get());
   }
 
   /**
@@ -417,11 +419,11 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
         }
       ).until(
         () -> {
-          if (goingRight == TeleopFeatureUtils.isCloseSideOfReef(targetHeading[0])) {
-            return lidarRight.isTripped();
+          if(goingRight == TeleopFeatureUtils.isCloseSideOfReef(targetHeading[0])) {
+            return dualLidar.isLidarRightTripped.getAsBoolean();
           }
           else {
-            return lidarLeft.isTripped();
+            return dualLidar.isLidarLeftTripped.getAsBoolean();
           }
         }
       ),
