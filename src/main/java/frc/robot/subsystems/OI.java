@@ -119,13 +119,11 @@ public class OI {
 
       Command ResetGyro = drivebase.resetGyro();
 
-      // new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_REEF_BUTTON)
-      //     .whileTrue(targetReefCommand);
+      new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_REEF_BUTTON)
+          .whileTrue(targetReefCommand);
 
-      // new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_CORAL_STATION_BUTTON)
-      //     .whileTrue(targetCoralStationCommand);
-
-      
+      new JoystickButton(rotationJoystick, Constants.OI.IDs.Buttons.TARGET_CORAL_STATION_BUTTON)
+          .whileTrue(targetCoralStationCommand);
 
       new JoystickButton(translationJoystick, 1)
           .and(new JoystickButton(translationJoystick, 2))
