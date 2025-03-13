@@ -116,7 +116,6 @@ public class OI {
             TeleopFeatureUtils.getPointAtCoralStationAngle(drivebase.getCachedEstimatedRobotPose()),
           true
         );
-      
 
       Command ResetGyro = drivebase.resetGyro();
 
