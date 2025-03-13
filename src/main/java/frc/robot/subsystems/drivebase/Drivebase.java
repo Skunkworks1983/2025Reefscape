@@ -149,8 +149,10 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     );
     positionEstimator.stateLock.readLock().lock();
     AutoBuilder.configure(
-      positionEstimator::getPose,positionEstimator::pathplannerReset,
-      this::getRobotRelativeSpeeds, (speeds, feedforwards) -> driveRobotRelative(speeds), 
+      positionEstimator::getPose,
+      positionEstimator::pathplannerReset,
+      this::getRobotRelativeSpeeds,
+      (speeds, feedforwards) -> driveRobotRelative(speeds), 
       new PPHolonomicDriveController( 
         new PIDConstants(
           Constants.PathPlanner.PATHPLANNER_DRIVE_KP, 
@@ -258,10 +260,10 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   }
 
   public void resetGyroHeading(Rotation2d newHeading) {
-    positionEstimator.stateLock.readLock().lock();
+    positionEstimator.stateLock.writeLock().lock();
     gyro.reset();
     gyro.setYaw(newHeading.getDegrees());
-    positionEstimator.stateLock.readLock().unlock();
+    positionEstimator.stateLock.writeLock().unlock();
   }
 
   public void setAllDriveMotorBreakMode(boolean breakMode) {
