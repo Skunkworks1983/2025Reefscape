@@ -350,23 +350,6 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     return alliance.isPresent() ? alliance.get() : Alliance.Blue;
   }
 
-  public Command setToPosition(double pos){
-    return Commands.runEnd(
-      () -> {
-        System.out.println("command start " + pos);
-        SwerveModuleState[] states = getSwerveModuleStates();
-        for(int i = 0; i < states.length; i++){
-          states[i].angle = Rotation2d.fromDegrees(pos);
-        }
-        setModuleStates(states);
-      }, 
-      
-      () -> {
-
-      }, this
-    );
-  }
-
   /**
    * @return The swerve drive command to be used in Teleop. Heading is corrected with PID.
    */
