@@ -255,7 +255,6 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   }
 
   public void resetGyroHeading(Rotation2d newHeading) {
-    System.out.println("Reseting gyro heading to: " + newHeading.getDegrees());
     positionEstimator.stateLock.writeLock().lock();
     gyro.reset();
     gyro.setYaw(newHeading.getDegrees());

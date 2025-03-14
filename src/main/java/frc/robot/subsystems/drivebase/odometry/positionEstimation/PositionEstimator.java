@@ -105,9 +105,6 @@ public class PositionEstimator {
   }
 
   public void pathplannerReset(Pose2d newPose) {
-    System.out.println("pathplanner reset x pos: " + newPose.getX());
-    System.out.println("pathplanner reset y pos: " + newPose.getY());
-    System.out.println("pathplanner reset theta pos: " + newPose.getRotation().getDegrees());
     reset(newPose);
   }
 
@@ -116,11 +113,7 @@ public class PositionEstimator {
   }
 
   public Pose2d getPose() {
-    Pose2d pose = swerveDrivePoseEstimator.getEstimatedPosition();
-    System.out.println("get x pos: " + pose.getX());
-    System.out.println("get y pos: " + pose.getY());
-    System.out.println("get theta pos: " + pose.getRotation().getDegrees());
-    return pose;
+    return swerveDrivePoseEstimator.getEstimatedPosition();
   }
 
   /**
