@@ -32,7 +32,6 @@ public class Collector extends SubsystemBase {
 
   private final VelocityVoltage velocityVoltage = new VelocityVoltage(0);
   private double lastSpeed;
-  private double lastLeftSpeed;
 
   // Neither of these smart PIDs are 'used' after they are constructed because the
   // PID controller is built into the motor (we don't have to call .calculate like
@@ -43,8 +42,7 @@ public class Collector extends SubsystemBase {
 
   private DigitalInput beambreak;
 
-  double collectorRightSetpoint;
-  double collectorLeftSetPoint;
+  double collectorSetpoint;
   private PositionVoltage positionVoltage = new PositionVoltage(0);
   private DutyCycleOut dutyCycleOut = new DutyCycleOut(0.0);
   double lastThrottle = 0.0;
