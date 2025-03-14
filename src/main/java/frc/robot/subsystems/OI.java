@@ -167,10 +167,10 @@ public class OI {
         elevator::getEndEffectorSetpoint
       );
 
-      new JoystickButton(rotationJoystick, 5)
+      new JoystickButton(translationJoystick, 5)
         .whileTrue(AlignCoralRightCommand);
 
-      new JoystickButton(rotationJoystick, 4)
+      new JoystickButton(translationJoystick, 4)
         .whileTrue(AlignCoralLeftCommand);
     }
 
