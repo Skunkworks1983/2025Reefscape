@@ -105,6 +105,9 @@ public class PositionEstimator {
   }
 
   public void pathplannerReset(Pose2d newPose) {
+    System.out.println("pathplannerReset x pos: " + newPose.getX());
+    System.out.println("pathplannerReset y pos: " + newPose.getY());
+    System.out.println("pathplannerReset theta pos: " + newPose.getRotation().getDegrees());
     reset(newPose);
   }
 
