@@ -95,12 +95,13 @@ public class PositionEstimator {
     stateLock.writeLock().lock();
     this.drivebase.resetGyroHeading(newPose.getRotation());
     swerveDrivePoseEstimator.resetPosition(
-      drivebaseState.getGyroAngle(),
+      newPose.getRotation(),
       Arrays.stream(swerveStates)
         .map(state -> state.getSwerveModulePosition())
         .toArray(SwerveModulePosition[]::new),
       newPose
     );
+    System.out.println("reset gyro and posestimator pos to " + newPose.getRotation());
     stateLock.writeLock().unlock();
   }
 
@@ -109,6 +110,11 @@ public class PositionEstimator {
     System.out.println("pathplanner reset y pos: " + newPose.getY());
     System.out.println("pathplanner reset theta pos: " + newPose.getRotation().getDegrees());
     reset(newPose);
+
+    Pose2d pose = swerveDrivePoseEstimator.getEstimatedPosition();
+    System.out.println("after reset x pos: " + pose.getX());
+    System.out.println("after reset y pos: " + pose.getY());
+    System.out.println("after reset theta pos: " + pose.getRotation().getDegrees());
   }
 
   public ReentrantReadWriteLock.ReadLock getReadLock() {
@@ -120,6 +126,7 @@ public class PositionEstimator {
     System.out.println("get x pos: " + pose.getX());
     System.out.println("get y pos: " + pose.getY());
     System.out.println("get theta pos: " + pose.getRotation().getDegrees());
+    System.out.println("get theta pos from gyro: " + drivebaseState.getGyroAngle().getDegrees());
     return pose;
   }
 
