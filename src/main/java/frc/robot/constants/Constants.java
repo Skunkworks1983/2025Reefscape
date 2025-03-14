@@ -211,7 +211,7 @@ public class Constants {
     		-T_Y), "Back Right")
     };
 
-    public static Translation2d[] pathPlannerConstants = {
+    public static Translation2d[] pathPlannerOrderedModules = {
       new Translation2d(MODULE_OFFSET, MODULE_OFFSET),
       new Translation2d(MODULE_OFFSET, -MODULE_OFFSET),
       new Translation2d(-MODULE_OFFSET, MODULE_OFFSET),

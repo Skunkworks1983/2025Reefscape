@@ -66,8 +66,6 @@ public class PositionEstimator {
    * Must be called every loop in <code>periodic()</code> to keep odometry up to
    * date.
    */
-
-
   public void update() {
     stateLock.writeLock().lock();
     setPhoenix6OdometryReadLock.accept(true);
@@ -101,20 +99,14 @@ public class PositionEstimator {
         .toArray(SwerveModulePosition[]::new),
       newPose
     );
-    System.out.println("reset gyro and posestimator pos to " + newPose.getRotation());
     stateLock.writeLock().unlock();
   }
 
   public void pathplannerReset(Pose2d newPose) {
-    System.out.println("pathplanner reset x pos: " + newPose.getX());
-    System.out.println("pathplanner reset y pos: " + newPose.getY());
-    System.out.println("pathplanner reset theta pos: " + newPose.getRotation().getDegrees());
+    System.out.println("pathplannerReset x pos: " + newPose.getX());
+    System.out.println("pathplannerReset y pos: " + newPose.getY());
+    System.out.println("pathplannerReset theta pos: " + newPose.getRotation().getDegrees());
     reset(newPose);
-
-    Pose2d pose = swerveDrivePoseEstimator.getEstimatedPosition();
-    System.out.println("after reset x pos: " + pose.getX());
-    System.out.println("after reset y pos: " + pose.getY());
-    System.out.println("after reset theta pos: " + pose.getRotation().getDegrees());
   }
 
   public ReentrantReadWriteLock.ReadLock getReadLock() {
@@ -122,12 +114,7 @@ public class PositionEstimator {
   }
 
   public Pose2d getPose() {
-    Pose2d pose = swerveDrivePoseEstimator.getEstimatedPosition();
-    System.out.println("get x pos: " + pose.getX());
-    System.out.println("get y pos: " + pose.getY());
-    System.out.println("get theta pos: " + pose.getRotation().getDegrees());
-    System.out.println("get theta pos from gyro: " + drivebaseState.getGyroAngle().getDegrees());
-    return pose;
+    return swerveDrivePoseEstimator.getEstimatedPosition();
   }
 
   /**
