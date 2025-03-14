@@ -44,7 +44,7 @@ public class AutomatedLidarScoring extends SequentialCommandGroup {
       collector.expelCoralCommand(
         true, 
         endEffectorSetpoint
-      )
+      ).withTimeout(2)
     );
   }
 }

@@ -57,7 +57,8 @@ public class Robot extends TimedRobot {
 
   Command deadReckoningDriveOut;
   Command trapezoidProfileDriveOut;
-  Command scoreCoralNoOdometry;
+  Command scoreCoralNoOdometryLeft;
+  Command scoreCoralNoOdometryRight;
 
   public Robot() {
     DataLogManager.start();
@@ -103,7 +104,7 @@ public class Robot extends TimedRobot {
     }
 
     if(drivebase.isPresent() && elevator.isPresent() && wrist.isPresent() && collector.isPresent()) {
-      scoreCoralNoOdometry = 
+      scoreCoralNoOdometryLeft = 
         new OdometryFreeScoreAuto(
           drivebase.get(), 
           elevator.get(), 
@@ -111,9 +112,24 @@ public class Robot extends TimedRobot {
           collector.get(), 
           true
         );
+
+    
+    }
+
+    if(drivebase.isPresent() && elevator.isPresent() && wrist.isPresent() && collector.isPresent()) {
+      scoreCoralNoOdometryRight = 
+        new OdometryFreeScoreAuto(
+          drivebase.get(), 
+          elevator.get(), 
+          wrist.get(), 
+          collector.get(), 
+          false
+        );
     }
 
     autoChooser = AutoBuilder.buildAutoChooser();
+    autoChooser.addOption("Score Coral No Odometry Right", scoreCoralNoOdometryRight);
+    autoChooser.addOption("Score Coral No Odometry Left", scoreCoralNoOdometryLeft);
     SmartDashboard.putData("Auto Chooser", autoChooser);
     CameraServer.startAutomaticCapture();
   }
@@ -206,7 +222,6 @@ public class Robot extends TimedRobot {
     }
 
     // trapezoidProfileDriveOut.schedule();
-    scoreCoralNoOdometry.schedule();
   }
 
   @Override
