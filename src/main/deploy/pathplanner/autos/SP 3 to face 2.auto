@@ -19,7 +19,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Expel Coral"
+            "name": "Lidar Score Left"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Coral to Stow"
           }
         }
       ]

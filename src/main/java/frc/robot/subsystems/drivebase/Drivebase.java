@@ -191,8 +191,8 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     SmartDashboard.putNumber("Gyro Position", gyro.getYaw().getValueAsDouble());
     SmartDashboard.putBoolean("Lidar Right", dualLidar.isLidarRightTripped.getAsBoolean());
     SmartDashboard.putBoolean("Lidar Left", dualLidar.isLidarLeftTripped.getAsBoolean());
-    SmartDashboard.putNumber("Lidar Right Distance", dualLidar.lidarDistanceRight.get());
-    SmartDashboard.putNumber("Lidar Left Distance", dualLidar.lidarDistanceLeft.get());
+    SmartDashboard.putNumber("Lidar Right Distance", dualLidar.lidarDistanceRight);
+    SmartDashboard.putNumber("Lidar Left Distance", dualLidar.lidarDistanceLeft);
   }
 
   /**
@@ -403,10 +403,9 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   public Command getSwerveAlignCoral(
       DoubleSupplier getXMetersPerSecond,
       DoubleSupplier getYMetersPerSecond,
-      double alignSpeed,
       boolean goingRight,
-      double backSeconds,
-      String name) {
+      double alignSpeed
+    ) {
 
     double newAlignSpeed = alignSpeed * (goingRight ? -1 : 1);
     Rotation2d[] targetHeading = new Rotation2d[1];
@@ -437,7 +436,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
               () -> {return TeleopFeatureUtils.getReefFaceSpeedY(targetHeading[0], -newAlignSpeed * 0.5);},
               () -> targetHeading[0],
               true
-      ).withTimeout(backSeconds),
+      ).withTimeout(Constants.Drivebase.AUTO_ALIGN_MOVE_BACK_DURATION),
       getBaseSwerveCommand(
         () -> 0, 
         () -> 0, 

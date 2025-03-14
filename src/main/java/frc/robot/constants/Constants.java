@@ -14,10 +14,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.util.struct.parser.ParseException;
 import edu.wpi.first.wpilibj2.command.Command;
 
-// TODO: add all robot constant values when they have been decided
 public class Constants {
 
   public class PathPlanner
@@ -167,7 +167,8 @@ public class Constants {
     public static final double MAX_METERS_PER_SECOND = 4.5;
     public static final double MAX_DEGREES_PER_SECOND = 270;
 
-    public static final double AUTO_ALIGN_DRIVE_SPEED = 0.5;
+    public static final double AUTO_ALIGN_DRIVE_SPEED_TELEOP = 0.5;
+    public static final double AUTO_ALIGN_DRIVE_SPEED_AUTO = 0.8;
     public static final double DRIVE_CURRENT_LIMIT = 100;
 
     public class IDS {
@@ -272,6 +273,7 @@ public class Constants {
     public static final double FIELD_Y_LENGTH = 8.05; // Meters
     public static final double SKEW_PROPORTIONAL = .065;
     public static final double CURRENT_LIMIT = 100.0;
+    public static final double AUTO_ALIGN_MOVE_BACK_DURATION = .25;
   }
 
   public class Funnel {
@@ -326,7 +328,7 @@ public class Constants {
       public static final double ELEVATOR_kP = 1.6;
       public static final double ELEVATOR_kI = 0.125;
       public static final double ELEVATOR_kD = 0.0;
-      public static final double ELEVATOR_kF = 0.605;
+      public static final double ELEVATOR_kF = 0.58;
       public static final double ELEVATOR_kV = 0.0;
       public static final double ELEVATOR_kA = 0.0;
       public static final double ELEVATOR_kS = 0.0;
@@ -394,7 +396,7 @@ public class Constants {
       new EndEffectorSetpointConstants(0.0, WRIST_STOW_POSITION_ALGAE, WRIST_STOW_POSITION_ALGAE);
 
     public static final EndEffectorSetpointConstants CORAL_GROUND = 
-      new EndEffectorSetpointConstants(0.0, 0.0, WRIST_STOW_POSITION_CORAL);
+      new EndEffectorSetpointConstants(0.0, 0.3941, WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_STOW = 
       new EndEffectorSetpointConstants(0.0, WRIST_STOW_POSITION_CORAL, WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_L1 = 
