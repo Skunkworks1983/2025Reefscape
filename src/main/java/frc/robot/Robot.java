@@ -61,9 +61,6 @@ public class Robot extends TimedRobot {
     funnel = Optional.empty();
 
     if (elevator.isPresent() && wrist.isPresent()) {
-
-      System.out.println("robot initialized");
-      
       // move to pos coral 
       NamedCommands.registerCommand("Coral to L4",
         new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_L4));
