@@ -5,22 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "SP 3 to face 2"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Coral to L3"
-                }
-              }
-            ]
+            "pathName": "SP 3 to face 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Coral to L3"
           }
         },
         {

@@ -214,6 +214,7 @@ public class Collector extends SubsystemBase {
   ) {
     return runEnd(
       () -> {
+        System.out.println("started expel coral");
         if (endEffectorSetpoint.get().equals(Constants.EndEffectorSetpoints.CORAL_L1)) {
           setCollectorSpeeds(Constants.Collector.Speeds.CORAL_EXPEL_SLOW_SPEED, 
             Constants.Collector.Speeds.CORAL_EXPEL_SLOW_SPEED);
@@ -224,6 +225,7 @@ public class Collector extends SubsystemBase {
         }
       },
       () -> {
+        System.out.println("ended expel coral");
         if (stopOnEnd) {
           setCollectorSpeeds(0, 0);
         }
