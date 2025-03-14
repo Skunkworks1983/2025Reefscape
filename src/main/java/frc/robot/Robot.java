@@ -23,7 +23,8 @@ import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.error.DiagnosticSubsystem;
 import frc.robot.commands.MoveEndEffector;
 import frc.robot.commands.AutomatedScoring.AutomatedLidarScoring;
-import frc.robot.commands.drivebase.TrapezoidProfileDriveOut;
+import frc.robot.commands.drivebase.OdometryFreeScoreAuto;
+import frc.robot.commands.drivebase.TrapezoidProfileDriveStraight;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.drivebase.Drivebase;
@@ -56,6 +57,7 @@ public class Robot extends TimedRobot {
 
   Command deadReckoningDriveOut;
   Command trapezoidProfileDriveOut;
+  Command scoreCoralNoOdometry;
 
   public Robot() {
     DataLogManager.start();
@@ -97,7 +99,18 @@ public class Robot extends TimedRobot {
         )
       );
 
-      trapezoidProfileDriveOut = new TrapezoidProfileDriveOut(drivebase.get());
+      trapezoidProfileDriveOut = new TrapezoidProfileDriveStraight(drivebase.get(), 1.0, true);
+    }
+
+    if(drivebase.isPresent() && elevator.isPresent() && wrist.isPresent() && collector.isPresent()) {
+      scoreCoralNoOdometry = 
+        new OdometryFreeScoreAuto(
+          drivebase.get(), 
+          elevator.get(), 
+          wrist.get(), 
+          collector.get(), 
+          true
+        );
     }
 
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -193,6 +206,7 @@ public class Robot extends TimedRobot {
     }
 
     // trapezoidProfileDriveOut.schedule();
+    scoreCoralNoOdometry.schedule();
   }
 
   @Override
