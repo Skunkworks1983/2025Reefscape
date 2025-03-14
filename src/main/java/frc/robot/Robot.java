@@ -248,7 +248,8 @@ public class Robot extends TimedRobot {
           (DoubleSupplier)() -> 0.0,
           true, 
           Constants.Drivebase.AUTO_ALIGN_DRIVE_SPEED_AUTO,
-          elevator.get()::getEndEffectorSetpoint
+          elevator.get()::getEndEffectorSetpoint,
+          () -> true
         )
       );
 
@@ -260,7 +261,8 @@ public class Robot extends TimedRobot {
           (DoubleSupplier)() -> 0.0,
           false, 
           Constants.Drivebase.AUTO_ALIGN_DRIVE_SPEED_AUTO,
-          elevator.get()::getEndEffectorSetpoint
+          elevator.get()::getEndEffectorSetpoint,
+          () -> true
         )
       );
     }

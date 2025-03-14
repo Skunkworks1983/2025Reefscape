@@ -4,12 +4,14 @@
 
 package frc.robot.commands.AutomatedScoring;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
 import frc.robot.constants.EndEffectorSetpointConstants;
 import frc.robot.subsystems.Collector;
@@ -27,7 +29,8 @@ public class AutomatedLidarScoring extends SequentialCommandGroup {
       DoubleSupplier getYMetersPerSecond,
       boolean goingRight,
       double alignSpeed,
-      Supplier<EndEffectorSetpointConstants> endEffectorSetpoint) {
+      Supplier<EndEffectorSetpointConstants> endEffectorSetpoint,
+      BooleanSupplier expelButton) {
     addCommands(
       drivebase.getSwerveAlignCoral(
         getXMetersPerSecond,
@@ -38,7 +41,7 @@ public class AutomatedLidarScoring extends SequentialCommandGroup {
       Commands.waitUntil(
         () -> {
           EndEffectorSetpointConstants constants = endEffectorSetpoint.get();
-          return (constants == Constants.EndEffectorSetpoints.CORAL_L2) || (constants == Constants.EndEffectorSetpoints.CORAL_L3);
+          return (constants == Constants.EndEffectorSetpoints.CORAL_L2) || (constants == Constants.EndEffectorSetpoints.CORAL_L3) && expelButton.getAsBoolean();
         }
       ),
       collector.expelCoralCommand(

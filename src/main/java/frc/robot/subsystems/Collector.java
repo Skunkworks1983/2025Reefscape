@@ -16,11 +16,15 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.CurrentLimits;
+import frc.robot.constants.Constants.OI.IDs.Joysticks;
 import frc.robot.constants.EndEffectorSetpointConstants;
 import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.PIDControllers.SmartPIDControllerTalonFX;
@@ -214,9 +218,16 @@ public class Collector extends SubsystemBase {
   }
 
   public Command holdPositionCommand() {
+    Trigger algaeToggle = new JoystickButton(new Joystick(Joysticks.BUTTON_STICK_ID), Constants.OI.IDs.Buttons.ALGAE_TOGGLE);
+
     return startEnd(
       () -> {
-        setCollectorSetPoint(getRightMotorPosition());
+        if(algaeToggle.getAsBoolean()) {
+          setCollectorThrottle(Constants.Collector.Speeds.ALGAE_INTAKE_SPEED_SLOW);
+        }
+        else {
+          setCollectorSetPoint(getRightMotorPosition());
+        }
       }, () -> {
 
       }
@@ -230,16 +241,11 @@ public class Collector extends SubsystemBase {
     int endCount [] = {0}; // This value needs to be effectivly final 
     return runEnd(
       () -> {
-        if(endEffectorSetpoint.get() == Constants.EndEffectorSetpoints.ALGAE_GROUND) {
-          setCollectorThrottle(Constants.Collector.Speeds.ALGAE_INTAKE_SPEED_FAST);
-        }
-        else {
-          setCollectorThrottle(Constants.Collector.Speeds.ALGAE_INTAKE_SPEED_SLOW);
-        }
+        setCollectorThrottle(Constants.Collector.Speeds.ALGAE_INTAKE_SPEED_FAST);
       },
       () -> {
         if (stopOnEnd) {
-          setCollectorSpeeds(0);
+          setCollectorThrottle(0);
         }
       }
     ).beforeStarting(

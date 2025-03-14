@@ -82,10 +82,6 @@ public class OI {
           .and(coralToggle)
           .whileTrue(collector.intakeCoralCommand(true, elevator::getEndEffectorSetpoint));
 
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.EXPEL)
-          .and(coralToggle)
-          .whileTrue(collector.expelCoralCommand(true, elevator::getEndEffectorSetpoint));
-
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.INTAKE)
           .and(algaeToggle)
           .whileTrue(collector.intakeAlgaeCommand(true, elevator::getEndEffectorSetpoint));
@@ -154,7 +150,8 @@ public class OI {
         this::getInstructedYMetersPerSecond,
         /*goingRight=*/true,
         Constants.Drivebase.AUTO_ALIGN_DRIVE_SPEED_TELEOP,
-        elevator::getEndEffectorSetpoint
+        elevator::getEndEffectorSetpoint,
+        new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.EXPEL)
       );
 
       Command AlignCoralLeftCommand = new AutomatedLidarScoring(
@@ -164,13 +161,14 @@ public class OI {
         this::getInstructedYMetersPerSecond,
         /*goingRight=*/false,
         Constants.Drivebase.AUTO_ALIGN_DRIVE_SPEED_TELEOP,
-        elevator::getEndEffectorSetpoint
+        elevator::getEndEffectorSetpoint,
+        new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.EXPEL)
       );
 
-      new JoystickButton(translationJoystick, 5)
+      new JoystickButton(rotationJoystick, 5)
         .whileTrue(AlignCoralRightCommand);
 
-      new JoystickButton(translationJoystick, 4)
+      new JoystickButton(rotationJoystick, 4)
         .whileTrue(AlignCoralLeftCommand);
     }
 

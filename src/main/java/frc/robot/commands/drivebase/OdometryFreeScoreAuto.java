@@ -34,7 +34,8 @@ public class OdometryFreeScoreAuto extends SequentialCommandGroup {
         () -> 0.0, 
         !isLeftSideOfBarge, 
         0.3, 
-        () -> Constants.EndEffectorSetpoints.CORAL_L2
+        () -> Constants.EndEffectorSetpoints.CORAL_L2,
+        () -> true
       ),
       new MoveEndEffector(elevator, wrist, Constants.EndEffectorSetpoints.CORAL_STOW)
     );
