@@ -113,15 +113,19 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     // Reset the heading of the pose estimator to the correct side of the field. 
     // This ensures that camera heading estimates and swerve drive pose estimator estimates 
     // are ~ the same, so the robot doesn't spiral off the field.
-    positionEstimator.reset(
-      (DriverStation.getAlliance().isPresent()
-      && DriverStation.getAlliance().get() == Alliance.Red) ? 
-          new Pose2d(TeleopFeature.FIELD_CENTER, Rotation2d.k180deg) : 
-          new Pose2d(TeleopFeature.FIELD_CENTER, new Rotation2d()));
 
     Pigeon2Configuration gyroConfiguration = new Pigeon2Configuration();
+
     gyroConfiguration.MountPose.MountPoseYaw = 0;
     gyro.getConfigurator().apply(gyroConfiguration);
+
+    // Only put this code back in when NOT running an auto.
+    // positionEstimator.reset(
+    //  (DriverStation.getAlliance().isPresent()
+    //   && DriverStation.getAlliance().get() == Alliance.Red) ? 
+    //       new Pose2d(TeleopFeature.FIELD_CENTER, Rotation2d.k180deg) : 
+    //       new Pose2d(TeleopFeature.FIELD_CENTER, new Rotation2d()));
+
     // resetGyroHeading();
 
     odometryThread = new OdometryThread(phoenix6Odometry, positionEstimator);
@@ -145,8 +149,9 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
         Constants.Drivebase.DRIVE_CURRENT_LIMIT,
         Constants.Drivebase.MODULES.length
       ),
-      Constants.Drivebase.MODULE_OFFSET
+      Constants.Drivebase.pathPlannerOrderedModules
     );
+
     positionEstimator.stateLock.readLock().lock();
     AutoBuilder.configure(
       positionEstimator::getPose,
@@ -169,8 +174,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
           // Boolean supplier that controls when the path will be mirrored for the red alliance
           // This will flip the path being followed to the red side of the field.
           // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-          int fieldOrientationMultiplier;
-  
+
           Optional<Alliance> alliance = DriverStation.getAlliance();
           return alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red;
       },
