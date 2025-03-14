@@ -115,6 +115,10 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     // are ~ the same, so the robot doesn't spiral off the field.
 
     Pigeon2Configuration gyroConfiguration = new Pigeon2Configuration();
+
+    gyroConfiguration.MountPose.MountPoseYaw = 0;
+    gyro.getConfigurator().apply(gyroConfiguration);
+
     // Only put this code back in when NOT running an auto.
     // positionEstimator.reset(
     //  (DriverStation.getAlliance().isPresent()
@@ -123,9 +127,6 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     //       new Pose2d(TeleopFeature.FIELD_CENTER, new Rotation2d()));
 
     // resetGyroHeading();
-
-    gyroConfiguration.MountPose.MountPoseYaw = 0;
-    gyro.getConfigurator().apply(gyroConfiguration);
 
     odometryThread = new OdometryThread(phoenix6Odometry, positionEstimator);
 

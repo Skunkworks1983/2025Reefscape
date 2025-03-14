@@ -66,8 +66,6 @@ public class PositionEstimator {
    * Must be called every loop in <code>periodic()</code> to keep odometry up to
    * date.
    */
-
-
   public void update() {
     stateLock.writeLock().lock();
     setPhoenix6OdometryReadLock.accept(true);
