@@ -129,7 +129,7 @@ public class Constants {
       public static final double CORAL_INTAKE_FAST_SPEED = 22.0; //meters per sec 
       public static final double CORAL_EXPEL_SLOW_SPEED = 3.0; //meters per sec
       public static final double CORAL_EXPEL_FAST_SPEED = 10.0; //meters per sec 
-      public static final double ALGAE_INTAKE_SPEED_SLOW = 0.25; // throttle pct output
+      public static final double ALGAE_INTAKE_SPEED_SLOW = 0.2; // throttle pct output
       public static final double ALGAE_INTAKE_SPEED_FAST = 1.0;
       public static final double ALGAE_EXPEL_SPEED = -20.0; //meters per sec
 
@@ -351,6 +351,9 @@ public class Constants {
     public class Profile {
       public static final double MAX_VELOCITY = 60.0;
       public static final double MAX_ACCELERATION = 115.0;
+
+      public static final double MAX_VELOCITY_NET = 60.0;
+      public static final double MAX_ACCELERATION_NET = 145.0;
     }
   }
 
@@ -405,7 +408,7 @@ public class Constants {
     public static final EndEffectorSetpointConstants ALGAE_L3 = 
       new EndEffectorSetpointConstants(29.77 + 5, 0.3941, WRIST_STOW_POSITION_ALGAE);
     public static final EndEffectorSetpointConstants ALGAE_NET = 
-      new EndEffectorSetpointConstants(0.0, WRIST_STOW_POSITION_ALGAE, WRIST_STOW_POSITION_ALGAE);
+      new EndEffectorSetpointConstants(34.29, 0.1441, 0.1441);
 
     public static final EndEffectorSetpointConstants CORAL_GROUND = 
       new EndEffectorSetpointConstants(0.0, 0.3941, WRIST_STOW_POSITION_CORAL);

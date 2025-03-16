@@ -21,11 +21,27 @@ public class DualLidar {
   private DigitalOutput outputRight;
 
   // NOTE: using objects because reference are always atomic (double changes /might/ not be for some systems).
-  public Double lidarDistanceRight = 0.0;
-  public Double lidarDistanceLeft = 0.0;
+  private volatile double lidarDistanceRight = 0.0;
+  private volatile double lidarDistanceLeft = 0.0;
 
-  public BooleanSupplier isLidarRightTripped = () -> lidarDistanceRight > Constants.Drivebase.LIDAR_RIGHT_TRIGGER_DISTANCE;
-  public BooleanSupplier isLidarLeftTripped = () -> lidarDistanceLeft > Constants.Drivebase.LIDAR_LEFT_TRIGGER_DISTANCE;
+  public synchronized double getLidarLeftOutput() {
+    return lidarDistanceLeft;
+  }
+
+  public synchronized double getLidarRightOutput() {
+    return lidarDistanceRight;
+  }
+
+  private synchronized void setLidarLeftOutput(double newLeftDistance) {
+    lidarDistanceLeft = newLeftDistance;
+  }
+
+  private synchronized void setLidarRightOutput(double newRightDistance) {
+    lidarDistanceRight = newRightDistance;
+  }
+
+  public BooleanSupplier isLidarRightTripped = () -> getLidarRightOutput() > Constants.Drivebase.LIDAR_RIGHT_TRIGGER_DISTANCE;
+  public BooleanSupplier isLidarLeftTripped = () -> getLidarLeftOutput() > Constants.Drivebase.LIDAR_LEFT_TRIGGER_DISTANCE;
 
   private Thread thread = new Thread(this::updateDistance);
 
@@ -88,8 +104,8 @@ public class DualLidar {
       }
 
       // Ignore returned values that are too large (because they are not real values)
-      if(distanceRight < Constants.Drivebase.LIDAR_RIGHT_DATA_CUTOFF) lidarDistanceRight = distanceRight;
-      if(distanceLeft < Constants.Drivebase.LIDAR_LEFT_DATA_CUTOFF) lidarDistanceLeft = distanceLeft;
+      if(distanceRight < Constants.Drivebase.LIDAR_RIGHT_DATA_CUTOFF) setLidarRightOutput(distanceRight);
+      if(distanceLeft < Constants.Drivebase.LIDAR_LEFT_DATA_CUTOFF) setLidarLeftOutput(distanceLeft);
 
       double timeElapsed = Timer.getFPGATimestamp() - startTime;
       try {

@@ -11,6 +11,7 @@ import frc.robot.commands.elevator.MoveElevatorToSetpointCommand;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
 import frc.robot.commands.wrist.MoveWristToSetpoint;
+import frc.robot.constants.Constants;
 import frc.robot.constants.EndEffectorSetpointConstants;
 
 // Moves wrist and elevator
@@ -23,13 +24,35 @@ public class MoveEndEffector extends SequentialCommandGroup {
     EndEffectorSetpointConstants setpoint,
     DoubleSupplier getOffset
   ) {
+    this(
+      elevator,
+      wrist,
+      setpoint,
+      getOffset,
+      Constants.Elevator.Profile.MAX_VELOCITY,
+      Constants.Elevator.Profile.MAX_ACCELERATION
+    );
+  }
+  public MoveEndEffector(
+    Elevator elevator,
+    Wrist wrist,
+    EndEffectorSetpointConstants setpoint,
+    DoubleSupplier getOffset,
+    double elevatorVelocityOveride,
+    double elevatorAcceletationOveride
+  ) {
     wristUp = false;
     elevatorUp = false;
     addCommands(
       new MoveWristToSetpoint(wrist, setpoint.stowSetpoint).finallyDo(interrupted -> {
         wristUp = !interrupted;
       }),
-      new MoveElevatorToSetpointCommand(elevator, () -> setpoint.elevatorSetpoint + getOffset.getAsDouble()).beforeStarting(() -> {
+      new MoveElevatorToSetpointCommand(
+        elevator,
+        () -> setpoint.elevatorSetpoint + getOffset.getAsDouble(),
+        elevatorVelocityOveride,
+        elevatorAcceletationOveride
+      ).beforeStarting(() -> {
         if (!wristUp) {
           this.cancel();
         }

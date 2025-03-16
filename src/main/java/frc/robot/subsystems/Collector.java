@@ -59,7 +59,6 @@ public class Collector extends SubsystemBase {
     setDefaultCommand(holdPositionCommand());
 
     TalonFXConfiguration talonConfigCollectorMotor = new TalonFXConfiguration();
-    talonConfigCollectorMotor.CurrentLimits = CurrentLimits.KRAKEN_CURRENT_LIMIT_CONFIG;
 
     talonConfigCollectorMotor.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     rightMotor.getConfigurator().apply(talonConfigCollectorMotor);
@@ -276,7 +275,7 @@ public class Collector extends SubsystemBase {
       boolean stopOnEnd) {
     return runEnd(
       () -> {
-        setCollectorSpeeds(Constants.Collector.Speeds.ALGAE_EXPEL_SPEED);
+        setCollectorThrottle(-1);
       },
       () -> {
         if (stopOnEnd) {

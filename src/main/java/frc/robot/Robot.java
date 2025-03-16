@@ -24,6 +24,7 @@ import frc.robot.utils.error.DiagnosticSubsystem;
 import frc.robot.commands.MoveEndEffector;
 import frc.robot.commands.AutomatedScoring.AutomatedLidarScoring;
 import frc.robot.commands.drivebase.OdometryFreeScoreAuto;
+import frc.robot.commands.drivebase.OdometryFreeScoreAutoCenter;
 import frc.robot.commands.drivebase.TrapezoidProfileDriveStraight;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.*;
@@ -53,6 +54,7 @@ public class Robot extends TimedRobot {
   Command trapezoidProfileDriveOut;
   Command scoreCoralNoOdometryLeft;
   Command scoreCoralNoOdometryRight;
+  Command scoreCoralNoOdometryCenter;
 
   public Robot() {
     DataLogManager.start();
@@ -185,10 +187,23 @@ public class Robot extends TimedRobot {
         );
     }
 
+    if(drivebase.isPresent() && elevator.isPresent() && wrist.isPresent() && collector.isPresent()) {
+      scoreCoralNoOdometryCenter = 
+        new OdometryFreeScoreAutoCenter(
+          drivebase.get(), 
+          elevator.get(), 
+          wrist.get(), 
+          collector.get()
+        );
+    }
+
     autoChooser = new SendableChooser<Command>();
     autoChooser.addOption("Score Coral No Odometry Right", scoreCoralNoOdometryRight);
     autoChooser.addOption("Score Coral No Odometry Left", scoreCoralNoOdometryLeft);
+    autoChooser.addOption("Score Coral No Odometry Center", scoreCoralNoOdometryCenter);
+
     SmartDashboard.putData("Auto Chooser", autoChooser);
+    SmartDashboard.putNumber("Auto wait seconds", 2.0);
     CameraServer.startAutomaticCapture();
   }
 

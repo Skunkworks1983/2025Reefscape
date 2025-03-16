@@ -27,18 +27,20 @@ public class MoveElevatorToSetpointCommand extends Command {
   boolean isGoingUp;
   DoubleSupplier targetHeight;
 
-  private final static TrapezoidProfile motionProfile = new TrapezoidProfile(
-    new Constraints(
-      Constants.Elevator.Profile.MAX_VELOCITY,
-      Constants.Elevator.Profile.MAX_ACCELERATION
-    )
-  );
+  private TrapezoidProfile motionProfile ;
 
-  public MoveElevatorToSetpointCommand(Elevator elevator, DoubleSupplier targetHeight) {
+  public MoveElevatorToSetpointCommand(Elevator elevator, DoubleSupplier targetHeight, double elevatorVelocityOveride, double elevatorAcceletationOveride) {
     this.targetHeight = targetHeight;
     this.elevator = elevator;
     timeElapsed = new Timer();
     timeElapsed.stop();
+    motionProfile = new TrapezoidProfile(
+      new Constraints(
+        elevatorVelocityOveride,
+        elevatorAcceletationOveride
+      )
+    );
+
     addRequirements(elevator);
   }
 
