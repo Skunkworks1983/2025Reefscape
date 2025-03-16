@@ -349,8 +349,8 @@ public class Constants {
     }
 
     public class Profile {
-      public static final double MAX_VELOCITY = 55.0;
-      public static final double MAX_ACCELERATION = 81.0;
+      public static final double MAX_VELOCITY = 60.0;
+      public static final double MAX_ACCELERATION = 115.0;
     }
   }
 
@@ -375,7 +375,7 @@ public class Constants {
     }
 
     public static final double WRIST_MAX_VELOCITY = 0.7;
-    public static final double WRIST_MAX_ACCELERATION = 1.56;
+    public static final double WRIST_MAX_ACCELERATION = 1.75;
 
     public static final double WRIST_TOLERANCE = 0.02;
 
