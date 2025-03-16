@@ -46,14 +46,30 @@ public class DualLidar {
     thread.start();
   }
 
-  private void updateDistance() {
-
-    while(true) {
-      double startTime = Timer.getFPGATimestamp();
+  private void pulseLidar() {
+    double startTime = Timer.getFPGATimestamp();
       outputLeft.set(true);
       outputRight.set(true);
       while(Timer.getFPGATimestamp() - startTime < 0.001) {}
+      outputLeft.set(false);
+      outputRight.set(false);
+      try {
+        Thread.sleep(20);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+  }
 
+  private void updateDistance() {
+    pulseLidar();
+    double lastTime = Timer.getFPGATimestamp();
+
+    while(true) {
+      double startTime = Timer.getFPGATimestamp();
+      if(Timer.getFPGATimestamp() - lastTime > 0.25) {
+        pulseLidar();
+        lastTime = Timer.getFPGATimestamp();
+      }
       double rightValue = lidarRight.getPeriod();
       double leftValue = lidarLeft.getPeriod();
       double distanceRight;
@@ -75,14 +91,11 @@ public class DualLidar {
       if(distanceRight < Constants.Drivebase.LIDAR_RIGHT_DATA_CUTOFF) lidarDistanceRight = distanceRight;
       if(distanceLeft < Constants.Drivebase.LIDAR_LEFT_DATA_CUTOFF) lidarDistanceLeft = distanceLeft;
 
-      outputLeft.set(false);
-      outputRight.set(false);
-
       double timeElapsed = Timer.getFPGATimestamp() - startTime;
       try {
         Thread.sleep((long)Units.secondsToMilliseconds(
           Math.max(
-            (Constants.RoboRIOInfo.UPDATE_PERIOD * 2.0) - timeElapsed,
+            (Constants.RoboRIOInfo.UPDATE_PERIOD) - timeElapsed,
             0.0
           )
         ));
