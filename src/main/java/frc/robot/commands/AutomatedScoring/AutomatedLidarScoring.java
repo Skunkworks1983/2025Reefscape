@@ -40,6 +40,7 @@ public class AutomatedLidarScoring extends SequentialCommandGroup {
             getYMetersPerSecond,
             goingRight,
             alignSpeed).beforeStarting(() -> {
+              // THIS NEEDS TO MOVE UP
               Rotation2d targetHeading = TeleopFeatureUtils.getCoralCycleAngleNoOdometry(true,
                   drivebase.getCachedGyroHeading());
               boolean goingRightInRobotRelative = drivebase.goingRightInRobotRelative(goingRight, targetHeading);
