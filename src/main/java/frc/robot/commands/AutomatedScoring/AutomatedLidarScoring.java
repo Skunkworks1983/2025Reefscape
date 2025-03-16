@@ -33,22 +33,43 @@ public class AutomatedLidarScoring extends SequentialCommandGroup {
       double alignSpeed,
       Supplier<EndEffectorSetpointConstants> endEffectorSetpoint,
       BooleanSupplier expelButton) {
+    boolean[] shouldRun = new boolean[1];
+    shouldRun[0] = true;
     addCommands(
+        Commands.runEnd(
+            () -> {
+              Rotation2d targetHeading = TeleopFeatureUtils.getCoralCycleAngleNoOdometry(true,
+                  drivebase.getCachedGyroHeading());
+              boolean reallyGoingRight = drivebase.AREWEREALLYGOINGRIGHT(goingRight, targetHeading);
+              shouldRun[0] = reallyGoingRight ? !drivebase.getDualLidar().isLidarRightTripped.getAsBoolean()
+                  : !drivebase.getDualLidar().isLidarLeftTripped.getAsBoolean();
+              if (!shouldRun[0]) {
+                System.out.println("Canceling Auto Scoring Because Lidar is not triggered");
+              }
+            }, () -> {
+            }),
         drivebase.getSwerveAlignCoral(
             getXMetersPerSecond,
             getYMetersPerSecond,
             goingRight,
-            alignSpeed),
+            alignSpeed).onlyIf(() -> {
+              return shouldRun[0];
+            }),
         Commands.waitUntil(
             () -> {
               EndEffectorSetpointConstants constants = endEffectorSetpoint.get();
               return ((constants == Constants.EndEffectorSetpoints.CORAL_L2)
                   || (constants == Constants.EndEffectorSetpoints.CORAL_L3)) && expelButton.getAsBoolean();
+            }).onlyIf(() -> {
+              return shouldRun[0];
             }),
-        Commands.waitSeconds(0.1),
+        Commands.waitSeconds(0.1).onlyIf(() -> {
+          return shouldRun[0];
+        }),
         collector.expelCoralCommand(
             true,
-            endEffectorSetpoint).withTimeout(2)
-      );
+            endEffectorSetpoint).withTimeout(2).onlyIf(() -> {
+              return shouldRun[0];
+            }));
   }
 }
