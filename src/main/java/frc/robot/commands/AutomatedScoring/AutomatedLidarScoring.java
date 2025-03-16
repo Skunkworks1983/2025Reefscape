@@ -42,9 +42,10 @@ public class AutomatedLidarScoring extends SequentialCommandGroup {
             alignSpeed).beforeStarting(() -> {
               Rotation2d targetHeading = TeleopFeatureUtils.getCoralCycleAngleNoOdometry(true,
                   drivebase.getCachedGyroHeading());
-              boolean reallyGoingRight = drivebase.AREWEREALLYGOINGRIGHT(goingRight, targetHeading);
-              shouldRun[0] = reallyGoingRight ? drivebase.getDualLidar().isLidarRightTripped.getAsBoolean()
-                  : drivebase.getDualLidar().isLidarLeftTripped.getAsBoolean();
+              boolean goingRightInRobotRelative = drivebase.goingRightInRobotRelative(goingRight, targetHeading);
+              // Do NOT run alignment if the lidar we would use for alignment is currently showing a long distance (i.e. "is tripped").
+              shouldRun[0] = goingRightInRobotRelative ? !drivebase.getDualLidar().isLidarRightTripped.getAsBoolean()
+                  : !drivebase.getDualLidar().isLidarLeftTripped.getAsBoolean();
               if (!shouldRun[0]) {
                 System.out.println("Canceling Auto Scoring Because Lidar is not triggered");
               }

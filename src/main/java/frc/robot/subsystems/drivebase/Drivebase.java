@@ -406,7 +406,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     return dualLidar;
   }
 
-  public boolean AREWEREALLYGOINGRIGHT(boolean goingRight, Rotation2d targetHeading){
+  public boolean goingRightInRobotRelative(boolean goingRight, Rotation2d targetHeading){
     if(goingRight == TeleopFeatureUtils.isCloseSideOfReef(targetHeading)) {
       return true;
     }
@@ -439,7 +439,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
         }
       ).until(
         () -> {
-          if(goingRight == TeleopFeatureUtils.isCloseSideOfReef(targetHeading[0])) {
+          if(goingRightInRobotRelative(goingRight, targetHeading[0])) {
             return dualLidar.isLidarRightTripped.getAsBoolean();
           }
           else {
