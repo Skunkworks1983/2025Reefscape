@@ -414,9 +414,9 @@ public class Constants {
     public static final EndEffectorSetpointConstants CORAL_L1 = 
       new EndEffectorSetpointConstants(12.0, 0.0641, WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_L2 = 
-      new EndEffectorSetpointConstants(12.756 + 0.5, 0.0, WRIST_STOW_POSITION_CORAL);
+      new EndEffectorSetpointConstants(12.756 + 0.5 + 0.75, (WRIST_PROSSESSOR_STOW_POSITION / 2), WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_L3 = 
-      new EndEffectorSetpointConstants(23.914, 0.0, WRIST_STOW_POSITION_CORAL);
+      new EndEffectorSetpointConstants(23.914 + 0.75, (WRIST_PROSSESSOR_STOW_POSITION / 2), WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_L4 = 
       new EndEffectorSetpointConstants(39.0, 0.0, WRIST_STOW_POSITION_CORAL);
   };
