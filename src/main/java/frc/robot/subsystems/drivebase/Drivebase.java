@@ -36,6 +36,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -182,6 +183,8 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     );
     positionEstimator.stateLock.readLock().unlock();
     setAllModulesTurnPidActive();
+
+    SmartDashboard.putBoolean("Auto Aligning", false); // Putting to SmartDashboard so you can pull it up before command actually starts
   }
 
   @Override
@@ -399,6 +402,18 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
         )
         .repeatedly();
   }
+  public DualLidar getDualLidar(){
+    return dualLidar;
+  }
+
+  public boolean AREWEREALLYGOINGRIGHT(boolean goingRight, Rotation2d targetHeading){
+    if(goingRight == TeleopFeatureUtils.isCloseSideOfReef(targetHeading)) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
 
   public Command getSwerveAlignCoral(
       DoubleSupplier getXMetersPerSecond,
@@ -418,6 +433,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
               true
       ).beforeStarting(
         () -> {
+          SmartDashboard.putBoolean("Auto Aligning", true);
           targetHeading[0] = TeleopFeatureUtils.getCoralCycleAngleNoOdometry(true, cachedGyroHeading);
           System.out.println("Target Heading: " + targetHeading[0] + " X: " + TeleopFeatureUtils.getReefFaceSpeedX(targetHeading[0], newAlignSpeed) + " Y: " + TeleopFeatureUtils.getReefFaceSpeedY(targetHeading[0], newAlignSpeed));
         }
@@ -443,6 +459,15 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
         () -> 0, 
         true
       ).withTimeout(0.04)
+    ).raceWith(
+      Commands.runEnd(
+        () -> {
+          System.out.println("Lidar left: " + dualLidar.lidarDistanceLeft + " Lidar right: " + dualLidar.lidarDistanceRight + " battery voltage: " + RobotController.getBatteryVoltage());
+        },
+        () -> {
+          SmartDashboard.putBoolean("Auto Aligning", false);
+        }
+      )
     );
   }
 

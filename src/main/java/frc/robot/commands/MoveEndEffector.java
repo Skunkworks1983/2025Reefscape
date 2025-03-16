@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.elevator.MoveElevatorToSetpointCommand;
 import frc.robot.subsystems.Elevator;
@@ -18,7 +20,8 @@ public class MoveEndEffector extends SequentialCommandGroup {
   public MoveEndEffector(
     Elevator elevator,
     Wrist wrist,
-    EndEffectorSetpointConstants setpoint
+    EndEffectorSetpointConstants setpoint,
+    DoubleSupplier getOffset
   ) {
     wristUp = false;
     elevatorUp = false;
@@ -26,7 +29,7 @@ public class MoveEndEffector extends SequentialCommandGroup {
       new MoveWristToSetpoint(wrist, setpoint.stowSetpoint).finallyDo(interrupted -> {
         wristUp = !interrupted;
       }),
-      new MoveElevatorToSetpointCommand(elevator, setpoint.elevatorSetpoint).beforeStarting(() -> {
+      new MoveElevatorToSetpointCommand(elevator, () -> setpoint.elevatorSetpoint + getOffset.getAsDouble()).beforeStarting(() -> {
         if (!wristUp) {
           this.cancel();
         }

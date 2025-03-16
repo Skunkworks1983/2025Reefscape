@@ -66,38 +66,38 @@ public class Robot extends TimedRobot {
     if (elevator.isPresent() && wrist.isPresent()) {
       // move to pos coral 
       NamedCommands.registerCommand("Coral to L4",
-        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_L4));
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_L4, ()->0.0));
       
       NamedCommands.registerCommand("Coral to L3", 
-        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_L3));
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_L3, ()->0.0));
   
       NamedCommands.registerCommand("Coral to L2", 
-        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_L2));
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_L2, ()->0.0));
   
       NamedCommands.registerCommand("Coral to L1", 
-        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_L1));
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_L1, ()->0.0));
   
       NamedCommands.registerCommand("Coral to Ground", 
-        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_GROUND));
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_GROUND, ()->0.0));
   
       NamedCommands.registerCommand("Coral to Stow", 
-      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_STOW));
+      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_STOW, ()->0.0));
   
       // move to pos Algae
       NamedCommands.registerCommand("Algae to L2 ", 
-      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_L2));
+      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_L2, ()->0.0));
   
       NamedCommands.registerCommand("Algae to L3", 
-        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_L3));
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_L3, ()->0.0));
   
       NamedCommands.registerCommand("Algae to Ground", 
-        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_GROUND));
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_GROUND, ()->0.0));
   
       NamedCommands.registerCommand("Algae to Processor", 
-        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_PROCESSOR));
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_PROCESSOR, ()->0.0));
       
       NamedCommands.registerCommand("Algea to Stow", 
-        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_STOW));
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_STOW, ()->0.0));
   
       // Collector 
       NamedCommands.registerCommand("Expel Coral", collector.get().expelCoralCommand(true, elevator.get()::getEndEffectorSetpoint));
@@ -193,80 +193,7 @@ public class Robot extends TimedRobot {
   }
 
   @Override 
-  public void robotInit() {
-    if (elevator.isPresent() && wrist.isPresent()) {
-
-      // move to pos coral 
-      NamedCommands.registerCommand("Coral to L4",
-        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_L4));
-      
-      NamedCommands.registerCommand("Coral to L3", 
-        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_L3));
-
-      NamedCommands.registerCommand("Coral to L2", 
-        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_L2));
-
-      NamedCommands.registerCommand("Coral to L1", 
-        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_L1));
-
-      NamedCommands.registerCommand("Coral to Ground", 
-        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_GROUND));
-
-      NamedCommands.registerCommand("Coral to Stow", 
-      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_STOW));
-
-      // move to pos Algae
-      NamedCommands.registerCommand("Algae to L2 ", 
-      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_L2));
-
-      NamedCommands.registerCommand("Algae to L3", 
-        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_L3));
-
-      NamedCommands.registerCommand("Algae to Ground", 
-        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_GROUND));
-
-      NamedCommands.registerCommand("Algae to Processor", 
-        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_PROCESSOR));
-      
-      NamedCommands.registerCommand("Algea to Stow", 
-        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_STOW));
-
-      // Collector 
-      NamedCommands.registerCommand("Expel Coral", collector.get().expelCoralCommand(true, elevator.get()::getEndEffectorSetpoint));
-
-      NamedCommands.registerCommand("Expel Algae",collector.get().expelAlgaeCommand(true));
-
-      NamedCommands.registerCommand("Intake Coral", collector.get().intakeCoralCommand(true, elevator.get()::getEndEffectorSetpoint));
-
-      NamedCommands.registerCommand("Intake Algae ", collector.get().intakeAlgaeCommand(true, elevator.get()::getEndEffectorSetpoint));
-
-      NamedCommands.registerCommand("Lidar Score Right",
-        new AutomatedLidarScoring(
-          drivebase.get(),
-          collector.get(),
-          (DoubleSupplier)() -> 0.0, 
-          (DoubleSupplier)() -> 0.0,
-          true, 
-          Constants.Drivebase.AUTO_ALIGN_DRIVE_SPEED_AUTO,
-          elevator.get()::getEndEffectorSetpoint,
-          () -> true
-        )
-      );
-
-      NamedCommands.registerCommand("Lidar Score Left",
-        new AutomatedLidarScoring(
-          drivebase.get(),
-          collector.get(),
-          (DoubleSupplier)() -> 0.0, 
-          (DoubleSupplier)() -> 0.0,
-          false, 
-          Constants.Drivebase.AUTO_ALIGN_DRIVE_SPEED_AUTO,
-          elevator.get()::getEndEffectorSetpoint,
-          () -> true
-        )
-      );
-    }
-  }
+  public void robotInit() {}
 
   @Override
   public void robotPeriodic() {

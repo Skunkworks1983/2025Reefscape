@@ -24,8 +24,8 @@ public class OdometryFreeScoreAuto extends SequentialCommandGroup {
     addCommands(
       new TrapezoidProfileDriveStraight(drivebase, Units.feetToMeters(4.0), true),
       new RotateToHeadingOffset(drivebase, Rotation2d.fromDegrees(isLeftSideOfBarge ? 60.0 : -60.0)),
-      new TrapezoidProfileDriveStraight(drivebase, Units.feetToMeters(4.5), false),
-      new MoveEndEffector(elevator, wrist, Constants.EndEffectorSetpoints.CORAL_L2),
+      new TrapezoidProfileDriveStraight(drivebase, Units.feetToMeters(5), false),
+      new MoveEndEffector(elevator, wrist, Constants.EndEffectorSetpoints.CORAL_L2, () -> 0.0),
       // This will align to the right
       new AutomatedLidarScoring(
         drivebase, 
@@ -37,7 +37,7 @@ public class OdometryFreeScoreAuto extends SequentialCommandGroup {
         () -> Constants.EndEffectorSetpoints.CORAL_L2,
         () -> true
       ),
-      new MoveEndEffector(elevator, wrist, Constants.EndEffectorSetpoints.CORAL_STOW)
+      new MoveEndEffector(elevator, wrist, Constants.EndEffectorSetpoints.CORAL_STOW, () -> 0.0)
     );
   }
 }

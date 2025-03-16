@@ -231,7 +231,11 @@ public class Collector extends SubsystemBase {
       }, () -> {
 
       }
-    );
+    ).until(
+      () -> {
+        return algaeToggle.getAsBoolean();
+      }
+    ).repeatedly();
   }
 
   public Command intakeAlgaeCommand(

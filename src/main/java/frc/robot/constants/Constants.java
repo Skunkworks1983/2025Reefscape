@@ -53,11 +53,13 @@ public class Constants {
 
     // Measured in amps
     public static final double KRAKEN_CURRENT_LIMIT_VALUE = 90.0;
+    public static final double KRAKEN_CURRENT_LIMIT_DRIVEBASE_DRIVE_VALUE = 75.0;
     public static final double MINI_KRAKEN_CURRENT_LIMIT_VALUE = 70.0;
     public static final int NEO_550_CURRENT_LIMIT_VALUE = 25; // not used
 
     public static final CurrentLimitsConfigs KRAKEN_CURRENT_LIMIT_CONFIG;
     public static final CurrentLimitsConfigs MINI_KRAKEN_CURRENT_LIMIT_CONFIG;
+    public static final CurrentLimitsConfigs KRAKEN_CURRENT_LIMIT_CONFIG_DRIVEBASE_DRIVE;
 
     static {
       KRAKEN_CURRENT_LIMIT_CONFIG = new CurrentLimitsConfigs();
@@ -76,6 +78,15 @@ public class Constants {
 
       MINI_KRAKEN_CURRENT_LIMIT_CONFIG.StatorCurrentLimitEnable 
         = MINI_KRAKEN_CURRENT_LIMIT_CONFIG.SupplyCurrentLimitEnable
+        = true;
+
+      KRAKEN_CURRENT_LIMIT_CONFIG_DRIVEBASE_DRIVE = new CurrentLimitsConfigs();
+      KRAKEN_CURRENT_LIMIT_CONFIG_DRIVEBASE_DRIVE.StatorCurrentLimit 
+        = KRAKEN_CURRENT_LIMIT_CONFIG_DRIVEBASE_DRIVE.SupplyCurrentLimit
+        = KRAKEN_CURRENT_LIMIT_DRIVEBASE_DRIVE_VALUE;
+
+        KRAKEN_CURRENT_LIMIT_CONFIG_DRIVEBASE_DRIVE.StatorCurrentLimitEnable 
+        = KRAKEN_CURRENT_LIMIT_CONFIG_DRIVEBASE_DRIVE.SupplyCurrentLimitEnable
         = true;
     };
   }
@@ -159,10 +170,10 @@ public class Constants {
     public static final int PIGEON_ID = Testing.ROBOT == Testing.Robot.Comp2025 ? 22 : 26;
     public static final int LIDAR_RIGHT_DATA_PORT = 8;
     public static final int LIDAR_RIGHT_TRIGGER_DISTANCE = 60;
-    public static final int LIDAR_RIGHT_DATA_CUTOFF = 30000;
+    public static final int LIDAR_RIGHT_DATA_CUTOFF = 2000;
     public static final int LIDAR_LEFT_DATA_PORT = 4;
     public static final int LIDAR_LEFT_TRIGGER_DISTANCE = 60;
-    public static final int LIDAR_LEFT_DATA_CUTOFF = 30000;
+    public static final int LIDAR_LEFT_DATA_CUTOFF = 2000;
     public static final int LIDAR_LEFT_TRIGGER_PORT = 3;
     public static final int LIDAR_RIGHT_TRIGGER_PORT = 7;
     public static final double MAX_METERS_PER_SECOND = 4.5;
@@ -403,9 +414,9 @@ public class Constants {
     public static final EndEffectorSetpointConstants CORAL_L1 = 
       new EndEffectorSetpointConstants(12.0, 0.0641, WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_L2 = 
-      new EndEffectorSetpointConstants(13.756 + 0.5, 0.0, WRIST_STOW_POSITION_CORAL);
+      new EndEffectorSetpointConstants(12.756 + 0.5, 0.0, WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_L3 = 
-      new EndEffectorSetpointConstants(24.914 + 0.5, 0.0, WRIST_STOW_POSITION_CORAL);
+      new EndEffectorSetpointConstants(23.914, 0.0, WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_L4 = 
       new EndEffectorSetpointConstants(39.0, 0.0, WRIST_STOW_POSITION_CORAL);
   };

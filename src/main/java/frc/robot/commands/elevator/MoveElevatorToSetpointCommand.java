@@ -4,6 +4,8 @@
 
 package frc.robot.commands.elevator;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
@@ -23,6 +25,7 @@ public class MoveElevatorToSetpointCommand extends Command {
   State targetState;
   Elevator elevator;
   boolean isGoingUp;
+  DoubleSupplier targetHeight;
 
   private final static TrapezoidProfile motionProfile = new TrapezoidProfile(
     new Constraints(
@@ -31,8 +34,8 @@ public class MoveElevatorToSetpointCommand extends Command {
     )
   );
 
-  public MoveElevatorToSetpointCommand(Elevator elevator, double targetHeight) {
-    targetState = new State(targetHeight * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS, 0.0);
+  public MoveElevatorToSetpointCommand(Elevator elevator, DoubleSupplier targetHeight) {
+    this.targetHeight = targetHeight;
     this.elevator = elevator;
     timeElapsed = new Timer();
     timeElapsed.stop();
@@ -41,6 +44,7 @@ public class MoveElevatorToSetpointCommand extends Command {
 
   @Override
   public void initialize() {
+    targetState = new State(targetHeight.getAsDouble() * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS, 0.0);
     startState = new State(elevator.getElevatorPosition() * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS, 0.0);
     isGoingUp = targetState.position > elevator.getElevatorPosition() * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS;
     elevator.setFinalPosition(targetState.position);
