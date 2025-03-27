@@ -83,7 +83,7 @@ public class Constants {
     // must be constructed and assigned to the correct variable in Robot.java.
     // If some subsystems are not created and this value is true, an exeption
     // will be thrown.
-    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = true;
+    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = false;
     public static final boolean SMART_PID_ENABLED = false;
 
     public static enum Robot {
@@ -397,13 +397,13 @@ public class Constants {
 
   public class Climber {
     public class IDs {
-      public static final int CLIMBER_KRAKEN_MOTOR = 12;
+      public static final int CLIMBER_KRAKEN_MOTOR = 13;
       public static final int CLIMBER_MAGNET_SENSOR_1 = 3;
       public static final int CLIMBER_MAGNET_SENSOR_2 = 4;
     }
 
     public class PIDs {
-      public static final double CLIMBER_KP = 0.1; //TODO tune constants
+      public static final double CLIMBER_KP = 1; //TODO tune constants
       public static final double CLIMBER_KD = 0.0;
       public static final double CLIMBER_KI = 0.0;
       public static final double CLIMBER_KF = 0.0;
@@ -416,7 +416,7 @@ public class Constants {
 
     public static final double CLIMBER_TOLERANCE = 0.001;
 
-    public static final double CLIMBER_GEAR_RATIO = 1.0 / 20.0; //TODO check with vince (he said 20 to 1, i think i did the math right but idk)
+    public static final double CLIMBER_GEAR_RATIO = 1.0 / 9.0; //TODO check with vince (he said 20 to 1, i think i did the math right but idk)
     public static final double CLIMBER_ROTATIONS_TO_METERS = Units.inchesToMeters(0.25);
     public static final double CLIMBER_MOTOR_ROTATIONS_TO_CLIMBER_HEIGHT = CLIMBER_GEAR_RATIO * CLIMBER_ROTATIONS_TO_METERS;
   }
@@ -462,8 +462,8 @@ public class Constants {
         public static final int INTAKE = 17;
         public static final int EXPEL = 24;
 
-        public static final int CLIMBER_GOTO_MAX = 0;
-        public static final int CLIMBER_GOTO_MIN = 0;
+        public static final int CLIMBER_GOTO_MAX = 3;
+        public static final int CLIMBER_GOTO_MIN = 2;
 
         public static final int TARGET_REEF_BUTTON = 3;
         public static final int TARGET_CORAL_STATION_BUTTON = 2;

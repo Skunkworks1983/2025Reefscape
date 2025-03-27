@@ -31,11 +31,11 @@ public class Robot extends TimedRobot {
   // replace subsystem with Optional.empty() when you do not wish to use add all
   // subsystems. ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
 
-  Optional<Drivebase> drivebase = Optional.of(new Drivebase());
-  Optional<Elevator> elevator = Optional.of(new Elevator());
-  Optional<Collector> collector = Optional.of(new Collector());
-  Optional<Wrist> wrist = Optional.of(new Wrist());
-  Optional<Climber> climber = Optional.empty();
+  Optional<Drivebase> drivebase = Optional.empty();
+  Optional<Elevator> elevator = Optional.empty();
+  Optional<Collector> collector = Optional.empty();
+  Optional<Wrist> wrist = Optional.empty();
+  Optional<Climber> climber = Optional.of(new Climber());
   Optional<Funnel> funnel = Optional.empty();
 
   private SendableChooser<Command> autoChooser;
@@ -98,9 +98,9 @@ public class Robot extends TimedRobot {
       trapezoidProfileDriveOut = new TrapezoidProfileDriveOut(drivebase.get());
     }
 
-    autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auto Chooser", autoChooser);
-    CameraServer.startAutomaticCapture();
+    // autoChooser = AutoBuilder.buildAutoChooser();
+    // SmartDashboard.putData("Auto Chooser", autoChooser);
+    // CameraServer.startAutomaticCapture();
   }
 
   @Override 

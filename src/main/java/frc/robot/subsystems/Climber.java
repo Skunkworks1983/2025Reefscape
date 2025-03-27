@@ -65,7 +65,7 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Climber/Motor position", getHeight());
     ConditionalSmartDashboard.putBoolean("Climber/Motor Connected", isMotorConnected());
-    ConditionalSmartDashboard.putNumber("Climber/Motor Current", getCimbMotorCurrent());
+    SmartDashboard.putNumber("Climber/Motor Current", getCimbMotorCurrent());
     SmartDashboard.putBoolean("Climber/Magnet Sensor 1", magnetSensor1Tripped());
     SmartDashboard.putBoolean("Climber/Magnet Sensor 2", magnetSensor2Tripped());
     ConditionalSmartDashboard.putNumber("Climber/Set Point", getSetPoint());
@@ -116,11 +116,8 @@ public class Climber extends SubsystemBase implements DiagnosticSubsystem {
   public Command goToPositionAfterMagnetSensor(double position) {
     return Commands.startEnd(
         () -> {
-          waitUntilMagnetSensorsAreTrue().finallyDo(
-              () -> {
+          //waitUntilMagnetSensorsAreTrue().finallyDo(
                 setClimberSetPoint(position);
-              }).schedule();
-
         }, () -> {
 
         }).until(
