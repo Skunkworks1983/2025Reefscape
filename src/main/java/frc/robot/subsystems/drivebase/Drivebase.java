@@ -84,6 +84,9 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   private Pose2d cachedEstimatedRobotPose = new Pose2d();
   private Rotation2d cachedGyroHeading = new Rotation2d();
 
+  //DEBUG
+  public int[] allianceCount = {0};
+
   public Drivebase() {
     // Creates a pheonix 6 pro state based on the gyro -- the only sensor owned
     // directly by the drivebase. A pheonix 6 pro state is a class to store all
@@ -153,6 +156,14 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       Constants.Drivebase.pathPlannerOrderedModules
     );
 
+    
+
+    // Optional<Alliance> alliance; 
+    // while (!(alliance = DriverStation.getAlliance()).isPresent()) {
+      
+    // }
+    // final boolean shouldFlip = alliance.get() == DriverStation.Alliance.Red;
+
     positionEstimator.stateLock.readLock().lock();
     AutoBuilder.configure(
       positionEstimator::getPose,
@@ -171,13 +182,16 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
           Constants.RoboRIOInfo.UPDATE_PERIOD
       ),
       config,
+//      () -> shouldFlip,
       () -> {
           // Boolean supplier that controls when the path will be mirrored for the red alliance
           // This will flip the path being followed to the red side of the field.
           // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-          Optional<Alliance> alliance = DriverStation.getAlliance();
-          return alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red;
+          allianceCount[0]++;
+
+           Optional<Alliance> alliance = DriverStation.getAlliance();
+           return alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red;
       },
       this
     );
