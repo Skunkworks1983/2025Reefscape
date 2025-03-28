@@ -59,6 +59,8 @@ import org.json.simple.parser.ParseException;
 
 public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
+  final boolean shouldFlip;
+
   private OdometryThread odometryThread;
   private Phoenix6Odometry phoenix6Odometry = new Phoenix6Odometry();
   private PositionEstimator positionEstimator;
@@ -160,11 +162,13 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
     
 
-    // Optional<Alliance> alliance; 
-    // while (!(alliance = DriverStation.getAlliance()).isPresent()) {
+    while (!(DriverStation.getAlliance()).isPresent()) {
       
-    // }
-    // final boolean shouldFlip = alliance.get() == DriverStation.Alliance.Red;
+    }
+    shouldFlip = DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
+
+    Optional<Alliance> alliance = DriverStation.getAlliance(); 
+
 
     positionEstimator.stateLock.readLock().lock();
     AutoBuilder.configure(
@@ -190,9 +194,6 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
           // This will flip the path being followed to the red side of the field.
           // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-
-           Optional<Alliance> alliance = DriverStation.getAlliance();
-
           if(alliance.isPresent()){ 
             if(alliance.get() == DriverStation.Alliance.Red){ 
               redCount[0]++;
@@ -203,7 +204,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
           } else{
             unknownCount[0]++;
           }
-           return alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red;
+           return shouldFlip;
       },
       this
     );
@@ -283,8 +284,8 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   }
 
   public void resetGyroHeading() {
-    Optional<Alliance> alliance = DriverStation.getAlliance();
-    if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
+    
+    if (shouldFlip) {
       resetGyroHeading(Rotation2d.fromDegrees(180));
     }
     else {
@@ -379,11 +380,6 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       swerveModuleCommandArray[i] = swerveModules[i].TestConnectionThenModule(errorGroupHandler);
     }
     return Commands.parallel(swerveModuleCommandArray);
-  }
-
-  public static Alliance getAlliance() {
-    Optional<Alliance> alliance = DriverStation.getAlliance();
-    return alliance.isPresent() ? alliance.get() : Alliance.Blue;
   }
 
   /**
@@ -551,8 +547,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     ).beforeStarting(
             () -> {
               setAllModulesTurnPidActive();
-              Optional<Alliance> alliance = DriverStation.getAlliance();
-              if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Blue) {
+              if (!shouldFlip) {
                 fieldOrientationMultiplier[0] = 1;
               } else {
                 fieldOrientationMultiplier[0] = -1;
