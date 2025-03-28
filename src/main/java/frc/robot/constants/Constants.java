@@ -98,6 +98,16 @@ public class Constants {
     // will be thrown.
     public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = true;
     public static final boolean SMART_PID_ENABLED = false;
+    public static final boolean IS_AROUND_SMALL_CHILDREN = false;
+    public static double IS_AROUND_SMALL_CHILDREN_VALUE = 1;
+    static {
+          if(IS_AROUND_SMALL_CHILDREN == true){
+            IS_AROUND_SMALL_CHILDREN_VALUE = .25;
+      } else {
+        IS_AROUND_SMALL_CHILDREN_VALUE = 1;
+      }
+    }
+    
 
     public static enum Robot {
       Comp2024,
@@ -133,7 +143,8 @@ public class Constants {
       public static final double ALGAE_INTAKE_SPEED_FAST = 1.0;
       public static final double ALGAE_EXPEL_SPEED = -20.0; //meters per sec
 
-      public static final double SPEED_MULIPILER_LEFT = 0.75;
+      public static final double SPEED_MULIPILER_LEFT = 0.75 * Testing.IS_AROUND_SMALL_CHILDREN_VALUE;
+      
     }
 
     public static final double COLLECTOR_ROTATIONS_PER_METER = 0.0762 * Math.PI;
@@ -176,11 +187,11 @@ public class Constants {
     public static final int LIDAR_LEFT_DATA_CUTOFF = 2000;
     public static final int LIDAR_LEFT_TRIGGER_PORT = 3;
     public static final int LIDAR_RIGHT_TRIGGER_PORT = 7;
-    public static final double MAX_METERS_PER_SECOND = 4.5;
-    public static final double MAX_DEGREES_PER_SECOND = 270;
+    public static final double MAX_METERS_PER_SECOND = 4.5 * Testing.IS_AROUND_SMALL_CHILDREN_VALUE;
+    public static final double MAX_DEGREES_PER_SECOND = 270 * Testing.IS_AROUND_SMALL_CHILDREN_VALUE;
 
-    public static final double AUTO_ALIGN_DRIVE_SPEED_TELEOP = 0.5;
-    public static final double AUTO_ALIGN_DRIVE_SPEED_AUTO = 0.8;
+    public static final double AUTO_ALIGN_DRIVE_SPEED_TELEOP = 0.5 * Testing.IS_AROUND_SMALL_CHILDREN_VALUE;
+    public static final double AUTO_ALIGN_DRIVE_SPEED_AUTO = 0.8 * Testing.IS_AROUND_SMALL_CHILDREN_VALUE;
     public static final double DRIVE_CURRENT_LIMIT = 100;
 
     public class IDS {
@@ -242,15 +253,15 @@ public class Constants {
     }
 
     public class PIDs {
-      public static final double SWERVE_MODULE_TURN_KP = 0.0145;
+      public static final double SWERVE_MODULE_TURN_KP = 0.0145 * Testing.IS_AROUND_SMALL_CHILDREN_VALUE;
       public static final double SWERVE_MODULE_TURN_KI = 0.0;
-      public static final double SWERVE_MODULE_TURN_KD = 0.00034;
+      public static final double SWERVE_MODULE_TURN_KD = 0.00034 * Testing.IS_AROUND_SMALL_CHILDREN_VALUE;
       public static final double SWERVE_MODULE_TURN_KF = 0.0;
-      public static final double SWERVE_MODULE_DRIVE_KP = 0.25;
+      public static final double SWERVE_MODULE_DRIVE_KP = 0.25 * Testing.IS_AROUND_SMALL_CHILDREN_VALUE;
       public static final double SWERVE_MODULE_DRIVE_KI = 0.0;
       public static final double SWERVE_MODULE_DRIVE_KD = 0.0;
       public static final double SWERVE_MODULE_DRIVE_KF = 0.0;
-      public static final double SWERVE_MODULE_DRIVE_KV = 0.13;
+      public static final double SWERVE_MODULE_DRIVE_KV = 0.13 * Testing.IS_AROUND_SMALL_CHILDREN_VALUE;
       public static final double SWERVE_MODULE_DRIVE_KA = 0.0;
       public static final double SWERVE_MODULE_DRIVE_KS = 0.0;
 

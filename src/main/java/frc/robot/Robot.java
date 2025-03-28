@@ -197,7 +197,7 @@ public class Robot extends TimedRobot {
         );
     }
 
-    autoChooser = new SendableChooser<Command>();
+    autoChooser = AutoBuilder.buildAutoChooser();
     autoChooser.addOption("Score Coral No Odometry Right", scoreCoralNoOdometryRight);
     autoChooser.addOption("Score Coral No Odometry Left", scoreCoralNoOdometryLeft);
     autoChooser.addOption("Score Coral No Odometry Center", scoreCoralNoOdometryCenter);
