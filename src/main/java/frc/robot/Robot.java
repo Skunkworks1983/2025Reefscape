@@ -231,7 +231,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    System.out.print("Alliance Count " + drivebase.get().allianceCount[0]);
+    System.out.print("Blue Count " + drivebase.get().blueCount[0]);
+    System.out.print("Red Count " + drivebase.get().redCount[0]);
+    System.out.print("Unknown Count " + drivebase.get().unknownCount[0]);
   }
   
   @Override
