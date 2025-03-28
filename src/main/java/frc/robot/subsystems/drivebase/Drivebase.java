@@ -85,7 +85,9 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   private Rotation2d cachedGyroHeading = new Rotation2d();
 
   //DEBUG
-  public int[] allianceCount = {0};
+  public int[] redCount = {0};
+  public int[] blueCount = {0};
+  public int[] unknownCount = {0};
 
   public Drivebase() {
     // Creates a pheonix 6 pro state based on the gyro -- the only sensor owned
@@ -188,9 +190,19 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
           // This will flip the path being followed to the red side of the field.
           // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-          allianceCount[0]++;
 
            Optional<Alliance> alliance = DriverStation.getAlliance();
+
+          if(alliance.isPresent()){ 
+            if(alliance.get() == DriverStation.Alliance.Red){ 
+              redCount[0]++;
+            }
+            else {
+              blueCount[0]++;
+            }
+          } else{
+            unknownCount[0]++;
+          }
            return alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red;
       },
       this
