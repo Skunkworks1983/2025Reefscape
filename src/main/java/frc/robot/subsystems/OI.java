@@ -188,9 +188,9 @@ public class OI {
 
     if (optionalClimber.isPresent()) {
       Climber climber = optionalClimber.get();
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.CLIMBER_GOTO_MAX)
+      new JoystickButton(translationJoystick, Constants.OI.IDs.Buttons.CLIMBER_GOTO_MAX)
           .onTrue(climber.goToPositionAfterMagnetSensor(Constants.Climber.CLIMBER_MAX));
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.CLIMBER_GOTO_MIN)
+      new JoystickButton(translationJoystick, Constants.OI.IDs.Buttons.CLIMBER_GOTO_MIN)
           .onTrue(climber.goToPositionAfterMagnetSensor(Constants.Climber.CLIMBER_MIN));
     }
 
