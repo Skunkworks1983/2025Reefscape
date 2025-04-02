@@ -158,9 +158,9 @@ public class Robot extends TimedRobot {
       trapezoidProfileDriveOut = new TrapezoidProfileDriveOut(drivebase.get());
     }
 
-    // autoChooser = AutoBuilder.buildAutoChooser();
-    // SmartDashboard.putData("Auto Chooser", autoChooser);
-    // CameraServer.startAutomaticCapture();
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+    CameraServer.startAutomaticCapture();
   }
 
   @Override 
