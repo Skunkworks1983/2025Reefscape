@@ -5,28 +5,27 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "SP 3 to face 2"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Coral to L3"
-                }
-              }
-            ]
+            "pathName": "SP 3 to face 2"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Expel Coral"
+            "name": "Coral to L3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Lidar Score Left"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Coral to Stow"
           }
         }
       ]

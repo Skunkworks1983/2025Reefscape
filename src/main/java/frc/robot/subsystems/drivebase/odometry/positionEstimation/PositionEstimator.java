@@ -85,15 +85,15 @@ public class PositionEstimator {
       swerveDrivePoseEstimator.getEstimatedPosition()
     );
 
-    stateLock.writeLock().unlock();
     setPhoenix6OdometryReadLock.accept(false);
+    stateLock.writeLock().unlock();
   }
 
   public void reset(Pose2d newPose) {
     stateLock.writeLock().lock();
     this.drivebase.resetGyroHeading(newPose.getRotation());
     swerveDrivePoseEstimator.resetPosition(
-      drivebaseState.getGyroAngle(),
+      newPose.getRotation(),
       Arrays.stream(swerveStates)
         .map(state -> state.getSwerveModulePosition())
         .toArray(SwerveModulePosition[]::new),
@@ -103,9 +103,9 @@ public class PositionEstimator {
   }
 
   public void pathplannerReset(Pose2d newPose) {
-    System.out.println("x pos: " + newPose.getX());
-    System.out.println("y pos: " + newPose.getY());
-    System.out.println("theta pos: " + newPose.getRotation().getDegrees());
+    System.out.println("pathplannerReset x pos: " + newPose.getX());
+    System.out.println("pathplannerReset y pos: " + newPose.getY());
+    System.out.println("pathplannerReset theta pos: " + newPose.getRotation().getDegrees());
     reset(newPose);
   }
 

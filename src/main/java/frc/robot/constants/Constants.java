@@ -14,10 +14,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.util.struct.parser.ParseException;
 import edu.wpi.first.wpilibj2.command.Command;
 
-// TODO: add all robot constant values when they have been decided
 public class Constants {
 
   public class PathPlanner
@@ -43,7 +43,9 @@ public class Constants {
 
     // distance from center to wheel
     public static final double PATHPLANNER_DRIVEBASE_RADIUS_METERS = 0.; //TODO give real number
+  }
 
+  public class RoboRIOInfo {
     public static final double UPDATE_PERIOD = .02; //seconds
   }
 
@@ -116,7 +118,8 @@ public class Constants {
       public static final double CORAL_INTAKE_FAST_SPEED = 18.0; //meters per sec 
       public static final double CORAL_EXPEL_SLOW_SPEED = 3.0; //meters per sec
       public static final double CORAL_EXPEL_FAST_SPEED = 10.0; //meters per sec 
-      public static final double ALGAE_INTAKE_SPEED = 0.25; // throttle pct output
+      public static final double ALGAE_INTAKE_SPEED_SLOW = 0.25; // throttle pct output
+      public static final double ALGAE_INTAKE_SPEED_FAST = 0.5;
       public static final double ALGAE_EXPEL_SPEED = -20.0; //meters per sec
 
       public static final double SPEED_MULIPILER_LEFT = 0.75;
@@ -155,14 +158,18 @@ public class Constants {
     public static final String CANIVORE_NAME = Testing.ROBOT == Testing.Robot.Comp2025 ? "Drivebase 2025" : "1983 Comp Drivebase";
     public static final int PIGEON_ID = Testing.ROBOT == Testing.Robot.Comp2025 ? 22 : 26;
     public static final int LIDAR_RIGHT_DATA_PORT = 8;
-    public static final int LIDAR_RIGHT_TRIGGER_PORT = 7;
+    public static final int LIDAR_RIGHT_TRIGGER_DISTANCE = 60;
+    public static final int LIDAR_RIGHT_DATA_CUTOFF = 30000;
     public static final int LIDAR_LEFT_DATA_PORT = 4;
+    public static final int LIDAR_LEFT_TRIGGER_DISTANCE = 60;
+    public static final int LIDAR_LEFT_DATA_CUTOFF = 30000;
     public static final int LIDAR_LEFT_TRIGGER_PORT = 3;
-    public static final int LIDAR_TRIGGER_DISTANCE = 60;
+    public static final int LIDAR_RIGHT_TRIGGER_PORT = 7;
     public static final double MAX_METERS_PER_SECOND = 4.5;
     public static final double MAX_DEGREES_PER_SECOND = 270;
 
-    public static final double AUTO_ALIGN_DRIVE_SPEED = 0.5;
+    public static final double AUTO_ALIGN_DRIVE_SPEED_TELEOP = 0.5;
+    public static final double AUTO_ALIGN_DRIVE_SPEED_AUTO = 0.8;
     public static final double DRIVE_CURRENT_LIMIT = 100;
 
     public class IDS {
@@ -206,6 +213,13 @@ public class Constants {
     		-T_Y), "Back Right")
     };
 
+    public static Translation2d[] pathPlannerOrderedModules = {
+      new Translation2d(MODULE_OFFSET, MODULE_OFFSET),
+      new Translation2d(MODULE_OFFSET, -MODULE_OFFSET),
+      new Translation2d(-MODULE_OFFSET, MODULE_OFFSET),
+      new Translation2d(-MODULE_OFFSET, -MODULE_OFFSET)
+    };
+
     public class Info {
       public static final double DRIVE_MOTOR_GEAR_RATIO = Testing.ROBOT == Testing.Robot.Comp2025 ? 6.12 : 6.75;
       public static final double WHEEL_DIAMETER = 0.0991108;
@@ -219,7 +233,7 @@ public class Constants {
     public class PIDs {
       public static final double SWERVE_MODULE_TURN_KP = 0.0145;
       public static final double SWERVE_MODULE_TURN_KI = 0.0;
-      public static final double SWERVE_MODULE_TURN_KD = 0.00017;
+      public static final double SWERVE_MODULE_TURN_KD = 0.00034;
       public static final double SWERVE_MODULE_TURN_KF = 0.0;
       public static final double SWERVE_MODULE_DRIVE_KP = 0.25;
       public static final double SWERVE_MODULE_DRIVE_KI = 0.0;
@@ -258,8 +272,9 @@ public class Constants {
 
     public static final double FIELD_X_LENGTH = 17.55; // Meters
     public static final double FIELD_Y_LENGTH = 8.05; // Meters
-    public static final double SKEW_PROPORTIONAL = .027;
+    public static final double SKEW_PROPORTIONAL = .065;
     public static final double CURRENT_LIMIT = 100.0;
+    public static final double AUTO_ALIGN_MOVE_BACK_DURATION = .25;
   }
 
   public class Funnel {
@@ -314,7 +329,7 @@ public class Constants {
       public static final double ELEVATOR_kP = 1.6;
       public static final double ELEVATOR_kI = 0.125;
       public static final double ELEVATOR_kD = 0.0;
-      public static final double ELEVATOR_kF = 0.605;
+      public static final double ELEVATOR_kF = 0.58;
       public static final double ELEVATOR_kV = 0.0;
       public static final double ELEVATOR_kA = 0.0;
       public static final double ELEVATOR_kS = 0.0;
@@ -382,7 +397,7 @@ public class Constants {
       new EndEffectorSetpointConstants(0.0, WRIST_STOW_POSITION_ALGAE, WRIST_STOW_POSITION_ALGAE);
 
     public static final EndEffectorSetpointConstants CORAL_GROUND = 
-      new EndEffectorSetpointConstants(0.0, 0.0, WRIST_STOW_POSITION_CORAL);
+      new EndEffectorSetpointConstants(0.0, 0.3941, WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_STOW = 
       new EndEffectorSetpointConstants(0.0, WRIST_STOW_POSITION_CORAL, WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_L1 = 

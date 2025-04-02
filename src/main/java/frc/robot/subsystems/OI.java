@@ -80,7 +80,7 @@ public class OI {
 
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.INTAKE)
           .and(coralToggle)
-          .whileTrue(collector.intakeCoralCommand(true));
+          .whileTrue(collector.intakeCoralCommand(true, elevator::getEndEffectorSetpoint));
 
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.EXPEL)
           .and(coralToggle)
@@ -88,7 +88,7 @@ public class OI {
 
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.INTAKE)
           .and(algaeToggle)
-          .whileTrue(collector.intakeAlgaeCommand(true));
+          .whileTrue(collector.intakeAlgaeCommand(true, elevator::getEndEffectorSetpoint));
 
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.EXPEL)
           .and(algaeToggle)
@@ -152,10 +152,8 @@ public class OI {
         collector,
         this::getInstructedXMetersPerSecond,
         this::getInstructedYMetersPerSecond,
-        Constants.Drivebase.AUTO_ALIGN_DRIVE_SPEED,
         /*goingRight=*/true,
-        0.25,
-        "align right",
+        Constants.Drivebase.AUTO_ALIGN_DRIVE_SPEED_TELEOP,
         elevator::getEndEffectorSetpoint
       );
 
@@ -164,10 +162,8 @@ public class OI {
         collector,
         this::getInstructedXMetersPerSecond,
         this::getInstructedYMetersPerSecond,
-        Constants.Drivebase.AUTO_ALIGN_DRIVE_SPEED,
         /*goingRight=*/false,
-        0.25,
-        "align left",
+        Constants.Drivebase.AUTO_ALIGN_DRIVE_SPEED_TELEOP,
         elevator::getEndEffectorSetpoint
       );
 

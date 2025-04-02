@@ -5,6 +5,7 @@
 package frc.robot;
 
 import java.util.Optional;
+import java.util.function.DoubleSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -21,6 +22,7 @@ import frc.robot.utils.error.ErrorGroup;
 import frc.robot.utils.ConditionalSmartDashboard;
 import frc.robot.utils.error.DiagnosticSubsystem;
 import frc.robot.commands.MoveEndEffector;
+import frc.robot.commands.AutomatedScoring.AutomatedLidarScoring;
 import frc.robot.commands.drivebase.TrapezoidProfileDriveOut;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.*;
@@ -31,23 +33,17 @@ public class Robot extends TimedRobot {
   // replace subsystem with Optional.empty() when you do not wish to use add all
   // subsystems. ENSURE_COMPETITION_READY_SUBSYSTEMS must be false for testing.
 
-  Optional<Drivebase> drivebase = Optional.empty();
-  Optional<Elevator> elevator = Optional.empty();
-  Optional<Collector> collector = Optional.empty();
-  Optional<Wrist> wrist = Optional.empty();
-  Optional<Climber> climber = Optional.of(new Climber());
-  Optional<Funnel> funnel = Optional.empty();
+  
+  Optional<Elevator> elevator;
+  Optional<Collector> collector;
+  Optional<Wrist> wrist;
+  Optional<Climber> climber;
+  Optional<Funnel> funnel;
+  Optional<Drivebase> drivebase;
 
   private SendableChooser<Command> autoChooser;
 
-  OI oi = new OI( 
-    elevator,
-    collector,
-    wrist,
-    climber,
-    drivebase,
-    funnel
-  );
+  OI oi;
 
   ErrorGroup errorGroup = new ErrorGroup();
   Command automatedVisionMountTest;
@@ -57,6 +53,70 @@ public class Robot extends TimedRobot {
 
   public Robot() {
     DataLogManager.start();
+
+    elevator = Optional.of(new Elevator());
+    collector = Optional.of(new Collector());
+    wrist = Optional.of(new Wrist());
+    climber = Optional.empty();
+    funnel = Optional.empty();
+
+    if (elevator.isPresent() && wrist.isPresent()) {
+      // move to pos coral 
+      NamedCommands.registerCommand("Coral to L4",
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_L4));
+      
+      NamedCommands.registerCommand("Coral to L3", 
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_L3));
+  
+      NamedCommands.registerCommand("Coral to L2", 
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_L2));
+  
+      NamedCommands.registerCommand("Coral to L1", 
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_L1));
+  
+      NamedCommands.registerCommand("Coral to Ground", 
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_GROUND));
+  
+      NamedCommands.registerCommand("Coral to Stow", 
+      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.CORAL_STOW));
+  
+      // move to pos Algae
+      NamedCommands.registerCommand("Algae to L2 ", 
+      new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_L2));
+  
+      NamedCommands.registerCommand("Algae to L3", 
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_L3));
+  
+      NamedCommands.registerCommand("Algae to Ground", 
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_GROUND));
+  
+      NamedCommands.registerCommand("Algae to Processor", 
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_PROCESSOR));
+      
+      NamedCommands.registerCommand("Algea to Stow", 
+        new MoveEndEffector(elevator.get(), wrist.get(), Constants.EndEffectorSetpoints.ALGAE_STOW));
+  
+      // Collector 
+      NamedCommands.registerCommand("Expel Coral", collector.get().expelCoralCommand(true, elevator.get()::getEndEffectorSetpoint));
+  
+      NamedCommands.registerCommand("Expel Algae",collector.get().expelAlgaeCommand(true));
+  
+      NamedCommands.registerCommand("Intake Coral", collector.get().intakeCoralCommand(true, elevator.get()::getEndEffectorSetpoint));
+  
+      NamedCommands.registerCommand("Intake Algae ", collector.get().intakeAlgaeCommand(true, elevator.get()::getEndEffectorSetpoint));
+  
+    }
+
+    drivebase = Optional.of(new Drivebase());
+
+    oi = new OI( 
+      elevator,
+      collector,
+      wrist,
+      climber,
+      drivebase,
+      funnel
+    );
 
     if (Constants.Testing.ENSURE_COMPETITION_READY_SUBSYSTEMS) {
       if (drivebase.isEmpty()) {
@@ -147,10 +207,33 @@ public class Robot extends TimedRobot {
 
       NamedCommands.registerCommand("Expel Algae",collector.get().expelAlgaeCommand(true));
 
-      NamedCommands.registerCommand("Intake Coral", collector.get().intakeCoralCommand(true));
+      NamedCommands.registerCommand("Intake Coral", collector.get().intakeCoralCommand(true, elevator.get()::getEndEffectorSetpoint));
 
-      NamedCommands.registerCommand("Intake Algae ", collector.get().intakeAlgaeCommand(true));
+      NamedCommands.registerCommand("Intake Algae ", collector.get().intakeAlgaeCommand(true, elevator.get()::getEndEffectorSetpoint));
 
+      NamedCommands.registerCommand("Lidar Score Right",
+        new AutomatedLidarScoring(
+          drivebase.get(),
+          collector.get(),
+          (DoubleSupplier)() -> 0.0, 
+          (DoubleSupplier)() -> 0.0,
+          true, 
+          Constants.Drivebase.AUTO_ALIGN_DRIVE_SPEED_AUTO,
+          elevator.get()::getEndEffectorSetpoint
+        )
+      );
+
+      NamedCommands.registerCommand("Lidar Score Left",
+        new AutomatedLidarScoring(
+          drivebase.get(),
+          collector.get(),
+          (DoubleSupplier)() -> 0.0, 
+          (DoubleSupplier)() -> 0.0,
+          false, 
+          Constants.Drivebase.AUTO_ALIGN_DRIVE_SPEED_AUTO,
+          elevator.get()::getEndEffectorSetpoint
+        )
+      );
     }
   }
 
