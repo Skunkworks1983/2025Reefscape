@@ -85,7 +85,7 @@ public class Constants {
     // must be constructed and assigned to the correct variable in Robot.java.
     // If some subsystems are not created and this value is true, an exeption
     // will be thrown.
-    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = true;
+    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = false;
     public static final boolean SMART_PID_ENABLED = false;
 
     public static enum Robot {
@@ -190,16 +190,16 @@ public class Constants {
 
     public static SwerveModuleConstants MODULES[] = (Testing.ROBOT == Testing.Robot.Comp2025) ? new SwerveModuleConstants[] {
       new SwerveModuleConstants(
-        10, 11, 12, -0.337158 + .75, new Translation2d(-MODULE_OFFSET, MODULE_OFFSET), "Back Left"
+        10, 11, 12, -0.441406, new Translation2d(-MODULE_OFFSET, MODULE_OFFSET), "Back Left"
       ),
       new SwerveModuleConstants(
-        13, 14, 15, -0.289795 + .25, new Translation2d(-MODULE_OFFSET, -MODULE_OFFSET), "Back Right"
+        13, 14, 15, -0.089844, new Translation2d(-MODULE_OFFSET, -MODULE_OFFSET), "Back Right"
       ),
       new SwerveModuleConstants(
-        16, 17, 18, 0.476318 - .75, new Translation2d(MODULE_OFFSET, MODULE_OFFSET), "Front Left"
+        16, 17, 18, 0.213379, new Translation2d(MODULE_OFFSET, MODULE_OFFSET), "Front Left"
       ),
       new SwerveModuleConstants(
-        19, 20, 21, -0.353027 + .75, new Translation2d(MODULE_OFFSET, -MODULE_OFFSET), "Front Right"
+        19, 20, 21, -0.120117, new Translation2d(MODULE_OFFSET, -MODULE_OFFSET), "Front Right"
       )
     } :
     new SwerveModuleConstants[] {

@@ -37,7 +37,7 @@ public class Robot extends TimedRobot {
   Optional<Elevator> elevator;
   Optional<Collector> collector;
   Optional<Wrist> wrist;
-  Optional<Climber> climber;
+  //Optional<Climber> climber;
   Optional<Funnel> funnel;
   Optional<Drivebase> drivebase;
 
@@ -54,10 +54,10 @@ public class Robot extends TimedRobot {
   public Robot() {
     DataLogManager.start();
 
-    elevator = Optional.of(new Elevator());
-    collector = Optional.of(new Collector());
-    wrist = Optional.of(new Wrist());
-    climber = Optional.empty();
+    elevator = Optional.empty();
+    collector = Optional.empty();
+    wrist = Optional.empty();
+    //climber = Optional.empty();
     funnel = Optional.empty();
 
     if (elevator.isPresent() && wrist.isPresent()) {
@@ -113,7 +113,7 @@ public class Robot extends TimedRobot {
       elevator,
       collector,
       wrist,
-      climber,
+      //climber,
       drivebase,
       funnel
     );
@@ -131,9 +131,9 @@ public class Robot extends TimedRobot {
       if (wrist.isEmpty()) {
         throw new IllegalStateException("Wrist not present");
       }
-      if (climber.isPresent()) {
-        throw new IllegalStateException("Climber is present"); // Climber will not be part of our robot in our first match
-      }
+      // if (climber.isPresent()) {
+      //   throw new IllegalStateException("Climber is present"); // Climber will not be part of our robot in our first match
+      // }
       if (funnel.isPresent()) {
         throw new IllegalStateException("Funnel is present"); // Funnel will not be part of our robot in our first match
       }

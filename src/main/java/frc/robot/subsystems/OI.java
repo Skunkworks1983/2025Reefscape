@@ -68,7 +68,7 @@ public class OI {
       Optional<Elevator> optionalElevator,
       Optional<Collector> optionalCollector,
       Optional<Wrist> optionalWrist,
-      Optional<Climber> optionalClimber,
+      //Optional<Climber> optionalClimber,
       Optional<Drivebase> optionalDrivebase,
       Optional<Funnel> optionalFunnel) {
     Trigger algaeToggle = new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.ALGAE_TOGGLE);
@@ -186,13 +186,13 @@ public class OI {
 
     }
 
-    if (optionalClimber.isPresent()) {
-      Climber climber = optionalClimber.get();
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.CLIMBER_GOTO_MAX)
-          .onTrue(climber.goToPositionAfterMagnetSensor(Constants.Climber.CLIMBER_MAX));
-      new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.CLIMBER_GOTO_MIN)
-          .onTrue(climber.goToPositionAfterMagnetSensor(Constants.Climber.CLIMBER_MIN));
-    }
+    // if (optionalClimber.isPresent()) {
+    //   Climber climber = optionalClimber.get();
+    //   new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.CLIMBER_GOTO_MAX)
+    //       .onTrue(climber.goToPositionAfterMagnetSensor(Constants.Climber.CLIMBER_MAX));
+    //   new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.CLIMBER_GOTO_MIN)
+    //       .onTrue(climber.goToPositionAfterMagnetSensor(Constants.Climber.CLIMBER_MIN));
+    // }
 
     if (optionalFunnel.isPresent()) {
       Funnel funnel = optionalFunnel.get();
