@@ -275,7 +275,7 @@ public class Collector extends SubsystemBase {
       boolean stopOnEnd) {
     return runEnd(
       () -> {
-        setCollectorThrottle(-1);
+        setCollectorThrottle(Constants.Collector.Speeds.ALGAE_EXPEL_SPEED);
       },
       () -> {
         if (stopOnEnd) {

@@ -484,7 +484,6 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     ).raceWith(
       Commands.runEnd(
         () -> {
-          System.out.println("Lidar left: " + dualLidar.getLidarLeftOutput() + " Lidar right: " + dualLidar.getLidarRightOutput() + " battery voltage: " + RobotController.getBatteryVoltage());
         },
         () -> {
           SmartDashboard.putBoolean("Auto Aligning", false);

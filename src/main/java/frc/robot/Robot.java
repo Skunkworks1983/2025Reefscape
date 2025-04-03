@@ -230,11 +230,7 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {}
 
   @Override
-  public void teleopInit() {
-    System.out.print("Blue Count " + drivebase.get().blueCount[0]);
-    System.out.print("Red Count " + drivebase.get().redCount[0]);
-    System.out.print("Unknown Count " + drivebase.get().unknownCount[0]);
-  }
+  public void teleopInit() {}
   
   @Override
   public void teleopPeriodic() {

@@ -92,7 +92,6 @@ public class OI {
           .and(algaeToggle)
           .whileTrue(collector.expelAlgaeCommand(true));
 
-      // algaeToggle.onChange(collector.holdPositionCommand());
     }
 
     if (optionalDrivebase.isPresent()) {
@@ -209,8 +208,8 @@ public class OI {
       Wrist wrist = optionalWrist.get();
       Collector collector = optionalCollector.get();
 
-      JoystickButton elevatorBumpUp = new JoystickButton(buttonJoystick, 4);
-      JoystickButton elevatorBumpDown = new JoystickButton(buttonJoystick, 2);
+      JoystickButton elevatorBumpUp = new JoystickButton(buttonJoystick, Buttons.ELEVATOR_BUMP_UP_BUTTON);
+      JoystickButton elevatorBumpDown = new JoystickButton(buttonJoystick, Buttons.ELEVATOR_BUMP_DOWN_BUTTON);
       JoystickButton endEffectorGround = new JoystickButton(buttonJoystick, Buttons.GOTO_GROUND);
       JoystickButton endEffectorStow = new JoystickButton(buttonJoystick, Buttons.GOTO_STOW);
       JoystickButton endEffectorToScoreLow = new JoystickButton(buttonJoystick, Buttons.GOTO_SCORE_LOW);
@@ -220,11 +219,11 @@ public class OI {
 
       DoubleSupplier getOffset = () -> {
         if (elevatorBumpUp.getAsBoolean()) {
-          return 1.0;
+          return Constants.Elevator.ELEVATOR_BUMP_UP;
         }
 
         if (elevatorBumpDown.getAsBoolean()) {
-          return -1.0;
+          return Constants.Elevator.ELEVATOR_BUMP_DOWN;
         }
 
         return 0.0;

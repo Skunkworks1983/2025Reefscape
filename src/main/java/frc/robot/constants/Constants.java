@@ -334,6 +334,8 @@ public class Constants {
     public static final double MOTOR_ROTATIONS_TO_METERS = 1;
     public static final double METERS_TO_MOTOR_ROTATIONS = 1; // We need to fix Transforms after Competition
 
+    public static final double ELEVATOR_BUMP_UP = 1.0;
+    public static final double ELEVATOR_BUMP_DOWN = -1.0;
 
     // TODO: Priority: Tuning
     public class PIDs {
@@ -502,6 +504,9 @@ public class Constants {
 
         public static final int FUNNEL_GO_TO_MAX = 0;
         public static final int FUNNEL_GO_TO_MIN = 0;
+
+        public static final int ELEVATOR_BUMP_DOWN_BUTTON = 0;
+        public static final int ELEVATOR_BUMP_UP_BUTTON = 0;
       }
     }
   }
