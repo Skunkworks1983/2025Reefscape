@@ -14,7 +14,11 @@ import frc.robot.subsystems.Collector;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ExpelWhenAtElevatorPos extends SequentialCommandGroup {
-  /** Creates a new ExpelWhenAtElevatorPos. */
+  /** This command is used to expel algae based on if the elevator has passed a certan position. This
+   * is Currently being used to add velocity onto a launched peice of algae by releasing it halfway
+   * on the way up to L4 position to make sure the algae makes it into the reef.
+  */
+
   public ExpelWhenAtElevatorPos(
     Collector collector,
     DoubleSupplier elevatorPos,
