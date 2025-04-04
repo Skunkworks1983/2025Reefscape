@@ -36,6 +36,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -57,6 +58,8 @@ import frc.robot.utils.error.DiagnosticSubsystem;
 import org.json.simple.parser.ParseException;
 
 public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
+
+  final boolean shouldFlip;
 
   private OdometryThread odometryThread;
   private Phoenix6Odometry phoenix6Odometry = new Phoenix6Odometry();
@@ -82,6 +85,11 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
   private Pose2d cachedEstimatedRobotPose = new Pose2d();
   private Rotation2d cachedGyroHeading = new Rotation2d();
+
+  //DEBUG
+  public int[] redCount = {0};
+  public int[] blueCount = {0};
+  public int[] unknownCount = {0};
 
   public Drivebase() {
     // Creates a pheonix 6 pro state based on the gyro -- the only sensor owned
@@ -152,6 +160,16 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       Constants.Drivebase.pathPlannerOrderedModules
     );
 
+    
+
+    while (!(DriverStation.getAlliance()).isPresent()) {
+      
+    }
+    shouldFlip = DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
+
+    Optional<Alliance> alliance = DriverStation.getAlliance(); 
+
+
     positionEstimator.stateLock.readLock().lock();
     AutoBuilder.configure(
       positionEstimator::getPose,
@@ -170,18 +188,30 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
           Constants.RoboRIOInfo.UPDATE_PERIOD
       ),
       config,
+//      () -> shouldFlip,
       () -> {
           // Boolean supplier that controls when the path will be mirrored for the red alliance
           // This will flip the path being followed to the red side of the field.
           // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-          Optional<Alliance> alliance = DriverStation.getAlliance();
-          return alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red;
+          if(alliance.isPresent()){ 
+            if(alliance.get() == DriverStation.Alliance.Red){ 
+              redCount[0]++;
+            }
+            else {
+              blueCount[0]++;
+            }
+          } else{
+            unknownCount[0]++;
+          }
+           return shouldFlip;
       },
       this
     );
     positionEstimator.stateLock.readLock().unlock();
     setAllModulesTurnPidActive();
+
+    SmartDashboard.putBoolean("Auto Aligning", false); // Putting to SmartDashboard so you can pull it up before command actually starts
   }
 
   @Override
@@ -191,8 +221,8 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     SmartDashboard.putNumber("Gyro Position", gyro.getYaw().getValueAsDouble());
     SmartDashboard.putBoolean("Lidar Right", dualLidar.isLidarRightTripped.getAsBoolean());
     SmartDashboard.putBoolean("Lidar Left", dualLidar.isLidarLeftTripped.getAsBoolean());
-    SmartDashboard.putNumber("Lidar Right Distance", dualLidar.lidarDistanceRight);
-    SmartDashboard.putNumber("Lidar Left Distance", dualLidar.lidarDistanceLeft);
+    SmartDashboard.putNumber("Lidar Right Distance", dualLidar.getLidarRightOutput());
+    SmartDashboard.putNumber("Lidar Left Distance", dualLidar.getLidarLeftOutput());
   }
 
   /**
@@ -254,8 +284,8 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
   }
 
   public void resetGyroHeading() {
-    Optional<Alliance> alliance = DriverStation.getAlliance();
-    if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
+    
+    if (shouldFlip) {
       resetGyroHeading(Rotation2d.fromDegrees(180));
     }
     else {
@@ -352,11 +382,6 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     return Commands.parallel(swerveModuleCommandArray);
   }
 
-  public static Alliance getAlliance() {
-    Optional<Alliance> alliance = DriverStation.getAlliance();
-    return alliance.isPresent() ? alliance.get() : Alliance.Blue;
-  }
-
   /**
    * @return The swerve drive command to be used in Teleop. Heading is corrected with PID.
    */
@@ -399,6 +424,18 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
         )
         .repeatedly();
   }
+  public DualLidar getDualLidar(){
+    return dualLidar;
+  }
+
+  public boolean AREWEREALLYGOINGRIGHT(boolean goingRight, Rotation2d targetHeading){
+    if(goingRight == TeleopFeatureUtils.isCloseSideOfReef(targetHeading)) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
 
   public Command getSwerveAlignCoral(
       DoubleSupplier getXMetersPerSecond,
@@ -418,6 +455,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
               true
       ).beforeStarting(
         () -> {
+          SmartDashboard.putBoolean("Auto Aligning", true);
           targetHeading[0] = TeleopFeatureUtils.getCoralCycleAngleNoOdometry(true, cachedGyroHeading);
           System.out.println("Target Heading: " + targetHeading[0] + " X: " + TeleopFeatureUtils.getReefFaceSpeedX(targetHeading[0], newAlignSpeed) + " Y: " + TeleopFeatureUtils.getReefFaceSpeedY(targetHeading[0], newAlignSpeed));
         }
@@ -443,6 +481,14 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
         () -> 0, 
         true
       ).withTimeout(0.04)
+    ).raceWith(
+      Commands.runEnd(
+        () -> {
+        },
+        () -> {
+          SmartDashboard.putBoolean("Auto Aligning", false);
+        }
+      )
     );
   }
 
@@ -500,8 +546,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     ).beforeStarting(
             () -> {
               setAllModulesTurnPidActive();
-              Optional<Alliance> alliance = DriverStation.getAlliance();
-              if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Blue) {
+              if (!shouldFlip) {
                 fieldOrientationMultiplier[0] = 1;
               } else {
                 fieldOrientationMultiplier[0] = -1;

@@ -272,7 +272,7 @@ public class VisionConstants {
         );
 
       public static final VisionIOConstants[] IO_CONSTANTS = {
-        new VisionIOConstantsPhotonVision(CAMERA_0_NAME, ROBOT_TO_FR_MAGNET.plus(FR_MAGNET_TO_CAMERA_0)),
+        //new VisionIOConstantsPhotonVision(CAMERA_0_NAME, ROBOT_TO_FR_MAGNET.plus(FR_MAGNET_TO_CAMERA_0)),
       };
     }
 

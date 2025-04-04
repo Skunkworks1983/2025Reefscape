@@ -53,11 +53,13 @@ public class Constants {
 
     // Measured in amps
     public static final double KRAKEN_CURRENT_LIMIT_VALUE = 90.0;
+    public static final double KRAKEN_CURRENT_LIMIT_DRIVEBASE_DRIVE_VALUE = 75.0;
     public static final double MINI_KRAKEN_CURRENT_LIMIT_VALUE = 70.0;
     public static final int NEO_550_CURRENT_LIMIT_VALUE = 25; // not used
 
     public static final CurrentLimitsConfigs KRAKEN_CURRENT_LIMIT_CONFIG;
     public static final CurrentLimitsConfigs MINI_KRAKEN_CURRENT_LIMIT_CONFIG;
+    public static final CurrentLimitsConfigs KRAKEN_CURRENT_LIMIT_CONFIG_DRIVEBASE_DRIVE;
 
     static {
       KRAKEN_CURRENT_LIMIT_CONFIG = new CurrentLimitsConfigs();
@@ -76,6 +78,15 @@ public class Constants {
 
       MINI_KRAKEN_CURRENT_LIMIT_CONFIG.StatorCurrentLimitEnable 
         = MINI_KRAKEN_CURRENT_LIMIT_CONFIG.SupplyCurrentLimitEnable
+        = true;
+
+      KRAKEN_CURRENT_LIMIT_CONFIG_DRIVEBASE_DRIVE = new CurrentLimitsConfigs();
+      KRAKEN_CURRENT_LIMIT_CONFIG_DRIVEBASE_DRIVE.StatorCurrentLimit 
+        = KRAKEN_CURRENT_LIMIT_CONFIG_DRIVEBASE_DRIVE.SupplyCurrentLimit
+        = KRAKEN_CURRENT_LIMIT_DRIVEBASE_DRIVE_VALUE;
+
+        KRAKEN_CURRENT_LIMIT_CONFIG_DRIVEBASE_DRIVE.StatorCurrentLimitEnable 
+        = KRAKEN_CURRENT_LIMIT_CONFIG_DRIVEBASE_DRIVE.SupplyCurrentLimitEnable
         = true;
     };
   }
@@ -115,11 +126,11 @@ public class Constants {
 
     public class Speeds {
       public static final double CORAL_INTAKE_SLOW_SPEED = 8.0; //meters per sec
-      public static final double CORAL_INTAKE_FAST_SPEED = 18.0; //meters per sec 
+      public static final double CORAL_INTAKE_FAST_SPEED = 22.0; //meters per sec 
       public static final double CORAL_EXPEL_SLOW_SPEED = 3.0; //meters per sec
       public static final double CORAL_EXPEL_FAST_SPEED = 10.0; //meters per sec 
-      public static final double ALGAE_INTAKE_SPEED_SLOW = 0.25; // throttle pct output
-      public static final double ALGAE_INTAKE_SPEED_FAST = 0.5;
+      public static final double ALGAE_INTAKE_SPEED_SLOW = 0.2; // throttle pct output
+      public static final double ALGAE_INTAKE_SPEED_FAST = 1.0;
       public static final double ALGAE_EXPEL_SPEED = -20.0; //meters per sec
 
       public static final double SPEED_MULIPILER_LEFT = 0.75;
@@ -129,7 +140,7 @@ public class Constants {
     public static final double END_COUNT_TICK_COUNTER_ALGAE = 3;
     public static final double END_COUNT_TICK_COUNTER_CORAL = 7.0;
     public static final double COLLECTOR_AMPS_BEFORE_CUTTOF = 5.0;
-    public static final double ALGAE_AMP_CUT_OFF = 10.0;
+    public static final double ALGAE_AMP_CUT_OFF = 40.0;
 
       public static final boolean SMART_PID_ENABLED = false;
 
@@ -159,10 +170,10 @@ public class Constants {
     public static final int PIGEON_ID = Testing.ROBOT == Testing.Robot.Comp2025 ? 22 : 26;
     public static final int LIDAR_RIGHT_DATA_PORT = 8;
     public static final int LIDAR_RIGHT_TRIGGER_DISTANCE = 60;
-    public static final int LIDAR_RIGHT_DATA_CUTOFF = 30000;
+    public static final int LIDAR_RIGHT_DATA_CUTOFF = 2000;
     public static final int LIDAR_LEFT_DATA_PORT = 4;
     public static final int LIDAR_LEFT_TRIGGER_DISTANCE = 60;
-    public static final int LIDAR_LEFT_DATA_CUTOFF = 30000;
+    public static final int LIDAR_LEFT_DATA_CUTOFF = 2000;
     public static final int LIDAR_LEFT_TRIGGER_PORT = 3;
     public static final int LIDAR_RIGHT_TRIGGER_PORT = 7;
     public static final double MAX_METERS_PER_SECOND = 4.5;
@@ -274,7 +285,7 @@ public class Constants {
     public static final double FIELD_Y_LENGTH = 8.05; // Meters
     public static final double SKEW_PROPORTIONAL = .065;
     public static final double CURRENT_LIMIT = 100.0;
-    public static final double AUTO_ALIGN_MOVE_BACK_DURATION = .25;
+    public static final double AUTO_ALIGN_MOVE_BACK_DURATION = .325;
   }
 
   public class Funnel {
@@ -312,7 +323,7 @@ public class Constants {
     public static final double TOLORENCE_METERS_FOR_SETPOINT = 0.0;
     // This tolerance value will be used for moving to a setpoint
     // using the MoveToPositionCommand.
-    public static final double TOLERENCE_METERS_FOR_MOVE_TO_POSITION = 0.2; // TODO: Priority: Tuning
+    public static final double TOLERENCE_METERS_FOR_MOVE_TO_POSITION = 0.25; // TODO: Priority: Tuning
 
     // In meters
     public static final double MAX_HEIGHT_CARRIAGE = 1.527175;
@@ -323,6 +334,8 @@ public class Constants {
     public static final double MOTOR_ROTATIONS_TO_METERS = 1;
     public static final double METERS_TO_MOTOR_ROTATIONS = 1; // We need to fix Transforms after Competition
 
+    public static final double ELEVATOR_BUMP_UP = 1.0;
+    public static final double ELEVATOR_BUMP_DOWN = -1.0;
 
     // TODO: Priority: Tuning
     public class PIDs {
@@ -338,8 +351,11 @@ public class Constants {
     }
 
     public class Profile {
-      public static final double MAX_VELOCITY = 55.0;
-      public static final double MAX_ACCELERATION = 81.0;
+      public static final double MAX_VELOCITY = 60.0;
+      public static final double MAX_ACCELERATION = 115.0;
+
+      public static final double MAX_VELOCITY_NET = 60.0;
+      public static final double MAX_ACCELERATION_NET = 145.0;
     }
   }
 
@@ -364,7 +380,7 @@ public class Constants {
     }
 
     public static final double WRIST_MAX_VELOCITY = 0.7;
-    public static final double WRIST_MAX_ACCELERATION = 1.56;
+    public static final double WRIST_MAX_ACCELERATION = 1.75;
 
     public static final double WRIST_TOLERANCE = 0.02;
 
@@ -388,13 +404,13 @@ public class Constants {
     public static final EndEffectorSetpointConstants ALGAE_STOW = 
       new EndEffectorSetpointConstants(0.0, WRIST_PROSSESSOR_STOW_POSITION, WRIST_PROSSESSOR_STOW_POSITION);
     public static final EndEffectorSetpointConstants ALGAE_PROCESSOR = 
-      new EndEffectorSetpointConstants(10.8, 0.3941, WRIST_PROSSESSOR_STOW_POSITION);
+      new EndEffectorSetpointConstants(8.8, 0.3941, WRIST_PROSSESSOR_STOW_POSITION);
     public static final EndEffectorSetpointConstants ALGAE_L2 = 
       new EndEffectorSetpointConstants(19.018 + 5, 0.3941, WRIST_STOW_POSITION_ALGAE);
     public static final EndEffectorSetpointConstants ALGAE_L3 = 
       new EndEffectorSetpointConstants(29.77 + 5, 0.3941, WRIST_STOW_POSITION_ALGAE);
     public static final EndEffectorSetpointConstants ALGAE_NET = 
-      new EndEffectorSetpointConstants(0.0, WRIST_STOW_POSITION_ALGAE, WRIST_STOW_POSITION_ALGAE);
+      new EndEffectorSetpointConstants(34.29, 0.1441, 0.1441);
 
     public static final EndEffectorSetpointConstants CORAL_GROUND = 
       new EndEffectorSetpointConstants(0.0, 0.3941, WRIST_STOW_POSITION_CORAL);
@@ -403,9 +419,9 @@ public class Constants {
     public static final EndEffectorSetpointConstants CORAL_L1 = 
       new EndEffectorSetpointConstants(12.0, 0.0641, WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_L2 = 
-      new EndEffectorSetpointConstants(13.756, 0.0, WRIST_STOW_POSITION_CORAL);
+      new EndEffectorSetpointConstants(12.756 + 0.5 + 0.75, (WRIST_PROSSESSOR_STOW_POSITION / 2), WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_L3 = 
-      new EndEffectorSetpointConstants(24.914, 0.0, WRIST_STOW_POSITION_CORAL);
+      new EndEffectorSetpointConstants(23.914 + 0.75, (WRIST_PROSSESSOR_STOW_POSITION / 2), WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_L4 = 
       new EndEffectorSetpointConstants(39.0, 0.0, WRIST_STOW_POSITION_CORAL);
   };
@@ -488,6 +504,9 @@ public class Constants {
 
         public static final int FUNNEL_GO_TO_MAX = 0;
         public static final int FUNNEL_GO_TO_MIN = 0;
+
+        public static final int ELEVATOR_BUMP_DOWN_BUTTON = 0;
+        public static final int ELEVATOR_BUMP_UP_BUTTON = 0;
       }
     }
   }
