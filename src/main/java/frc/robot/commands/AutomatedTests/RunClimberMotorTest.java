@@ -57,16 +57,16 @@ public class RunClimberMotorTest extends Command {
   @Override
   public void initialize() {
     startingPos = climber.getHeight();
-    maxCurrent = climber.getCimbMotorCurrent();
+    maxCurrent = climber.getClimberMotorCurrent();
     currentExceeds = false;
-    climber.setClimberSetPoint(startingPos + Constants.Testing.CLIMBER_HEIGHT_CHANGE);
+    climber.setClimberSetPointMeters(startingPos + Constants.Testing.CLIMBER_HEIGHT_CHANGE);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (climber.getCimbMotorCurrent() > maxCurrent) {
-      maxCurrent = climber.getCimbMotorCurrent();
+    if (climber.getClimberMotorCurrent() > maxCurrent) {
+      maxCurrent = climber.getClimberMotorCurrent();
     }
     if (maxCurrent > Constants.Testing.CLIMBER_CURRENT_TOLERANCE) //makes sure that the climber current has not exeeded a pre-determained level
     {
@@ -93,7 +93,7 @@ public class RunClimberMotorTest extends Command {
     }
     setTest.accept(climberCurrentTooHigh);
 
-    climber.setClimberSetPoint(startingPos);
+    climber.setClimberSetPointMeters(startingPos);
   }
 
   // Returns true when the command should end.
