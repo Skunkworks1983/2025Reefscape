@@ -194,19 +194,19 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
           // This will flip the path being followed to the red side of the field.
           // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-          // if(alliance.isPresent()){ 
-          //   if(alliance.get() == DriverStation.Alliance.Red){ 
-          //     redCount[0]++;
-          //     System.out.println("Red count!");
-          //   }
-          //   else {
-          //     blueCount[0]++;
-          //     System.out.println("Blue count!");
-          //   }
-          // } else{
-          //   unknownCount[0]++;
-          //   System.out.println("Unknown count!");
-          // }
+          if(alliance.isPresent()){ 
+            if(alliance.get() == DriverStation.Alliance.Red){ 
+              redCount[0]++;
+              System.out.println("Red count!");
+            }
+            else {
+              blueCount[0]++;
+              System.out.println("Blue count!");
+            }
+          } else{
+            unknownCount[0]++;
+            System.out.println("Unknown count!");
+          }
            return shouldFlip;
       },
       this
