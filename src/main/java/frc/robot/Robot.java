@@ -12,6 +12,8 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -211,6 +213,23 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
+    Optional<Alliance> alliance = DriverStation.getAlliance(); 
+    if(alliance.isPresent()){ 
+      if(alliance.get() == DriverStation.Alliance.Red){ 
+        drivebase.get().redCount[0]++;
+        System.out.println("Red count!");
+      }
+      else {
+        drivebase.get().blueCount[0]++;
+        System.out.println("Blue count!");
+      }
+    } else{
+      drivebase.get().unknownCount[0]++;
+      System.out.println("Unknown count!");
+    }
+    System.out.println("redCount" + drivebase.get().redCount[0]);
+    System.out.println("blueCount" + drivebase.get().blueCount[0]);
+    System.out.println("unknownCount" + drivebase.get().unknownCount[0]);
     CommandScheduler.getInstance().run();
     ConditionalSmartDashboard.updateConditions();
   }
@@ -243,9 +262,6 @@ public class Robot extends TimedRobot {
   
   @Override
   public void teleopPeriodic() {
-    System.out.println("redCount" + drivebase.get().redCount[0]);
-    System.out.println("blueCount" + drivebase.get().blueCount[0]);
-    System.out.println("unknownCount" + drivebase.get().unknownCount[0]);
     oi.putRotationJoystickToSmartDashboard();
     oi.putTranslationJoystickToSmartDashboard();
   }
