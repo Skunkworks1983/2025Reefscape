@@ -229,10 +229,23 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {}
 
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    if(drivebase.isPresent()) {
+      System.out.println("redCount" + drivebase.get().redCount[0]);
+      System.out.println("blueCount" + drivebase.get().blueCount[0]);
+      System.out.println("unknownCount" + drivebase.get().unknownCount[0]);
+      drivebase.get().redCount = new int[]{0};
+      drivebase.get().blueCount = new int[]{0};
+      drivebase.get().unknownCount = new int[]{0};
+    }
+
+  }
   
   @Override
   public void teleopPeriodic() {
+    System.out.println("redCount" + drivebase.get().redCount[0]);
+    System.out.println("blueCount" + drivebase.get().blueCount[0]);
+    System.out.println("unknownCount" + drivebase.get().unknownCount[0]);
     oi.putRotationJoystickToSmartDashboard();
     oi.putTranslationJoystickToSmartDashboard();
   }

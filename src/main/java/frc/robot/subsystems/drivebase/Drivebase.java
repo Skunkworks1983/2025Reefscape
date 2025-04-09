@@ -197,12 +197,15 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
           if(alliance.isPresent()){ 
             if(alliance.get() == DriverStation.Alliance.Red){ 
               redCount[0]++;
+              System.out.println("Red count!");
             }
             else {
               blueCount[0]++;
+              System.out.println("Blue count!");
             }
           } else{
             unknownCount[0]++;
+            System.out.println("Unknown count!");
           }
            return shouldFlip;
       },
