@@ -59,7 +59,9 @@ import org.json.simple.parser.ParseException;
 
 public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
-  final boolean shouldFlip;
+  public boolean shouldFlip() {
+    return DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
+  }
 
   private OdometryThread odometryThread;
   private Phoenix6Odometry phoenix6Odometry = new Phoenix6Odometry();
@@ -160,14 +162,6 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
       Constants.Drivebase.pathPlannerOrderedModules
     );
 
-    
-
-    while (!(DriverStation.getAlliance()).isPresent()) {
-      
-    }
-    shouldFlip = DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
-
-    Optional<Alliance> alliance = DriverStation.getAlliance(); 
 
 
     positionEstimator.stateLock.readLock().lock();
@@ -194,20 +188,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
           // This will flip the path being followed to the red side of the field.
           // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-          if(alliance.isPresent()){ 
-            if(alliance.get() == DriverStation.Alliance.Red){ 
-              redCount[0]++;
-              System.out.println("Red count!");
-            }
-            else {
-              blueCount[0]++;
-              System.out.println("Blue count!");
-            }
-          } else{
-            unknownCount[0]++;
-            System.out.println("Unknown count!");
-          }
-           return shouldFlip;
+           return shouldFlip();
       },
       this
     );
@@ -288,7 +269,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
   public void resetGyroHeading() {
     
-    if (shouldFlip) {
+    if (shouldFlip()) {
       resetGyroHeading(Rotation2d.fromDegrees(180));
     }
     else {
@@ -549,7 +530,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     ).beforeStarting(
             () -> {
               setAllModulesTurnPidActive();
-              if (!shouldFlip) {
+              if (!shouldFlip()) {
                 fieldOrientationMultiplier[0] = 1;
               } else {
                 fieldOrientationMultiplier[0] = -1;
