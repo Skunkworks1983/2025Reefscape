@@ -37,7 +37,7 @@ public class TeleopFeatureUtils {
    *  to the side of the field the robot is on.
    */
   public static Rotation2d getPointAtCoralStationAngle(Pose2d robotPose) {
-    if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
+    if (Drivebase.shouldFlip()) {
       return getTargetingAngle(
         getReefCenter(),
         robotPose
@@ -52,7 +52,7 @@ public class TeleopFeatureUtils {
   }
 
   public static Translation2d getReefCenter() {
-    return (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) ? 
+    return (Drivebase.shouldFlip()) ? 
       TeleopFeature.REEF_RED : TeleopFeature.REEF_BLUE;
   }
 
@@ -79,7 +79,7 @@ public class TeleopFeatureUtils {
     if (isHoldingCoral) {
       return Rotation2d.fromDegrees(Math.round(gyroHeading.getDegrees() / 60.0) * 60.0);
     } else {
-      if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
+      if (Drivebase.shouldFlip()) {
           if (
             Math.abs(TeleopFeature.RED_LEFT_CORAL_STATION_ANGLE.minus(gyroHeading).getDegrees()) <
             Math.abs(TeleopFeature.RED_RIGHT_CORAL_STATION_ANGLE.minus(gyroHeading).getDegrees())
@@ -104,7 +104,7 @@ public class TeleopFeatureUtils {
   }
 
   public static boolean isCloseSideOfReef(Rotation2d gyroHeading) {
-    if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
+    if (Drivebase.shouldFlip()) {
       return (Math.abs(MathUtil.inputModulus(gyroHeading.getDegrees(), -180, 180)) > 90);
     }
     else {
