@@ -7,21 +7,15 @@ package frc.robot.subsystems.vision;
 import java.util.LinkedList;
 import java.util.List;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.vision.VisionConstants;
 import frc.robot.constants.vision.VisionIOConstants;
-import frc.robot.subsystems.vision.VisionIO.PoseObservation;
-import frc.robot.subsystems.vision.VisionIO.VisionIOData;
-import frc.robot.utils.ConditionalSmartDashboard;
+import frc.robot.subsystems.vision.VisionIO.VisionMeasurement;
 
 /**
  * A subsystem that takes a VisionConsumer and any number of
@@ -33,23 +27,24 @@ import frc.robot.utils.ConditionalSmartDashboard;
 public class Vision extends SubsystemBase {
 
   private VisionConsumer consumer;
-  private LinkedList<VisionIO> io = new LinkedList<VisionIO>();
+  private LinkedList<VisionIO> ios = new LinkedList<VisionIO>();
   private List<Field2d> field2ds = new LinkedList<Field2d>();
-  private final AprilTagFieldLayout aprilTagLayout = 
-    AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
   
   public Vision(VisionConsumer consumer, VisionIOConstants... ioConstants) {
       this.consumer = consumer;
   
-      for (VisionIOConstants i : ioConstants) {
+      for (VisionIOConstants constants : ioConstants) {
         try {
-          VisionIO inited = i.init();
-          io.add(inited);
-          Field2d field = new Field2d();
-          SmartDashboard.putData(inited.getName() + " Odometry", field);
-          field2ds.add(field);
+          VisionIO initializedIO = constants.init();
+          ios.add(initializedIO);
+          Field2d field2d = new Field2d();
+          SmartDashboard.putData(initializedIO.getName() + " Odometry", field2d);
+          field2ds.add(field2d);
         } catch (Exception e) {
-          System.err.println("A Vision IO failed to initialize");
+          System.err.println( 
+            "A vision i/o failed to initialize. Double-check that the camera is plugged in" +
+            "and the camera is working."
+          );
           e.printStackTrace();
           continue;
         }      
@@ -58,46 +53,13 @@ public class Vision extends SubsystemBase {
   
     @Override
     public void periodic() {
-  
-      for (int i = 0; i < io.size(); i++) {
-        VisionIOData data = io.get(i).getLatestData();
-        for (PoseObservation observation : data.poseObservations) {
-
-          field2ds.get(i).setRobotPose(observation.estimatedPose().toPose2d());
-  
-          ConditionalSmartDashboard.putNumber(io.get(i).getName() + " Latest Ambiguity", observation.ambiguity());
-          ConditionalSmartDashboard.putNumber(io.get(i).getName() + " Latest Z Error", observation.estimatedPose().getZ());
-          ConditionalSmartDashboard.putNumber(io.get(i).getName() + " Average Tag Distance", observation.averageTagDistance());
-  
-          boolean rejectPose = 
-            observation.tagCount() == 0 ||
-            observation.ambiguity() > VisionConstants.MAX_AMBIGUITY ||
-            observation.estimatedPose().getZ() > VisionConstants.MAX_Z_ERROR ||
-            observation.estimatedPose().getX() < 0.0 ||
-            observation.estimatedPose().getX() > aprilTagLayout.getFieldLength() ||
-            observation.estimatedPose().getY() < 0.0 ||
-            observation.estimatedPose().getY() > aprilTagLayout.getFieldWidth() ||
-            observation.averageTagDistance() > VisionConstants.MAX_AVERAGE_TAG_DISTANCE;
-  
-          if (rejectPose) {
-            continue;
-          }
-          
-          double x = observation.averageTagDistance();
-
-          final double kA = 0.0329 + .005;
-          final double kB = -0.0222 + .005;
-          final double kC = 0.0048 + .005; // Adding a small value to constant term to decrease overall confidence
-
-          // This is the
-          double linearStdDev = (kA * Math.pow(x, 2)) + (kB * x) + kC;
-
-          ConditionalSmartDashboard.putNumber(io.get(i).getName() + " Linear Std Dev", linearStdDev);
-  
+      for(VisionIO io : ios) {
+        for(VisionMeasurement measurement : io.getUnreadMeasurements()) {
           consumer.accept(
-              observation.estimatedPose().toPose2d(),
-              observation.timestamp(),
-              VecBuilder.fill(linearStdDev, linearStdDev, VisionConstants.ANGULAR_STD_DEV));
+            measurement.estimatedPose().toPose2d(),
+            measurement.timestamp(),
+            measurement.stdDevs()
+          );
         }
       }
     }

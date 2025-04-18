@@ -1,24 +1,20 @@
 package frc.robot.subsystems.vision;
 
-import java.util.LinkedList;
 import java.util.List;
 
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 
 public interface VisionIO {
 
-    record PoseObservation(
-        double timestamp,
+    record VisionMeasurement(
         Pose3d estimatedPose,
-        double ambiguity,
-        int tagCount,
-        double averageTagDistance) {
+        double timestamp,
+        Matrix<N3, N1> stdDevs) {
     }
 
-    public class VisionIOData {
-        public List<PoseObservation> poseObservations = new LinkedList<PoseObservation>();
-    }
-
-    public VisionIOData getLatestData();
+    public List<VisionMeasurement> getUnreadMeasurements();
     public String getName();
 }

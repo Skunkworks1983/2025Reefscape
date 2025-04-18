@@ -1,19 +1,18 @@
 package frc.robot.subsystems.vision;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
 import org.photonvision.PhotonCamera;
-import org.photonvision.targeting.MultiTargetPNPResult;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.wpilibj.Timer;
-import frc.robot.constants.vision.VisionConstants;
 
 public class VisionIOPhotonVision implements VisionIO{
 
@@ -21,6 +20,7 @@ public class VisionIOPhotonVision implements VisionIO{
   private final Transform3d robotToCamera;
   private final PhotonCamera camera;
   private final AprilTagFieldLayout aprilTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+  private final double kAngularStdDev = 10.0;
 
   public VisionIOPhotonVision(String cameraName, Transform3d robotToCamera) {
     this.cameraName = cameraName;
@@ -29,9 +29,9 @@ public class VisionIOPhotonVision implements VisionIO{
   }
 
   @Override
-  public VisionIOData getUnreadResults() {
+  public List<VisionMeasurement> getUnreadMeasurements() {
 
-    VisionIOData data = new VisionIOData();
+    List<VisionMeasurement> measurements = new LinkedList<VisionMeasurement>();
 
     for (PhotonPipelineResult result : camera.getAllUnreadResults()) {
 
@@ -43,35 +43,33 @@ public class VisionIOPhotonVision implements VisionIO{
           Transform3d cameraToTarget = target.getBestCameraToTarget();
           Pose3d fieldToCamera = fieldToTarget.plus(cameraToTarget.inverse());
           Pose3d robotPose = fieldToCamera.plus(robotToCamera.inverse());
+          double distToTag = cameraToTarget.getTranslation().getNorm();
 
+          // Reject the pose if it's not within the field boundries.
           boolean rejectPose = 
             robotPose.getX() < 0.0 ||
             robotPose.getX() > aprilTagLayout.getFieldLength() ||
             robotPose.getY() < 0.0 ||
             robotPose.getY() > aprilTagLayout.getFieldWidth();
-  
-          double tagDistance = 3.3;
 
-          final double kA = 0.0329 + .005;
-          final double kB = -0.0222 + .005;
-          final double kC = 0.0048 + .005; // Adding a small value to constant term to decrease overall confidence
+          if (rejectPose) {
+            continue;
+          }
   
-          // This is the
-          double linearStdDev = (kA * Math.pow(x, 2)) + (kB * x) + kC;
-          latestData.poseObservations.add(
-              new PoseObservation(
-                  // If the timestamp is in the future, then use the FPGA timestamp instead.
-                  // Future timestamps can break the pose estimator.
-                  Math.min(result.getTimestampSeconds(), Timer.getFPGATimestamp()),
-                  fieldToRobot,
-                  target.poseAmbiguity,
-                  1,
-                  cameraToTarget.getTranslation().getNorm()));
+          double translationStdDev = distToTag;
+          
+          measurements.add(
+            new VisionMeasurement(
+              robotPose, 
+              result.getTimestampSeconds(), 
+              VecBuilder.fill(translationStdDev, translationStdDev, kAngularStdDev)
+            )
+          );
         }
       }
     }
 
-    return latestData;
+    return measurements;
   }
 
 
