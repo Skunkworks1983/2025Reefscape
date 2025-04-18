@@ -82,6 +82,7 @@ public class Vision extends SubsystemBase {
           if (rejectPose) {
             continue;
           }
+          
           double x = observation.averageTagDistance();
 
           final double kA = 0.0329 + .005;

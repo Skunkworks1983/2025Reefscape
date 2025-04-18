@@ -28,6 +28,7 @@ public class VisionIOPhotonVision implements VisionIO{
 
   @Override
   public VisionIOData getLatestData() {
+    
     VisionIOData latestData = new VisionIOData();
 
     for (PhotonPipelineResult result : camera.getAllUnreadResults()) {
