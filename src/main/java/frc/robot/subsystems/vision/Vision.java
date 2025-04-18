@@ -17,8 +17,8 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.VisionConstants;
-import frc.robot.constants.visionIOConstants.VisionIOConstants;
+import frc.robot.constants.vision.VisionConstants;
+import frc.robot.constants.vision.VisionIOConstants;
 import frc.robot.subsystems.vision.VisionIO.PoseObservation;
 import frc.robot.subsystems.vision.VisionIO.VisionIOData;
 import frc.robot.utils.ConditionalSmartDashboard;
@@ -83,7 +83,15 @@ public class Vision extends SubsystemBase {
             continue;
           }
           double x = observation.averageTagDistance();
-          double linearStdDev = (0.0329)*x*x + (-0.0222)*x + (0.0048);
+
+          final double kA = 0.0329 + .005;
+          final double kB = -0.0222 + .005;
+          final double kC = 0.0048 + .005; // Adding a small value to constant term to decrease overall confidence
+
+          // This is the
+          double linearStdDev = (kA * Math.pow(x, 2)) + (kB * x) + kC;
+
+          ConditionalSmartDashboard.putNumber(io.get(i).getName() + " Linear Std Dev", linearStdDev);
   
           consumer.accept(
               observation.estimatedPose().toPose2d(),

@@ -1,11 +1,9 @@
-package frc.robot.constants;
+package frc.robot.constants.vision;
 
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import frc.robot.constants.visionIOConstants.VisionIOConstants;
-import frc.robot.constants.visionIOConstants.VisionIOConstantsPhotonVision;
 
 public class VisionConstants {
     public class TripleMount {
@@ -193,11 +191,11 @@ public class VisionConstants {
       * Camera_1: FRONT LEFT module
       * Camera_2: BACK RIGHT module
       */
-      private static final String CAMERA_0_NAME = "FR_Camera";
+      private static final String CAMERA_0_NAME = "Front_Right_Board_2_Port_0";
       private static final String CAMERA_1_NAME = "Camera_1";
       private static final String CAMERA_2_NAME = "Camera_2";
 
-      private static final Transform3d FR_MAGNET_TO_CAMERA_0 = new Transform3d(
+      private static final Transform3d FR_MODULE_TO_CAMERA = new Transform3d(
         new Translation3d(
           Units.inchesToMeters(-0.267),
           Units.inchesToMeters(0.374),
@@ -231,7 +229,7 @@ public class VisionConstants {
           )
         );
 
-      private static final Transform3d ROBOT_TO_FR_MAGNET = 
+      private static final Transform3d ROBOT_TO_FR_MODULE = 
         new Transform3d(
           new Translation3d(
             Units.inchesToMeters(11.375),
@@ -272,14 +270,15 @@ public class VisionConstants {
         );
 
       public static final VisionIOConstants[] IO_CONSTANTS = {
-        //new VisionIOConstantsPhotonVision(CAMERA_0_NAME, ROBOT_TO_FR_MAGNET.plus(FR_MAGNET_TO_CAMERA_0)),
+        new VisionIOConstantsPhotonVision(CAMERA_0_NAME, ROBOT_TO_FR_MODULE.plus(FR_MODULE_TO_CAMERA)),
       };
     }
 
   public static final double MAX_AMBIGUITY = 0.3;
   public static final double LINEAR_STD_DEV_BASELINE = 0.06;
   public static final double ANGULAR_STD_DEV = 5.0;
-  public static final double MAX_Z_ERROR = 3.0;
+  public static final double MAX_Z_ERROR = .50;
   public static final double MAX_AVERAGE_TAG_DISTANCE = 3.0; // Meters
   public static final int JITTER_TEST_ROLLING_AVG_LENGTH = 20;
 }
+
