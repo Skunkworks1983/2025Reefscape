@@ -100,6 +100,7 @@ public class Constants {
     public static final boolean SMART_PID_ENABLED = false;
 
     public static enum Robot {
+      Swerveles,
       Comp2024,
       Comp2025
     }
@@ -190,8 +191,6 @@ public class Constants {
 
     }
 
-    
-
     // All modules are at the position (+-MODULE_TO_OFFSET, +-MODULE_TO_OFFSET)
     public static double MODULE_OFFSET = 0.288925;
     
@@ -222,6 +221,14 @@ public class Constants {
     		T_Y), "Back Left"),
     	new SwerveModuleConstants(20, 22, 21, 0.308838, new Translation2d(-T_X,
     		-T_Y), "Back Right")
+    };
+
+    SwerveModuleConstants [] swerveles = new SwerveModuleConstants[] {
+      new SwerveModuleConstants(16, 17, 18, -0.286377, null, "Front Left"),
+      new SwerveModuleConstants(19, 20, 21, 0.379395, null, "Front Right"),
+      new SwerveModuleConstants(10, 11, 12, .058594, null, "Back Left"),
+      new SwerveModuleConstants(13, 14, 15, .406494
+      , null, "Back Right")
     };
 
     public static Translation2d[] pathPlannerOrderedModules = {
