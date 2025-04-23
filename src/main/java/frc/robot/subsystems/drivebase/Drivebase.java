@@ -223,6 +223,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
     SmartDashboard.putBoolean("Lidar Left", dualLidar.isLidarLeftTripped.getAsBoolean());
     SmartDashboard.putNumber("Lidar Right Distance", dualLidar.getLidarRightOutput());
     SmartDashboard.putNumber("Lidar Left Distance", dualLidar.getLidarLeftOutput());
+    SmartDashboard.putBoolean("IS IN DEMO MODE!!!!", true);
   }
 
   /**
