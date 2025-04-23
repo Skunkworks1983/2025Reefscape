@@ -59,9 +59,9 @@ public class Robot extends TimedRobot {
   public Robot() {
     DataLogManager.start();
 
-    elevator = Optional.of(new Elevator());
-    collector = Optional.of(new Collector());
-    wrist = Optional.of(new Wrist());
+    elevator = Optional.empty();
+    collector = Optional.empty();
+    wrist = Optional.empty();
     climber = Optional.empty();
     funnel = Optional.empty();
 

@@ -106,7 +106,7 @@ public class Constants {
     }
   
     // Change this to test on the 2024 robot's drivebase.
-    public static Robot ROBOT = Robot.Comp2025;
+    public static Robot ROBOT = Robot.Swerveles;
 
     public static final double NUMBER_OF_MOTOR_ROTATIONS_FOR_MODULE_TEST = 1.0;
     public static final double TURN_MOTOR_ROTATION_SPEED = 0.15;
@@ -167,8 +167,12 @@ public class Constants {
   }
 
   public class Drivebase {
-    public static final String CANIVORE_NAME = Testing.ROBOT == Testing.Robot.Comp2025 ? "Drivebase 2025" : "1983 Comp Drivebase";
-    public static final int PIGEON_ID = Testing.ROBOT == Testing.Robot.Comp2025 ? 22 : 26;
+    public static final String CANIVORE_NAME = 
+      (Testing.ROBOT == Testing.Robot.Comp2025) ?
+        "Drivebase 2025" : (Testing.ROBOT == Testing.Robot.Comp2024) ? 
+          "1983 Comp Drivebase" : "Canivore Spare" ;
+
+    public static final int PIGEON_ID = (Testing.ROBOT == Testing.Robot.Comp2025) ? 22 : (Testing.ROBOT == Testing.Robot.Comp2024) ? 26 : 22;
     public static final int LIDAR_RIGHT_DATA_PORT = 8;
     public static final int LIDAR_RIGHT_TRIGGER_DISTANCE = 60;
     public static final int LIDAR_RIGHT_DATA_CUTOFF = 2000;
@@ -198,6 +202,9 @@ public class Constants {
     public static final double T_X = 0.925;
     public static final double T_Y = 0.8041666; 
 
+    public static final double SWERVELES_TX = .3;
+    public static final double SWERVELES_TY = .3;
+
     public static SwerveModuleConstants MODULES[] = (Testing.ROBOT == Testing.Robot.Comp2025) ? new SwerveModuleConstants[] {
       new SwerveModuleConstants(
         10, 11, 12, -0.337158 + .75, new Translation2d(-MODULE_OFFSET, MODULE_OFFSET), "Back Left"
@@ -211,7 +218,7 @@ public class Constants {
       new SwerveModuleConstants(
         19, 20, 21, -0.353027 + .75, new Translation2d(MODULE_OFFSET, -MODULE_OFFSET), "Front Right"
       )
-    } :
+    } : (Testing.ROBOT == Testing.Robot.Comp2024) ?
     new SwerveModuleConstants[] {
     	new SwerveModuleConstants(18, 16, 17, 0.311035, new Translation2d(T_X, T_Y),
     		"Front Left"),
@@ -221,14 +228,12 @@ public class Constants {
     		T_Y), "Back Left"),
     	new SwerveModuleConstants(20, 22, 21, 0.308838, new Translation2d(-T_X,
     		-T_Y), "Back Right")
-    };
-
-    SwerveModuleConstants [] swerveles = new SwerveModuleConstants[] {
-      new SwerveModuleConstants(16, 17, 18, -0.286377, null, "Front Left"),
-      new SwerveModuleConstants(19, 20, 21, 0.379395, null, "Front Right"),
-      new SwerveModuleConstants(10, 11, 12, .058594, null, "Back Left"),
-      new SwerveModuleConstants(13, 14, 15, .406494
-      , null, "Back Right")
+    } :
+    new SwerveModuleConstants[] {
+      new SwerveModuleConstants(16, 17, 18, -0.286377, new Translation2d(SWERVELES_TX, SWERVELES_TY), "Front Left"),
+      new SwerveModuleConstants(19, 20, 21, 0.379395, new Translation2d(SWERVELES_TX, -SWERVELES_TY), "Front Right"),
+      new SwerveModuleConstants(10, 11, 12, .058594, new Translation2d(-SWERVELES_TX, SWERVELES_TY), "Back Left"),
+      new SwerveModuleConstants(13, 14, 15, .406494, new Translation2d(-SWERVELES_TX, -SWERVELES_TY), "Back Right")
     };
 
     public static Translation2d[] pathPlannerOrderedModules = {
