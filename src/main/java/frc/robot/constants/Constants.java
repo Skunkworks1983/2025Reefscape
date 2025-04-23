@@ -176,8 +176,8 @@ public class Constants {
     public static final int LIDAR_LEFT_DATA_CUTOFF = 2000;
     public static final int LIDAR_LEFT_TRIGGER_PORT = 3;
     public static final int LIDAR_RIGHT_TRIGGER_PORT = 7;
-    public static final double MAX_METERS_PER_SECOND = 4.5;
-    public static final double MAX_DEGREES_PER_SECOND = 270;
+    public static final double MAX_METERS_PER_SECOND = 4.5 * .15;
+    public static final double MAX_DEGREES_PER_SECOND = 270 * .25;
 
     public static final double AUTO_ALIGN_DRIVE_SPEED_TELEOP = 0.5;
     public static final double AUTO_ALIGN_DRIVE_SPEED_AUTO = 0.8;
@@ -351,11 +351,11 @@ public class Constants {
     }
 
     public class Profile {
-      public static final double MAX_VELOCITY = 60.0;
-      public static final double MAX_ACCELERATION = 115.0;
+      public static final double MAX_VELOCITY = 60.0 * .25;
+      public static final double MAX_ACCELERATION = 115.0 * .25;
 
-      public static final double MAX_VELOCITY_NET = 60.0;
-      public static final double MAX_ACCELERATION_NET = 145.0;
+      public static final double MAX_VELOCITY_NET = 60.0 * .25;
+      public static final double MAX_ACCELERATION_NET = 145. * .25;
     }
   }
 
@@ -379,8 +379,8 @@ public class Constants {
       public static final boolean WRIST_SMARTPID_ACTIVE = false;
     }
 
-    public static final double WRIST_MAX_VELOCITY = 0.7;
-    public static final double WRIST_MAX_ACCELERATION = 1.75;
+    public static final double WRIST_MAX_VELOCITY = 0.7 * .25;
+    public static final double WRIST_MAX_ACCELERATION = 1.75 * .25;
 
     public static final double WRIST_TOLERANCE = 0.02;
 
