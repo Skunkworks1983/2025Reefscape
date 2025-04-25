@@ -27,6 +27,7 @@ import frc.robot.commands.drivebase.OdometryFreeScoreAuto;
 import frc.robot.commands.drivebase.OdometryFreeScoreAutoCenter;
 import frc.robot.commands.drivebase.TrapezoidProfileDriveStraight;
 import frc.robot.constants.Constants;
+import frc.robot.constants.EndEffectorSetpointConstants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.drivebase.Drivebase;
 
@@ -163,8 +164,6 @@ public class Robot extends TimedRobot {
       trapezoidProfileDriveOut = new TrapezoidProfileDriveStraight(drivebase.get(), 1.0, true);
     }
 
-    autoChooser = AutoBuilder.buildAutoChooser();
-
     if(drivebase.isPresent() && elevator.isPresent() && wrist.isPresent() && collector.isPresent()) {
       scoreCoralNoOdometryLeft = 
         new OdometryFreeScoreAuto(
@@ -217,11 +216,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    Command autoCommand = autoChooser.getSelected();
-    if (autoCommand != null) {
-      autoCommand.schedule();
-    }
-
     // trapezoidProfileDriveOut.schedule();
   }
 
@@ -229,7 +223,13 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {}
 
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    DoubleSupplier offSet = () -> { return 0.0;};
+    EndEffectorSetpointConstants setpoints = new EndEffectorSetpointConstants(elevator.get().getElevatorPosition(), 
+      wrist.get().getPosition(), Constants.EndEffectorSetpoints.WRIST_STOW_POSITION_CORAL);
+    new MoveEndEffector(elevator.get(), wrist.get(), setpoints, offSet).schedule();
+
+  }
   
   @Override
   public void teleopPeriodic() {
