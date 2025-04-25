@@ -428,7 +428,7 @@ public class Constants {
 
   public class Climber {
     public class IDs {
-      public static final int CLIMBER_KRAKEN_MOTOR = 13;
+      public static final int CLIMBER_KRAKEN_MOTOR = 12;
       public static final int CLIMBER_MAGNET_SENSOR_1 = 3;
       public static final int CLIMBER_MAGNET_SENSOR_2 = 4;
     }

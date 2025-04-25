@@ -7,11 +7,14 @@ package frc.robot;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -44,6 +47,8 @@ public class Robot extends TimedRobot {
   Optional<Drivebase> drivebase;
 
   private SendableChooser<Command> autoChooser;
+  Joystick joystick;
+  TalonFX climberMotor;
 
   OI oi;
 
@@ -64,6 +69,7 @@ public class Robot extends TimedRobot {
     wrist = Optional.of(new Wrist());
     climber = Optional.empty();
     funnel = Optional.empty();
+
 
     if (elevator.isPresent() && wrist.isPresent()) {
       // move to pos coral 
@@ -114,14 +120,14 @@ public class Robot extends TimedRobot {
 
     drivebase = Optional.of(new Drivebase());
 
-    oi = new OI( 
-      elevator,
-      collector,
-      wrist,
-      climber,
-      drivebase,
-      funnel
-    );
+    // oi = new OI( 
+    //   elevator,
+    //   collector,
+    //   wrist,
+    //   climber,
+    //   drivebase,
+    //   funnel
+    // );
 
     if (Constants.Testing.ENSURE_COMPETITION_READY_SUBSYSTEMS) {
       if (drivebase.isEmpty()) {
@@ -150,18 +156,18 @@ public class Robot extends TimedRobot {
       }
     }
 
-    if (drivebase.isPresent()) {
-      drivebase.get().setDefaultCommand(
-        drivebase.get().getSwerveCommand(
-          oi::getInstructedXMetersPerSecond,
-          oi::getInstructedYMetersPerSecond,
-          oi::getInstructedDegreesPerSecond,
-          true
-        )
-      );
+    // if (drivebase.isPresent()) {
+    //   drivebase.get().setDefaultCommand(
+    //     drivebase.get().getSwerveCommand(
+    //       oi::getInstructedXMetersPerSecond,
+    //       oi::getInstructedYMetersPerSecond,
+    //       oi::getInstructedDegreesPerSecond,
+    //       true
+    //     )
+    //   );
 
-      trapezoidProfileDriveOut = new TrapezoidProfileDriveStraight(drivebase.get(), 1.0, true);
-    }
+    //   trapezoidProfileDriveOut = new TrapezoidProfileDriveStraight(drivebase.get(), 1.0, true);
+    // }
 
     autoChooser = AutoBuilder.buildAutoChooser();
 
@@ -229,12 +235,16 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {}
 
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    joystick = new Joystick(0);
+    climberMotor = new TalonFX(Constants.Climber.IDs.CLIMBER_KRAKEN_MOTOR, "Collector 2025");
+  }
   
   @Override
   public void teleopPeriodic() {
-    oi.putRotationJoystickToSmartDashboard();
-    oi.putTranslationJoystickToSmartDashboard();
+    climberMotor.setControl(new DutyCycleOut(joystick.getY() * .2));
+    //oi.putRotationJoystickToSmartDashboard();
+    //oi.putTranslationJoystickToSmartDashboard();
   }
 
   @Override
@@ -245,7 +255,9 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+    
+  }
 
   public void testInit() {
     errorGroup.clearAllTest();
