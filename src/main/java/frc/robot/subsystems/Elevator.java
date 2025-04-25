@@ -93,6 +93,11 @@ public class Elevator extends SubsystemBase {
     return !bottomLimitSwitch.get();
   }
 
+  public void setOutputToZero(){
+    //motorLeft.set(0);
+    motorRight.set(0);
+  }
+
   // Inverted because limit switches return true until tripped
   // public boolean getTopLimitSwitch() {
   //   !topLimitSwitch.get();

@@ -90,6 +90,10 @@ public class Wrist extends SubsystemBase {
   public double getWristVelocity() {
     return wristMotor.getVelocity().getValueAsDouble() / Constants.Wrist.WRIST_GEAR_RATIO;
   }
+
+  public void setOutputToZero(){
+    wristMotor.set(0);
+  }
   
   public void setWristMotorControl(PositionVoltage setWristMotorControl) {
     wristMotor.setControl(setWristMotorControl

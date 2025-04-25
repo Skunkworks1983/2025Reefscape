@@ -224,11 +224,12 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    DoubleSupplier offSet = () -> { return 0.0;};
-    EndEffectorSetpointConstants setpoints = new EndEffectorSetpointConstants(elevator.get().getElevatorPosition(), 
-      wrist.get().getPosition(), Constants.EndEffectorSetpoints.WRIST_STOW_POSITION_CORAL);
-    new MoveEndEffector(elevator.get(), wrist.get(), setpoints, offSet).schedule();
-
+    // DoubleSupplier offSet = () -> { return 0.0;};
+    // EndEffectorSetpointConstants setpoints = new EndEffectorSetpointConstants(elevator.get().getElevatorPosition(), 
+    //   wrist.get().getPosition(), Constants.EndEffectorSetpoints.WRIST_STOW_POSITION_CORAL);
+    // new MoveEndEffector(elevator.get(), wrist.get(), setpoints, offSet).schedule();
+    elevator.get().setOutputToZero();
+    wrist.get().setOutputToZero();
   }
   
   @Override
