@@ -173,7 +173,7 @@ public class Robot extends TimedRobot {
           collector.get(), 
           true
         );
-        autoChooser.addOption("Score Coral No Odometry Left", scoreCoralNoOdometryLeft);
+        //autoChooser.addOption("Score Coral No Odometry Left", scoreCoralNoOdometryLeft);
     
     }
 
@@ -186,7 +186,7 @@ public class Robot extends TimedRobot {
           collector.get(), 
           false
         );
-        autoChooser.addOption("Score Coral No Odometry Right", scoreCoralNoOdometryRight);
+        //autoChooser.addOption("Score Coral No Odometry Right", scoreCoralNoOdometryRight);
     }
 
     if(drivebase.isPresent() && elevator.isPresent() && wrist.isPresent() && collector.isPresent()) {
@@ -197,10 +197,10 @@ public class Robot extends TimedRobot {
           wrist.get(), 
           collector.get()
         );
-        autoChooser.addOption("Score Coral No Odometry Center", scoreCoralNoOdometryCenter);
+        //autoChooser.addOption("Score Coral No Odometry Center", scoreCoralNoOdometryCenter);
     }
 
-    SmartDashboard.putData("Auto Chooser", autoChooser);
+   // SmartDashboard.putData("Auto Chooser", autoChooser);
     SmartDashboard.putNumber("Auto wait seconds", 2.0);
     CameraServer.startAutomaticCapture();
   }
