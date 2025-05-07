@@ -274,6 +274,26 @@ public class VisionConstants {
       };
     }
 
+  public class SwervelesPostSeason {
+    private static final Transform3d ROBOT_TO_CAMERA =
+        new Transform3d(
+          new Translation3d(
+            Units.inchesToMeters(6.0),
+            Units.inchesToMeters(3.0),
+            Units.inchesToMeters(12.0)
+          ),
+          new Rotation3d(
+            Units.degreesToRadians(0.0),
+            Units.degreesToRadians(0.0),
+            Units.degreesToRadians(0.0)
+          )
+        );
+
+    public static final VisionIOConstants [] IO_CONSTANTS = {
+      new VisionIOConstantsPhotonVision("Camera_0", ROBOT_TO_CAMERA)
+    };
+  }
+
   public static final double MAX_AMBIGUITY = 0.3;
   public static final double LINEAR_STD_DEV_BASELINE = 0.06;
   public static final double ANGULAR_STD_DEV = 5.0;

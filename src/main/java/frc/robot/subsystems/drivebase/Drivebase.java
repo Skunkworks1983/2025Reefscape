@@ -140,7 +140,7 @@ public class Drivebase extends SubsystemBase implements DiagnosticSubsystem {
 
     new Vision(
       positionEstimator::addVisionMeasurement,
-      VisionConstants.Comp2025Mount.IO_CONSTANTS
+      VisionConstants.SwervelesPostSeason.IO_CONSTANTS
     );
 
     headingController.enableContinuousInput(0, 360);

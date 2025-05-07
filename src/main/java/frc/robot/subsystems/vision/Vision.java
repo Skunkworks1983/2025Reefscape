@@ -53,8 +53,10 @@ public class Vision extends SubsystemBase {
   
     @Override
     public void periodic() {
-      for(VisionIO io : ios) {
+      for(int i=0; i<ios.size(); i++) {
+        VisionIO io = ios.get(i);
         for(VisionMeasurement measurement : io.getUnreadMeasurements()) {
+          field2ds.get(i).setRobotPose(measurement.estimatedPose().toPose2d());
           consumer.accept(
             measurement.estimatedPose().toPose2d(),
             measurement.timestamp(),

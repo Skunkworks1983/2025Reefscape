@@ -96,7 +96,7 @@ public class Constants {
     // must be constructed and assigned to the correct variable in Robot.java.
     // If some subsystems are not created and this value is true, an exeption
     // will be thrown.
-    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = true;
+    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = false;
     public static final boolean SMART_PID_ENABLED = false;
 
     public static enum Robot {
@@ -170,7 +170,7 @@ public class Constants {
     public static final String CANIVORE_NAME = 
       (Testing.ROBOT == Testing.Robot.Comp2025) ?
         "Drivebase 2025" : (Testing.ROBOT == Testing.Robot.Comp2024) ? 
-          "1983 Comp Drivebase" : "Canivore Spare" ;
+          "1983 Comp Drivebase" : "Swervles" ;
 
     public static final int PIGEON_ID = (Testing.ROBOT == Testing.Robot.Comp2025) ? 22 : (Testing.ROBOT == Testing.Robot.Comp2024) ? 26 : 22;
     public static final int LIDAR_RIGHT_DATA_PORT = 8;
@@ -230,10 +230,10 @@ public class Constants {
     		-T_Y), "Back Right")
     } :
     new SwerveModuleConstants[] {
-      new SwerveModuleConstants(16, 17, 18, -0.286377, new Translation2d(SWERVELES_TX, SWERVELES_TY), "Front Left"),
-      new SwerveModuleConstants(19, 20, 21, 0.379395, new Translation2d(SWERVELES_TX, -SWERVELES_TY), "Front Right"),
-      new SwerveModuleConstants(10, 11, 12, .058594, new Translation2d(-SWERVELES_TX, SWERVELES_TY), "Back Left"),
-      new SwerveModuleConstants(13, 14, 15, .406494, new Translation2d(-SWERVELES_TX, -SWERVELES_TY), "Back Right")
+      new SwerveModuleConstants(16, 17, 18, 0.212402, new Translation2d(SWERVELES_TX, SWERVELES_TY), "Front Left"),
+      new SwerveModuleConstants(19, 20, 21, -0.120361, new Translation2d(SWERVELES_TX, -SWERVELES_TY), "Front Right"),
+      new SwerveModuleConstants(10, 11, 12, 0.377441, new Translation2d(-SWERVELES_TX, SWERVELES_TY), "Back Left"),
+      new SwerveModuleConstants(13, 14, 15, -0.096680, new Translation2d(-SWERVELES_TX, -SWERVELES_TY), "Back Right")
     };
 
     public static Translation2d[] pathPlannerOrderedModules = {
