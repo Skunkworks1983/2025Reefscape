@@ -423,7 +423,7 @@ public class Constants {
     public static final EndEffectorSetpointConstants CORAL_L3 = 
       new EndEffectorSetpointConstants(23.914 + 0.75, (WRIST_PROSSESSOR_STOW_POSITION / 2), WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_L4 = 
-      new EndEffectorSetpointConstants(39.0, (WRIST_PROSSESSOR_STOW_POSITION / 2), WRIST_STOW_POSITION_CORAL);
+      new EndEffectorSetpointConstants(39.0 + .36, (WRIST_PROSSESSOR_STOW_POSITION / 2), WRIST_STOW_POSITION_CORAL);
   };
 
   public class Climber {
