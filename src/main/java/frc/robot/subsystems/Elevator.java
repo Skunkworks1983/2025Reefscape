@@ -33,6 +33,8 @@ public class Elevator extends SubsystemBase {
   // private DigitalInput topLimitSwitch = new DigitalInput(Constants.Elevator.TOP_LIMIT_SWITCH_ID);
 
   private double finalTargetPosition;
+  private double min = 0;
+  private double max = 0;
 
   private SmartPIDControllerTalonFX smartPIDController;
 
@@ -60,12 +62,16 @@ public class Elevator extends SubsystemBase {
     motorRight.setNeutralMode(NeutralModeValue.Brake);
     motorLeft.setNeutralMode(NeutralModeValue.Brake);
 
+    min = motorRight.getPosition().getValueAsDouble();
+    max = motorRight.getPosition().getValueAsDouble();
     // True means that the motor will be spinning opposite of the one it is following 
     motorLeft.setControl(new Follower(Constants.Elevator.MOTOR_RIGHT_ID, true));
   }
 
-  @Override
+  // @Override
   public void periodic() {
+    max = Math.max(max, motorRight.getPosition().getValueAsDouble());
+    min = Math.min(min, motorRight.getPosition().getValueAsDouble());
     smartPIDController.updatePID();
 
     // Setposition counts as a config update, try and do this sparingly
@@ -76,6 +82,9 @@ public class Elevator extends SubsystemBase {
     //   motorRight.setPosition(Constants.Elevator.MAX_HEIGHT_CARRIAGE * Constants.Elevator.METERS_TO_MOTOR_ROTATIONS);
     // }
     putInfoSmartDashboard();
+    System.out.println("Current value " + motorLeft.getPosition().getValueAsDouble());
+    System.out.println("Min value " + min);
+    System.out.println("Max value " + max);
   }
 
   // Reminder: all positions are measured in meters

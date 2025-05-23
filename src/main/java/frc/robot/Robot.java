@@ -112,7 +112,7 @@ public class Robot extends TimedRobot {
   
     }
 
-    drivebase = Optional.of(new Drivebase());
+    drivebase = Optional.empty();//Optional.of(new Drivebase());
 
     oi = new OI( 
       elevator,
@@ -163,6 +163,7 @@ public class Robot extends TimedRobot {
       trapezoidProfileDriveOut = new TrapezoidProfileDriveStraight(drivebase.get(), 1.0, true);
     }
 
+    /*
     autoChooser = AutoBuilder.buildAutoChooser();
 
     if(drivebase.isPresent() && elevator.isPresent() && wrist.isPresent() && collector.isPresent()) {
@@ -200,8 +201,9 @@ public class Robot extends TimedRobot {
         );
         autoChooser.addOption("Score Coral No Odometry Center", scoreCoralNoOdometryCenter);
     }
+ */
 
-    SmartDashboard.putData("Auto Chooser", autoChooser);
+    // SmartDashboard.putData("Auto Chooser", autoChooser);
     SmartDashboard.putNumber("Auto wait seconds", 2.0);
     CameraServer.startAutomaticCapture();
   }

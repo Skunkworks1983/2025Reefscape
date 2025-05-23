@@ -24,6 +24,7 @@ import frc.robot.commands.MoveEndEffectorAndScoreNet;
 import frc.robot.commands.AutomatedScoring.AutomatedLidarScoring;
 import frc.robot.commands.elevator.MoveElevatorToSetpointCommand;
 import frc.robot.commands.funnel.MoveFunnelToSetpoint;
+import frc.robot.commands.tests.JoystickElevatorVelocity;
 import frc.robot.commands.tests.JoystickEndEffectorPosition;
 import frc.robot.commands.wrist.MoveWristToSetpoint;
 import frc.robot.subsystems.drivebase.Drivebase;
@@ -79,6 +80,10 @@ public class OI {
     if (optionalCollector.isPresent() && optionalElevator.isPresent()) {
       Collector collector = optionalCollector.get();
       Elevator elevator = optionalElevator.get();
+
+      new JoystickButton(translationJoystick,3).whileTrue( 
+        new JoystickElevatorVelocity(elevator, translationJoystick::getY)
+      );
 
       new JoystickButton(buttonJoystick, Constants.OI.IDs.Buttons.INTAKE)
           .and(coralToggle)
@@ -275,9 +280,9 @@ public class OI {
         new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L3, getOffset)
       );
 
-      // endEffectorToScoreHigh.and(coralToggle).onTrue(
-      //   new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L4, getOffset)
-      // );
+      endEffectorToScoreHigh.and(coralToggle).onTrue(
+        new MoveEndEffector(elevator, wrist, EndEffectorSetpoints.CORAL_L4, getOffset)
+      );
     }
   }
 

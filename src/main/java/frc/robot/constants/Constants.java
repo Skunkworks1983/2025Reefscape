@@ -96,7 +96,7 @@ public class Constants {
     // must be constructed and assigned to the correct variable in Robot.java.
     // If some subsystems are not created and this value is true, an exeption
     // will be thrown.
-    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = true;
+    public static final boolean ENSURE_COMPETITION_READY_SUBSYSTEMS = false;
     public static final boolean SMART_PID_ENABLED = false;
 
     public static enum Robot {
@@ -351,7 +351,7 @@ public class Constants {
     }
 
     public class Profile {
-      public static final double MAX_VELOCITY = 60.0;
+      public static final double MAX_VELOCITY = 40.0;
       public static final double MAX_ACCELERATION = 115.0;
 
       public static final double MAX_VELOCITY_NET = 60.0;
@@ -423,7 +423,7 @@ public class Constants {
     public static final EndEffectorSetpointConstants CORAL_L3 = 
       new EndEffectorSetpointConstants(23.914 + 0.75, (WRIST_PROSSESSOR_STOW_POSITION / 2), WRIST_STOW_POSITION_CORAL);
     public static final EndEffectorSetpointConstants CORAL_L4 = 
-      new EndEffectorSetpointConstants(39.0, 0.0, WRIST_STOW_POSITION_CORAL);
+      new EndEffectorSetpointConstants(39.0, (WRIST_PROSSESSOR_STOW_POSITION / 2), WRIST_STOW_POSITION_CORAL);
   };
 
   public class Climber {
